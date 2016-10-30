@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<net.mbonnin.arcanetracker.CreateDeckView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:id="@+id/deckName"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Deck Name:"
+                android:textColor="#000"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="New Deck"
+                android:inputType="textCapSentences"
+                android:layout_weight="1"
+                android:textColor="#000"
+                android:textColorHint="#a0a0a0" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/clazz"
+            android:layout_below="@+id/deckName"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="Class"
+            android:textColor="#000"
+            android:textStyle="bold" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_below="@+id/clazz"
+            android:layout_above="@+id/buttonContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:id="@+id/buttonContainer"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|bottom"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="Create Deck" />
+        </FrameLayout>
+    </RelativeLayout>
+
+</net.mbonnin.arcanetracker.CreateDeckView>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r"
+   width="250"
+   height="250"
+   sodipodi:docname="hearthstone_icon_round.svg">
+  <metadata
+     id="metadata8">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs6" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1489"
+     inkscape:window-height="933"
+     id="namedview4"
+     showgrid="false"
+     inkscape:snap-bbox="true"
+     inkscape:bbox-nodes="true"
+     inkscape:snap-page="true"
+     inkscape:zoom="1.3350176"
+     inkscape:cx="-51.231225"
+     inkscape:cy="106.41602"
+     inkscape:window-x="425"
+     inkscape:window-y="93"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <path
+     sodipodi:type="arc"
+     style="fill:#e57373;fill-opacity:1;stroke:none"
+     id="path3792"
+     sodipodi:cx="125"
+     sodipodi:cy="125"
+     sodipodi:rx="125"
+     sodipodi:ry="125"
+     d="m 250,125 a 125,125 0 1 1 -250,0 125,125 0 1 1 250,0 z" />
+  <path
+     style="fill:#ffffff;fill-opacity:1"
+     d="m 123.00416,191.87907 c 3.58477,-1.37994 7.48276,-2.06429 11.20982,-1.96806 8.51322,0.21981 18.55724,-5.27317 30.44123,-16.64803 8.76421,-8.38872 9.20124,-9.01244 10.23287,-14.60397 0.60258,-3.26604 2.57634,-8.33571 4.47725,-11.5 5.29795,-8.81903 7.53299,-27.28101 4.31695,-35.65901 -0.84451,-2.2 -2.03759,-7.07144 -2.65128,-10.82543 -0.9549,-5.841112 -1.85559,-7.787984 -6.24559,-13.499998 -2.82137,-3.671015 -7.41061,-9.048402 -10.19829,-11.949749 -4.87543,-5.074204 -5.22537,-5.251657 -9.18546,-4.657806 -3.23138,0.484576 -4.24835,0.274891 -4.72791,-0.974822 C 150.33771,68.716488 148.97179,68 147.63837,68 c -1.33341,0 -2.68341,-0.675 -3,-1.5 -0.42159,-1.098664 -2.15326,-1.5 -6.47213,-1.5 -4.50592,0 -6.53639,-0.503317 -8.60972,-2.134204 -2.47887,-1.949873 -3.05156,-2.022536 -6.63076,-0.841296 -3.47374,1.146439 -4.14005,1.091541 -5.88166,-0.48459 -3.15244,-2.852918 -8.36129,-1.175316 -19.523271,6.287812 -9.470768,6.332349 -12.865231,9.283859 -21.927239,19.065889 -2.148525,2.319237 -5.222498,4.89737 -6.831051,5.729185 -2.177997,1.126286 -2.730605,1.941899 -2.164592,3.194797 0.418027,0.925324 1.057101,7.140817 1.420166,13.812197 l 0.660117,12.1298 4.04177,4.8702 c 2.222974,2.67862 4.811597,6.53653 5.752495,8.57315 0.940899,2.03662 4.237662,5.78325 7.32614,8.32586 3.088478,2.5426 6.389188,5.89528 7.334911,7.4504 2.515235,4.13597 9.139784,5.36577 17.813484,3.30694 10.89877,-2.58699 14.3325,-4.15395 19.46964,-8.88487 l 4.91666,-4.52787 -0.0224,-7.1867 c -0.023,-7.37039 -1.46941,-12.05878 -5.1193,-16.59388 -1.51297,-1.8799 -3.15978,-2.50856 -7.51812,-2.86999 -5.73486,-0.47558 -11.19053,0.18247 -13.4601,1.62354 -1.01895,0.64697 -0.86546,1.79947 0.73776,5.53965 l 2.0244,4.72272 -4.1107,1.84041 -4.1107,1.84042 -2.83468,-3.22851 c -4.052839,-4.61594 -4.994307,-9.94882 -3.313583,-18.7696 1.248307,-6.55137 1.850682,-7.72421 6.202053,-12.075584 4.12435,-4.124349 5.89201,-5.097984 12.25577,-6.750532 9.13939,-2.373328 14.56537,-2.453485 22.14367,-0.327122 l 5.83858,1.638221 4.36113,8.111779 c 4.35477,8.099958 4.36208,8.131108 5.01466,21.378498 l 0.65353,13.26672 -4.3569,6.73328 c -2.3963,3.7033 -7.70074,9.7207 -11.78764,13.37199 -8.02791,7.17223 -14.94013,10.66021 -26.3861,13.31471 -4.52375,1.04912 -7.92977,2.55557 -10.11389,4.47325 -1.811226,1.59028 -5.911599,3.62329 -9.111939,4.51781 -5.825855,1.62837 -12.720641,4.82176 -15.069738,6.97969 -1.987095,1.82538 3.386152,7.30911 7.750937,7.91031 12.191832,1.67927 18.62746,2.94372 19.5,3.8313 1.47087,1.49622 12.08415,0.18465 18.50416,-2.28671 z"
+     id="path2987"
+     inkscape:connector-curvature="0"
+     inkscape:export-filename="/home/martin/hdd/git/ArcaneTracker/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png"
+     inkscape:export-xdpi="184.32001"
+     inkscape:export-ydpi="184.32001"
+     clip-path="none"
+     sodipodi:nodetypes="cssssssssssscssssssssscsssssscssssscccssssscsscsssssssscc" />
+</svg>
