@@ -11,6 +11,7 @@ public class MainViewCompanion {
     private static DeckCompanion sOpponentCompanion;
     private final ViewManager.Params mParams;
     private static DeckCompanion sPlayerCompanion;
+    private final View shadow;
     private ViewManager mViewManager;
 
     private View playerView;
@@ -25,6 +26,25 @@ public class MainViewCompanion {
     static final int STATE_OPPONENT = 1;
     static final int STATE_SETTINGS = 2;
     private int state;
+
+    class ClickListener implements View.OnClickListener{
+        private final int newState;
+
+        public ClickListener(int newState) {
+            this.newState = newState;
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (state == newState && isOpen) {
+                setOpen(false);
+            } else {
+                isOpen = true;
+                state = newState;
+                updateState();
+            }
+        }
+    }
 
     public static DeckCompanion getPlayerCompanion() {
         MainViewCompanion.get();
@@ -45,8 +65,10 @@ public class MainViewCompanion {
         playerView.setVisibility(GONE);
         opponentView.setVisibility(GONE);
         settingsView.setVisibility(GONE);
+        shadow.setVisibility(View.INVISIBLE);
 
         if (isOpen) {
+            shadow.setVisibility(View.VISIBLE);
             switch (state) {
                 case STATE_PLAYER:
                     playerView.setVisibility(View.VISIBLE);
@@ -92,6 +114,7 @@ public class MainViewCompanion {
         playerView = v.findViewById(R.id.playerView);
         opponentView = v.findViewById(R.id.opponentView);
         settingsView = v.findViewById(R.id.settingsView);
+        shadow = v.findViewById(R.id.shadow);
 
         int width = (int) (0.33 * 0.5 * mViewManager.getWidth());
 
@@ -104,7 +127,7 @@ public class MainViewCompanion {
         params = opponentView.getLayoutParams();
         params.width = width;
         opponentView.setLayoutParams(params);
-        sOpponentCompanion = new DeckCompanion(opponentView, false);
+        sOpponentCompanion = new DeckCompanion(opponentView, true);
 
         width = (int) (0.4 * mViewManager.getWidth());
         params = settingsView.getLayoutParams();
@@ -124,26 +147,17 @@ public class MainViewCompanion {
         HandleView handleView = (HandleView) v.findViewById(R.id.settingsHandle);
         Drawable drawable = v.getContext().getResources().getDrawable(R.drawable.settings_handle);
         handleView.init(drawable, v.getContext().getResources().getColor(R.color.gray));
-        handleView.setOnClickListener(v2 -> {
-            setOpen(!isOpen);
-            setState(STATE_SETTINGS);
-        });
+        handleView.setOnClickListener(new ClickListener(STATE_SETTINGS));
 
         handleView = (HandleView) v.findViewById(R.id.opponentHandle);
         drawable = v.getContext().getResources().getDrawable(R.drawable.icon_white);
         handleView.init(drawable, v.getContext().getResources().getColor(R.color.opponentColor));
-        handleView.setOnClickListener(v2 -> {
-            setOpen(!isOpen);
-            setState(STATE_OPPONENT);
-        });
+        handleView.setOnClickListener(new ClickListener(STATE_OPPONENT));
 
         handleView = (HandleView) v.findViewById(R.id.playerHandle);
         drawable = v.getContext().getResources().getDrawable(R.drawable.icon_white);
         handleView.init(drawable, v.getContext().getResources().getColor(R.color.colorPrimary));
-        handleView.setOnClickListener(v2 -> {
-            setOpen(!isOpen);
-            setState(STATE_PLAYER);
-        });
+        handleView.setOnClickListener(new ClickListener(STATE_PLAYER));
     }
 
     public void setOpen(boolean isOpen) {
