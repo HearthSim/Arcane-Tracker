@@ -2,6 +2,7 @@ package net.mbonnin.arcanetracker;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +29,7 @@ import static android.view.View.VISIBLE;
  * Created by martin on 10/24/16.
  */
 
-public class SettingsViewHolder {
+public class SettingsCompanion {
     View settingsView;
     private TextView trackobotText;
     private Button signinButton;
@@ -41,7 +42,7 @@ public class SettingsViewHolder {
     private final SeekBar.OnSeekBarChangeListener mSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            ArcaneView.getPlayerAnchorView().setAlphaSetting(progress);
+            MainViewCompanion.get().setAlphaSetting(progress);
         }
 
         @Override
@@ -212,7 +213,7 @@ public class SettingsViewHolder {
         }
     }
 
-    public SettingsViewHolder(View view) {
+    public SettingsCompanion(MainViewCompanion mainViewCompanion, View view) {
         settingsView = view;
 
         updateTrackobot(view);
@@ -220,7 +221,7 @@ public class SettingsViewHolder {
         SeekBar seekBar = (SeekBar) view.findViewById(R.id.seekBar);
 
         seekBar.setMax(100);
-        seekBar.setProgress(ArcaneView.getPlayerAnchorView().getAlphaSetting());
+        seekBar.setProgress(mainViewCompanion.getAlphaSetting());
         seekBar.setOnSeekBarChangeListener(mSeekBarChangeListener);
 
         CheckBox autoSelectDeck = (CheckBox)view.findViewById(R.id.autoSelectDeck);
@@ -235,21 +236,6 @@ public class SettingsViewHolder {
             Settings.set(Settings.AUTO_ADD_CARDS, isChecked);
         });
 
-    }
-
-    public static void show() {
-        Context context = ArcaneTrackerApplication.getContext();
-        ViewManager viewManager = ViewManager.get();
-        View view2 = LayoutInflater.from(context).inflate(R.layout.settings_view, null);
-
-        new SettingsViewHolder(view2);
-
-        ViewManager.Params params = new ViewManager.Params();
-        params.x = viewManager.getWidth() / 4;
-        params.y = viewManager.getHeight() / 16;
-        params.w = viewManager.getWidth() / 2;
-        params.h = 7 * viewManager.getHeight() / 8;
-
-        viewManager.addModalAndFocusableView(view2, params);
+        view.findViewById(R.id.quit).setOnClickListener(v -> MainService.stop());
     }
 }

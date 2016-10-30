@@ -5,5 +5,6 @@
     <color name="colorAccent">#E57373</color>
     <color name="opponentColor">#E57373</color>
     <color name="black">#000000</color>
+    <color name="gray">#a0a0a0</color>
     <color name="transparent">#00000000</color>
 </resources>

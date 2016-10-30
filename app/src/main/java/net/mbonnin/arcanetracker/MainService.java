@@ -34,22 +34,16 @@ public class MainService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        ArcaneView.getOpponentAnchorView().minimize(true, false);
-        ArcaneView.getPlayerAnchorView().minimize(true, false);
-
-        /*sOpponentAnchorView = (AnchorView) AnchorView.build(this);
-        sOpponentAnchorView.init(AnchorView.PREFIX_OPPONENT);*/
+        MainViewCompanion.get().setState(MainViewCompanion.STATE_PLAYER);
+        MainViewCompanion.get().setOpen(false);
+        MainViewCompanion.get().show(true);
 
         Intent intent = StopServiceBroadcastReceiver.getIntent();
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Intent intent2 = SettingsBroadcastReceiver.getIntent();
-        PendingIntent settingsPendingIntent = PendingIntent.getBroadcast(this, 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT);
-
         Notification notification = new NotificationCompat.Builder(this)
                 .setContentText(getString(R.string.arcane_tracker_running))
                 .addAction(R.drawable.ic_close_black_24dp, "Stop", stopPendingIntent)
-                .addAction(R.drawable.ic_settings_black_24dp, "Settings", settingsPendingIntent)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .build();
 

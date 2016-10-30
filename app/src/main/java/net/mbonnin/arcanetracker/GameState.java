@@ -4,10 +4,7 @@ import net.mbonnin.arcanetracker.trackobot.Result;
 import net.mbonnin.arcanetracker.trackobot.ResultData;
 import net.mbonnin.arcanetracker.trackobot.Trackobot;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -47,7 +44,7 @@ public class GameState {
                 return;
             }
             Deck deck1 = DeckList.getPlayerGameDeck();
-            Deck deck2 = ArcaneView.getPlayerAnchorView().getDeck();
+            Deck deck2 = MainViewCompanion.getPlayerCompanion().getDeck();
 
             deck1.addCard(event.cardId, event.isShown ? 1 : -1);
             if (Settings.get(Settings.AUTO_ADD_CARDS, true)) {
@@ -96,13 +93,13 @@ public class GameState {
         if (Settings.get(Settings.AUTO_SELECT_DECK, true) && classIndex >= 0) {
             if (sMode == MODE_ARENA) {
                 Deck deck = DeckList.getArenaDeck();
-                ArcaneView.getPlayerAnchorView().setDeck(deck);
+                MainViewCompanion.getPlayerCompanion().setDeck(deck);
             } else {
                 activateBestDeck(classIndex, initialCards);
             }
         }
 
-        ArcaneView.getOpponentAnchorView().setDeck(DeckList.getOpponentGameDeck());
+        MainViewCompanion.getOpponentCompanion().setDeck(DeckList.getOpponentGameDeck());
 
         for (CardEvent event: initialCards) {
             // send the initial cards
@@ -111,7 +108,7 @@ public class GameState {
     }
 
     private static void activateBestDeck(int classIndex, ArrayList<CardEvent> initialCards) {
-        Deck deck = ArcaneView.getPlayerAnchorView().getDeck();
+        Deck deck = MainViewCompanion.getPlayerCompanion().getDeck();
         if (deckMatches(deck, classIndex, initialCards)) {
             // the current deck works fine
             return;
@@ -128,7 +125,7 @@ public class GameState {
         for (Integer i: index) {
             Deck candidateDeck = DeckList.get().get(i);
             if (deckMatches(candidateDeck, classIndex, initialCards)) {
-                ArcaneView.getPlayerAnchorView().setDeck(candidateDeck);
+                MainViewCompanion.getPlayerCompanion().setDeck(candidateDeck);
                 return;
             }
         }
@@ -137,7 +134,7 @@ public class GameState {
          * No good candidate, create a new deck
          */
         Deck deck2 = DeckList.createDeck(classIndex);
-        ArcaneView.getPlayerAnchorView().setDeck(deck2);
+        MainViewCompanion.getPlayerCompanion().setDeck(deck2);
     }
 
     private static boolean deckMatches(Deck deck, int classIndex, ArrayList<CardEvent> initialCards) {

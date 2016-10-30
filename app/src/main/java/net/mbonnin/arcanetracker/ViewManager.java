@@ -135,6 +135,10 @@ public class ViewManager {
         mWindowManager.removeView(view);
     }
     public void updateView(View view, Params r) {
+        if (!mViews.contains(view)) {
+            return;
+        }
+
         WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams) view.getLayoutParams();
         layoutParams.width = r.w;
         layoutParams.height = r.h;

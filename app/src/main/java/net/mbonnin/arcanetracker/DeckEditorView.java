@@ -155,7 +155,7 @@ public class DeckEditorView extends LinearLayout {
             DeckList.save();
             DeckList.saveArena();
             //DeckList.getPlayerGameDeck().clear();
-            ArcaneView.getPlayerAnchorView().setDeck(deck);
+            MainViewCompanion.getPlayerCompanion().setDeck(deck);
             ViewManager.get().removeView(this);
         });
     }

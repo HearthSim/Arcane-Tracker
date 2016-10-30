@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    android:orientation="horizontal">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/playerView"
+            layout="@layout/deck_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"></include>
+
+        <include
+            android:id="@+id/opponentView"
+            layout="@layout/deck_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"></include>
+
+        <include
+            android:id="@+id/settingsView"
+            layout="@layout/settings_view"
+            android:layout_width="380dp"
+            android:layout_height="match_parent"></include>
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:orientation="vertical">
+
+        <net.mbonnin.arcanetracker.HandleView
+            android:id="@+id/settingsHandle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp" />
+
+        <net.mbonnin.arcanetracker.HandleView
+            android:id="@+id/opponentHandle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp" />
+
+        <net.mbonnin.arcanetracker.HandleView
+            android:id="@+id/playerHandle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginBottom="50dp"/>
+    </LinearLayout>
+</LinearLayout>
