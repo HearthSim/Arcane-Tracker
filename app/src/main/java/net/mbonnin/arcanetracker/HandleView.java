@@ -7,28 +7,22 @@ import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.os.Build;
+import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.OvershootInterpolator;
-import android.widget.ImageView;
-
-import com.esotericsoftware.kryo.util.Util;
 
 /**
  * Created by martin on 10/28/16.
  */
 
-public class HandleView extends ImageView implements Animator.AnimatorListener, ValueAnimator.AnimatorUpdateListener {
-    private final int mTouchSlop;
-    private final ValueAnimator mValueAnimator;
-    private final int mPadding;
-    private final Paint mBlurPaint;
+public class HandleView extends View implements Animator.AnimatorListener, ValueAnimator.AnimatorUpdateListener {
+    private int mTouchSlop;
+    private ValueAnimator mValueAnimator;
+    private int mShadowSize;
+    private Paint mBlurPaint;
     private ViewManager mViewManager;
 
     private ViewManager.Params mParams;
@@ -41,28 +35,41 @@ public class HandleView extends ImageView implements Animator.AnimatorListener, 
     private int mLastX;
     private int mOriginX;
     private int mOriginY;
+    private int mRadius;
+    private Paint mColorPaint;
+    private Paint mOverlayPaint;
+    private boolean mPressed;
+    private Drawable mDrawable;
 
     public HandleView(Context context) {
         super(context);
+    }
+
+    public HandleView(Context context, AttributeSet attr) {
+        super(context, attr);
+        init(null, Color.RED);
+    }
+
+    public void init(Drawable drawable, int color) {
+        if (isInEditMode()) {
+            mSize = 100;
+            mShadowSize = 6;
+        } else {
+            mSize = Utils.dpToPx(50);
+            mShadowSize = Utils.dpToPx(3);
+            mViewManager = ViewManager.get();
+        }
 
         // for blur
         setLayerType(LAYER_TYPE_SOFTWARE, null);
-        int p = mPadding = Utils.dpToPx(3);
-        setPadding(p, p, p, p);
-
-        mViewManager = ViewManager.get();
+        mRadius = (mSize - mShadowSize) / 2;
 
         mParams = new ViewManager.Params();
         mParams.x = 0;
         mParams.y = 0;
 
-
         ViewConfiguration vc = ViewConfiguration.get(getContext());
         mTouchSlop = vc.getScaledTouchSlop();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setElevation(Utils.dpToPx(5));
-        }
 
         mValueAnimator = new ValueAnimator();
         mValueAnimator.addListener(this);
@@ -70,9 +77,19 @@ public class HandleView extends ImageView implements Animator.AnimatorListener, 
         mValueAnimator.setInterpolator(new AccelerateInterpolator());
 
         mBlurPaint = new Paint();
-        mBlurPaint.setMaskFilter(new BlurMaskFilter(8, BlurMaskFilter.Blur.NORMAL));
+        mBlurPaint.setAntiAlias(true);
+        mBlurPaint.setMaskFilter(new BlurMaskFilter(mShadowSize, BlurMaskFilter.Blur.NORMAL));
         mBlurPaint.setColor(Color.argb(150, 0, 0, 0));
 
+        mColorPaint = new Paint();
+        mColorPaint.setAntiAlias(true);
+        mColorPaint.setColor(color);
+
+        mOverlayPaint = new Paint();
+        mOverlayPaint.setAntiAlias(true);
+        mOverlayPaint.setColor(Color.argb(128, 255, 255, 255));
+
+        mDrawable = drawable;
     }
 
     public void setOrigin(int x, int y) {
@@ -100,8 +117,21 @@ public class HandleView extends ImageView implements Animator.AnimatorListener, 
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawCircle(mPadding/2 + canvas.getHeight()/2, mPadding/2 + canvas.getWidth()/2, canvas.getWidth()/2 - mPadding, mBlurPaint);
-        super.onDraw(canvas);
+        if (!mPressed) {
+            canvas.drawCircle(mRadius + mShadowSize / 2, mRadius + mShadowSize / 2, mRadius, mBlurPaint);
+            canvas.drawCircle(mRadius, mRadius, mRadius, mColorPaint);
+            if (mDrawable != null) {
+                mDrawable.setBounds(0, 0, mSize - mShadowSize, mSize - mShadowSize);
+                mDrawable.draw(canvas);
+            }
+        } else {
+            canvas.drawCircle(mRadius + mShadowSize / 2, mRadius + mShadowSize / 2, mRadius, mColorPaint);
+            canvas.drawCircle(mRadius + mShadowSize / 2, mRadius + mShadowSize / 2, mRadius, mOverlayPaint);
+            if (mDrawable != null) {
+                mDrawable.setBounds(mShadowSize / 2, mShadowSize / 2, mSize - mShadowSize / 2, mSize - mShadowSize / 2);
+                mDrawable.draw(canvas);
+            }
+        }
     }
 
     @Override
@@ -112,6 +142,9 @@ public class HandleView extends ImageView implements Animator.AnimatorListener, 
             mDownX = event.getRawX();
             mDownY = event.getRawY();
             hasMoved = false;
+            mPressed = true;
+            invalidate();
+            return true;
         } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
             if (!hasMoved) {
                 if (Math.hypot(event.getRawX() - mDownX, event.getRawY() - mDownY) > mTouchSlop) {
@@ -127,25 +160,32 @@ public class HandleView extends ImageView implements Animator.AnimatorListener, 
 
                 mViewManager.updateView(this, mParams);
             }
-        } else if (event.getActionMasked() == MotionEvent.ACTION_UP && !hasMoved) {
-            if (Math.hypot(mLastX - mOriginX, mLastY - mOriginY) < mTouchSlop) {
-                performClick();
-                return true;
-            } else {
-                mValueAnimator.cancel();
-                mValueAnimator.setFloatValues(0, 1.0f);
-                mValueAnimator.start();
+        } else if (event.getActionMasked() == MotionEvent.ACTION_UP) {
+            mPressed = false;
+            invalidate();
+            if (!hasMoved) {
+                if (Math.hypot(mLastX - mOriginX, mLastY - mOriginY) < mTouchSlop) {
+                    performClick();
+                    return true;
+                } else {
+                    mValueAnimator.cancel();
+                    mValueAnimator.setFloatValues(0, 1.0f);
+                    mValueAnimator.start();
+                }
             }
+        } else if (event.getActionMasked() == MotionEvent.ACTION_CANCEL) {
+            mPressed = false;
+            invalidate();
         }
-
         return false;
     }
 
-    public void setSize(int size) {
-        mSize = size;
-        mParams.w = mSize;
-        mParams.h = mSize;
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        setMeasuredDimension(mSize, mSize);
     }
+
 
     @Override
     public void onAnimationStart(Animator animation) {

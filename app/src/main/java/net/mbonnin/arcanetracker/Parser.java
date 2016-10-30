@@ -92,7 +92,7 @@ public class Parser {
             DeckList.saveArena();
         } else if (matcher2.matches()) {
             deck.classIndex = Card.heroIdToClassIndex(matcher2.group(1));
-            ArcaneView.getPlayerAnchorView().setDeck(deck);
+            MainViewCompanion.getPlayerCompanion().setDeck(deck);
         } else if (matcher3.matches()) {
             String cardId = matcher3.group(1);
             Card card = ArcaneTrackerApplication.getCard(cardId);

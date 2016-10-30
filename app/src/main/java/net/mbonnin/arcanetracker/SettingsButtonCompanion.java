@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * Created by martin on 10/25/16.
  */
 
-public class SettingsButtonHolder {
+public class SettingsButtonCompanion {
 
     private ViewManager mViewManager = null;
 
@@ -26,11 +26,6 @@ public class SettingsButtonHolder {
         int a[] = new int[2];
         v.getLocationOnScreen(a);
 
-        view.findViewById(R.id.quit).setOnClickListener(v2 -> {
-            mViewManager.removeView(view);
-            MainService.stop();
-        });
-
         view.findViewById(R.id.changeDeck).setOnClickListener(v2 -> {
             mViewManager.removeView(view);
 
@@ -40,7 +35,7 @@ public class SettingsButtonHolder {
             DeckListAdapter adapter = new DeckListAdapter();
             adapter.setOnDeckSelectedListener(deck -> {
                 mViewManager.removeView(deckListView);
-                ArcaneView.getPlayerAnchorView().setDeck(deck);
+                MainViewCompanion.getPlayerCompanion().setDeck(deck);
             });
             recyclerView.setAdapter(adapter);
 
@@ -62,7 +57,7 @@ public class SettingsButtonHolder {
         view.findViewById(R.id.editDeck).setOnClickListener(v2 -> {
             mViewManager.removeView(view);
 
-            DeckEditorView.show(ArcaneView.getPlayerAnchorView().getDeck());
+            DeckEditorView.show(MainViewCompanion.getPlayerCompanion().getDeck());
         });
 
         view.findViewById(R.id.createDeck).setOnClickListener(v2 -> {
@@ -85,7 +80,7 @@ public class SettingsButtonHolder {
             View view2 = LayoutInflater.from(v2.getContext()).inflate(R.layout.delete_confirmation_view, null);
             view2.findViewById(R.id.deleteButton).setOnClickListener(v3 -> {
                 mViewManager.removeView(view2);
-                DeckList.deleteDeck(ArcaneView.getPlayerAnchorView().getDeck());
+                DeckList.deleteDeck(MainViewCompanion.getPlayerCompanion().getDeck());
                 ArrayList<Deck> list = DeckList.get();
                 Deck newDeck;
 
@@ -94,7 +89,7 @@ public class SettingsButtonHolder {
                 } else {
                     newDeck = DeckList.createDeck(Card.CLASS_INDEX_WARRIOR);
                 }
-                ArcaneView.getPlayerAnchorView().setDeck(newDeck);
+                MainViewCompanion.getPlayerCompanion().setDeck(newDeck);
             });
             view2.findViewById(R.id.cancelButton).setOnClickListener(v3 -> {
                 mViewManager.removeView(view2);
@@ -105,7 +100,7 @@ public class SettingsButtonHolder {
         view.findViewById(R.id.renameDeck).setOnClickListener(v2 -> {
             mViewManager.removeView(view);
 
-            Deck deck = ArcaneView.getPlayerAnchorView().getDeck();
+            Deck deck = MainViewCompanion.getPlayerCompanion().getDeck();
             if (deck.id.equals(DeckList.ARENA_DECK_ID)) {
                 Toast.makeText(view.getContext(), "Sorry, you cannot rename the Arena deck !", Toast.LENGTH_LONG).show();
                 return;
@@ -116,7 +111,7 @@ public class SettingsButtonHolder {
             view2.findViewById(R.id.renameButton).setOnClickListener(v3 -> {
                 mViewManager.removeView(view2);
                 deck.name = ((EditText)(view2.findViewById(R.id.editText))).getText().toString();
-                ArcaneView.getPlayerAnchorView().setDeck(deck);
+                MainViewCompanion.getPlayerCompanion().setDeck(deck);
                 DeckList.save();
 
             });
@@ -126,11 +121,6 @@ public class SettingsButtonHolder {
             mViewManager.addCenteredView(view2);
         });
 
-        view.findViewById(R.id.settings).setOnClickListener(v2 -> {
-            mViewManager.removeView(view);
-
-            SettingsViewHolder.show();
-        });
 
 
         ViewManager.Params params = new ViewManager.Params();
@@ -142,7 +132,7 @@ public class SettingsButtonHolder {
         mViewManager.addModalView(view, params);
     };
 
-    public SettingsButtonHolder(View settingsButton) {
+    public SettingsButtonCompanion(View settingsButton) {
         mViewManager = ViewManager.get();
 
         settingsButton.setOnClickListener(mOnSettingsClickListener);

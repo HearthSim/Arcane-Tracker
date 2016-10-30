@@ -28,7 +28,6 @@ import timber.log.Timber;
  */
 
 public class ArcaneTrackerApplication extends Application {
-    private static ArcaneTrackerApplication sApplication;
     private static Context sContext;
 
     public static final String BOOK = "global";
@@ -63,7 +62,6 @@ public class ArcaneTrackerApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        sApplication = this;
         sContext = new ContextThemeWrapper(this, R.style.AppThemeLight);
 
         Timber.plant(new Timber.DebugTree());
@@ -75,7 +73,6 @@ public class ArcaneTrackerApplication extends Application {
         }
 
         StopServiceBroadcastReceiver.init();
-        SettingsBroadcastReceiver.init();
 
         String cards = Paper.book(BOOK).read(KEY_CARDS);
         if (cards != null) {

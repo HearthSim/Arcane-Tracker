@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<net.mbonnin.arcanetracker.ArcaneView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <android.support.v7.widget.RecyclerView
@@ -43,6 +44,7 @@
                 android:layout_marginRight="3dp"
                 android:background="?android:selectableItemBackground"
                 android:padding="5dp"
+                android:visibility="gone"
                 android:src="@drawable/ic_fullscreen_exit_black_24dp"
                 android:tint="@android:color/white"/>
 
@@ -60,4 +62,4 @@
                 android:textColor="@android:color/white" />
         </RelativeLayout>
     </FrameLayout>
-</net.mbonnin.arcanetracker.ArcaneView>
+</LinearLayout>
