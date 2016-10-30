@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#80000000">
+
+    <Button
+        android:id="@+id/gotIt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|right"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@null"
+        android:text="GOT IT"
+        android:textColor="#fff" />
+
+    <Button
+        android:id="@+id/next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@null"
+        android:text="next ▶"
+        android:textColor="#fff" />
+
+    <LinearLayout
+        android:id="@+id/opponent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_back_black_24dp"
+            android:tint="#fff" />
+
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Click here to see your opponent's deck." />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/player"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_back_black_24dp"
+            android:tint="#fff" />
+
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Click here to see your deck." />
+    </LinearLayout>
+
+</FrameLayout>

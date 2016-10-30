@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<net.mbonnin.arcanetracker.DeckEditorView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#fff"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_height="wrap_content"
+                android:text="Search:"
+                android:textColor="#000" />
+
+            <EditText
+                android:id="@+id/editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:imeOptions="actionDone"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="#000" />
+
+            <ImageButton
+                android:id="@+id/close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:backgroundTint="#00ffffff"
+                android:src="@drawable/ic_close_black_24dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cost: "
+                android:textColor="#000" />
+
+            <net.mbonnin.arcanetracker.ManaSelectionView
+                android:id="@+id/manaSelectionView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/cardsRecyclerView"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="170dp"
+        android:layout_height="match_parent"
+        android:background="#000"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/deckRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/cardCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="#fff" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="DONE"
+            android:textColor="#fff" />
+
+
+    </LinearLayout>
+
+</net.mbonnin.arcanetracker.DeckEditorView>

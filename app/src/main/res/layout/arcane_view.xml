@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<net.mbonnin.arcanetracker.ArcaneView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/recyclerView"
+        android:layout_weight="1"></android.support.v7.widget.RecyclerView>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:id="@+id/background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/settings"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/deckName"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="3dp"
+                android:background="?android:selectableItemBackground"
+                android:padding="5dp"
+                android:src="@drawable/ic_settings_black_24dp"
+                android:tint="@android:color/white" />
+
+            <ImageButton
+                android:id="@+id/expand"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_above="@+id/deckName"
+                android:layout_alignParentLeft="true"
+                android:layout_marginRight="3dp"
+                android:background="?android:selectableItemBackground"
+                android:padding="5dp"
+                android:src="@drawable/ic_fullscreen_exit_black_24dp"
+                android:tint="@android:color/white"/>
+
+            <TextView
+                android:id="@+id/deckName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="#80000000"
+                android:gravity="center"
+                android:maxLines="1"
+                android:padding="2dp"
+                android:singleLine="true"
+                android:text="deck"
+                android:textColor="@android:color/white" />
+        </RelativeLayout>
+    </FrameLayout>
+</net.mbonnin.arcanetracker.ArcaneView>

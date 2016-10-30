@@ -1,0 +1,89 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "24.0.2"
+    defaultConfig {
+        applicationId "net.mbonnin.arcanetracker"
+        minSdkVersion 14
+        targetSdkVersion 24
+        versionCode 101
+        versionName "1.01"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        jackOptions {
+            enabled true
+        }
+    }
+
+    signingConfigs {
+        mbonnin {
+            keyAlias 'mbonnin'
+            keyPassword 'password'
+            storeFile file('keystore.jks')
+            storePassword 'password'
+            // sha1: 46:AF:3F:32:C0:F9:9C:EA:29:4E:F0:73:4D:2F:73:0B:E4:40:BB:7C
+        }
+    }
+
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.mbonnin
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.mbonnin
+        }
+    }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
+}
+
+ext {
+    supportLibVersion = '24.2.0'
+    playServicesVersion = '9.6.1'
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+    compile "com.android.support:support-v4:$supportLibVersion"
+    compile "com.android.support:appcompat-v7:$supportLibVersion"
+    compile "com.android.support:design:$supportLibVersion"
+    compile "com.android.support:recyclerview-v7:$supportLibVersion"
+    compile "com.android.support:cardview-v7:$supportLibVersion"
+
+    compile 'com.google.code.gson:gson:2.7'
+    compile 'io.paperdb:paperdb:1.5'
+    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+
+    compile 'com.jakewharton.timber:timber:4.3.1'
+
+    compile 'io.reactivex:rxjava:1.1.6'
+    compile 'io.reactivex:rxjava-async-util:0.21.0'
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+
+    compile "com.google.android.gms:play-services-auth:$playServicesVersion"
+    compile "com.google.firebase:firebase-core:$playServicesVersion"
+    compile "com.google.firebase:firebase-crash:$playServicesVersion"
+
+    compile 'com.android.support:multidex:1.0.0'
+
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    testCompile 'junit:junit:4.12'
+}
+
+apply plugin: 'com.google.gms.google-services'

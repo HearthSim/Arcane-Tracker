@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Arcane Tracker</string>
+    <string name="welcome">Welcome to Arcane Tracker !</string>
+    <string name="explanation1">Arcane tracker will now start Hearthstone and monitor the cards you and your opponent play in the background.</string>
+    <string name="explanation2">The overlay will show what has been played as well as the cards remaining in your deck on top of the Game.</string>
+    <string name="explanation3">May the Light bring you victory!</string>
+    <string name="showNextTime">show next time</string>
+    <string name="permissions">Arcane Tracker needs storage and overlay permissions in order to monitor the game and display its overlay.</string>
+    <string name="cannot_launch">Cannot launch Hearthstone. Is it installed ?</string>
+    <string name="oops_permission">Oops, it appears you are missing some permissions</string>
+    <string name="play">Play !</string>
+    <string name="authorizeAndPlay">Authorize and play !</string>
+    <string name="pleaseEnablePermissions">Please enable permissions</string>
+    <string name="cannot_locate_heathstone_install">Cannot locate Hearthstone install directory</string>
+    <string name="arcane_tracker_running">Arcane tracker is running</string>
+    <string name="cannot_find_deck">Could not find last used deck</string>
+    <string name="cannot_get_latest_cards">Cannot get latest cards information</string>
+    <string name="settings">Settings</string>
+    <string name="quit">Quit</string>
+    <string name="changeDeck">Change active deck</string>
+    <string name="editDeck">Edit deck</string>
+    <string name="newDeck">Create new deck</string>
+</resources>

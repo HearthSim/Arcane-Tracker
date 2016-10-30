@@ -1,0 +1,104 @@
+package net.mbonnin.arcanetracker;
+
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+
+import timber.log.Timber;
+
+/**
+ * Created by martin on 10/17/16.
+ */
+
+public class Deck {
+    public HashMap<String, Integer> cards = new HashMap<>();
+    public String name;
+    public int classIndex;
+    public String id;
+
+    private transient WeakReference<Listener> mListenerRef;
+
+    public int getCountFor(String cardId) {
+        Integer a = cards.get(cardId);
+        if (a == null) {
+            a = 0;
+        }
+
+        return a;
+    }
+
+    public void checkClassIndex() {
+        for (String cardId: cards.keySet()) {
+            Card card = ArcaneTrackerApplication.getCard(cardId);
+            int ci = Card.playerClassToClassIndex(card.playerClass);
+            if (ci >= 0 && ci < Card.CLASS_INDEX_NEUTRAL) {
+                if (classIndex != ci) {
+                    Timber.e("inconsistent class index, force to" + Card.classIndexToPlayerClass(ci));
+                    classIndex = ci;
+                }
+                return;
+            }
+        }
+    }
+
+    public interface Listener {
+        void onDeckChanged();
+    }
+
+    public Deck() {
+
+    }
+
+    public void addCard(String cardId, int add) {
+        if (add > 0 && getCardCount() >= 30) {
+            return;
+        } else if ( add < 0 && getCardCount() <= 0) {
+            return;
+        }
+
+        Integer a = cards.get(cardId);
+        if (a == null) {
+            a = 0;
+        }
+
+        a += add;
+
+        if (a > 2 || a < 0) {
+            return;
+        }
+
+        if (a == 0) {
+            cards.remove(cardId);
+        } else {
+            cards.put(cardId, a);
+        }
+
+        if (mListenerRef != null) {
+            Listener listener = mListenerRef.get();
+            if (listener != null) {
+                listener.onDeckChanged();
+            }
+        }
+    }
+
+    public int getCardCount() {
+        int total = 0;
+        for (Integer a: cards.values()) {
+            total += a;
+        }
+
+        return total;
+    }
+    public void registerListener(Listener listener) {
+        mListenerRef = new WeakReference<Listener>(listener);
+    }
+
+    public void clear() {
+        cards.clear();
+        if (mListenerRef != null) {
+            Listener listener = mListenerRef.get();
+            if (listener != null) {
+                listener.onDeckChanged();
+            }
+        }
+    }
+}
