@@ -19,5 +19,5 @@
     <string name="quit">Quit</string>
     <string name="changeDeck">Change active deck</string>
     <string name="editDeck">Edit deck</string>
-    <string name="newDeck">Create new deck</string>
+    <string name="newDeck">New deck</string>
 </resources>
