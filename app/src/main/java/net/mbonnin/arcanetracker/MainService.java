@@ -34,8 +34,7 @@ public class MainService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        MainViewCompanion.get().setState(MainViewCompanion.STATE_PLAYER);
-        MainViewCompanion.get().setOpen(false);
+        MainViewCompanion.get().setState(MainViewCompanion.STATE_PLAYER, false);
         MainViewCompanion.get().show(true);
 
         Intent intent = StopServiceBroadcastReceiver.getIntent();

@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
@@ -72,7 +73,9 @@ public class ArcaneTrackerApplication extends Application {
          * each image is ~100k and there are ~2000 of them. Put 500 just to be safe :-D
          */
         int cacheSize = 500 * 1024 * 1024;
-        Picasso picasso =  new Picasso.Builder(this).downloader(new OkHttpDownloader(getCacheDir(), cacheSize)).build();
+        Picasso picasso =  new Picasso.Builder(this)
+                .downloader(new OkHttp3Downloader(getCacheDir(), cacheSize))
+                .build();
         Picasso.setSingletonInstance(picasso);
         if (Utils.isAppDebuggable()) {
             Picasso.with(this).setIndicatorsEnabled(true);
