@@ -79,6 +79,7 @@ dependencies {
     compile "com.google.firebase:firebase-crash:$playServicesVersion"
 
     compile 'com.android.support:multidex:1.0.0'
+    compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
 
     compile 'com.squareup.picasso:picasso:2.5.2'
 
