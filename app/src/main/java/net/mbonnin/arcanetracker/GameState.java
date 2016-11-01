@@ -69,6 +69,7 @@ public class GameState {
         } else {
             deck.losses++;
         }
+        MainViewCompanion.getPlayerCompanion().setDeck(deck);
         DeckList.save();
 
         if (sMode == MODE_ARENA || sMode == MODE_PLAY
