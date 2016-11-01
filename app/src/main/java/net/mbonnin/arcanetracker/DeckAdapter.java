@@ -3,6 +3,7 @@ package net.mbonnin.arcanetracker;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,19 +21,44 @@ import timber.log.Timber;
  */
 
 public class DeckAdapter extends RecyclerView.Adapter implements Deck.Listener {
-    ArrayList<DeckEntry> list = new ArrayList<>();
+    static final int TYPE_DECK_ENTRY = 0;
+    static final int TYPE_STRING = 1;
+
+    ArrayList<Object> list = new ArrayList<>();
     protected Deck mDeck;
+
+    ArrayList<DeckEntry> entryList = new ArrayList<>();
 
     @Override
     public void onDeckChanged() {
-        list.clear();
+        entryList.clear();
         for (Map.Entry<String, Integer> entry: mDeck.cards.entrySet()) {
             DeckEntry deckEntry = new DeckEntry();
             deckEntry.card = ArcaneTrackerApplication.getCard(entry.getKey());
             deckEntry.inDeck = entry.getValue();
-            list.add(deckEntry);
+            entryList.add(deckEntry);
         }
-        sort();
+
+        for (DeckEntry e:entryList) {
+            if (e.card.cost == null) {
+                Timber.e(new Exception("bad card " + e.card.id));
+                e.card.cost = 0;
+            }
+        }
+        Collections.sort(entryList, (a,b) -> {
+            int ret = a.card.cost - b.card.cost;
+            if (ret == 0) {
+                ret = a.card.name.compareTo(b.card.name);
+            }
+            return ret;
+        });
+
+        populateList();
+    }
+
+    protected void populateList() {
+        list.clear();
+        list.addAll(entryList);
         notifyDataSetChanged();
     }
 
@@ -85,44 +111,58 @@ public class DeckAdapter extends RecyclerView.Adapter implements Deck.Listener {
         onDeckChanged();
     }
 
-    protected void sort() {
-        for (DeckEntry e:list) {
-            if (e.card.cost == null) {
-                Timber.e(new Exception("bad card " + e.card.id));
-                e.card.cost = 0;
-            }
+    @Override
+    public int getItemViewType(int position) {
+        Object o = list.get(position);
+        if (o instanceof DeckEntry) {
+            return TYPE_DECK_ENTRY;
+        } else if (o instanceof String) {
+            return TYPE_STRING;
         }
-        Collections.sort(list, (a,b) -> {
-            int ret = a.card.cost - b.card.cost;
-            if (ret == 0) {
-                ret = a.card.name.compareTo(b.card.name);
-            }
-            return ret;
-        });
+
+        Timber.e("unsupported type");
+        return -1;
     }
+
+
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.bar, null);
-        return new BarViewHolder(view);
+        Context context = parent.getContext();
+        switch (viewType) {
+            case TYPE_DECK_ENTRY: {
+                ViewGroup barTemplate = (ViewGroup) LayoutInflater.from(context).inflate(R.layout.bar_template, null);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.bar_card, null);
+
+                ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                barTemplate.addView(view, 0, params);
+
+                return new BarViewHolder(barTemplate);
+            }
+            case TYPE_STRING: {
+                ViewGroup barTemplate = (ViewGroup) LayoutInflater.from(context).inflate(R.layout.bar_template, null);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.bar_text, null);
+                barTemplate.addView(view, 0);
+
+                RecyclerView.LayoutParams params2 = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(30));
+                barTemplate.setLayoutParams(params2);
+                return new RecyclerView.ViewHolder(barTemplate) {};
+            }
+        }
+
+        return null;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        DeckEntry entry = list.get(position);
-
-        ((BarViewHolder)holder).bind(entry.card, entry.inDeck);
-    }
-
-
-
-    protected DeckEntry getEntry(String id) {
-        for (DeckEntry entry: list) {
-            if(entry.card.id.equals(id)) {
-                return entry;
-            }
+        Object o = list.get(position);
+        if (o instanceof DeckEntry) {
+            DeckEntry entry = (DeckEntry) o;
+            ((BarViewHolder)holder).bind(entry.card, entry.inDeck);
+        } else if (o instanceof String) {
+            ViewGroup barTemplate = (ViewGroup) holder.itemView;
+            ((TextView)barTemplate.getChildAt(0)).setText((String) o);
         }
-        return null;
     }
 
     @Override

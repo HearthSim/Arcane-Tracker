@@ -85,6 +85,7 @@ public class Trackobot {
             mUser = new User();
             mUser.username = "bitter-void-terror-7444";
             mUser.password = "f762d37712";
+            Paper.book().write(KEY_USER, mUser);
         }
 
         pendingResultData = Paper.book().read(KEY_PENDING_RESULT_DATA);

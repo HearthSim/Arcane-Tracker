@@ -20,6 +20,8 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 /**
  * Created by martin on 10/21/16.
  */
@@ -40,11 +42,16 @@ public class DeckEditorView extends LinearLayout {
         mDeck.addCard(card.id, 1);
         updateCardCount();
     };
+
     private ImageButton close;
+
     private RecyclerView.AdapterDataObserver mAdapterObserver = new RecyclerView.AdapterDataObserver() {
         @Override
         public void onChanged() {
             super.onChanged();
+
+            ArrayList<String> list = mDeckAdapter.getDisabledCards();
+            mCardsAdapter.setDisabledCards(list);
             updateCardCount();
         }
     };
@@ -114,6 +121,8 @@ public class DeckEditorView extends LinearLayout {
         mDeckAdapter = new EditableDeckAdapter();
         mDeckAdapter.setDeck(deck);
         mDeckAdapter.registerAdapterDataObserver(mAdapterObserver);
+        ArrayList<String> list = mDeckAdapter.getDisabledCards();
+        mCardsAdapter.setDisabledCards(list);
 
         deckRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         deckRecyclerView.setAdapter(mDeckAdapter);
