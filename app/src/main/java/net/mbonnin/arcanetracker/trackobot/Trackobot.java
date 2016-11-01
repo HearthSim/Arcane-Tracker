@@ -50,7 +50,11 @@ public class Trackobot {
 
     synchronized public void setUser(User user) {
         mUser = user;
-        Paper.book().write(KEY_USER, mUser);
+        if (user == null) {
+            Paper.book().delete(KEY_USER);
+        } else {
+            Paper.book().write(KEY_USER, mUser);
+        }
     }
 
     public User getUser() {
