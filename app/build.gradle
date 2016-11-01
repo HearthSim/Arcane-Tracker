@@ -7,8 +7,8 @@ android {
         applicationId "net.mbonnin.arcanetracker"
         minSdkVersion 14
         targetSdkVersion 24
-        versionCode 102
-        versionName "1.02"
+        versionCode 103
+        versionName "1.03"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         jackOptions {
             enabled true

@@ -168,7 +168,7 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
     }
 
     private void setX(int x) {
-        Timber.w("setX: %d", mX);
+        //Timber.w("setX: %d", mX);
         mX = x;
         mainView.setTranslationX(-mWidth + mX);
         handlesView.getParams().x = mX + mPadding;
@@ -182,7 +182,7 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
 
     @Override
     public void onAnimationEnd(Animator animation) {
-        Timber.w("onAnimationEnd: %d", mX);
+        //Timber.w("onAnimationEnd: %d", mX);
         if (mX == 0) {
             /**
              * XXX: somehow if I do this too early, there a small glitch on screen...
