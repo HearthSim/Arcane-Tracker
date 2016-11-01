@@ -35,7 +35,7 @@ public class MainService extends Service {
         super.onCreate();
 
         MainViewCompanion.get().setState(MainViewCompanion.STATE_PLAYER, false);
-        MainViewCompanion.get().show(true);
+        MainViewCompanion.get().show();
 
         Intent intent = StopServiceBroadcastReceiver.getIntent();
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);

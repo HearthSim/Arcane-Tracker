@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<net.mbonnin.arcanetracker.HandlesView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
+
+    <net.mbonnin.arcanetracker.HandleView
+        android:id="@+id/settingsHandle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp" />
+
+    <net.mbonnin.arcanetracker.HandleView
+        android:id="@+id/opponentHandle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp" />
+
+    <net.mbonnin.arcanetracker.HandleView
+        android:id="@+id/playerHandle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</net.mbonnin.arcanetracker.HandlesView>

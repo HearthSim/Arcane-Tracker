@@ -63,6 +63,13 @@ public class GameState {
 
     public static void onGameEnd(boolean victory) {
         Timber.w("onGameEnd %s", victory ? "victory" : "lost");
+        Deck deck = MainViewCompanion.getPlayerCompanion().getDeck();
+        if (victory) {
+            deck.wins++;
+        } else {
+            deck.losses++;
+        }
+        DeckList.save();
 
         if (sMode == MODE_ARENA || sMode == MODE_PLAY
                 && Trackobot.get().getUser() != null) {

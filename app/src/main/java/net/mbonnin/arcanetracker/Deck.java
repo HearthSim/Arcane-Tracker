@@ -14,6 +14,8 @@ public class Deck {
     public String name;
     public int classIndex;
     public String id;
+    public int wins;
+    public int losses;
 
     private transient WeakReference<Listener> mListenerRef;
 

@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/recyclerView"
         android:layout_weight="1"></android.support.v7.widget.RecyclerView>
 
     <FrameLayout
@@ -19,47 +20,52 @@
             android:layout_height="match_parent"
             android:scaleType="centerCrop" />
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/settings"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_above="@+id/deckName"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="3dp"
-                android:background="?android:selectableItemBackground"
-                android:padding="5dp"
-                android:src="@drawable/ic_mode_edit_black_24dp"
-                android:tint="@android:color/white" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="horizontal">
 
-            <ImageButton
-                android:id="@+id/expand"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_above="@+id/deckName"
-                android:layout_alignParentLeft="true"
-                android:layout_marginRight="3dp"
-                android:background="?android:selectableItemBackground"
-                android:padding="5dp"
-                android:visibility="gone"
-                android:src="@drawable/ic_fullscreen_exit_black_24dp"
-                android:tint="@android:color/white"/>
+
+                <TextView
+                    android:id="@+id/winLoss"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="3dp"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:gravity="left"
+                    android:text="3 - 1"
+                    android:textColor="#fff"/>
+                <ImageButton
+                    android:id="@+id/edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="3dp"
+                    android:background="?android:selectableItemBackground"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_mode_edit_black_24dp"
+                    android:tint="@android:color/white" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/deckName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
                 android:background="#80000000"
                 android:gravity="center"
                 android:maxLines="1"
                 android:padding="2dp"
                 android:singleLine="true"
-                android:text="deck"
+                android:text="Your Deck"
                 android:textColor="@android:color/white" />
-        </RelativeLayout>
+        </LinearLayout>
     </FrameLayout>
 </LinearLayout>
