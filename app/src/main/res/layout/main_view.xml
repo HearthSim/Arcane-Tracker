@@ -7,60 +7,29 @@
 
     <FrameLayout
         android:id="@+id/frameLayout"
-        android:layout_width="wrap_content"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
 
 
         <include
             android:id="@+id/playerView"
             layout="@layout/deck_view"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
         <include
             android:id="@+id/opponentView"
             layout="@layout/deck_view"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
-
-        <include
-            android:id="@+id/settingsView"
-            layout="@layout/settings_view"
-            android:layout_width="380dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
     </FrameLayout>
 
     <View
         android:id="@+id/shadow"
-        android:layout_width="10dp"
+        android:layout_width="5dp"
         android:layout_height="match_parent"
         android:background="@drawable/shadow" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:orientation="vertical"
-        android:paddingLeft="0dp">
-
-        <net.mbonnin.arcanetracker.HandleView
-            android:id="@+id/settingsHandle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp" />
-
-        <net.mbonnin.arcanetracker.HandleView
-            android:id="@+id/opponentHandle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp" />
-
-        <net.mbonnin.arcanetracker.HandleView
-            android:id="@+id/playerHandle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:layout_marginBottom="50dp" />
-    </LinearLayout>
 </LinearLayout>

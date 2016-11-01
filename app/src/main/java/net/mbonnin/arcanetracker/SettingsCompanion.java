@@ -56,7 +56,7 @@ public class SettingsCompanion {
         }
     };
 
-    Observer<User> mSignupObserver  = new Observer<User>() {
+    Observer<User> mSignupObserver = new Observer<User>() {
         @Override
         public void onCompleted() {
 
@@ -165,10 +165,10 @@ public class SettingsCompanion {
         signupButton = (Button) view.findViewById(R.id.trackobotSignup);
         signinButton = (Button) view.findViewById(R.id.trackobotSignin);
         trackobotText = ((TextView) (view.findViewById(R.id.trackobotText)));
-        passwordEditText = (EditText)view.findViewById(R.id.password);
-        usernameEditText = (EditText)view.findViewById(R.id.username);
-        signinProgressBar = (ProgressBar)view.findViewById(R.id.signinProgressBar);
-        signupProgressBar = (ProgressBar)view.findViewById(R.id.signupProgressBar);
+        passwordEditText = (EditText) view.findViewById(R.id.password);
+        usernameEditText = (EditText) view.findViewById(R.id.username);
+        signinProgressBar = (ProgressBar) view.findViewById(R.id.signinProgressBar);
+        signupProgressBar = (ProgressBar) view.findViewById(R.id.signupProgressBar);
 
         User user = Trackobot.get().getUser();
         if (user == null) {
@@ -194,7 +194,7 @@ public class SettingsCompanion {
             passwordEditText.setEnabled(false);
 
             signinButton.setText("Unlink account");
-            signinButton.setOnClickListener(v-> {
+            signinButton.setOnClickListener(v -> {
                 Trackobot.get().setUser(null);
                 usernameEditText.setText("");
                 passwordEditText.setText("");
@@ -213,7 +213,7 @@ public class SettingsCompanion {
         }
     }
 
-    public SettingsCompanion(MainViewCompanion mainViewCompanion, View view) {
+    public SettingsCompanion(View view) {
         settingsView = view;
 
         updateTrackobot(view);
@@ -221,21 +221,38 @@ public class SettingsCompanion {
         SeekBar seekBar = (SeekBar) view.findViewById(R.id.seekBar);
 
         seekBar.setMax(100);
-        seekBar.setProgress(mainViewCompanion.getAlphaSetting());
+        seekBar.setProgress(MainViewCompanion.get().getAlphaSetting());
         seekBar.setOnSeekBarChangeListener(mSeekBarChangeListener);
 
-        CheckBox autoSelectDeck = (CheckBox)view.findViewById(R.id.autoSelectDeck);
+        CheckBox autoSelectDeck = (CheckBox) view.findViewById(R.id.autoSelectDeck);
         autoSelectDeck.setChecked(Settings.get(Settings.AUTO_SELECT_DECK, true));
         autoSelectDeck.setOnCheckedChangeListener((buttonView, isChecked) -> {
             Settings.set(Settings.AUTO_SELECT_DECK, isChecked);
         });
 
-        CheckBox autoAddCards = (CheckBox)view.findViewById(R.id.autoAddCards);
+        CheckBox autoAddCards = (CheckBox) view.findViewById(R.id.autoAddCards);
         autoAddCards.setChecked(Settings.get(Settings.AUTO_ADD_CARDS, true));
         autoAddCards.setOnCheckedChangeListener((buttonView, isChecked) -> {
             Settings.set(Settings.AUTO_ADD_CARDS, isChecked);
         });
 
         view.findViewById(R.id.quit).setOnClickListener(v -> MainService.stop());
+    }
+
+
+    public static void show() {
+        Context context = ArcaneTrackerApplication.getContext();
+        ViewManager viewManager = ViewManager.get();
+        View view2 = LayoutInflater.from(context).inflate(R.layout.settings_view, null);
+
+        new SettingsCompanion(view2);
+
+        ViewManager.Params params = new ViewManager.Params();
+        params.x = viewManager.getWidth() / 4;
+        params.y = viewManager.getHeight() / 16;
+        params.w = viewManager.getWidth() / 2;
+        params.h = 7 * viewManager.getHeight() / 8;
+
+        viewManager.addModalAndFocusableView(view2, params);
     }
 }

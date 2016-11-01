@@ -5,7 +5,7 @@
     <string name="explanation2">The overlay will show what has been played as well as the cards remaining in your deck on top of the Game.</string>
     <string name="explanation3">May the Light bring you victory!</string>
     <string name="showNextTime">show next time</string>
-    <string name="permissions">Arcane Tracker needs storage and overlay permissions in order to monitor the game and display its overlay.</string>
+    <string name="permissions">Arcane Tracker needs storage and overlay permissions in order to monitor the game and display its overlay. You might need to re-start Hearthstone if it was already running.</string>
     <string name="cannot_launch">Cannot launch Hearthstone. Is it installed ?</string>
     <string name="oops_permission">Oops, it appears you are missing some permissions</string>
     <string name="play">Play !</string>

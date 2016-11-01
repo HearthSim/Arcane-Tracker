@@ -21,7 +21,7 @@ public class DeckCompanion {
     private static final String KEY_LAST_USED_DECK_ID = "KEY_LAST_USED_DECK_ID";
 
     View settings;
-    ImageButton expand;
+    TextView winLoss;
     public TextView deckName;
 
     private DeckAdapter mAdapter;
@@ -43,8 +43,8 @@ public class DeckCompanion {
         int w = (int) (0.33 * 0.5 * mViewManager.getWidth());
         int h = mViewManager.getHeight();
 
-        settings = v.findViewById(R.id.settings);
-        expand = (ImageButton) v.findViewById(R.id.expand);
+        settings = v.findViewById(R.id.edit);
+        winLoss = (TextView) v.findViewById(R.id.winLoss);
         deckName = (TextView) v.findViewById(R.id.deckName);
         background = (ImageView) v.findViewById(R.id.background);
         recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
@@ -65,6 +65,7 @@ public class DeckCompanion {
 
         if (isOpponent) {
             settings.setVisibility(GONE);
+            winLoss.setVisibility(GONE);
             mAdapter = new DeckAdapter();
             setDeck(DeckList.getOpponentGameDeck());
         } else {
@@ -101,6 +102,7 @@ public class DeckCompanion {
     public void setDeck(Deck deck) {
         if (!isOpponent) {
             Paper.book().write(KEY_LAST_USED_DECK_ID, deck.id);
+            winLoss.setText(deck.wins + " - " + deck.losses);
         }
 
         deck.checkClassIndex();
