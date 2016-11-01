@@ -42,7 +42,7 @@ public class MainService extends Service {
 
         Notification notification = new NotificationCompat.Builder(this)
                 .setContentText(getString(R.string.arcane_tracker_running))
-                .addAction(R.drawable.ic_close_black_24dp, "Stop", stopPendingIntent)
+                .addAction(R.drawable.ic_close_black_24dp, "QUIT", stopPendingIntent)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .build();
 

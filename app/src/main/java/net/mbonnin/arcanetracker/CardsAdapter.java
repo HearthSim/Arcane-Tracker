@@ -1,7 +1,11 @@
 package net.mbonnin.arcanetracker;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -16,16 +20,22 @@ import timber.log.Timber;
 /**
  * Created by martin on 10/21/16.
  */
-public class CardsAdapter extends RecyclerView.Adapter{
+public class CardsAdapter extends RecyclerView.Adapter {
     private int mClassIndex;
     private ArrayList<Card> mCardList = new ArrayList<>();
     private Listener mListener;
     private String mSearchQuery;
     private int mCost = -1;
+    private ArrayList<String> mDisabledCards = new ArrayList<>();
 
     public void setCost(int cost) {
         mCost = cost;
         filter();
+    }
+
+    public void setDisabledCards(ArrayList<String> list) {
+        mDisabledCards = list;
+        notifyDataSetChanged();
     }
 
     static class MyImageView extends ImageView {
@@ -49,6 +59,7 @@ public class CardsAdapter extends RecyclerView.Adapter{
     public interface Listener {
         void onClick(Card card);
     }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ImageView imageView = new MyImageView(parent.getContext());
@@ -58,14 +69,28 @@ public class CardsAdapter extends RecyclerView.Adapter{
         layoutParams.topMargin = layoutParams.leftMargin = layoutParams.rightMargin = layoutParams.bottomMargin = m;
         imageView.setLayoutParams(layoutParams);
 
-        RecyclerView.ViewHolder holder = new RecyclerView.ViewHolder(imageView) {};
+        RecyclerView.ViewHolder holder = new RecyclerView.ViewHolder(imageView) {
+        };
 
-        imageView.setOnClickListener(v -> {
-            int position = holder.getAdapterPosition();
-            if (position < mCardList.size()) {
-                // not really sure how this could happen...
-                mListener.onClick(mCardList.get(position));
+        imageView.setOnTouchListener((v, event) -> {
+            if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                if (mDisabledCards.contains(mCardList.get(holder.getAdapterPosition()).id)) {
+                    return false;
+                }
+                imageView.setColorFilter(Color.argb(120, 255, 255, 255), PorterDuff.Mode.SRC_OVER);
+                return true;
+            } else if (event.getActionMasked() == MotionEvent.ACTION_CANCEL || event.getActionMasked() == MotionEvent.ACTION_UP) {
+                imageView.clearColorFilter();
+
+                if (event.getActionMasked() == MotionEvent.ACTION_UP) {
+                    int position = holder.getAdapterPosition();
+                    // not really sure how we could go outside this condition but it happens...
+                    if (position < mCardList.size()) {
+                        mListener.onClick(mCardList.get(position));
+                    }
+                }
             }
+            return false;
         });
         return holder;
     }
@@ -85,12 +110,13 @@ public class CardsAdapter extends RecyclerView.Adapter{
         filter();
 
     }
+
     private void filter() {
         mCardList.clear();
         ArrayList<Card> allCards = ArcaneTrackerApplication.getCards();
 
         String playerClass = Card.classIndexToPlayerClass(mClassIndex);
-        for (Card card: allCards) {
+        for (Card card : allCards) {
             if (card.collectible == null || !card.collectible) {
                 continue;
             }
@@ -146,7 +172,7 @@ public class CardsAdapter extends RecyclerView.Adapter{
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ImageView imageView = (ImageView)holder.itemView;
+        ImageView imageView = (ImageView) holder.itemView;
         String baseUrl = "http://vps208291.ovh.net/cards/enus/";
         //String baseUrl = "http://wow.zamimg.com/images/hearthstone/cards/enus/original/";
         Card card = mCardList.get(position);
@@ -160,6 +186,13 @@ public class CardsAdapter extends RecyclerView.Adapter{
         } else {
             placeHolderRes = R.raw.placeholder_minion;
         }
+
+        if (mDisabledCards.contains(card.id)) {
+            imageView.setColorFilter(Color.argb(180, 0, 0, 0), PorterDuff.Mode.SRC_ATOP);
+        } else {
+            imageView.clearColorFilter();
+        }
+
         Timber.d("fetching " + url);
         Picasso.with(imageView.getContext())
                 .load(url)

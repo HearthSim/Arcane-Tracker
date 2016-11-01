@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"
-            android:text="When the game begins, try to guess the deck and activate it automatically. This might fail if you have several deck of the same class."
+            android:text="When the game begins, try to guess the best available deck and activate it automatically. This might fail if you have several deck of the same class."
             android:textColor="#808080" />
 
         <LinearLayout
