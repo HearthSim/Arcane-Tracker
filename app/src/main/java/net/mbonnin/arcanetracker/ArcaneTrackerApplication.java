@@ -12,7 +12,9 @@ import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 
 import io.paperdb.Paper;
@@ -67,6 +69,10 @@ public class ArcaneTrackerApplication extends Application {
         sContext = new ContextThemeWrapper(this, R.style.AppThemeLight);
 
         Timber.plant(new Timber.DebugTree());
+        Timber.plant(FileTree.get());
+
+        Utils.logWithDate("ArcaneTrackerApplication.onCreate() + version=" + BuildConfig.VERSION_CODE);
+
         Paper.init(this);
 
         /**

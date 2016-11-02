@@ -8,6 +8,9 @@ import android.net.NetworkInfo;
 import android.util.TypedValue;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import timber.log.Timber;
 
 /**
@@ -39,6 +42,14 @@ public class Utils {
     public static boolean isAppDebuggable() {
         Context context = ArcaneTrackerApplication.getContext();
         return (0 != (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
+    }
+
+    public static void logWithDate(String s) {
+        Calendar c = Calendar.getInstance();
+
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
+
+        Timber.w(df.format(c.getTime()) + s);
     }
 
     public static class DummyObserver<T> extends rx.Subscriber<T> {
