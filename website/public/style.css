@@ -22,6 +22,7 @@ body {
 h1, h2 {
     color: #333333;
 }
+
 a {
     color: #1565C0;
     text-decoration: none;
@@ -29,4 +30,44 @@ a {
 
 a:hover {
     color: #64B5F6;
+}
+
+
+.button {
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid #333333;
+    white-space: nowrap;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    border-radius: 4px;
+    -webkit-user-select: none;
+}
+
+.button-blue {
+    color: #ffffff;
+    background-color: #1565C0;
+    border-color: #B0B0B0;
+}
+
+.button-blue:hover {
+    color: #ffffff;
+    background-color: #64B5F6;
+}
+
+.button-gray {
+    background-color: #ffffff;
+    color: #333333;
+}
+
+.button-gray:hover {
+    background-color: #D0D0D0;
+    color: #333333;
 }
