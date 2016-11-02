@@ -126,8 +126,10 @@ public class CardsAdapter extends RecyclerView.Adapter {
             }
 
             if (mCost != -1) {
-                if (mCost == 7 && card.cost < 7) {
-                    continue;
+                if (mCost == 7) {
+                    if (card.cost < 7) {
+                        continue;
+                    }
                 } else if (card.cost != mCost) {
                     continue;
                 }
