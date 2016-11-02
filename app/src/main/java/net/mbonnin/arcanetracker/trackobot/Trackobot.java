@@ -73,6 +73,7 @@ public class Trackobot {
         public void onError(Throwable e) {
             Toast.makeText(ArcaneTrackerApplication.getContext(), "Could not upload to Track-o-bot :-(", Toast.LENGTH_LONG).show();
             e.printStackTrace();
+            FirebaseCrash.report(e);
         }
 
         @Override
