@@ -34,6 +34,8 @@ public class MainService extends Service {
     public void onCreate() {
         super.onCreate();
 
+        Utils.logWithDate("MainService.onCreate()");
+
         MainViewCompanion.get().setState(MainViewCompanion.STATE_PLAYER, false);
         MainViewCompanion.get().show();
 
@@ -53,7 +55,8 @@ public class MainService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Timber.d("onDestroy");
+
+        Utils.logWithDate("MainService.onDestroy()");
 
         stopForeground(true);
         ViewManager.get().removeAllViews();

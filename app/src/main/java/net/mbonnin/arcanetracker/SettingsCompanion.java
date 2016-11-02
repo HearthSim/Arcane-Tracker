@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +19,8 @@ import net.mbonnin.arcanetracker.trackobot.HistoryList;
 import net.mbonnin.arcanetracker.trackobot.Trackobot;
 import net.mbonnin.arcanetracker.trackobot.Url;
 import net.mbonnin.arcanetracker.trackobot.User;
+
+import java.io.File;
 
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -218,6 +221,26 @@ public class SettingsCompanion {
 
         updateTrackobot(view);
 
+        TextView appVersion = (TextView) view.findViewById(R.id.appVersion);
+        appVersion.setText(String.format("This is Arcane Tracker version %s%s. Thanks for your support !", BuildConfig.VERSION_NAME, Utils.isAppDebuggable() ? " (debug)":""));
+
+        Button feedbackButton = (Button)view.findViewById(R.id.feedBackButton);
+        feedbackButton.setOnClickListener(v -> {
+            ViewManager.get().removeView(settingsView);
+
+            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+            emailIntent.setType("text/plain");
+            emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@arcanetracker.com"});
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Arcane Tracker Feedback");
+            emailIntent.putExtra(Intent.EXTRA_TEXT, "Please describe your problem here");
+
+            FileTree.get().sync();
+            Uri uri = Uri.fromFile(FileTree.get().getFile());
+            emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+
+            ArcaneTrackerApplication.getContext().startActivity(emailIntent);
+        });
         SeekBar seekBar = (SeekBar) view.findViewById(R.id.seekBar);
 
         seekBar.setMax(100);
