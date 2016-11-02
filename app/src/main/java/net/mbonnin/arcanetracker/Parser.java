@@ -95,13 +95,12 @@ public class Parser {
             MainViewCompanion.getPlayerCompanion().setDeck(deck);
         } else if (matcher3.matches()) {
             String cardId = matcher3.group(1);
-            Card card = ArcaneTrackerApplication.getCard(cardId);
-            if (card.collectible) {
+            if (cardId.toLowerCase().startsWith("hero_")) {
+                // This must be a hero ("Client chooses: Tyrande Whisperwind (HERO_09a)")
+                Timber.e("skip hero " + cardId);
+            } else {
                 deck.addCard(cardId, 1);
                 DeckList.saveArena();
-            } else {
-                // This must be a hero ("Client chooses: Tyrande Whisperwind (HERO_09a)")
-                Timber.e("not collectible " + cardId);
             }
         } else if (matcher4.matches()) {
             String cardId = matcher4.group(1);
