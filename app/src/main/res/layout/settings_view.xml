@@ -53,6 +53,35 @@
                 android:backgroundTint="@color/colorPrimary"
                 android:textColor="#fff" />
 
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Drawer size"
+                android:textColor="#000"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <SeekBar
+                android:id="@+id/drawerSizeBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Buttons size"
+                android:textColor="#000"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <SeekBar
+                android:id="@+id/buttonSizeBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -106,7 +135,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Auto-detect deck"
+                    android:text="Auto detect deck"
                     android:textColor="#000"
                     android:textSize="20dp"
                     android:textStyle="bold" />
@@ -135,7 +164,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Auto-add cards"
+                    android:text="Auto add cards"
                     android:textColor="#000"
                     android:textSize="20dp"
                     android:textStyle="bold" />

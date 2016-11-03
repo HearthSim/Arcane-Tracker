@@ -242,10 +242,50 @@ public class SettingsCompanion {
             ArcaneTrackerApplication.getContext().startActivity(emailIntent);
         });
         SeekBar seekBar = (SeekBar) view.findViewById(R.id.seekBar);
-
         seekBar.setMax(100);
         seekBar.setProgress(MainViewCompanion.get().getAlphaSetting());
         seekBar.setOnSeekBarChangeListener(mSeekBarChangeListener);
+
+        MainViewCompanion c = MainViewCompanion.get();
+        seekBar = (SeekBar) view.findViewById(R.id.drawerSizeBar);
+        seekBar.setMax(MainViewCompanion.get().getMaxDrawerWidth() - MainViewCompanion.get().getMinDrawerWidth());
+        seekBar.setProgress(MainViewCompanion.get().getDrawerWidth() - MainViewCompanion.get().getMinDrawerWidth());
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                MainViewCompanion.get().setDrawerWidth(progress + MainViewCompanion.get().getMinDrawerWidth());
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        seekBar = (SeekBar) view.findViewById(R.id.buttonSizeBar);
+        seekBar.setMax(c.getMaxButtonWidth() - c.getMinButtonWidth());
+        seekBar.setProgress(c.getButtonWidth() - c.getMinButtonWidth());
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                c.setButtonWidth(progress + c.getMinButtonWidth());
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
 
         CheckBox autoQuit = (CheckBox) view.findViewById(R.id.autoQuit);
         autoQuit.setChecked(Settings.get(Settings.AUTO_QUIT, true));
