@@ -13,6 +13,7 @@ public class Settings {
     public static final String CHECK_IF_RUNNING = "CHECK_IF_RUNNING";
     public static final String AUTO_SELECT_DECK = "AUTO_SELECT_DECK";
     public static final String AUTO_ADD_CARDS = "AUTO_ADD_CARDS";
+    public static final String AUTO_QUIT = "AUTO_QUIT";
 
     private static SharedPreferences getPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(ArcaneTrackerApplication.getContext());
