@@ -36,21 +36,21 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/appVersion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:id="@+id/appVersion"
                 android:text="App version"
                 android:textColor="#808080" />
-            
+
             <Button
                 android:id="@+id/feedBackButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="send feedback"
                 android:backgroundTint="@color/colorPrimary"
+                android:text="send feedback"
                 android:textColor="#fff" />
 
 
@@ -291,37 +291,20 @@
             </FrameLayout>
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/retrievePassword"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="Misc"
-                android:textColor="#000"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                android:visibility="gone" />
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:autoLink="all"
+                android:text="If you don't know your password, check https://github.com/HearthSim/arcane_tracker/issues/2 for how to retrieve it"
+                android:textColor="#808080" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Show opponent deck "
-                    android:textColor="#000" />
-
-                <CheckBox
-                    android:id="@+id/opponentDeckCheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/colorPrimary" />
-            </LinearLayout>
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
                 android:layout_weight="1">
 
                 <Button

@@ -2,6 +2,7 @@ package net.mbonnin.arcanetracker;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.view.ContextThemeWrapper;
 import android.widget.Toast;
 
@@ -63,7 +64,18 @@ public class ArcaneTrackerApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        sContext = new ContextThemeWrapper(this, R.style.AppThemeLight);
+        sContext = new ContextThemeWrapper(this, R.style.AppThemeLight) {
+            @Override
+            public void startActivity(Intent intent) {
+                if ((intent.getFlags() & Intent.FLAG_ACTIVITY_NEW_TASK) == 0) {
+                    /**
+                     * XXX: this is a hack to be able to click textview links
+                     */
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                }
+                super.startActivity(intent);
+            }
+        };
 
         Timber.plant(new Timber.DebugTree());
         Timber.plant(FileTree.get());
