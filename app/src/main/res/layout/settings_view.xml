@@ -122,7 +122,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:text="Try to detect when Hearthstone is not running anymore and hide the tracker automatically"
+                android:text="Try to detect when Hearthstone is not running anymore and hide the overlay automagically"
                 android:textColor="#808080" />
 
             <LinearLayout

@@ -4,12 +4,17 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,20 +43,6 @@ public class CardsAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-    static class MyImageView extends ImageView {
-        public MyImageView(Context context) {
-            super(context);
-        }
-
-        @Override
-        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-            int width = MeasureSpec.getSize(widthMeasureSpec);
-            int height = width * 465 / 307;
-
-            setMeasuredDimension(width, height);
-        }
-    }
-
     public void setListener(Listener listener) {
         mListener = listener;
     }
@@ -62,17 +53,15 @@ public class CardsAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ImageView imageView = new MyImageView(parent.getContext());
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view, null);
 
-        RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        int m = Utils.dpToPx(10);
-        layoutParams.topMargin = layoutParams.leftMargin = layoutParams.rightMargin = layoutParams.bottomMargin = m;
-        imageView.setLayoutParams(layoutParams);
-
-        RecyclerView.ViewHolder holder = new RecyclerView.ViewHolder(imageView) {
+        RecyclerView.ViewHolder holder = new RecyclerView.ViewHolder(view) {
         };
 
-        imageView.setOnTouchListener((v, event) -> {
+        ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
+        ((AspectRatioImageView)imageView).setAspectRatio(1.51f);
+
+        view.setOnTouchListener((v, event) -> {
             if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
                 if (mDisabledCards.contains(mCardList.get(holder.getAdapterPosition()).id)) {
                     return false;
@@ -174,11 +163,15 @@ public class CardsAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ImageView imageView = (ImageView) holder.itemView;
+        ImageView imageView = (ImageView) holder.itemView.findViewById(R.id.imageView);
+        TextView textView = (TextView) holder.itemView.findViewById(R.id.textView);
+
         String baseUrl = "http://vps208291.ovh.net/cards/enus/";
         //String baseUrl = "http://wow.zamimg.com/images/hearthstone/cards/enus/original/";
         Card card = mCardList.get(position);
         String url = baseUrl + card.id + ".png";
+
+        textView.setText(card.name);
 
         int placeHolderRes;
         if (card.rarity.equals(Card.RARITY_LEGENDARY)) {
@@ -199,7 +192,17 @@ public class CardsAdapter extends RecyclerView.Adapter {
         Picasso.with(imageView.getContext())
                 .load(url)
                 .placeholder(placeHolderRes)
-                .into(imageView);
+                .into(imageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        textView.setText("");
+                    }
+
+                    @Override
+                    public void onError() {
+                        textView.setText("");
+                    }
+                });
     }
 
     @Override
