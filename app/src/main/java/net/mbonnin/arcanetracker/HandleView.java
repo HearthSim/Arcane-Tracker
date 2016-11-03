@@ -18,9 +18,8 @@ import android.view.animation.AccelerateInterpolator;
  * Created by martin on 10/28/16.
  */
 
-public class HandleView extends View implements Animator.AnimatorListener, ValueAnimator.AnimatorUpdateListener {
+public class HandleView extends View {
     private int mTouchSlop;
-    private ValueAnimator mValueAnimator;
     private int mShadowSize;
     private Paint mBlurPaint;
     private ViewManager mViewManager;
@@ -30,11 +29,8 @@ public class HandleView extends View implements Animator.AnimatorListener, Value
     private float mDownX, mDownY;
     private boolean hasMoved;
 
-    private int mSize;
     private int mLastY;
     private int mLastX;
-    private int mOriginX;
-    private int mOriginY;
     private int mRadius;
     private Paint mColorPaint;
     private Paint mOverlayPaint;
@@ -51,18 +47,11 @@ public class HandleView extends View implements Animator.AnimatorListener, Value
     }
 
     public void init(Drawable drawable, int color) {
-        if (isInEditMode()) {
-            mSize = 100;
-            mShadowSize = 6;
-        } else {
-            mSize = Utils.dpToPx(50);
-            mShadowSize = Utils.dpToPx(3);
-            mViewManager = ViewManager.get();
-        }
+        mShadowSize = Utils.dpToPx(3);
+        mViewManager = ViewManager.get();
 
         // for blur
         setLayerType(LAYER_TYPE_SOFTWARE, null);
-        mRadius = (mSize - mShadowSize) / 2;
 
         mParams = new ViewManager.Params();
         mParams.x = 0;
@@ -70,11 +59,6 @@ public class HandleView extends View implements Animator.AnimatorListener, Value
 
         ViewConfiguration vc = ViewConfiguration.get(getContext());
         mTouchSlop = vc.getScaledTouchSlop();
-
-        mValueAnimator = new ValueAnimator();
-        mValueAnimator.addListener(this);
-        mValueAnimator.addUpdateListener(this);
-        mValueAnimator.setInterpolator(new AccelerateInterpolator());
 
         mBlurPaint = new Paint();
         mBlurPaint.setAntiAlias(true);
@@ -92,16 +76,9 @@ public class HandleView extends View implements Animator.AnimatorListener, Value
         mDrawable = drawable;
     }
 
-    public void setOrigin(int x, int y) {
-        mOriginX = x;
-        mOriginY = y;
-    }
 
     public void show(boolean show) {
         if (show) {
-            mParams.x = mOriginX;
-            mParams.y = mOriginY;
-
             mLastX = mParams.x;
             mLastY = mParams.y;
             mViewManager.addView(this, mParams);
@@ -117,18 +94,19 @@ public class HandleView extends View implements Animator.AnimatorListener, Value
 
     @Override
     protected void onDraw(Canvas canvas) {
+        int radius = (getMeasuredWidth() - mShadowSize)/2;
         if (!mPressed) {
-            canvas.drawCircle(mRadius + mShadowSize / 2, mRadius + mShadowSize / 2, mRadius, mBlurPaint);
-            canvas.drawCircle(mRadius, mRadius, mRadius, mColorPaint);
+            canvas.drawCircle(radius + mShadowSize / 2, radius + mShadowSize / 2, radius, mBlurPaint);
+            canvas.drawCircle(radius, radius, radius, mColorPaint);
             if (mDrawable != null) {
-                mDrawable.setBounds(0, 0, mSize - mShadowSize, mSize - mShadowSize);
+                mDrawable.setBounds(0, 0, getMeasuredWidth() - mShadowSize, getMeasuredWidth() - mShadowSize);
                 mDrawable.draw(canvas);
             }
         } else {
-            canvas.drawCircle(mRadius + mShadowSize / 2, mRadius + mShadowSize / 2, mRadius, mColorPaint);
-            canvas.drawCircle(mRadius + mShadowSize / 2, mRadius + mShadowSize / 2, mRadius, mOverlayPaint);
+            canvas.drawCircle(radius + mShadowSize / 2, radius + mShadowSize / 2, radius, mColorPaint);
+            canvas.drawCircle(radius + mShadowSize / 2, radius + mShadowSize / 2, radius, mOverlayPaint);
             if (mDrawable != null) {
-                mDrawable.setBounds(mShadowSize / 2, mShadowSize / 2, mSize - mShadowSize / 2, mSize - mShadowSize / 2);
+                mDrawable.setBounds(mShadowSize / 2, mShadowSize / 2, getMeasuredWidth() - mShadowSize / 2, getMeasuredWidth() - mShadowSize / 2);
                 mDrawable.draw(canvas);
             }
         }
@@ -164,13 +142,9 @@ public class HandleView extends View implements Animator.AnimatorListener, Value
             mPressed = false;
             invalidate();
             if (!hasMoved) {
-                if (Math.hypot(mLastX - mOriginX, mLastY - mOriginY) < mTouchSlop) {
+                if (Math.hypot(mLastX, mLastY) < mTouchSlop) {
                     performClick();
                     return true;
-                } else {
-                    mValueAnimator.cancel();
-                    mValueAnimator.setFloatValues(0, 1.0f);
-                    mValueAnimator.start();
                 }
             }
         } else if (event.getActionMasked() == MotionEvent.ACTION_CANCEL) {
@@ -183,36 +157,7 @@ public class HandleView extends View implements Animator.AnimatorListener, Value
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(mSize, mSize);
-    }
-
-
-    @Override
-    public void onAnimationStart(Animator animation) {
-
-    }
-
-    @Override
-    public void onAnimationEnd(Animator animation) {
-        performClick();
-    }
-
-    @Override
-    public void onAnimationCancel(Animator animation) {
-
-    }
-
-    @Override
-    public void onAnimationRepeat(Animator animation) {
-
-    }
-
-    @Override
-    public void onAnimationUpdate(ValueAnimator animation) {
-        float a = (float) animation.getAnimatedValue();
-        mParams.x = (int) (mLastX * (1 - a) + a * (mOriginX));
-        mParams.y = (int) (mLastY * (1 - a) + a * (mOriginY));
-
-        mViewManager.updateView(this, mParams);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        setMeasuredDimension(getMeasuredWidth(), getMeasuredWidth());
     }
 }

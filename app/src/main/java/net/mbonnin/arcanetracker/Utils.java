@@ -1,11 +1,15 @@
 package net.mbonnin.arcanetracker;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.Display;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -34,6 +38,23 @@ public class Utils {
         }
     }
 
+    public static boolean is7InchesOrHigher() {
+        Context context = ArcaneTrackerApplication.getContext();
+        Display display = ((WindowManager)context.getSystemService(Activity.WINDOW_SERVICE)).getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+
+        float xdpi  = context.getResources().getDisplayMetrics().xdpi;
+        float ydpi  = context.getResources().getDisplayMetrics().ydpi;
+        float xinches = outMetrics.heightPixels / xdpi;
+        float yinches  = outMetrics.widthPixels / ydpi;
+
+        if (Math.hypot(xinches, yinches) > 7) {
+            return true;
+        }
+
+        return false;
+    }
 
     public static Drawable getDrawableForClassIndex(int classIndex) {
         return getDrawableForName(Card.classIndexToHeroId(classIndex));

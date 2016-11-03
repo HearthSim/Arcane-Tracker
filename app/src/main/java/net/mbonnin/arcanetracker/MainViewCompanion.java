@@ -16,6 +16,7 @@ import timber.log.Timber;
 public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener {
     private static DeckCompanion sOpponentCompanion;
     private final Handler mHandler;
+    private int mButtonWidth;
     private ViewManager.Params mParams;
     private static DeckCompanion sPlayerCompanion;
     private final View shadow;
@@ -36,7 +37,6 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
 
     private HandlesView handlesView;
     private ValueAnimator mAnimator;
-    private boolean isOpen;
 
     View mainView;
 
@@ -210,7 +210,7 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
 
         @Override
         public void onClick(View v) {
-            if (state == newState && isOpen) {
+            if (state == newState && mX == mWidth) {
                 setState(state, false);
             } else {
                 setState(newState, true);
@@ -242,12 +242,9 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
             }
         }
 
-        if (newOpen != isOpen) {
-            animateXTo(newOpen ? mWidth : 0);
-        }
+        animateXTo(newOpen ? mWidth : 0);
 
         state = newState;
-        this.isOpen = newOpen;
     }
 
     private static MainViewCompanion sMainCompanion;
@@ -259,6 +256,44 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
         }
 
         return sMainCompanion;
+    }
+
+    public int getMinDrawerWidth() {
+        return Utils.dpToPx(50);
+    }
+
+    public int getMaxDrawerWidth() {
+        return (int) (0.4 * mViewManager.getWidth());
+    }
+
+    public void setDrawerWidth(int width) {
+        mWidth = width;
+        Settings.set(Settings.DRAWER_WIDTH, width);
+
+        mAnimator.cancel();
+        mParams.w = width;
+        mViewManager.updateView(mainView, mParams);
+        setX(mWidth);
+    }
+
+    public int getDrawerWidth() {
+        return mWidth;
+    }
+
+    public int getButtonWidth() {
+        return mButtonWidth;
+    }
+
+    public void setButtonWidth(int width) {
+        Settings.set(Settings.BUTTON_WIDTH, width);
+        mButtonWidth = width;
+        int wMeasureSpec = View.MeasureSpec.makeMeasureSpec(mButtonWidth, View.MeasureSpec.EXACTLY);
+        int hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        handlesView.measure(wMeasureSpec, hMeasureSpec);
+
+        handlesView.getParams().w = handlesView.getMeasuredWidth();
+        handlesView.getParams().h = handlesView.getMeasuredHeight();
+        handlesView.update();
     }
 
     public MainViewCompanion(View v) {
@@ -278,7 +313,10 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
         opponentView = v.findViewById(R.id.opponentView);
         shadow = v.findViewById(R.id.shadow);
 
-        mWidth = (int) (0.33 * 0.5 * mViewManager.getWidth());
+        mWidth = Settings.get(Settings.DRAWER_WIDTH, 0);
+        if (mWidth < getMinDrawerWidth() || mWidth >= getMaxDrawerWidth()) {
+            mWidth = (int) (0.33 * 0.5 * mViewManager.getWidth());
+        }
         mX = 0;
         mPadding = Utils.dpToPx(5);
 
@@ -293,8 +331,16 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
 
         handlesView = (HandlesView) LayoutInflater.from(v.getContext()).inflate(R.layout.handles_view, null);
         handlesView.setListener(mHandlesViewTouchListener);
-        int wMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-        handlesView.measure(wMeasureSpec, wMeasureSpec);
+
+        mButtonWidth = Settings.get(Settings.BUTTON_WIDTH, 0);
+        if (mButtonWidth < getMinButtonWidth() || mButtonWidth >= getMaxButtonWidth()) {
+            int dp = Utils.is7InchesOrHigher() ? 50 : 30;
+            mButtonWidth = Utils.dpToPx(dp);
+        }
+
+        int wMeasureSpec = View.MeasureSpec.makeMeasureSpec(mButtonWidth, View.MeasureSpec.EXACTLY);
+        int hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        handlesView.measure(wMeasureSpec, hMeasureSpec);
         handlesView.getParams().w = handlesView.getMeasuredWidth();
         handlesView.getParams().h = handlesView.getMeasuredHeight();
         handlesView.getParams().x = mPadding;
@@ -304,6 +350,14 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
         setState(STATE_PLAYER, false);
 
         setAlphaSetting(getAlphaSetting());
+    }
+
+    public int getMaxButtonWidth() {
+        return Utils.dpToPx(75);
+    }
+
+    public int getMinButtonWidth() {
+        return Utils.dpToPx(20);
     }
 
     public void show(boolean show) {

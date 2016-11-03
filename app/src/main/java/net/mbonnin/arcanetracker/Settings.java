@@ -14,6 +14,8 @@ public class Settings {
     public static final String AUTO_SELECT_DECK = "AUTO_SELECT_DECK";
     public static final String AUTO_ADD_CARDS = "AUTO_ADD_CARDS";
     public static final String AUTO_QUIT = "AUTO_QUIT";
+    public static final String DRAWER_WIDTH = "DRAWER_WIDTH";
+    public static final String BUTTON_WIDTH = "BUTTON_WIDTH";
 
     private static SharedPreferences getPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(ArcaneTrackerApplication.getContext());
