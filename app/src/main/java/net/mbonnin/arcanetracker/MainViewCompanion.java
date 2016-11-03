@@ -4,18 +4,14 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.support.v7.view.menu.MenuWrapperFactory;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
 import timber.log.Timber;
-
-import static android.view.View.GONE;
 
 public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener {
     private static DeckCompanion sOpponentCompanion;
@@ -201,6 +197,10 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
 
     }
 
+    public View getMainView() {
+        return mainView;
+    }
+
     class ClickListener implements View.OnClickListener {
         private final int newState;
 
@@ -306,9 +306,13 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
         setAlphaSetting(getAlphaSetting());
     }
 
-    public void show() {
-        mViewManager.addView(mainView, mParams);
-        handlesView.show();
+    public void show(boolean show) {
+        if (show) {
+            mViewManager.addView(mainView, mParams);
+        } else {
+            mViewManager.removeView(mainView);
+        }
+        handlesView.show(show);
     }
 
     private void configureHandles(View v) {

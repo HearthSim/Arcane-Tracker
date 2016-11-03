@@ -9,8 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
-import timber.log.Timber;
-
 /**
  * Created by martin on 10/14/16.
  */
@@ -37,14 +35,19 @@ public class MainService extends Service {
         Utils.logWithDate("MainService.onCreate()");
 
         MainViewCompanion.get().setState(MainViewCompanion.STATE_PLAYER, false);
-        MainViewCompanion.get().show();
+        MainViewCompanion.get().show(true);
+        QuitDetector.get().start();
 
         Intent intent = StopServiceBroadcastReceiver.getIntent();
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        Intent intent2 = new Intent(ArcaneTrackerApplication.getContext(), SettingsActivity.class);
+        PendingIntent settingsPendingIntent = PendingIntent.getActivity(this, 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT);
+
         Notification notification = new NotificationCompat.Builder(this)
                 .setContentText(getString(R.string.arcane_tracker_running))
                 .addAction(R.drawable.ic_close_black_24dp, "QUIT", stopPendingIntent)
+                .addAction(R.drawable.ic_settings_black_24dp, "Settings", settingsPendingIntent)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .build();
 
@@ -56,12 +59,15 @@ public class MainService extends Service {
     public void onDestroy() {
         super.onDestroy();
 
+        QuitDetector.get().stop();
         Utils.logWithDate("MainService.onDestroy()");
 
         stopForeground(true);
         ViewManager.get().removeAllViews();
 
         Toast.makeText(this, "Bye bye", Toast.LENGTH_LONG).show();
+
+        System.exit(1);
     }
 }
 

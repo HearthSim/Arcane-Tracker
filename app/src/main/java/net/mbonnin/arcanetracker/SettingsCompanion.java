@@ -247,6 +247,12 @@ public class SettingsCompanion {
         seekBar.setProgress(MainViewCompanion.get().getAlphaSetting());
         seekBar.setOnSeekBarChangeListener(mSeekBarChangeListener);
 
+        CheckBox autoQuit = (CheckBox) view.findViewById(R.id.autoQuit);
+        autoQuit.setChecked(Settings.get(Settings.AUTO_QUIT, true));
+        autoQuit.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Settings.set(Settings.AUTO_QUIT, isChecked);
+        });
+
         CheckBox autoSelectDeck = (CheckBox) view.findViewById(R.id.autoSelectDeck);
         autoSelectDeck.setChecked(Settings.get(Settings.AUTO_SELECT_DECK, true));
         autoSelectDeck.setOnCheckedChangeListener((buttonView, isChecked) -> {

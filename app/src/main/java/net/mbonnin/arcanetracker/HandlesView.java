@@ -26,8 +26,12 @@ public class HandlesView extends LinearLayout {
         mParams = new ViewManager.Params();
     }
 
-    public void show() {
-        ViewManager.get().addView(this, mParams);
+    public void show(boolean show) {
+        if (show) {
+            ViewManager.get().addView(this, mParams);
+        } else {
+            ViewManager.get().removeView(this);
+        }
     }
 
     @Override
