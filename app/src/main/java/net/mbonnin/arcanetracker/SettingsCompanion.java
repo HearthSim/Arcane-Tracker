@@ -162,6 +162,7 @@ public class SettingsCompanion {
             ArcaneTrackerApplication.getContext().startActivity(i);
         }
     };
+    private View retrievePassword;
 
 
     private void updateTrackobot(View view) {
@@ -172,6 +173,7 @@ public class SettingsCompanion {
         usernameEditText = (EditText) view.findViewById(R.id.username);
         signinProgressBar = (ProgressBar) view.findViewById(R.id.signinProgressBar);
         signupProgressBar = (ProgressBar) view.findViewById(R.id.signupProgressBar);
+        retrievePassword = view.findViewById(R.id.retrievePassword);
 
         User user = Trackobot.get().getUser();
         if (user == null) {
@@ -186,6 +188,8 @@ public class SettingsCompanion {
 
             signupButton.setText("Create new account");
             signupButton.setOnClickListener(mSignupButtonClicked);
+
+            retrievePassword.setVisibility(VISIBLE);
 
         } else {
             trackobotText.setVisibility(GONE);
@@ -213,6 +217,9 @@ public class SettingsCompanion {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(mOneTimeAuthObserver);
             });
+
+            retrievePassword.setVisibility(GONE);
+
         }
     }
 
