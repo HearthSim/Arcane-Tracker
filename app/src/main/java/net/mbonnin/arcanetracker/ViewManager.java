@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.WindowManager;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by martin on 10/21/16.
@@ -45,6 +46,17 @@ public class ViewManager {
         params.h = view.getMeasuredHeight();
 
         addModalAndFocusableView(view, params);
+    }
+
+    public void removeAllViewsExcept(View view) {
+        Iterator<View> it = mViews.iterator();
+        while (it.hasNext()) {
+            View view2 = it.next();
+            if (view != view2) {
+                it.remove();
+                mWindowManager.removeView(view2);
+            }
+        }
     }
 
     static class Params {
