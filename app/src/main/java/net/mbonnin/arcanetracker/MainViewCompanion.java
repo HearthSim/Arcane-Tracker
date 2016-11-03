@@ -201,6 +201,14 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
         return mainView;
     }
 
+    public void setOpen(boolean open) {
+        setX(open ? mWidth:0);
+    }
+
+    public boolean isOpen() {
+        return mX != 0;
+    }
+
     class ClickListener implements View.OnClickListener {
         private final int newState;
 

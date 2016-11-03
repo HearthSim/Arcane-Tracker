@@ -12,9 +12,12 @@ import timber.log.Timber;
 public class QuitDetector {
     private Handler mHandler;
     private int[] mPosition = new int[2];
-    public StopServiceRunnable mStopServiceRunnable;
-    View mView;
-    ViewManager.Params mParams;
+
+    private static int STATE_NOTHING = 0;
+    private static int STATE_WAS_OPEN = 1;
+    private static int STATE_WAS_CLOSED = 2;
+
+    private int state = STATE_NOTHING;
 
     static QuitDetector sQuitDetector;
 
@@ -29,61 +32,37 @@ public class QuitDetector {
 
         @Override
         public void run() {
-            mView.getLocationOnScreen(mPosition);
 
-            Timber.i("mView %d - %d", mPosition[1], mView.getHeight());
-            int[] p = new int[2];
-            MainViewCompanion.get().getMainView().getLocationOnScreen(p);
-            Timber.i("MainV %d - %d", p[1], MainViewCompanion.get().getMainView().getHeight());
+            View view = MainViewCompanion.get().getMainView();
+            view.getLocationOnScreen(mPosition);
+
+            //Timber.i("view %d - %d", mPosition[1], view.getHeight());
             if (mPosition[1] != 0) {
                 if (Settings.get(Settings.AUTO_QUIT, true)) {
-                    if (mStopServiceRunnable == null) {
-                        mStopServiceRunnable = new StopServiceRunnable();
+                    if (state == STATE_NOTHING) {
                         Timber.i("Exit FullScreen detected");
-                        ViewManager.get().removeAllViews();
-
-                        //mHandler.postDelayed(mStopServiceRunnable, 10000);
+                        state = MainViewCompanion.get().isOpen() ? STATE_WAS_OPEN: STATE_WAS_CLOSED;
+                        MainViewCompanion.get().setOpen(false);
+                        ViewManager.get().removeAllViewsExcept(view);
                     }
                 }
             } else {
-                if (mStopServiceRunnable != null) {
+                if (state != STATE_NOTHING) {
                     Timber.i("Back to FullScreen");
+                    MainViewCompanion.get().setOpen(state == STATE_WAS_OPEN);
                     MainViewCompanion.get().show(true);
-                    mHandler.removeCallbacks(mStopServiceRunnable);
-                    mStopServiceRunnable = null;
+                    state = STATE_NOTHING;
                 }
             }
             mHandler.postDelayed(this, 1000);
         }
     };
 
-    private class StopServiceRunnable implements Runnable {
-        @Override
-        public void run() {
-            Timber.i("Out of fullscreen for some time, stop service");
-            MainService.stop();
-            mHandler.removeCallbacks(mCheckFullScreenRunnable);
-            mStopServiceRunnable = null;
-        }
-    }
-
-
     public void start() {
-        mParams = new ViewManager.Params();
-        mParams.w = 1;
-        mParams.h = ViewManager.get().getHeight();
-        mView = new View(ArcaneTrackerApplication.getContext());
-        ViewManager.get().addView(mView, mParams);
-
         mHandler.postDelayed(mCheckFullScreenRunnable, 4000);
     }
 
     public void stop() {
-        if (mStopServiceRunnable != null) {
-            mHandler.removeCallbacks(mStopServiceRunnable);
-            mStopServiceRunnable = null;
-        }
-
         mHandler.removeCallbacks(mCheckFullScreenRunnable);
     }
 
