@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Environment;
+import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -243,7 +244,7 @@ public class SettingsCompanion {
             emailIntent.putExtra(Intent.EXTRA_TEXT, "Please describe your problem here");
 
             FileTree.get().sync();
-            Uri uri = Uri.fromFile(FileTree.get().getFile());
+            Uri uri = FileProvider.getUriForFile(view.getContext(), "net.mbonnin.arcanetracker.fileprovider", FileTree.get().getFile());
             emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
 
             ArcaneTrackerApplication.getContext().startActivity(emailIntent);
