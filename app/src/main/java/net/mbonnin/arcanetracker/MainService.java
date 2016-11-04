@@ -9,6 +9,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
+import com.google.firebase.crash.FirebaseCrash;
+
+import java.io.File;
+
+import static net.mbonnin.arcanetracker.MainActivity.HEARTHSTONE_FILES_DIR;
+
 /**
  * Created by martin on 10/14/16.
  */
@@ -37,6 +43,12 @@ public class MainService extends Service {
         MainViewCompanion.get().setState(MainViewCompanion.STATE_PLAYER, false);
         MainViewCompanion.get().show(true);
         QuitDetector.get().start();
+
+        File file = new File(HEARTHSTONE_FILES_DIR);
+        if (!file.exists()) {
+            FirebaseCrash.report(new Exception("cannot find Hearthstone dir"));
+            Toast.makeText(this, "could not locate Hearthstone installation directory :-(", Toast.LENGTH_LONG).show();
+        }
 
         Intent intent = StopServiceBroadcastReceiver.getIntent();
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
