@@ -12,17 +12,13 @@ import java.io.OutputStream;
 
 import timber.log.Timber;
 
-/**
- * Created by martin on 11/1/16.
- */
-
 public class FileTree extends Timber.Tree {
     private static FileTree sTree;
-    File mFile;
-    BufferedWriter mWriter = null;
+    private File mFile;
+    private BufferedWriter mWriter = null;
 
     public FileTree(Context context) {
-        mFile = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "ArcaneTracker.log");
+        mFile = new File(context.getExternalFilesDir(null), "ArcaneTracker.log");
 
         if (mFile.length() >= 5*1024*1024) {
             /**
