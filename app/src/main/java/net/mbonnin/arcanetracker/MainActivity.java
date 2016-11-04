@@ -158,9 +158,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Snackbar.make(contentView, getString(R.string.cannot_launch), Snackbar.LENGTH_LONG).show();
             FirebaseCrash.report(new Exception("no intent to launch game"));
-            Intent serviceIntent = new Intent();
-            serviceIntent.setClass(this, MainService.class);
-            startService(serviceIntent);
         }
     }
 }
