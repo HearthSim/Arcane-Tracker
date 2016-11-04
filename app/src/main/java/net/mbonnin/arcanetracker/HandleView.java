@@ -142,10 +142,8 @@ public class HandleView extends View {
             mPressed = false;
             invalidate();
             if (!hasMoved) {
-                if (Math.hypot(mLastX, mLastY) < mTouchSlop) {
-                    performClick();
-                    return true;
-                }
+                performClick();
+                return true;
             }
         } else if (event.getActionMasked() == MotionEvent.ACTION_CANCEL) {
             mPressed = false;

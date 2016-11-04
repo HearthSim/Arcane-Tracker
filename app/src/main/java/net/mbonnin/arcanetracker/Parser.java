@@ -1,11 +1,16 @@
 package net.mbonnin.arcanetracker;
 
+import com.google.firebase.crash.FirebaseCrash;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import timber.log.Timber;
+
+import static net.mbonnin.arcanetracker.MainActivity.HEARTHSTONE_FILES_DIR;
 
 /**
  * Created by martin on 10/27/16.
