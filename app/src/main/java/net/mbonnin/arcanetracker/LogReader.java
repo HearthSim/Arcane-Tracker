@@ -2,6 +2,7 @@ package net.mbonnin.arcanetracker;
 
 import android.os.Handler;
 
+import com.esotericsoftware.kryo.util.Util;
 import com.google.firebase.crash.FirebaseCrash;
 
 import java.io.BufferedReader;
@@ -69,7 +70,7 @@ public class LogReader implements Runnable {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e1) {
-                    e1.printStackTrace();
+                    Timber.e(e1);
                 }
                 continue;
             }
@@ -85,7 +86,7 @@ public class LogReader implements Runnable {
                     try {
                         line = br.readLine();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        Timber.e(e);
                     }
                     if (line == null) {
                         break;
@@ -100,19 +101,18 @@ public class LogReader implements Runnable {
                     /**
                      * somehow someone truncated the file... do what we can
                      */
-                    String w = String.format("truncated file ? (%s)", mLog);
-                    Timber.e(w);
-                    FirebaseCrash.report(new Exception(w));
+                    String w = String.format("truncated file ? (%s) [%d -> %d]", mLog, size, lastSize);
+                    Utils.reportNonFatal(new Exception(w));
                     break;
                 }
                 try {
                     line = br.readLine();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Timber.e(e);
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e1) {
-                        e1.printStackTrace();
+                        Timber.e(e1);
                     }
                     Timber.e("cannot read log file file" + file);
                     break;
@@ -122,7 +122,7 @@ public class LogReader implements Runnable {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        Timber.e(e);
                     }
                 } else {
                     String finalLine = line;
@@ -133,7 +133,7 @@ public class LogReader implements Runnable {
             try {
                 br.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                Timber.e(e);
             }
         }
     }

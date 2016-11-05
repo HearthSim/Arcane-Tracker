@@ -12,6 +12,8 @@ import android.view.Display;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -71,6 +73,11 @@ public class Utils {
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
 
         Timber.w(df.format(c.getTime()) + s);
+    }
+
+    public static void reportNonFatal(Throwable e) {
+        Timber.w(e);
+        FirebaseCrash.report(e);
     }
 
     public static class DummyObserver<T> extends rx.Subscriber<T> {

@@ -46,7 +46,7 @@ public class MainService extends Service {
 
         File file = new File(HEARTHSTONE_FILES_DIR);
         if (!file.exists()) {
-            FirebaseCrash.report(new Exception("cannot find Hearthstone dir"));
+            Utils.reportNonFatal(new Exception("cannot find Hearthstone dir"));
             Toast.makeText(this, "could not locate Hearthstone installation directory :-(", Toast.LENGTH_LONG).show();
         }
 

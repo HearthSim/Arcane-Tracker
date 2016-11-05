@@ -25,6 +25,7 @@ import java.io.File;
 
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -150,7 +151,7 @@ public class SettingsCompanion {
             Toast.makeText(ArcaneTrackerApplication.getContext(), "Could not get profile link, please try again", Toast.LENGTH_LONG).show();
             signupButton.setVisibility(VISIBLE);
             signupProgressBar.setVisibility(GONE);
-            e.printStackTrace();
+            Timber.e(e);
         }
 
         @Override

@@ -110,7 +110,7 @@ public class ArcaneTrackerApplication extends Application {
                     try {
                         response = new OkHttpClient().newCall(request).execute();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        Timber.e(e);
                         return null;
                     }
                     if (response == null || !response.isSuccessful()) {
@@ -119,7 +119,7 @@ public class ArcaneTrackerApplication extends Application {
                         try {
                             return new String(response.body().bytes());
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            Timber.e(e);
                         }
                     }
                     return null;
@@ -162,6 +162,9 @@ public class ArcaneTrackerApplication extends Application {
     }
 
     public static ArrayList<Card> getCards() {
+        if (sCardList == null) {
+            return new ArrayList<>();
+        }
         return sCardList;
     }
 }
