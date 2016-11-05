@@ -115,6 +115,7 @@ public class LogReader implements Runnable {
                         Timber.e(e1);
                     }
                     Timber.e("cannot read log file file" + file);
+                    Utils.reportNonFatal(e);
                     break;
                 }
                 if (line == null) {
