@@ -130,9 +130,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
                 Snackbar.make(contentView, getString(R.string.cannot_locate_heathstone_install), Snackbar.LENGTH_LONG).show();
-                FirebaseCrash.report(e);
+                Utils.reportNonFatal(e);
             }
 
             if (Settings.get(Settings.CHECK_IF_RUNNING, true)) {
@@ -157,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
             Snackbar.make(contentView, getString(R.string.cannot_launch), Snackbar.LENGTH_LONG).show();
-            FirebaseCrash.report(new Exception("no intent to launch game"));
+            Utils.reportNonFatal(new Exception("no intent to launch game"));
         }
     }
 }
