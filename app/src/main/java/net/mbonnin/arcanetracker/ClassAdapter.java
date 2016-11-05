@@ -28,7 +28,7 @@ public class ClassAdapter extends RecyclerView.Adapter {
         ((TextView)view.findViewById(R.id.className)).setText(Card.classNameList[position]);
 
         view.setOnClickListener(v -> {
-            mSelectedPosition = position;
+            mSelectedPosition = holder.getAdapterPosition();
             notifyDataSetChanged();
         });
 

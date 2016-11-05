@@ -42,6 +42,10 @@ android {
         targetCompatibility 1.8
         sourceCompatibility 1.8
     }
+
+    lintOptions {
+        lintConfig file('lint.xml')
+    }
 }
 
 ext {
