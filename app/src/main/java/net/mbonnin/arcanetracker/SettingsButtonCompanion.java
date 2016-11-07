@@ -121,7 +121,24 @@ public class SettingsButtonCompanion {
             mViewManager.addCenteredView(view2);
         });
 
+        view.findViewById(R.id.resetCounter).setOnClickListener(v2 -> {
+            mViewManager.removeView(view);
 
+
+            View view2 = LayoutInflater.from(v2.getContext()).inflate(R.layout.reset_counter_confirm_view, null);
+            view2.findViewById(R.id.resetButton).setOnClickListener(v3 -> {
+                mViewManager.removeView(view2);
+                Deck deck = MainViewCompanion.getPlayerCompanion().getDeck();
+                deck.wins = 0;
+                deck.losses = 0;
+                MainViewCompanion.getPlayerCompanion().setDeck(deck);
+            });
+            view2.findViewById(R.id.cancelButton).setOnClickListener(v3 -> {
+                mViewManager.removeView(view2);
+            });
+
+            mViewManager.addCenteredView(view2);
+        });
 
         ViewManager.Params params = new ViewManager.Params();
         params.x = a[0] + v.getWidth() - view.getMeasuredWidth();
