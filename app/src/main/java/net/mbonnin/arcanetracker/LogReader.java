@@ -101,7 +101,7 @@ public class LogReader implements Runnable {
                     /**
                      * somehow someone truncated the file... do what we can
                      */
-                    String w = String.format("truncated file ? (%s) [%d -> %d]", mLog, size, lastSize);
+                    String w = String.format("truncated file ? (%s) [%d -> %d]", mLog, lastSize, size );
                     Utils.reportNonFatal(new Exception(w));
                     break;
                 }
