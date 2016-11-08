@@ -46,10 +46,10 @@ public class DeckList {
         return sList;
     }
 
-    static void save() {
+    public static void save() {
         Paper.book().write(KEY_LIST, sList);
     }
-    static void saveArena() {
+    public static void saveArena() {
         Paper.book().write(KEY_ARENA_DECK, getArenaDeck());
     }
 

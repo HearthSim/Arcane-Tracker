@@ -95,6 +95,8 @@ public class Deck {
     }
 
     public void clear() {
+        wins = 0;
+        losses = 0;
         cards.clear();
         if (mListenerRef != null) {
             Listener listener = mListenerRef.get();
