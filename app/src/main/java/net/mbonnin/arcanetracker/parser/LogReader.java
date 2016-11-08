@@ -1,9 +1,10 @@
-package net.mbonnin.arcanetracker;
+package net.mbonnin.arcanetracker.parser;
 
 import android.os.Handler;
 
-import com.esotericsoftware.kryo.util.Util;
-import com.google.firebase.crash.FirebaseCrash;
+
+import net.mbonnin.arcanetracker.MainActivity;
+import net.mbonnin.arcanetracker.Utils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,10 +13,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import timber.log.Timber;
 
@@ -24,7 +21,6 @@ import timber.log.Timber;
  */
 
 public class LogReader implements Runnable {
-    private final InputStream mDebugInputStream = null;
     private final String mLog;
     private final Handler mHandler;
     private final boolean mReadPreviousData;
@@ -51,7 +47,7 @@ public class LogReader implements Runnable {
 
     @Override
     public void run() {
-        File file = new File(MainActivity.HEARTHSTONE_FILES_DIR + "Logs/" + mLog + ".log");
+        File file = new File(mLog);
 
         long lastSize;
         BufferedReader br;
@@ -60,11 +56,7 @@ public class LogReader implements Runnable {
              * try to open file
              */
             try {
-                if (mDebugInputStream != null) {
-                    br = new BufferedReader(new InputStreamReader(mDebugInputStream));
-                } else {
-                    br = new BufferedReader(new FileReader(file));
-                }
+                br = new BufferedReader(new FileReader(file));
             } catch (FileNotFoundException e) {
                 //e.printStackTrace();
                 try {
@@ -78,7 +70,7 @@ public class LogReader implements Runnable {
             String line = null;
             lastSize = file.length();
 
-            if (mDebugInputStream == null && !mReadPreviousData) {
+            if (!mReadPreviousData) {
                 /**
                  * consume all the previous line data
                  */
@@ -101,7 +93,7 @@ public class LogReader implements Runnable {
                     /**
                      * somehow someone truncated the file... do what we can
                      */
-                    String w = String.format("truncated file ? (%s) [%d -> %d]", mLog, lastSize, size );
+                    String w = String.format("truncated file ? (%s) [%d -> %d]", mLog, lastSize, size);
                     Utils.reportNonFatal(new Exception(w));
                     break;
                 }

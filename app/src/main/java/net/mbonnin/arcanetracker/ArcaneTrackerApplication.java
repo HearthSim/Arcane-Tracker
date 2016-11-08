@@ -11,6 +11,10 @@ import com.google.gson.reflect.TypeToken;
 import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
+import net.mbonnin.arcanetracker.parser.ArenaParser;
+import net.mbonnin.arcanetracker.parser.LoadingScreenParser;
+import net.mbonnin.arcanetracker.parser.PowerParser;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -128,7 +132,10 @@ public class ArcaneTrackerApplication extends Application {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(mCardsObserver);
 
-        Parser.get();
+
+        new ArenaParser(MainActivity.HEARTHSTONE_FILES_DIR + "Logs/Arena.log", ArenaParserListener.get());
+        new LoadingScreenParser(MainActivity.HEARTHSTONE_FILES_DIR + "Logs/LoadingScreen.log", LoadingScreenListener.get());
+        new PowerParser(MainActivity.HEARTHSTONE_FILES_DIR + "Logs/Power.log", PowerParserListener.get());
 
     }
 
