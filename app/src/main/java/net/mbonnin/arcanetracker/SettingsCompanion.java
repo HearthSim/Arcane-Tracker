@@ -231,7 +231,7 @@ public class SettingsCompanion {
         updateTrackobot(view);
 
         TextView appVersion = (TextView) view.findViewById(R.id.appVersion);
-        appVersion.setText(String.format("This is Arcane Tracker version %s%s. Thanks for your support !", BuildConfig.VERSION_NAME, Utils.isAppDebuggable() ? " (debug)":""));
+        appVersion.setText(String.format("This is Arcane Tracker version %s%s.", BuildConfig.VERSION_NAME, Utils.isAppDebuggable() ? " (debug)":""));
 
         Button feedbackButton = (Button)view.findViewById(R.id.feedBackButton);
         feedbackButton.setOnClickListener(v -> {
