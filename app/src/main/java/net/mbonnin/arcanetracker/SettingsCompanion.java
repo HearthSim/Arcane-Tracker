@@ -179,16 +179,16 @@ public class SettingsCompanion {
 
         User user = Trackobot.get().getUser();
         if (user == null) {
-            trackobotText.setText("Linking a Track-o-bot account will allow you to track your stats on https://trackobot.com");
+            trackobotText.setText(view.getContext().getString(R.string.trackobotExplanation));
             view.findViewById(R.id.or).setVisibility(VISIBLE);
 
             usernameEditText.setEnabled(true);
             passwordEditText.setEnabled(true);
 
-            signinButton.setText("Link existing account");
+            signinButton.setText(view.getContext().getString(R.string.linkAccount));
             signinButton.setOnClickListener(mSigninButtonClicked);
 
-            signupButton.setText("Create new account");
+            signupButton.setText(view.getContext().getString(R.string.createAccount));
             signupButton.setOnClickListener(mSignupButtonClicked);
 
             retrievePassword.setVisibility(VISIBLE);
@@ -202,7 +202,7 @@ public class SettingsCompanion {
             usernameEditText.setEnabled(false);
             passwordEditText.setEnabled(false);
 
-            signinButton.setText("Unlink account");
+            signinButton.setText(view.getContext().getString(R.string.unlinkAccount));
             signinButton.setOnClickListener(v -> {
                 Trackobot.get().setUser(null);
                 usernameEditText.setText("");
@@ -210,7 +210,7 @@ public class SettingsCompanion {
                 updateTrackobot(settingsView);
             });
 
-            signupButton.setText("Open profile (external browser)");
+            signupButton.setText(view.getContext().getString(R.string.openInBrowser));
             signupButton.setOnClickListener(v -> {
                 signupProgressBar.setVisibility(VISIBLE);
                 signupButton.setVisibility(GONE);
@@ -231,7 +231,7 @@ public class SettingsCompanion {
         updateTrackobot(view);
 
         TextView appVersion = (TextView) view.findViewById(R.id.appVersion);
-        appVersion.setText(String.format("This is Arcane Tracker version %s%s.", BuildConfig.VERSION_NAME, Utils.isAppDebuggable() ? " (debug)":""));
+        appVersion.setText(view.getContext().getString(R.string.thisIsArcaneTracker, BuildConfig.VERSION_NAME, Utils.isAppDebuggable() ? " (debug)":""));
 
         Button feedbackButton = (Button)view.findViewById(R.id.feedBackButton);
         feedbackButton.setOnClickListener(v -> {
@@ -242,7 +242,7 @@ public class SettingsCompanion {
             emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@arcanetracker.com"});
             emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Arcane Tracker Feedback");
-            emailIntent.putExtra(Intent.EXTRA_TEXT, "Please describe your problem here");
+            emailIntent.putExtra(Intent.EXTRA_TEXT, view.getContext().getString(R.string.decribeYourProblem));
 
             FileTree.get().sync();
             Uri uri = FileProvider.getUriForFile(view.getContext(), "net.mbonnin.arcanetracker.fileprovider", FileTree.get().getFile());

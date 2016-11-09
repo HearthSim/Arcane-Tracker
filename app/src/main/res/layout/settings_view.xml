@@ -21,16 +21,16 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginBottom="12dp"
-                android:text="Settings"
+                android:text="@string/settings"
                 android:textColor="#000"
-                android:textSize="22dp"
+                android:textSize="22sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="General"
+                android:text="@string/general"
                 android:textColor="#000"
                 android:textSize="20dp"
                 android:textStyle="bold" />
@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:text="App version"
+                android:text="@string/appVersion"
                 android:textColor="#808080" />
 
             <Button
@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:backgroundTint="@color/colorPrimary"
-                android:text="send feedback"
+                android:text="@string/sendFeedback"
                 android:textColor="#fff" />
 
 
@@ -58,9 +58,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Drawer size"
+                android:text="@string/drawerSize"
                 android:textColor="#000"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <SeekBar
@@ -72,7 +72,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Buttons size"
+                android:text="@string/buttonSize"
                 android:textColor="#000"
                 android:textSize="20dp"
                 android:textStyle="bold" />
@@ -86,7 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Overlay opacity"
+                android:text="@string/overlayOpacity"
                 android:textColor="#000"
                 android:textSize="20dp"
                 android:textStyle="bold" />
@@ -106,7 +106,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Auto hide (experimental)"
+                    android:text="@string/autoHide"
                     android:textColor="#000"
                     android:textSize="20dp"
                     android:textStyle="bold" />
@@ -122,7 +122,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:text="Try to detect when Hearthstone is not running anymore and hide the overlay automagically"
+                android:text="@string/autoQuitExplanation"
                 android:textColor="#808080" />
 
             <LinearLayout
@@ -135,7 +135,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Auto detect deck"
+                    android:text="@string/autoDetect"
                     android:textColor="#000"
                     android:textSize="20dp"
                     android:textStyle="bold" />
@@ -151,7 +151,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:text="When the game begins, try to guess the best available deck and activate it automatically. This might fail if you have several deck of the same class."
+                android:text="@string/autoDetectExplanation"
                 android:textColor="#808080" />
 
             <LinearLayout
@@ -164,9 +164,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Auto add cards"
+                    android:text="@string/autoAdd"
                     android:textColor="#000"
-                    android:textSize="20dp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <CheckBox
@@ -180,7 +180,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:text="When a deck is incomplete, add cards played to the deck automatically so you don't have to edit the deck manually."
+                android:text="@string/autoAddExplanation"
                 android:textColor="#808080" />
 
             <TextView
@@ -196,7 +196,6 @@
                 android:id="@+id/trackobotText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
                 android:textColor="#000" />
 
             <FrameLayout
@@ -225,7 +224,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="or"
+                android:text="@string/or"
                 android:textColor="#000" />
 
             <LinearLayout
@@ -235,7 +234,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Username: "
+                    android:text="@string/username"
                     android:textColor="#000" />
 
                 <EditText
@@ -255,7 +254,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Password: "
+                    android:text="@string/password"
                     android:textColor="#000" />
 
                 <EditText
@@ -297,7 +296,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
                 android:autoLink="all"
-                android:text="If you don't know your password, check https://github.com/HearthSim/arcane_tracker/issues/2 for how to retrieve it"
+                android:text="@string/retrievePassword"
                 android:textColor="#808080" />
 
 
@@ -313,7 +312,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|right"
                     android:backgroundTint="@color/colorAccent"
-                    android:text="Quit arcane tracker"
+                    android:text="@string/quitArcaneTracker"
                     android:textColor="#fff" />
             </FrameLayout>
         </LinearLayout>
