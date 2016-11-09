@@ -49,6 +49,15 @@ public class LogReader implements Runnable {
     public void run() {
         File file = new File(mLog);
 
+        /**
+         * stupid workaround...
+         */
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         long lastSize;
         BufferedReader br;
         while (!mCanceled) {

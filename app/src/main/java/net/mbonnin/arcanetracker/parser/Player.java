@@ -25,6 +25,6 @@ public class Player {
         cards.clear();
     }
 
-    public ArrayList<Listener> listeners;
+    public ArrayList<Listener> listeners = new ArrayList<>();
 
 }

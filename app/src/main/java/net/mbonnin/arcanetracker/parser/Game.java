@@ -43,10 +43,15 @@ public class Game {
     public Player getPlayer(String playerId) {
         Player player = playerMap.get(playerId);
         if (player == null) {
-            playerMap.put(playerId, new Player());
+            player = new Player();
+            playerMap.put(playerId, player);
         }
 
         return player;
+    }
+
+    public Entity getEntityUnsafe(String entityID) {
+        return entityMap.get(entityID);
     }
 
     public Entity getEntity(String entityID) {
