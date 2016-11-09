@@ -17,9 +17,8 @@ import timber.log.Timber;
 
 public class PowerParser {
     private final Listener mListener;
-    private Block mCurrentBlock;
-    private int lastSpaces;
     private LinkedList<Node> mNodeStack = new LinkedList<Node>();
+    private Node mCurrentNode;
 
     public interface Listener {
         void onNewGame(Game game);
@@ -49,8 +48,6 @@ public class PowerParser {
         boolean readPreviousData = false;
         readPreviousData = true;
         new LogReader(file, line -> parsePowerLine(line), readPreviousData);
-
-        mCurrentBlock = new Block();
     }
 
     private void parsePowerLine(String line) {
@@ -79,6 +76,7 @@ public class PowerParser {
     static class Node {
         String line;
         ArrayList<Node> children = new ArrayList<>();
+        public int depth;
     }
 
     void parsePowerTaskList(String line) {
@@ -92,66 +90,42 @@ public class PowerParser {
         if (spaces == line.length()) {
             Timber.e("empty line: " + line);
             return;
+        } else if (spaces %4 != 0) {
+            Timber.e("bad indentation: " + line);
+            return;
         }
 
         line = line.substring(spaces);
 
-        Matcher m;
+        int depth = spaces/4;
 
-        if (spaces <= 0) {
-            output(mNodeStack.getFirst());
-            mNodeStack.clear();
+        Node node = new Node();
+        node.depth = depth;
+        node.line = line;
+
+        Node parent = null;
+        while (!mNodeStack.isEmpty()) {
+            Node node2 = mNodeStack.peekLast();
+            if (depth == node2.depth + 1) {
+                parent = node2;
+                break;
+            }
+            mNodeStack.removeLast();
+        }
+        if (parent == null) {
+            outputCurrentNode();
+            mCurrentNode = node;
+        } else if (BLOCK_END.matcher(parent.line).matches()) {
+            /**
+             * BLOCK_END is a special case :-/
+             */
+            outputCurrentNode();
+            mCurrentNode = node;
+        } else {
+            parent.children.add(node);
         }
 
-        if (spaces == 0) {
-            if ((m = BLOCK_START.matcher(line)).matches()) {
-                mCurrentBlock.blockType = m.group(1);
-                mCurrentBlock.entity = m.group(2);
-                mCurrentBlock.effectCardId = m.group(3);
-                mCurrentBlock.effectIndex = m.group(4);
-                mCurrentBlock.target = m.group(5);
-            } else if ((m = BLOCK_END.matcher(line)).matches()) {
-                mCurrentBlock.blockType = null;
-            } else {
-                Timber.e("unknown block: " + line);
-            }
-        } else if (spaces >= 4) {
-            Node parent;
-
-            if (mNodeStack.isEmpty()) {
-                parent = null;
-            } else {
-                parent = mNodeStack.peekLast();
-            }
-
-            Node node = new Node();
-            node.line = line;
-
-            int diff = (spaces - lastSpaces) / 4;
-            if (diff > 0) {
-                if (diff != 1) {
-                    Timber.e("bad nesting: " + line);
-                    return;
-                }
-                if (parent != null) {
-                    parent.children.add(node);
-                }
-                mNodeStack.addLast(node);
-            } else {
-                while (diff <= 0) {
-                    diff++;
-                    if (!mNodeStack.isEmpty()) {
-                        parent = mNodeStack.removeLast();
-                    } else {
-                        Timber.e("bad nesting: " + line);
-                        return;
-                    }
-                }
-                parent.children.add(node);
-                mNodeStack.addLast(node);
-            }
-        }
-        lastSpaces = spaces;
+        mNodeStack.add(node);
     }
 
 
@@ -237,7 +211,7 @@ public class PowerParser {
             return "1";
         } else {
             // this must be a battleTag
-            Entity entity = mCurrentGame.getEntity(name);
+            Entity entity = mCurrentGame.getEntityUnsafe(name);
             if (entity == null) {
                 Timber.w("Adding battleTag " + name);
                 mCurrentGame.battleTags.add(name);
@@ -280,7 +254,7 @@ public class PowerParser {
         player1.isOpponent = knownCardsInHand < 3;
         player1.hasCoin = totalCardsInHand > 4;
 
-        Player player2 = mCurrentGame.getPlayer("1");
+        Player player2 = mCurrentGame.getPlayer("2");
         player2.isOpponent = !player1.isOpponent;
         player2.hasCoin = !player1.hasCoin;
 
@@ -311,9 +285,47 @@ public class PowerParser {
         mCurrentGame.player = player1.isOpponent ? player2:player1;
         mCurrentGame.opponent = player1.isOpponent ? player1:player2;
     }
-    private void output(Node node) {
+
+    private void outputCurrentNode() {
+        if (mCurrentNode == null) {
+            return;
+        }
+
+        Node node = mCurrentNode;
+        mCurrentNode = null;
+        mNodeStack.clear();
+
         String line = node.line;
 
+        Matcher m;
+
+        if (node.depth == 0) {
+            if ((m = BLOCK_START.matcher(line)).matches()) {
+                Block block = new Block();
+                block.blockType = m.group(1);
+                block.entity = m.group(2);
+                block.effectCardId = m.group(3);
+                block.effectIndex = m.group(4);
+                block.target = m.group(5);
+
+                for (Node child: node.children) {
+                    outputAction(block, child);
+                }
+            } else if ((m = BLOCK_END.matcher(line)).matches()) {
+            } else {
+                Timber.e("unknown block: " + line);
+            }
+
+            return;
+        } else if (node.depth == 1) {
+            outputAction(null, node);
+        } else {
+            Timber.e("ignore block" + line);
+        }
+    }
+
+    private void outputAction(Block block, Node node) {
+        String line = node.line;
         Matcher m;
 
         if (line.startsWith("CREATE_GAME")) {
@@ -353,7 +365,7 @@ public class PowerParser {
             String key = m.group(2);
             String value = m.group(3);
 
-            if (key != null && !"".equals(key)) {
+            if (!TextUtils.isEmpty(key)) {
                 mCurrentGame.getEntity(entityId).tags.put(key, value);
 
                 if (entityId.equals("1") && "STEP".equals(key)) {
@@ -367,7 +379,7 @@ public class PowerParser {
             }
         } else if ((m = FULL_ENTITY.matcher(line)).matches()) {
             CardEntity entity = new CardEntity();
-            entity.EntityID = m.group(1);
+            entity.EntityID = lookupEntityId(m.group(1));
             entity.CardID = m.group(2);
             entity.tags.putAll(getTags(node));
 

@@ -6,4 +6,9 @@ package net.mbonnin.arcanetracker.parser;
 
 public class CardEntity extends Entity {
     public String CardID;
+
+    @Override
+    public String toString() {
+        return "CardEntity [id=" + EntityID + "][CardID=" + CardID + "]";
+    }
 }
