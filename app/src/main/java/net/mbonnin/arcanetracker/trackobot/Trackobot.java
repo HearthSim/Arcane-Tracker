@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
 import net.mbonnin.arcanetracker.Card;
+import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Utils;
 
 import java.io.IOException;
@@ -76,16 +77,17 @@ public class Trackobot {
         @Override
         public void onError(Throwable e) {
             String message;
+            Context context = ArcaneTrackerApplication.getContext();
             if (e instanceof HttpException) {
-                message = "Track-o-bot HTTP error: " + ((HttpException) e).code();
+                message = context.getString(R.string.trackobotHttpError, ((HttpException) e).code());
             } else if (e instanceof SocketTimeoutException) {
-                message = "Timeout when connecting to Track-o-bot";
+                message = context.getString(R.string.trackobotTimeout);
             } else if (e instanceof ConnectException) {
-                message = "Could not connect to Track-o-bot";
+                message = context.getString(R.string.trackobotConnectError);
             } else if (e instanceof IOException) {
-                message = "Network error while uploading to Track-o-bot";
+                message = context.getString(R.string.trackobotNetworkError);
             } else {
-                message = "Could not upload to Track-o-bot :-(";
+                message = context.getString(R.string.trackobotError);
             }
             Toast.makeText(ArcaneTrackerApplication.getContext(), message, Toast.LENGTH_LONG).show();
             Utils.reportNonFatal(e);
@@ -93,7 +95,8 @@ public class Trackobot {
 
         @Override
         public void onNext(ResultData resultData) {
-            Toast.makeText(ArcaneTrackerApplication.getContext(), "Game uploaded to Track-o-bot", Toast.LENGTH_LONG).show();
+            Context context = ArcaneTrackerApplication.getContext();
+            Toast.makeText(ArcaneTrackerApplication.getContext(), context.getString(R.string.trackobotSuccess), Toast.LENGTH_LONG).show();
         }
     }
 

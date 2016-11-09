@@ -19,7 +19,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:text="Deck name: "
+                android:text="@string/deckName"
                 android:textColor="#000" />
 
             <EditText
@@ -41,7 +41,7 @@
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/textViewContainer"
             android:background="@null"
-            android:text="cancel"
+            android:text="@string/cancel"
             android:textColor="@color/colorPrimary" />
 
         <Button
@@ -52,7 +52,7 @@
             android:layout_alignParentRight="true"
             android:layout_below="@+id/textViewContainer"
             android:backgroundTint="@color/colorPrimary"
-            android:text="rename"
+            android:text="@string/rename"
             android:textColor="#fff" />
     </RelativeLayout>
 

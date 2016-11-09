@@ -12,7 +12,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
         android:background="@null"
-        android:text="GOT IT"
+        android:text="@string/gotIt"
         android:textColor="#fff" />
 
     <Button
@@ -23,7 +23,7 @@
         android:layout_marginBottom="20dp"
         android:layout_marginRight="20dp"
         android:background="@null"
-        android:text="next ▶"
+        android:text="@string/next"
         android:textColor="#fff" />
 
     <LinearLayout
@@ -42,7 +42,7 @@
         <TextView
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="Click here to see your opponent's deck." />
+            android:text="@string/clickOpponent" />
     </LinearLayout>
 
     <LinearLayout
@@ -61,7 +61,7 @@
         <TextView
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="Click here to see your deck." />
+            android:text="@string/clickPlayer" />
     </LinearLayout>
 
 </FrameLayout>
