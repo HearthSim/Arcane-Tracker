@@ -13,6 +13,9 @@ import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
 import net.mbonnin.arcanetracker.Card;
 import net.mbonnin.arcanetracker.Utils;
 
+import java.io.IOException;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 import io.paperdb.Paper;
@@ -21,6 +24,7 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.HttpException;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observer;
@@ -71,7 +75,19 @@ public class Trackobot {
 
         @Override
         public void onError(Throwable e) {
-            Toast.makeText(ArcaneTrackerApplication.getContext(), "Could not upload to Track-o-bot :-(", Toast.LENGTH_LONG).show();
+            String message;
+            if (e instanceof HttpException) {
+                message = "Track-o-bot HTTP error: " + ((HttpException) e).code();
+            } else if (e instanceof SocketTimeoutException) {
+                message = "Timeout when connecting to Track-o-bot";
+            } else if (e instanceof ConnectException) {
+                message = "Could not connect to Track-o-bot";
+            } else if (e instanceof IOException) {
+                message = "Network error while uploading to Track-o-bot";
+            } else {
+                message = "Could not upload to Track-o-bot :-(";
+            }
+            Toast.makeText(ArcaneTrackerApplication.getContext(), message, Toast.LENGTH_LONG).show();
             Utils.reportNonFatal(e);
         }
 
