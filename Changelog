@@ -1,0 +1,13 @@
+1.08
+• fixed a case when detection was not working properly
+
+1.07
+• hotfix for API levels < 19
+
+1.06
+• added settings to change the size of the drawer/buttons
+• fix the 7+ filtering bug
+• added settings to auto-hide the overlay when outside hearthstone
+• fixed the hero considered as a card in arena
+• fix a bug when buttons could become unresponsive
+
