@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Arcane Tracker</string>
+    <string name="app_name" translatable="false">Arcane Tracker</string>
     <string name="welcome">Welcome to Arcane Tracker !</string>
     <string name="explanation1">Arcane tracker will now start Hearthstone and monitor the cards you and your opponent play in the background.</string>
     <string name="explanation2">The overlay will show what has been played as well as the cards remaining in your deck on top of the Game.</string>
