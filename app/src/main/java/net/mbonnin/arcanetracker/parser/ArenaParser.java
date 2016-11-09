@@ -40,7 +40,7 @@ public class ArenaParser {
     }
 
     private void parseArena(String line) {
-        Timber.d("Arena" + line);
+        Timber.v(line);
 
         Matcher matcher = DraftManager$OnBegin.matcher(line);
         if (matcher.matches()) {

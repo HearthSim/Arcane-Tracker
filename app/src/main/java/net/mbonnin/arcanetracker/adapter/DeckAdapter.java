@@ -1,14 +1,20 @@
-package net.mbonnin.arcanetracker;
+package net.mbonnin.arcanetracker.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
+import net.mbonnin.arcanetracker.Card;
+import net.mbonnin.arcanetracker.Deck;
+import net.mbonnin.arcanetracker.R;
+import net.mbonnin.arcanetracker.Utils;
+import net.mbonnin.arcanetracker.parser.Player;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,19 +33,19 @@ public class DeckAdapter extends RecyclerView.Adapter implements Deck.Listener {
     ArrayList<Object> list = new ArrayList<>();
     protected Deck mDeck;
 
-    ArrayList<DeckEntry> entryList = new ArrayList<>();
+    ArrayList<BarItem> entryList = new ArrayList<>();
 
     @Override
     public void onDeckChanged() {
         entryList.clear();
         for (Map.Entry<String, Integer> entry: mDeck.cards.entrySet()) {
-            DeckEntry deckEntry = new DeckEntry();
+            BarItem deckEntry = new BarItem();
             deckEntry.card = ArcaneTrackerApplication.getCard(entry.getKey());
-            deckEntry.inDeck = entry.getValue();
+            deckEntry.count = entry.getValue();
             entryList.add(deckEntry);
         }
 
-        for (DeckEntry e:entryList) {
+        for (BarItem e:entryList) {
             if (e.card.cost == null) {
                 Timber.e(new Exception("bad card " + e.card.id));
                 e.card.cost = 0;
@@ -62,9 +68,9 @@ public class DeckAdapter extends RecyclerView.Adapter implements Deck.Listener {
         notifyDataSetChanged();
     }
 
-    public static class DeckEntry {
-        public Card card;
-        int inDeck;
+    public void setList(ArrayList list) {
+        this.list = list;
+        notifyDataSetChanged();
     }
 
     static class BarViewHolder extends RecyclerView.ViewHolder {
@@ -114,7 +120,7 @@ public class DeckAdapter extends RecyclerView.Adapter implements Deck.Listener {
     @Override
     public int getItemViewType(int position) {
         Object o = list.get(position);
-        if (o instanceof DeckEntry) {
+        if (o instanceof BarItem) {
             return TYPE_DECK_ENTRY;
         } else if (o instanceof String) {
             return TYPE_STRING;
@@ -156,9 +162,9 @@ public class DeckAdapter extends RecyclerView.Adapter implements Deck.Listener {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         Object o = list.get(position);
-        if (o instanceof DeckEntry) {
-            DeckEntry entry = (DeckEntry) o;
-            ((BarViewHolder)holder).bind(entry.card, entry.inDeck);
+        if (o instanceof BarItem) {
+            BarItem entry = (BarItem) o;
+            ((BarViewHolder)holder).bind(entry.card, entry.count);
         } else if (o instanceof String) {
             ViewGroup barTemplate = (ViewGroup) holder.itemView;
             ((TextView)barTemplate.getChildAt(0)).setText((String) o);

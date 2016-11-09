@@ -20,6 +20,8 @@ public class Game {
     boolean victory;
 
     public ArrayList<ArrayList<Action>> turns = new ArrayList<>();
+    public Player opponent;
+    public Player player;
 
     public Game() {
     }
@@ -27,6 +29,15 @@ public class Game {
     public HashMap<String,Entity> getEntities() {
 
         return entityMap;
+    }
+
+    public ArrayList<Player> getPlayerList() {
+        ArrayList<Player> list =new ArrayList<>();
+        for (String id: playerMap.keySet()) {
+            list.add(playerMap.get(id));
+        }
+
+        return list;
     }
 
     public Player getPlayer(String playerId) {

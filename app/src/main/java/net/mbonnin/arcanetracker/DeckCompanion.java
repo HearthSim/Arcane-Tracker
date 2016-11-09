@@ -4,9 +4,12 @@ import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import net.mbonnin.arcanetracker.adapter.ControllerPlayer;
+import net.mbonnin.arcanetracker.adapter.DeckAdapter;
+import net.mbonnin.arcanetracker.parser.Player;
 
 import io.paperdb.Paper;
 import timber.log.Timber;
@@ -19,6 +22,7 @@ import static android.view.View.GONE;
 
 public class DeckCompanion {
     private static final String KEY_LAST_USED_DECK_ID = "KEY_LAST_USED_DECK_ID";
+    private ControllerPlayer mController;
 
     View settings;
     TextView winLoss;
@@ -62,12 +66,15 @@ public class DeckCompanion {
         mRecyclerViewParams = new ViewManager.Params();
         mRecyclerViewParams.w = w;
         mRecyclerViewParams.h = mViewManager.getHeight() - h;
+        mAdapter = new DeckAdapter();
 
         if (isOpponent) {
             settings.setVisibility(GONE);
             winLoss.setVisibility(GONE);
-            mAdapter = new DeckAdapter();
-            setDeck(DeckList.getOpponentGameDeck());
+
+
+            mController = new ControllerPlayer(mAdapter);
+            mController.setDeck(DeckList.getOpponentGameDeck());
         } else {
             new SettingsButtonCompanion(settings);
             String lastUsedId = Paper.book().read(KEY_LAST_USED_DECK_ID);
@@ -90,8 +97,8 @@ public class DeckCompanion {
                 Paper.book().write(KEY_LAST_USED_DECK_ID, deck.id);
             }
 
-            mAdapter = new PlayerDeckAdapter();
-            setDeck(deck);
+            mController = new ControllerPlayer(mAdapter);
+            mController.setDeck(deck);
         }
 
         recyclerView.setBackgroundColor(Color.BLACK);
@@ -115,6 +122,10 @@ public class DeckCompanion {
 
     public Deck getDeck() {
         return mDeck;
+    }
+
+    public void setPlayer(Player player) {
+        mController.setPlayer(player);
     }
 }
 

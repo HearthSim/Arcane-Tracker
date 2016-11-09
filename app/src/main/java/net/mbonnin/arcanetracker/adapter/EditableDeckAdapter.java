@@ -1,11 +1,12 @@
-package net.mbonnin.arcanetracker;
+package net.mbonnin.arcanetracker.adapter;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
+
+import net.mbonnin.arcanetracker.Card;
+import net.mbonnin.arcanetracker.R;
 
 import java.util.ArrayList;
 
@@ -25,7 +26,7 @@ public class EditableDeckAdapter extends DeckAdapter {
                 } else if (event.getActionMasked() == MotionEvent.ACTION_CANCEL || event.getActionMasked() == MotionEvent.ACTION_UP) {
                     holder.itemView.findViewById(R.id.overlay).setBackgroundColor(Color.TRANSPARENT);
                     if (event.getActionMasked() == MotionEvent.ACTION_UP) {
-                        DeckEntry entry = (DeckEntry) list.get(holder.getAdapterPosition());
+                        BarItem entry = (BarItem) list.get(holder.getAdapterPosition());
                         mDeck.addCard(entry.card.id, -1);
                     }
                 }
@@ -37,10 +38,10 @@ public class EditableDeckAdapter extends DeckAdapter {
 
     public ArrayList<String> getDisabledCards() {
         ArrayList<String> list = new ArrayList<>();
-        for (DeckEntry entry: entryList) {
-            if (entry.inDeck == 2) {
+        for (BarItem entry: entryList) {
+            if (entry.count == 2) {
                 list.add(entry.card.id);
-            } else if (entry.inDeck == 1 && Card.RARITY_LEGENDARY.equals(entry.card.rarity)) {
+            } else if (entry.count == 1 && Card.RARITY_LEGENDARY.equals(entry.card.rarity)) {
                 list.add(entry.card.id);
             }
         }

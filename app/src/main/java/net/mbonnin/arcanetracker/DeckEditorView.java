@@ -20,6 +20,8 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import net.mbonnin.arcanetracker.adapter.EditableDeckAdapter;
+
 import java.util.ArrayList;
 
 /**

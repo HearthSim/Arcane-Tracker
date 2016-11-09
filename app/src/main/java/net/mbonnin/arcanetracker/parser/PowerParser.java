@@ -2,10 +2,6 @@ package net.mbonnin.arcanetracker.parser;
 
 import android.text.TextUtils;
 
-import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
-import net.mbonnin.arcanetracker.Card;
-import net.mbonnin.arcanetracker.GameState;
-import net.mbonnin.arcanetracker.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,46 +23,34 @@ public class PowerParser {
 
     public interface Listener {
         void onNewGame(Game game);
+
+        void enEndGame(Game game);
     }
-
-    static class InitialCard {
-        public String cardId;
-        public String playerIndex;
-        public String zone;
-    }
-
-    HashMap<String, Player> indexToPlayer;
-    HashMap<String, Player> battleTagToPlayer;
-
-    /**
-     * either "1" or "2"
-     */
-    String playerIndex;
-    String opponentIndex;
-
-    ArrayList<String> battleTags = new ArrayList<>();
-    private ArrayList<InitialCard> initialCardList = new ArrayList<>();
 
     private Game mCurrentGame;
 
-    final Pattern LINE = Pattern.compile("D ([^ ]*) ([^ ]*) - (.*)");
+    private final Pattern LINE = Pattern.compile("D ([^ ]*) ([^ ]*) - (.*)");
 
-    final Pattern BLOCK_START = Pattern.compile("BLOCK_START BlockType=(.*) Entity=(.*) EffectCardId=(.*) EffectIndex=(.*) Target=(.*)");
-    final Pattern BLOCK_END = Pattern.compile("BLOCK_END");
+    private final Pattern BLOCK_START = Pattern.compile("BLOCK_START BlockType=(.*) Entity=(.*) EffectCardId=(.*) EffectIndex=(.*) Target=(.*)");
+    private final Pattern BLOCK_END = Pattern.compile("BLOCK_END");
 
-    final Pattern GameEntityPattern = Pattern.compile("GameEntity EntityID=(.*)");
-    final Pattern PlayerEntityPattern = Pattern.compile("Player EntityID=(.*) PlayerID=(.*) GameAccountId=(.*)");
+    private final Pattern GameEntityPattern = Pattern.compile("GameEntity EntityID=(.*)");
+    private final Pattern PlayerEntityPattern = Pattern.compile("Player EntityID=(.*) PlayerID=(.*) GameAccountId=(.*)");
 
-    final Pattern FULL_ENTITY = Pattern.compile("FULL_ENTITY - Updating (.*) CardID=(.*)");
-    final Pattern SHOW_ENTITY = Pattern.compile("SHOW_ENTITY - Updating Entity=(.*) CardID=(.*)");
-    final Pattern HIDE_ENTITY = Pattern.compile("HIDE_ENTITY - Entity=(.*) tag=(.*) value=(.*)");
-    final Pattern TAG_CHANGE = Pattern.compile("TAG_CHANGE Entity=(.*) tag=(.*) value=(.*)");
-    final Pattern TAG = Pattern.compile("tag=(.*) value=(.*)");
+    private final Pattern FULL_ENTITY = Pattern.compile("FULL_ENTITY - Updating (.*) CardID=(.*)");
+    private final Pattern SHOW_ENTITY = Pattern.compile("SHOW_ENTITY - Updating Entity=(.*) CardID=(.*)");
+    private final Pattern HIDE_ENTITY = Pattern.compile("HIDE_ENTITY - Entity=(.*) tag=(.*) value=(.*)");
+    private final Pattern TAG_CHANGE = Pattern.compile("TAG_CHANGE Entity=(.*) tag=(.*) value=(.*)");
+    private final Pattern TAG = Pattern.compile("tag=(.*) value=(.*)");
 
-    public PowerParser(String directory, Listener listener) {
+    public PowerParser(String file, Listener listener) {
         mListener = listener;
 
-        new LogReader(directory + "Power.log", line -> parsePowerLine(line), false);
+        boolean readPreviousData = false;
+        readPreviousData = true;
+        new LogReader(file, line -> parsePowerLine(line), readPreviousData);
+
+        mCurrentBlock = new Block();
     }
 
     private void parsePowerLine(String line) {
@@ -93,13 +77,12 @@ public class PowerParser {
     }
 
     static class Node {
-        int depth;
         String line;
-        ArrayList<Node> children;
+        ArrayList<Node> children = new ArrayList<>();
     }
 
     void parsePowerTaskList(String line) {
-        Timber.d(line);
+        Timber.v(line);
 
         int spaces = 0;
         while (spaces < line.length() && line.charAt(spaces) == ' ') {
@@ -228,20 +211,13 @@ public class PowerParser {
                     continue;
                 }
 
-                switch(zone) {
-                    case "HAND":
-                        player.hand.add(cardEntity);
-                        break;
-                    case "GRAVEYARD":
-                        player.graveyard.add(cardEntity);
-                        break;
-                    case "DECK":
-                        player.deck.add(cardEntity);
-                        break;
-                    case "SECRET":
-                        player.secret.add(cardEntity);
-                        break;
-                }
+                player.cards.add(cardEntity);
+            }
+        }
+
+        for (Player player: mCurrentGame.getPlayerList()) {
+            for (Player.Listener listener: player.listeners) {
+                listener.onPlayerStateChanged();
             }
         }
     }
@@ -260,7 +236,7 @@ public class PowerParser {
         } else if ("GameEntity".equals(name)) {
             return "1";
         } else {
-            // this must be a player entity
+            // this must be a battleTag
             Entity entity = mCurrentGame.getEntity(name);
             if (entity == null) {
                 Timber.w("Adding battleTag " + name);
@@ -291,7 +267,10 @@ public class PowerParser {
         int totalCardsInHand = 0;
         Player player1 = mCurrentGame.getPlayer("1");
 
-        for (CardEntity entity: player1.hand) {
+        for (CardEntity entity: player1.cards) {
+            if (!"HAND".equals(entity.tags.get("ZONE"))) {
+                continue;
+            }
             if (!TextUtils.isEmpty(entity.CardID)) {
                 knownCardsInHand++;
             }
@@ -320,6 +299,7 @@ public class PowerParser {
             }
 
             player.entity.tags.putAll(entity.tags);
+            player.battleTag = battleTag;
 
             /**
              * make the battleTag point to the same entity..
@@ -327,6 +307,9 @@ public class PowerParser {
             Timber.w(battleTag + " now points to entity " + entity.EntityID);
             mCurrentGame.setEntity(battleTag, entity);
         }
+
+        mCurrentGame.player = player1.isOpponent ? player2:player1;
+        mCurrentGame.opponent = player1.isOpponent ? player1:player2;
     }
     private void output(Node node) {
         String line = node.line;
@@ -373,8 +356,13 @@ public class PowerParser {
             if (key != null && !"".equals(key)) {
                 mCurrentGame.getEntity(entityId).tags.put(key, value);
 
-                if (entityId.equals("1") && "STEP".equals(key) && "BEGIN_MULLIGAN".equals(value)) {
-                    detectPlayers();
+                if (entityId.equals("1") && "STEP".equals(key)) {
+                    if ("BEGIN_MULLIGAN".equals(value)) {
+                        detectPlayers();
+                        mListener.onNewGame(mCurrentGame);
+                    } else if ("FINAL_GAMEOVER".equals(value)) {
+                        mListener.enEndGame(mCurrentGame);
+                    }
                 }
             }
         } else if ((m = FULL_ENTITY.matcher(line)).matches()) {
@@ -399,6 +387,7 @@ public class PowerParser {
                 Timber.e("not a CardEntity ?");
                 entity.dump();
             }
+            updateState();
         } else if ((m = HIDE_ENTITY.matcher(line)).matches()) {
             String entityId = lookupEntityId(m.group(1));
             Entity entity = mCurrentGame.getEntity(entityId);
@@ -407,6 +396,7 @@ public class PowerParser {
             if (!TextUtils.isEmpty(key)) {
                 entity.tags.put(key, m.group(3));
             }
+            updateState();
         }
     }
 

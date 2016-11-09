@@ -14,8 +14,14 @@ import android.widget.Toast;
 
 import com.google.firebase.crash.FirebaseCrash;
 
+import net.mbonnin.arcanetracker.adapter.BarItem;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -42,14 +48,14 @@ public class Utils {
 
     public static boolean is7InchesOrHigher() {
         Context context = ArcaneTrackerApplication.getContext();
-        Display display = ((WindowManager)context.getSystemService(Activity.WINDOW_SERVICE)).getDefaultDisplay();
+        Display display = ((WindowManager) context.getSystemService(Activity.WINDOW_SERVICE)).getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics();
         display.getMetrics(outMetrics);
 
-        float xdpi  = context.getResources().getDisplayMetrics().xdpi;
-        float ydpi  = context.getResources().getDisplayMetrics().ydpi;
+        float xdpi = context.getResources().getDisplayMetrics().xdpi;
+        float ydpi = context.getResources().getDisplayMetrics().ydpi;
         float xinches = outMetrics.heightPixels / xdpi;
-        float yinches  = outMetrics.widthPixels / ydpi;
+        float yinches = outMetrics.widthPixels / ydpi;
 
         if (Math.hypot(xinches, yinches) > 7) {
             return true;
@@ -80,6 +86,15 @@ public class Utils {
         FirebaseCrash.report(e);
     }
 
+    public static int cardMapTotal(HashMap<String, Integer> map) {
+        int total = 0;
+        for (String key:map.keySet()) {
+            total += cardMapGet(map, key);
+        }
+
+        return total;
+    }
+
     public static class DummyObserver<T> extends rx.Subscriber<T> {
         @Override
         public void onCompleted() {
@@ -95,6 +110,41 @@ public class Utils {
         public void onNext(T t) {
 
         }
+    }
+
+    public static ArrayList<BarItem> cardMapToBarItems(HashMap<String, Integer> map) {
+        ArrayList<BarItem> list = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry: map.entrySet()) {
+            BarItem deckEntry = new BarItem();
+            deckEntry.card = ArcaneTrackerApplication.getCard(entry.getKey());
+            deckEntry.count = entry.getValue();
+            list.add(deckEntry);
+        }
+
+        Collections.sort(list, (a, b) -> {
+            int acost = a.card.cost == null ? 0: a.card.cost;
+            int bcost = b.card.cost == null ? 0: b.card.cost;
+
+            int ret = acost - bcost;
+            if (ret == 0) {
+                ret = a.card.name.compareTo(b.card.name);
+            }
+            return ret;
+        });
+        return list;
+    }
+
+    public static int cardMapGet(HashMap<String, Integer> map, String key) {
+        Integer a = map.get(key);
+        if (a == null) {
+            a = 0;
+        }
+        return a;
+    }
+
+    public static void cardMapAdd(HashMap<String, Integer> map, String key, int diff) {
+        int a = cardMapGet(map, key);
+        map.put(key, a + diff);
     }
 
     public static boolean isNetworkConnected() {
