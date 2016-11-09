@@ -6,6 +6,11 @@ import java.util.ArrayList;
  * Created by martin on 11/7/16.
  */
 public class Player {
+
+    public interface Listener {
+        void onPlayerStateChanged();
+    }
+
     public PlayerEntity entity;
     public String battleTag;
     public boolean isOpponent;
@@ -14,15 +19,12 @@ public class Player {
     public CardEntity hero;
     public CardEntity heroPower;
 
-    public ArrayList<CardEntity> hand = new ArrayList<>();
-    public ArrayList<CardEntity> deck = new ArrayList<>();
-    public ArrayList<CardEntity> graveyard = new ArrayList<>();
-    public ArrayList<CardEntity> secret = new ArrayList<>();
+    public ArrayList<CardEntity> cards = new ArrayList<>();
 
     public void reset() {
-        hand.clear();
-        deck.clear();
-        graveyard.clear();
-        secret.clear();
+        cards.clear();
     }
+
+    public ArrayList<Listener> listeners;
+
 }

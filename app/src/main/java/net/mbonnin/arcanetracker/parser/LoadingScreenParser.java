@@ -31,7 +31,7 @@ public class LoadingScreenParser {
     }
 
     private void parseLoadingScreen(String line) {
-        Timber.d("LoadingScreen" + line);
+        Timber.v(line);
 
         Pattern pattern = Pattern.compile(".* LoadingScreen.OnSceneLoaded\\(\\) - prevMode=(.*) currMode=(.*)");
         Matcher matcher = pattern.matcher(line);

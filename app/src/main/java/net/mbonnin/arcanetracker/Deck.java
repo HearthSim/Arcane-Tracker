@@ -10,6 +10,8 @@ import timber.log.Timber;
  */
 
 public class Deck {
+    public static final int MAX_CARDS = 30;
+
     public HashMap<String, Integer> cards = new HashMap<>();
     public String name;
     public int classIndex;

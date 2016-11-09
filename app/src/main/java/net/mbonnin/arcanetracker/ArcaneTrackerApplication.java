@@ -133,9 +133,9 @@ public class ArcaneTrackerApplication extends Application {
                 .subscribe(mCardsObserver);
 
 
-        new ArenaParser(MainActivity.HEARTHSTONE_FILES_DIR + "Logs/Arena.log", ArenaParserListener.get());
-        new LoadingScreenParser(MainActivity.HEARTHSTONE_FILES_DIR + "Logs/LoadingScreen.log", LoadingScreenListener.get());
-        new PowerParser(MainActivity.HEARTHSTONE_FILES_DIR + "Logs/Power.log", PowerParserListener.get());
+        new ArenaParser(MainActivity.HEARTHSTONE_FILES_DIR + "Logs/Arena.log", ParserListenerArena.get());
+        new LoadingScreenParser(MainActivity.HEARTHSTONE_FILES_DIR + "Logs/LoadingScreen.log", ParserListenerLoadingScreen.get());
+        new PowerParser(MainActivity.HEARTHSTONE_FILES_DIR + "Logs/Power.log", ParserListenerPower.get());
 
     }
 

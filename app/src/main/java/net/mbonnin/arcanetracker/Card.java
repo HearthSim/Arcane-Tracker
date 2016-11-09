@@ -27,6 +27,9 @@ public class Card implements Comparable<String> {
     public static final int CLASS_INDEX_NEUTRAL = 9;
     public static final String TYPE_SPELL = "SPELL";
 
+    public static final String ID_COINe = "GAME_005e";
+    public static final String ID_COIN = "GAME_005";
+
     public String name;
     public String playerClass;
     public Integer cost;

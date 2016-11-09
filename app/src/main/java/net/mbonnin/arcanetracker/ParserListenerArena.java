@@ -8,13 +8,13 @@ import timber.log.Timber;
  * Created by martin on 11/7/16.
  */
 
-public class ArenaParserListener implements ArenaParser.Listener {
-    static ArenaParserListener sArenaParserListener;
-    public static ArenaParserListener get() {
-        if (sArenaParserListener == null) {
-            sArenaParserListener = new ArenaParserListener();
+public class ParserListenerArena implements ArenaParser.Listener {
+    static ParserListenerArena sParserListenerArena;
+    public static ParserListenerArena get() {
+        if (sParserListenerArena == null) {
+            sParserListenerArena = new ParserListenerArena();
         }
-        return sArenaParserListener;
+        return sParserListenerArena;
     }
 
     @Override
