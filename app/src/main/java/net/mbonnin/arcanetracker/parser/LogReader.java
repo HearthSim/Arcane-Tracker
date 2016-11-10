@@ -23,7 +23,7 @@ import timber.log.Timber;
 public class LogReader implements Runnable {
     private final String mLog;
     private final Handler mHandler;
-    private final boolean mReadPreviousData;
+    private boolean mReadPreviousData;
     private boolean mCanceled;
     private Listener mListener;
 
@@ -92,8 +92,12 @@ public class LogReader implements Runnable {
                     if (line == null) {
                         break;
                     }
-
                 }
+
+                /**
+                 * assume the file has been truncated to 0 and it's safe to read all the previous data (not sure about that)
+                 */
+                mReadPreviousData = true;
             }
             while (!mCanceled) {
 
