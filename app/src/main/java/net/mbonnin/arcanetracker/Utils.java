@@ -6,6 +6,8 @@ import android.content.pm.ApplicationInfo;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Environment;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Display;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 import com.google.firebase.crash.FirebaseCrash;
 
 import net.mbonnin.arcanetracker.adapter.BarItem;
+import net.mbonnin.arcanetracker.parser.CardEntity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -95,6 +98,14 @@ public class Utils {
         return total;
     }
 
+    public static String getHearthstoneFilesDir() {
+        return Environment.getExternalStorageDirectory().getPath() + "/Android/data/com.blizzard.wtcg.hearthstone/files/";
+    }
+
+    public static String getHearthstoneLogsDir() {
+        return getHearthstoneFilesDir() + "Logs/";
+    }
+
     public static class DummyObserver<T> extends rx.Subscriber<T> {
         @Override
         public void onCompleted() {
@@ -110,6 +121,24 @@ public class Utils {
         public void onNext(T t) {
 
         }
+    }
+
+    public static HashMap<String, Integer> filterCollectibleCards(ArrayList<CardEntity> cards) {
+        HashMap<String, Integer> knownCards = new HashMap<>();
+        for (CardEntity cardEntity : cards) {
+            String cardId = cardEntity.CardID;
+            if (TextUtils.isEmpty(cardId)) {
+                continue;
+            }
+
+            if (!Card.isCollectible(cardId)) {
+                continue;
+            }
+
+
+            Utils.cardMapAdd(knownCards, cardId, 1);
+        }
+        return knownCards;
     }
 
     public static ArrayList<BarItem> cardMapToBarItems(HashMap<String, Integer> map) {

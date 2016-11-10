@@ -14,25 +14,6 @@ import java.util.HashMap;
  */
 public class Player {
 
-
-    public HashMap<String, Integer> getKnownCollectibleCards() {
-        HashMap<String, Integer> knownCards = new HashMap<>();
-        for (CardEntity cardEntity : cards) {
-            String cardId = cardEntity.CardID;
-            if (TextUtils.isEmpty(cardId)) {
-                continue;
-            }
-
-            if (!Card.isCollectible(cardId)) {
-                continue;
-            }
-
-
-            Utils.cardMapAdd(knownCards, cardId, 1);
-        }
-        return knownCards;
-    }
-
     public int classIndex() {
         Card card = ArcaneTrackerApplication.getCard(hero.CardID);
         return Card.playerClassToClassIndex(card.playerClass);
