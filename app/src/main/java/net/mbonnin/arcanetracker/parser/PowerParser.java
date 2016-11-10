@@ -80,7 +80,7 @@ public class PowerParser {
     }
 
     void parsePowerTaskList(String line) {
-        Timber.v(line);
+        Timber.v("PowerTaskList" + line);
 
         int spaces = 0;
         while (spaces < line.length() && line.charAt(spaces) == ' ') {
@@ -278,8 +278,8 @@ public class PowerParser {
             /**
              * make the battleTag point to the same entity..
              */
-            Timber.w(battleTag + " now points to entity " + entity.EntityID);
-            mCurrentGame.setEntity(battleTag, entity);
+            Timber.w(battleTag + " now points to entity " + player.entity.EntityID);
+            mCurrentGame.setEntity(battleTag, player.entity);
         }
 
         mCurrentGame.player = player1.isOpponent ? player2:player1;
@@ -365,6 +365,7 @@ public class PowerParser {
             String key = m.group(2);
             String value = m.group(3);
 
+            Timber.i("TAG_CHANGE " + entityId + " " + key + "=" + value);
             if (!TextUtils.isEmpty(key)) {
                 mCurrentGame.getEntity(entityId).tags.put(key, value);
 
@@ -373,6 +374,7 @@ public class PowerParser {
                         detectPlayers();
                         mListener.onNewGame(mCurrentGame);
                     } else if ("FINAL_GAMEOVER".equals(value)) {
+                        mCurrentGame.victory = "WON".equals(mCurrentGame.player.entity.tags.get("PLAYSTATE"));
                         mListener.enEndGame(mCurrentGame);
                     }
                 }

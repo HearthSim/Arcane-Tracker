@@ -1,7 +1,5 @@
 package net.mbonnin.arcanetracker.parser;
 
-import net.mbonnin.arcanetracker.GameState;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

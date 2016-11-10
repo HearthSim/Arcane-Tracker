@@ -20,4 +20,7 @@
     <string name="changeDeck">Change active deck</string>
     <string name="editDeck">Edit deck</string>
     <string name="newDeck">New deck</string>
+    <string name="opponentsDeck">Opponent\'s Deck</string>
+    <string name="arenaDeck">Arena Deck</string>
+    <string name="yourDeck">Your Deck</string>
 </resources>
