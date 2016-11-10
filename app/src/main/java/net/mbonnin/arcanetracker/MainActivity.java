@@ -17,8 +17,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
-import com.google.firebase.crash.FirebaseCrash;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -27,7 +25,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_PERMISSIONS = 1;
     private static final int REQUEST_CODE_GET_OVERLAY_PERMISSIONS = 2;
-    public static final String HEARTHSTONE_FILES_DIR = "/sdcard/Android/data/com.blizzard.wtcg.hearthstone/files/";
     public static final String HEARTHSTONE_PACKAGE_ID = "com.blizzard.wtcg.hearthstone";
     View contentView;
     private Button button;
@@ -116,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 InputStream inputStream = getResources().openRawResource(R.raw.log_config);
 
-                File file = new File(HEARTHSTONE_FILES_DIR + "log.config");
+                File file = new File(Utils.getHearthstoneFilesDir() + "log.config");
                 FileOutputStream outputStream = new FileOutputStream(file);
 
                 byte buffer[] = new byte[8192];

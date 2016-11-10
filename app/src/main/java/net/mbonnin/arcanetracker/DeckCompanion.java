@@ -37,6 +37,7 @@ public class DeckCompanion {
     private boolean isOpponent;
     private Deck mDeck;
     private ImageView background;
+    private Player mPlayer;
 
     public DeckCompanion(View v, boolean isOpponent) {
         mViewManager = ViewManager.get();
@@ -74,7 +75,7 @@ public class DeckCompanion {
 
 
             mController = new PlayerController(mAdapter);
-            mController.setDeck(DeckList.getOpponentDeck());
+            setDeck(DeckList.getOpponentDeck(), null);
         } else {
             new SettingsButtonCompanion(settings);
             String lastUsedId = Paper.book().read(KEY_LAST_USED_DECK_ID);
@@ -98,7 +99,7 @@ public class DeckCompanion {
             }
 
             mController = new PlayerController(mAdapter);
-            setDeck(deck);
+            setDeck(deck, null);
         }
 
         recyclerView.setBackgroundColor(Color.BLACK);
@@ -107,6 +108,10 @@ public class DeckCompanion {
     }
 
     public void setDeck(Deck deck) {
+        setDeck(deck, mPlayer);
+    }
+
+    public void setDeck(Deck deck, Player player) {
         if (!isOpponent) {
             Paper.book().write(KEY_LAST_USED_DECK_ID, deck.id);
             winLoss.setText(deck.wins + " - " + deck.losses);
@@ -115,19 +120,16 @@ public class DeckCompanion {
         deck.checkClassIndex();
 
         mDeck = deck;
+        mPlayer = player;
         background.setBackgroundDrawable(Utils.getDrawableForClassIndex(deck.classIndex));
         deckName.setText(deck.name);
         mAdapter.setDeck(deck);
 
-        mController.setDeck(deck);
+        mController.setDeck(deck, player);
     }
 
     public Deck getDeck() {
         return mDeck;
-    }
-
-    public void setPlayer(Player player) {
-        mController.setPlayer(player);
     }
 }
 

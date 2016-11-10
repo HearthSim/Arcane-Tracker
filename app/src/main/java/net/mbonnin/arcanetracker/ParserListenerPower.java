@@ -29,33 +29,30 @@ public class ParserListenerPower implements PowerParser.Listener {
     @Override
     public void onGameStart(Game game) {
         Timber.w("onGameStart");
-        DeckList.getOpponentDeck().clear();
 
-        DeckList.getOpponentDeck().classIndex = game.opponent.classIndex();
-
-
+        Deck deck = MainViewCompanion.getPlayerCompanion().getDeck();
         if (Settings.get(Settings.AUTO_SELECT_DECK, true)) {
             if (ParserListenerLoadingScreen.get().getMode() == LoadingScreenParser.MODE_ARENA) {
-                Deck deck = DeckList.getArenaDeck();
-                MainViewCompanion.getPlayerCompanion().setDeck(deck);
+                deck = DeckList.getArenaDeck();
             } else {
                 int classIndex = game.player.classIndex();
 
-                activateBestDeck(classIndex, game.player.getKnownCollectibleCards());
+                deck = activateBestDeck(classIndex, Utils.filterCollectibleCards(game.player.cards));
             }
         }
 
-        MainViewCompanion.getOpponentCompanion().setDeck(DeckList.getOpponentDeck());
+        MainViewCompanion.getPlayerCompanion().setDeck(deck, game.player);
 
-        MainViewCompanion.getPlayerCompanion().setPlayer(game.player);
-        MainViewCompanion.getOpponentCompanion().setPlayer(game.opponent);
+        DeckList.getOpponentDeck().clear();
+        DeckList.getOpponentDeck().classIndex = game.opponent.classIndex();
+        MainViewCompanion.getOpponentCompanion().setDeck(DeckList.getOpponentDeck(), game.opponent);
     }
 
-    private static void activateBestDeck(int classIndex, HashMap<String, Integer> initialCards) {
+    private static Deck activateBestDeck(int classIndex, HashMap<String, Integer> initialCards) {
         Deck deck = MainViewCompanion.getPlayerCompanion().getDeck();
         if (deckScore(deck, classIndex, initialCards) != -1) {
             // the current deck works fine
-            return;
+            return deck;
         }
 
         // sort the deck list by descending number of cards. We'll try to get the one with the most cards.
@@ -88,7 +85,7 @@ public class ParserListenerPower implements PowerParser.Listener {
             bestDeck = DeckList.createDeck(classIndex);
         }
 
-        MainViewCompanion.getPlayerCompanion().setDeck(bestDeck);
+        return bestDeck;
     }
 
     /**

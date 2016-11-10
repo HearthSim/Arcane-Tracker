@@ -64,7 +64,6 @@ public class ArcaneTrackerApplication extends Application {
         }
     };
 
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -133,9 +132,9 @@ public class ArcaneTrackerApplication extends Application {
                 .subscribe(mCardsObserver);
 
 
-        new ArenaParser(MainActivity.HEARTHSTONE_FILES_DIR + "Logs/Arena.log", ParserListenerArena.get());
-        new LoadingScreenParser(MainActivity.HEARTHSTONE_FILES_DIR + "Logs/LoadingScreen.log", ParserListenerLoadingScreen.get());
-        new PowerParser(MainActivity.HEARTHSTONE_FILES_DIR + "Logs/Power.log", ParserListenerPower.get());
+        new ArenaParser(Utils.getHearthstoneLogsDir() + "Arena.log", ParserListenerArena.get());
+        new LoadingScreenParser(Utils.getHearthstoneLogsDir() + "LoadingScreen.log", ParserListenerLoadingScreen.get());
+        new PowerParser(Utils.getHearthstoneLogsDir() + "Power.log", ParserListenerPower.get());
 
     }
 

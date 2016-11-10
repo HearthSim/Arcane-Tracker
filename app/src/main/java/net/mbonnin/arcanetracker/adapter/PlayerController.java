@@ -34,16 +34,21 @@ public class PlayerController implements Player.Listener {
     }
 
     private void update() {
-        if (mDeck == null || mPlayer == null) {
+        if (mDeck == null) {
             return;
         }
 
+        ArrayList<CardEntity> activeCards;
+        if (mPlayer == null) {
+            activeCards = new ArrayList<>();
+        } else {
+            activeCards = mPlayer.cards;
+        }
         /**
          * add cards to the deck if needed
          */
         if (Settings.get(Settings.AUTO_ADD_CARDS, true)) {
-            HashMap<String, Integer> knownCards = mPlayer.getKnownCollectibleCards();
-
+            HashMap<String, Integer> knownCards = Utils.filterCollectibleCards(activeCards);
 
             /**
              * now add the cards we know to the deck if needed
@@ -57,12 +62,8 @@ public class PlayerController implements Player.Listener {
             }
         }
 
-        /**
-         * deep copy the deck
-         */
-        HashMap<String, Integer> map = new HashMap<String, Integer>();
-        map.putAll(mDeck.cards);
-        for (CardEntity cardEntity : mPlayer.cards) {
+        HashMap<String, Integer> map = new HashMap<String, Integer>(mDeck.cards); // we need to deep copy so we don't modify the original deck
+        for (CardEntity cardEntity : activeCards) {
             if (!Card.isCollectible(cardEntity.CardID)) {
                 continue;
             }
@@ -87,16 +88,15 @@ public class PlayerController implements Player.Listener {
         mAdapter.setList(list);
     }
 
-    public void setDeck(Deck deck) {
+    public void setDeck(Deck deck, Player player) {
         mDeck = deck;
-        update();
-    }
-
-    public void setPlayer(Player player) {
         if (mPlayer != null) {
             mPlayer.listeners.remove(this);
         }
         mPlayer = player;
-        mPlayer.listeners.add(this);
+        if (mPlayer != null) {
+            mPlayer.listeners.add(this);
+        }
+        update();
     }
 }
