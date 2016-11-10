@@ -21,9 +21,9 @@ public class PowerParser {
     private Node mCurrentNode;
 
     public interface Listener {
-        void onNewGame(Game game);
+        void onGameStart(Game game);
 
-        void enEndGame(Game game);
+        void onGameEnd(Game game);
     }
 
     private Game mCurrentGame;
@@ -214,6 +214,9 @@ public class PowerParser {
             Entity entity = mCurrentGame.getEntityUnsafe(name);
             if (entity == null) {
                 Timber.w("Adding battleTag " + name);
+                if (mCurrentGame.battleTags.size() >= 2) {
+                    Timber.e("[Inconsistent] too many battleTags");
+                }
                 mCurrentGame.battleTags.add(name);
 
                 entity = new Entity();
@@ -372,10 +375,11 @@ public class PowerParser {
                 if (entityId.equals("1") && "STEP".equals(key)) {
                     if ("BEGIN_MULLIGAN".equals(value)) {
                         detectPlayers();
-                        mListener.onNewGame(mCurrentGame);
+                        mListener.onGameStart(mCurrentGame);
                     } else if ("FINAL_GAMEOVER".equals(value)) {
                         mCurrentGame.victory = "WON".equals(mCurrentGame.player.entity.tags.get("PLAYSTATE"));
-                        mListener.enEndGame(mCurrentGame);
+                        mListener.onGameEnd(mCurrentGame);
+                        mCurrentGame = null;
                     }
                 }
             }
@@ -393,7 +397,7 @@ public class PowerParser {
                 CardEntity cardEntity = (CardEntity)entity;
                 String CardID = m.group(2);
                 if (!TextUtils.isEmpty(cardEntity.CardID) && !cardEntity.CardID.equals(CardID)) {
-                    Timber.e("entity " + entityId + " changed cardId " + cardEntity.CardID + " -> " + CardID);
+                    Timber.e("[Inconsistent] entity " + entityId + " changed cardId " + cardEntity.CardID + " -> " + CardID);
                 }
                 cardEntity.CardID = CardID;
                 entity.tags.putAll(getTags(node));
