@@ -55,7 +55,7 @@
     <string name="resetCounter">Remettre à zéro le compteur de victoires</string>
     <string name="retrievePassword">"Si vous ne connaissez pas votre mot de passe, vous pouvez le récupérer en suivant la procédure décrite ici: https://github.com/HearthSim/arcane_tracker/issues/2 "</string>
     <string name="search">"Rechercher: "</string>
-    <string name="sendFeedback">Rapport de bug</string>
+    <string name="sendFeedback">Envoyer un rapport de bug</string>
     <string name="settings">Réglages</string>
     <string name="showNextTime">Montrer cet écran au démarrage</string>
     <string name="thisIsArcaneTracker">Arcane Tracker version %1$s%2$s.</string>

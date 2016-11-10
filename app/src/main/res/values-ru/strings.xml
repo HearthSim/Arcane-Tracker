@@ -1,0 +1,82 @@
+<resources>
+    <string name="app_name">Arcane Tracker</string>
+    <string name="welcome">Добро пожаловать в Arcane Tracker!</string>
+    <string name="explanation1">Arcane tracker работает на пару с Hearthstone и отображает карты сыгранные вами и вашим оппонентом, в фоновом режиме</string>
+    <string name="explanation2">Панель покажет сыгранные карты и те, что еще находятся в колоде</string>
+    <string name="explanation3">Свет дарует вам победу!</string>
+    <string name="showNextTime">показать позже</string>
+    <string name="permissions">Arcane Tracker\'у необходимы разрешения на хранение и наложения для того, чтобы следить за игрой и отображать панель. Возможно потребуется повторный запуск Hearthstone, если он уже был запущен</string>
+    <string name="cannot_launch">Не получается запустить Hearthstone? А он установлен?</string>
+    <string name="oops_permission">Упс, кажется не хватает некоторых разрешений</string>
+    <string name="play">Играть!</string>
+    <string name="authorizeAndPlay">Авторизоваться и играть!</string>
+    <string name="pleaseEnablePermissions">Пожалуйста, включите разрешения</string>
+    <string name="cannot_locate_heathstone_install">Не удается найти Hearthstone</string>
+    <string name="arcane_tracker_running">Arcane tracker запущен</string>
+    <string name="cannot_find_deck">Не удалось найти последнюю использованную колоду</string>
+    <string name="cannot_get_latest_cards">Не удается получить информацию о карте</string>
+    <string name="settings">Настройки</string>
+    <string name="quit">Выход</string>
+    <string name="changeDeck">Сменить колоду</string>
+    <string name="editDeck">Изменить колоду</string>
+    <string name="newDeck">Новая колода</string>
+    <string name="deckName">Название колоды:</string>
+    <string name="clazz">Класс</string>
+    <string name="createDeck">Создать колоду</string>
+    <string name="search">Поиск:</string>
+    <string name="cost">Мана:</string>
+    <string name="done">Готово</string>
+    <string name="deleteConfirm">Вы уверены, что хотите удалить эту колоду?</string>
+    <string name="cancel">отмена</string>
+    <string name="delete">удалить</string>
+    <string name="deleteDeck">Удалить колоду</string>
+    <string name="renameDeck">Переименовать</string>
+    <string name="resetCounter">Сбросить счетчик</string>
+    <string name="gotIt">Понял</string>
+    <string name="next">далее ▶</string>
+    <string name="clickOpponent">Здесь колода противника</string>
+    <string name="clickPlayer">Здесь ваша колода</string>
+    <string name="rename">переименовать</string>
+    <string name="reset">сброс</string>
+    <string name="resetConfirm">Вы уверены, что хотите сбросить счётчик?</string>
+    <string name="general">Основные</string>
+    <string name="appVersion">Версия</string>
+    <string name="sendFeedback">Отправить отзыв</string>
+    <string name="drawerSize">Размер панели</string>
+    <string name="buttonSize">Размер кнопок</string>
+    <string name="overlayOpacity">Прозрачность</string>
+    <string name="autoHide">Авто скрытие</string>
+
+    <string name="autoQuitExplanation">Определяет, когда Hearthstone не используется и скрывает панель автоматически</string>
+
+    <string name="autoDetect">Отслеживание колоды</string>
+
+    <string name="autoDetectExplanation">Вначале игры пытается угадать вашу колоду из доступных и активирует её автоматически. Возможны трудности, если у вас есть несколько колод одного класса</string>
+
+    <string name="autoAdd">Авто добавление карт</string>
+
+    <string name="autoAddExplanation">Если колода не выбрана, добавляет все сыграные вами карты в панель, так что вам не придется добавлять их вручную</string>
+
+    <string name="or">или</string>
+    <string name="username">Логин:</string>
+    <string name="password">Пароль:</string>
+    <string name="retrievePassword">Если вы забыли пароль, https://github.com/HearthSim/arcane_tracker/issues/2 for how to retrieve it</string>
+    <string name="quitArcaneTracker">Покинуть arcane tracker</string>
+    <string name="thisIsArcaneTracker">Arcane Tracker версии %1$s%2$s.</string>
+
+    <string name="trackobotExplanation">Создайте учетную запись Track-o-bot, это позволит вам отслеживать свою статистику на: https://trackobot.com</string>
+
+    <string name="linkAccount">Войти в учетную запись </string>
+    <string name="createAccount">Создать учетную запись</string>
+    <string name="unlinkAccount">Выйти из учетной записи</string>
+    <string name="openInBrowser">Просмотр профиля (сторонний браузер)</string>
+    <string name="decribeYourProblem">Пожалуйста, опишите вашу проблему</string>
+    <string name="trackobotHttpError">Track-o-bot HTTP ошибка: %1$d</string>
+    <string name="trackobotTimeout">Время подключения истекло</string>
+    <string name="trackobotConnectError">Не удалось подключиться к Track-o-bot</string>
+    <string name="trackobotNetworkError">Ошибка сети Track-o-bot</string>
+    <string name="trackobotError">Не удалось загрузить(</string>
+    <string name="trackobotSuccess">Игра загружается в Track-o-bot</string>
+
+</resources>
+
