@@ -42,7 +42,6 @@
                     android:textStyle="bold"
                     android:textSize="18sp"
                     android:gravity="left"
-                    android:text="3 - 1"
                     android:textColor="#fff"/>
                 <ImageButton
                     android:id="@+id/edit"
@@ -64,7 +63,6 @@
                 android:maxLines="1"
                 android:padding="2dp"
                 android:singleLine="true"
-                android:text="Your Deck"
                 android:textColor="@android:color/white" />
         </LinearLayout>
     </FrameLayout>
