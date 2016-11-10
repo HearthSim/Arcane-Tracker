@@ -46,7 +46,7 @@ public class PowerParser {
         mListener = listener;
 
         boolean readPreviousData = false;
-        readPreviousData = true;
+        //readPreviousData = true;
         new LogReader(file, line -> parsePowerLine(line), readPreviousData);
     }
 
