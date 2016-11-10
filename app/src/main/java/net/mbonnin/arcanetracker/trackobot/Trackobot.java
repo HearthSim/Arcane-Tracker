@@ -139,12 +139,7 @@ public class Trackobot {
     }
 
 
-    public static String getHero(String heroId) {
-        int classIndex = Card.heroIdToClassIndex(heroId);
-        if (classIndex < 0) {
-            return "Unknown";
-        }
-
+    public static String getHero(int classIndex) {
         return Card.classNameList[classIndex];
     }
 

@@ -17,7 +17,7 @@ public class Game {
 
     public ArrayList<String> battleTags = new ArrayList<>();
 
-    boolean victory;
+    public boolean victory;
 
     public ArrayList<ArrayList<Action>> turns = new ArrayList<>();
     public Player opponent;

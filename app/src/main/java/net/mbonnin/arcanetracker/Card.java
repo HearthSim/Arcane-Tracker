@@ -119,4 +119,16 @@ public class Card implements Comparable<String> {
 
         return -1;
     }
+
+    public static boolean isCollectible(String cardId) {
+        Card card = ArcaneTrackerApplication.getCard(cardId);
+        if (card.collectible == null || !card.collectible) {
+            return false;
+        }
+
+        if (Card.ID_COINe.equals(cardId) || Card.ID_COIN.equals(cardId)) {
+            return false;
+        }
+        return true;
+    }
 }

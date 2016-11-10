@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.mbonnin.arcanetracker.adapter.ControllerPlayer;
+import net.mbonnin.arcanetracker.adapter.PlayerController;
 import net.mbonnin.arcanetracker.adapter.DeckAdapter;
 import net.mbonnin.arcanetracker.parser.Player;
 
@@ -22,7 +22,7 @@ import static android.view.View.GONE;
 
 public class DeckCompanion {
     private static final String KEY_LAST_USED_DECK_ID = "KEY_LAST_USED_DECK_ID";
-    private ControllerPlayer mController;
+    private PlayerController mController;
 
     View settings;
     TextView winLoss;
@@ -73,8 +73,8 @@ public class DeckCompanion {
             winLoss.setVisibility(GONE);
 
 
-            mController = new ControllerPlayer(mAdapter);
-            mController.setDeck(DeckList.getOpponentGameDeck());
+            mController = new PlayerController(mAdapter);
+            mController.setDeck(DeckList.getOpponentDeck());
         } else {
             new SettingsButtonCompanion(settings);
             String lastUsedId = Paper.book().read(KEY_LAST_USED_DECK_ID);
@@ -97,8 +97,8 @@ public class DeckCompanion {
                 Paper.book().write(KEY_LAST_USED_DECK_ID, deck.id);
             }
 
-            mController = new ControllerPlayer(mAdapter);
-            mController.setDeck(deck);
+            mController = new PlayerController(mAdapter);
+            setDeck(deck);
         }
 
         recyclerView.setBackgroundColor(Color.BLACK);
@@ -118,6 +118,8 @@ public class DeckCompanion {
         background.setBackgroundDrawable(Utils.getDrawableForClassIndex(deck.classIndex));
         deckName.setText(deck.name);
         mAdapter.setDeck(deck);
+
+        mController.setDeck(deck);
     }
 
     public Deck getDeck() {

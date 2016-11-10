@@ -1,8 +1,8 @@
 package net.mbonnin.arcanetracker.adapter;
 
-import android.content.Intent;
 import android.text.TextUtils;
 
+import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
 import net.mbonnin.arcanetracker.Card;
 import net.mbonnin.arcanetracker.Deck;
 import net.mbonnin.arcanetracker.Settings;
@@ -19,12 +19,12 @@ import timber.log.Timber;
  * Created by martin on 11/8/16.
  */
 
-public class ControllerPlayer implements Player.Listener {
+public class PlayerController implements Player.Listener {
     private Player mPlayer;
     private Deck mDeck;
     private final DeckAdapter mAdapter;
 
-    public ControllerPlayer(DeckAdapter adapter) {
+    public PlayerController(DeckAdapter adapter) {
         mAdapter = adapter;
     }
 
@@ -37,23 +37,13 @@ public class ControllerPlayer implements Player.Listener {
         if (mDeck == null || mPlayer == null) {
             return;
         }
+
         /**
          * add cards to the deck if needed
          */
         if (Settings.get(Settings.AUTO_ADD_CARDS, true)) {
-            HashMap<String, Integer> knownCards = new HashMap<>();
-            for (CardEntity cardEntity : mPlayer.cards) {
-                if (!isFromOriginalDeck(cardEntity)) {
-                    continue;
-                }
+            HashMap<String, Integer> knownCards = mPlayer.getKnownCollectibleCards();
 
-                String cardId = cardEntity.CardID;
-                if (TextUtils.isEmpty(cardId)) {
-                    continue;
-                }
-
-                Utils.cardMapAdd(knownCards, cardId, 1);
-            }
 
             /**
              * now add the cards we know to the deck if needed
@@ -73,7 +63,7 @@ public class ControllerPlayer implements Player.Listener {
         HashMap<String, Integer> map = new HashMap<String, Integer>();
         map.putAll(mDeck.cards);
         for (CardEntity cardEntity : mPlayer.cards) {
-            if (!isFromOriginalDeck(cardEntity)) {
+            if (!Card.isCollectible(cardEntity.CardID)) {
                 continue;
             }
 
@@ -95,15 +85,6 @@ public class ControllerPlayer implements Player.Listener {
         }
 
         mAdapter.setList(list);
-    }
-
-    private boolean isFromOriginalDeck(CardEntity cardEntity) {
-        String cardId = cardEntity.CardID;
-
-        if (Card.ID_COINe.equals(cardId) || Card.ID_COIN.equals(cardId)) {
-            return false;
-        }
-        return true;
     }
 
     public void setDeck(Deck deck) {
