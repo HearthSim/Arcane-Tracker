@@ -27,8 +27,8 @@ public class ParserListenerPower implements PowerParser.Listener {
     }
 
     @Override
-    public void onNewGame(Game game) {
-        Timber.w("onNewGame");
+    public void onGameStart(Game game) {
+        Timber.w("onGameStart");
         DeckList.getOpponentDeck().clear();
 
         DeckList.getOpponentDeck().classIndex = game.opponent.classIndex();
@@ -132,7 +132,7 @@ public class ParserListenerPower implements PowerParser.Listener {
         return matchedCards;
     }
     @Override
-    public void enEndGame(Game game) {
+    public void onGameEnd(Game game) {
         Timber.w("onGameEnd %s", game.victory ? "victory" : "lost");
         Deck deck = MainViewCompanion.getPlayerCompanion().getDeck();
         if (game.victory) {
