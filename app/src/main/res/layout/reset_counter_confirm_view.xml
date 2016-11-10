@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:textSize="18sp"
-            android:text="Are you sure you want to reset the counter ?"
+            android:text="@string/resetConfirm"
             android:textColor="#000" />
 
         <Button
@@ -26,7 +26,7 @@
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/textView"
             android:background="@null"
-            android:text="cancel"
+            android:text="@string/cancel"
             android:textColor="@color/colorPrimary" />
 
         <Button
@@ -37,7 +37,7 @@
             android:layout_alignParentRight="true"
             android:layout_below="@+id/textView"
             android:backgroundTint="@color/colorPrimary"
-            android:text="reset"
+            android:text="@string/reset"
             android:textColor="#fff" />
     </RelativeLayout>
 

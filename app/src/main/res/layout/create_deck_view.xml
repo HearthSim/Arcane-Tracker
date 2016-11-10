@@ -22,7 +22,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Deck Name:"
+                android:text="@string/deckName"
                 android:textColor="#000"
                 android:textStyle="bold" />
 
@@ -43,7 +43,7 @@
             android:layout_below="@+id/deckName"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:text="Class"
+            android:text="@string/clazz"
             android:textColor="#000"
             android:textStyle="bold" />
 
@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|bottom"
                 android:backgroundTint="@color/colorPrimary"
-                android:text="Create Deck" />
+                android:text="@string/createDeck" />
         </FrameLayout>
     </RelativeLayout>
 
