@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:textSize="18sp"
-            android:text="@string/deleteConfirm"
+            android:text="@string/resetConfirm"
             android:textColor="#000" />
 
         <Button
@@ -30,14 +30,14 @@
             android:textColor="@color/colorPrimary" />
 
         <Button
-            android:id="@+id/deleteButton"
+            android:id="@+id/resetButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/textView"
             android:backgroundTint="@color/colorPrimary"
-            android:text="@string/delete"
+            android:text="@string/reset"
             android:textColor="#fff" />
     </RelativeLayout>
 

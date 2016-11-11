@@ -1,16 +1,11 @@
 package net.mbonnin.arcanetracker;
 
-import com.google.firebase.crash.FirebaseCrash;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import timber.log.Timber;
-
-import static net.mbonnin.arcanetracker.MainActivity.HEARTHSTONE_FILES_DIR;
 
 /**
  * Created by martin on 10/27/16.
@@ -109,7 +104,7 @@ public class Parser {
             }
         } else if (matcher4.matches()) {
             String cardId = matcher4.group(1);
-            Card card = ArcaneTrackerApplication.getCard(cardId);
+            Card card = CardDb.getCard(cardId);
             if (!deck.cards.containsKey(cardId)) {
                 if (card.collectible) {
                     deck.addCard(cardId, 1);
@@ -229,7 +224,7 @@ public class Parser {
                 } else if (line.startsWith("FULL_ENTITY - Updating ")) {
                     HashMap<String, String> map = arrayParams(line);
                     if (map.containsKey("cardId") && map.containsKey("player")) {
-                        Card card = ArcaneTrackerApplication.getCard(map.get("cardId"));
+                        Card card = CardDb.getCard(map.get("cardId"));
                         Player player = indexToPlayer.get(map.get("player"));
                         if (player != null && card.type.equals(Card.TYPE_HERO)) {
                             player.heroId = map.get("cardId");
