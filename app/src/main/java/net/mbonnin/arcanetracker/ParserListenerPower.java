@@ -71,7 +71,7 @@ public class ParserListenerPower implements PowerParser.Listener {
 
             int score = deckScore(candidateDeck, classIndex, initialCards);
 
-            Timber.i("Deck selection " + deck.name + " has score " + score);
+            Timber.i("Deck selection " + candidateDeck.name + " has score " + score);
             if (score > maxScore) {
                 bestDeck = candidateDeck;
                 maxScore = score;
