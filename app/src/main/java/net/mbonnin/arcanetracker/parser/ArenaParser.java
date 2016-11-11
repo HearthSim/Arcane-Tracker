@@ -1,10 +1,6 @@
 package net.mbonnin.arcanetracker.parser;
 
-import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
 import net.mbonnin.arcanetracker.Card;
-import net.mbonnin.arcanetracker.Deck;
-import net.mbonnin.arcanetracker.DeckList;
-import net.mbonnin.arcanetracker.MainViewCompanion;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,7 +20,7 @@ public class ArenaParser {
 
     public interface Listener {
         void clear();
-        void heroDetected(int classIndex);
+        void arenaDraftStarted(int classIndex);
         void addCard(String cardId);
         void addIfNotAlreadyThere(String cardId);
     }
@@ -50,7 +46,7 @@ public class ArenaParser {
 
         matcher = DraftManager$OnChose.matcher(line);
         if (matcher.matches()) {
-            mListener.heroDetected(Card.heroIdToClassIndex(matcher.group(1)));
+            mListener.arenaDraftStarted(Card.heroIdToClassIndex(matcher.group(1)));
             return;
         }
 

@@ -1,43 +1,83 @@
 package net.mbonnin.arcanetracker.parser;
 
-import android.text.TextUtils;
-
-import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
 import net.mbonnin.arcanetracker.Card;
 import net.mbonnin.arcanetracker.CardDb;
-import net.mbonnin.arcanetracker.Utils;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * Created by martin on 11/7/16.
  */
 public class Player {
+    public Entity entity;
+    public String battleTag;
+    public boolean isOpponent;
+    public boolean hasCoin;
+
+    public Entity hero;
+    public Entity heroPower;
+    /**
+     * cards that are drawn from the deck
+     */
+    public ArrayList<Entity> guessedCards;
 
     public int classIndex() {
         Card card = CardDb.getCard(hero.CardID);
         return Card.playerClassToClassIndex(card.playerClass);
     }
 
+    public ArrayList<Entity> zone(String zoneId) {
+        ArrayList<Entity> zone = zoneMap.get(zoneId);
+        if (zone == null) {
+            zone = new ArrayList<>();
+            zoneMap.put(zoneId, zone);
+        }
+
+        return zone;
+    }
+
+    public void notifyListeners() {
+        Iterator<WeakReference<Listener>> it = listeners.iterator();
+
+        while (it.hasNext()) {
+            WeakReference<Listener> ref = it.next();
+            Listener listener = ref.get();
+            if (listener == null) {
+                it.remove();
+            } else {
+                listener.onPlayerStateChanged();
+            }
+        }
+    }
+
+    public void registerListener(Listener listener) {
+        listeners.add(new WeakReference<Listener>(listener));
+    }
+
+    public void unregisterListener(Listener listener) {
+        Iterator<WeakReference<Listener>> it = listeners.iterator();
+
+        while (it.hasNext()) {
+            if (it.next() == listener) {
+                it.remove();
+            }
+        }
+    }
     public interface Listener {
         void onPlayerStateChanged();
     }
 
-    public PlayerEntity entity;
-    public String battleTag;
-    public boolean isOpponent;
-    public boolean hasCoin;
+    private HashMap<String, ArrayList<Entity>> zoneMap = new HashMap<>();
 
-    public CardEntity hero;
-    public CardEntity heroPower;
-
-    public ArrayList<CardEntity> cards = new ArrayList<>();
+    public ArrayList<Entity> entities = new ArrayList<>();
 
     public void reset() {
-        cards.clear();
+        entities.clear();
     }
 
-    public ArrayList<Listener> listeners = new ArrayList<>();
+    public ArrayList<WeakReference<Listener>> listeners = new ArrayList<>();
 
 }

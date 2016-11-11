@@ -2,12 +2,12 @@ package net.mbonnin.arcanetracker.adapter;
 
 import android.text.TextUtils;
 
-import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
 import net.mbonnin.arcanetracker.Card;
 import net.mbonnin.arcanetracker.Deck;
 import net.mbonnin.arcanetracker.Settings;
 import net.mbonnin.arcanetracker.Utils;
 import net.mbonnin.arcanetracker.parser.CardEntity;
+import net.mbonnin.arcanetracker.parser.Entity;
 import net.mbonnin.arcanetracker.parser.Player;
 
 import java.util.ArrayList;
@@ -38,16 +38,16 @@ public class PlayerController implements Player.Listener {
             return;
         }
 
-        ArrayList<CardEntity> activeCards;
+        ArrayList<Entity> activeCards;
         if (mPlayer == null) {
             activeCards = new ArrayList<>();
         } else {
-            activeCards = mPlayer.cards;
+            activeCards = mPlayer.entities;
         }
         /**
          * add cards to the deck if needed
          */
-        if (Settings.get(Settings.AUTO_ADD_CARDS, true)) {
+        if (Settings.get(Settings.AUTO_ADD_CARDS, true) && Utils.cardMapTotal(mDeck.cards) >= Deck.MAX_CARDS) {
             HashMap<String, Integer> knownCards = Utils.filterCollectibleCards(activeCards);
 
             /**
@@ -63,7 +63,7 @@ public class PlayerController implements Player.Listener {
         }
 
         HashMap<String, Integer> map = new HashMap<String, Integer>(mDeck.cards); // we need to deep copy so we don't modify the original deck
-        for (CardEntity cardEntity : activeCards) {
+        for (Entity cardEntity : activeCards) {
             if (!Card.isCollectible(cardEntity.CardID)) {
                 continue;
             }
@@ -95,7 +95,7 @@ public class PlayerController implements Player.Listener {
         }
         mPlayer = player;
         if (mPlayer != null) {
-            mPlayer.listeners.add(this);
+            mPlayer.registerListener(this);
         }
         update();
     }

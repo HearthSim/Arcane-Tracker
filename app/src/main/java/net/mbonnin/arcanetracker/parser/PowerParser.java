@@ -3,6 +3,7 @@ package net.mbonnin.arcanetracker.parser;
 import android.text.TextUtils;
 
 
+import net.mbonnin.arcanetracker.CardDb;
 import net.mbonnin.arcanetracker.Utils;
 
 import java.util.ArrayList;
@@ -18,17 +19,11 @@ import timber.log.Timber;
  */
 
 public class PowerParser {
-    private final Listener mListener;
+    private final GameLogic mGameLogic;
     private LinkedList<Node> mNodeStack = new LinkedList<Node>();
     private Node mCurrentNode;
 
-    public interface Listener {
-        void onGameStart(Game game);
-
-        void onGameEnd(Game game);
-    }
-
-    private Game mCurrentGame;
+    private FlatGame mCurrentGame;
 
     private final Pattern BLOCK_START = Pattern.compile("BLOCK_START BlockType=(.*) Entity=(.*) EffectCardId=(.*) EffectIndex=(.*) Target=(.*)");
     private final Pattern BLOCK_END = Pattern.compile("BLOCK_END");
@@ -56,8 +51,8 @@ public class PowerParser {
         public int depth;
     }
 
-    public PowerParser(String file, Listener listener) {
-        mListener = listener;
+    public PowerParser(String file, GameLogic gameLogic) {
+        mGameLogic = gameLogic;
 
         boolean readPreviousData = false;
         //readPreviousData = true;
@@ -144,149 +139,6 @@ public class PowerParser {
         return map;
     }
 
-    /**
-     * break down the entities to their respective players
-     */
-    private void updateState() {
-        HashMap<String, Entity> entityMap = mCurrentGame.getEntities();
-
-        mCurrentGame.getPlayer("1").reset();
-        mCurrentGame.getPlayer("2").reset();
-
-        for (String key: entityMap.keySet()) {
-            Entity entity = entityMap.get(key);
-
-            if (!(entity instanceof CardEntity)) {
-                continue;
-            }
-            CardEntity cardEntity = (CardEntity)entity;
-
-            String playerId = entity.tags.get("CONTROLLER");
-            String CARDTYPE = entity.tags.get("CARDTYPE");
-
-            if (TextUtils.isEmpty(playerId)) {
-                Timber.e("no player for:");
-                entity.dump();
-                continue;
-            }
-
-            Player player = mCurrentGame.getPlayer(playerId);
-
-            if ("HERO".equals(CARDTYPE)) {
-                player.hero = cardEntity;
-            } else if ("HERO_POWER".equals(CARDTYPE)) {
-                player.heroPower = cardEntity;
-            } else {
-                String zone = entity.tags.get("ZONE");
-                if (TextUtils.isEmpty(zone)) {
-                    Timber.v("unknown zone for:");
-                    entity.dump();
-                    continue;
-                }
-
-                player.cards.add(cardEntity);
-            }
-        }
-
-        for (Player player: mCurrentGame.getPlayerList()) {
-            for (Player.Listener listener: player.listeners) {
-                listener.onPlayerStateChanged();
-            }
-        }
-    }
-
-    private String lookupEntityId(String name) {
-        if (TextUtils.isEmpty(name)) {
-            return lookupUnknown();
-        } else if (name.length() >= 2 && name.charAt(0) == '[' && name.charAt(name.length() - 1) == ']') {
-            HashMap<String, String> params = decodeParams(name.substring(1, name.length() - 1));
-            String id = params.get("id");
-            if (TextUtils.isEmpty(id)) {
-                return lookupUnknown();
-            } else {
-                return id;
-            }
-        } else if ("GameEntity".equals(name)) {
-            return "1";
-        } else {
-            // this must be a battleTag
-            Entity entity = mCurrentGame.getEntityUnsafe(name);
-            if (entity == null) {
-                Timber.w("Adding battleTag " + name);
-                if (mCurrentGame.battleTags.size() >= 2) {
-                    Timber.e("[Inconsistent] too many battleTags");
-                }
-                mCurrentGame.battleTags.add(name);
-
-                entity = new Entity();
-                entity.EntityID = name;
-                mCurrentGame.setEntity(entity);
-            }
-            return name;
-        }
-    }
-
-    private String lookupUnknown() {
-        Entity unknownEntity = mCurrentGame.getEntity("unknown");
-        if (unknownEntity == null) {
-            unknownEntity = new Entity();
-            unknownEntity.EntityID = "unknown";
-            mCurrentGame.setEntity(unknownEntity);
-        }
-        return "unknown";
-    }
-
-    private void detectPlayers() {
-        updateState();
-
-        int knownCardsInHand = 0;
-        int totalCardsInHand = 0;
-        Player player1 = mCurrentGame.getPlayer("1");
-
-        for (CardEntity entity: player1.cards) {
-            if (!"HAND".equals(entity.tags.get("ZONE"))) {
-                continue;
-            }
-            if (!TextUtils.isEmpty(entity.CardID)) {
-                knownCardsInHand++;
-            }
-            totalCardsInHand++;
-        }
-
-        player1.isOpponent = knownCardsInHand < 3;
-        player1.hasCoin = totalCardsInHand > 4;
-
-        Player player2 = mCurrentGame.getPlayer("2");
-        player2.isOpponent = !player1.isOpponent;
-        player2.hasCoin = !player1.hasCoin;
-
-        /**
-         * now try to match a battle tag with a player
-         */
-        for (String battleTag: mCurrentGame.battleTags) {
-            Entity entity = mCurrentGame.getEntity(battleTag);
-            String first = entity.tags.get("FIRST_PLAYER");
-            Player player;
-
-            if ("1".equals(first)) {
-                player = player1.hasCoin ? player2: player1;
-            } else {
-                player = player1.hasCoin ? player1: player2;
-            }
-
-            player.entity.tags.putAll(entity.tags);
-            player.battleTag = battleTag;
-
-            /**
-             * make the battleTag point to the same entity..
-             */
-            Timber.w(battleTag + " now points to entity " + player.entity.EntityID);
-            mCurrentGame.setEntity(battleTag, player.entity);
-        }
-
-        mCurrentGame.player = player1.isOpponent ? player2:player1;
-        mCurrentGame.opponent = player1.isOpponent ? player1:player2;
-    }
 
     private void outputCurrentNode() {
         if (mCurrentNode == null) {
@@ -326,6 +178,28 @@ public class PowerParser {
         }
     }
 
+    private void tagChange(Entity entity, String key, String newValue) {
+        String oldValue = entity.tags.get(Entity.KEY_ZONE);
+        entity.tags.put(key, newValue);
+
+        if (entity.EntityID.equals(Entity.ENTITY_ID_GAME)) {
+            if ("STEP".equals(key)) {
+                if ("BEGIN_MULLIGAN".equals(newValue)) {
+                    mGameLogic.gameStepBeginMulligan();
+                } else if ("FINAL_GAMEOVER".equals(newValue)) {
+                    mGameLogic.gameStepFinalGameover();
+                    mCurrentGame = null;
+                }
+            }
+        } else {
+            if (Entity.KEY_ZONE.equals(key)) {
+                if (!TextUtils.isEmpty(oldValue) && !oldValue.equals(newValue)) {
+                    mGameLogic.zoneChanged(entity, oldValue, newValue);
+                }
+            }
+        }
+
+    }
     private void outputAction(Block block, Node node) {
         String line = node.line;
         Matcher m;
@@ -334,27 +208,26 @@ public class PowerParser {
             if (mCurrentGame != null) {
                 Timber.w("CREATE_GAME during an existing one, resuming");
             } else {
-                mCurrentGame = new Game();
+                mCurrentGame = new FlatGame();
                 for (Node child:node.children) {
                     if ((m = GameEntityPattern.matcher(child.line)).matches()) {
-                        GameEntity entity = new GameEntity();
+                        Entity entity = new Entity();
                         entity.EntityID = m.group(1);
                         entity.tags.putAll(getTags(child));
 
-                        mCurrentGame.entity = entity;
-                        mCurrentGame.setEntity(entity);
+                        mCurrentGame.entityMap.put(entity.EntityID, entity);
                     } else if ((m = PlayerEntityPattern.matcher(child.line)).matches()) {
                         String PlayerID = m.group(2);
-                        PlayerEntity entity = new PlayerEntity();
+                        Entity entity = new Entity();
                         entity.EntityID = m.group(1);
                         entity.PlayerID = PlayerID;
                         entity.tags.putAll(getTags(child));
 
-                        mCurrentGame.setEntity(entity);
-
-                        mCurrentGame.getPlayer(PlayerID).entity = entity;
+                        mCurrentGame.entityMap.put(entity.EntityID, entity);
                     }
                 }
+
+                mGameLogic.gameCreated(mCurrentGame);
             }
         }
 
@@ -363,60 +236,96 @@ public class PowerParser {
         }
 
         if ((m = TAG_CHANGE.matcher(line)).matches()) {
-            String entityId = lookupEntityId(m.group(1));
+            String entityName = m.group(1);
             String key = m.group(2);
             String value = m.group(3);
 
-            Timber.i("TAG_CHANGE " + entityId + " " + key + "=" + value);
+            Timber.i("TAG_CHANGE " + entityName + " " + key + "=" + value);
             if (!TextUtils.isEmpty(key)) {
-                mCurrentGame.getEntity(entityId).tags.put(key, value);
-
-                if (entityId.equals("1") && "STEP".equals(key)) {
-                    if ("BEGIN_MULLIGAN".equals(value)) {
-                        detectPlayers();
-                        mListener.onGameStart(mCurrentGame);
-                    } else if ("FINAL_GAMEOVER".equals(value)) {
-                        mCurrentGame.victory = "WON".equals(mCurrentGame.player.entity.tags.get("PLAYSTATE"));
-                        mListener.onGameEnd(mCurrentGame);
-                        mCurrentGame = null;
-                    }
-                }
+                Entity entity = findEntityByName(mCurrentGame, entityName);
+                tagChange(entity, key, value);
             }
         } else if ((m = FULL_ENTITY.matcher(line)).matches()) {
             CardEntity entity = new CardEntity();
-            entity.EntityID = lookupEntityId(m.group(1));
+            entity.EntityID = decodeEntityName(m.group(1)).get("id");
             entity.CardID = m.group(2);
             entity.tags.putAll(getTags(node));
 
-            mCurrentGame.setEntity(entity);
-        } else if ((m = SHOW_ENTITY.matcher(line)).matches()) {
-            String entityId = lookupEntityId(m.group(1));
-            Entity entity = mCurrentGame.getEntity(entityId);
-            if (entity instanceof CardEntity) {
-                CardEntity cardEntity = (CardEntity)entity;
-                String CardID = m.group(2);
-                if (!TextUtils.isEmpty(cardEntity.CardID) && !cardEntity.CardID.equals(CardID)) {
-                    Timber.e("[Inconsistent] entity " + entityId + " changed cardId " + cardEntity.CardID + " -> " + CardID);
-                }
-                cardEntity.CardID = CardID;
-                entity.tags.putAll(getTags(node));
-            } else {
-                Timber.e("not a CardEntity ?");
-                entity.dump();
-            }
-            updateState();
-        } else if ((m = HIDE_ENTITY.matcher(line)).matches()) {
-            String entityId = lookupEntityId(m.group(1));
-            Entity entity = mCurrentGame.getEntity(entityId);
+            mCurrentGame.entityMap.put(entity.EntityID, entity);
 
-            String key = m.group(2);
-            if (!TextUtils.isEmpty(key)) {
-                entity.tags.put(key, m.group(3));
+            mGameLogic.entityCreated(entity);
+
+        } else if ((m = SHOW_ENTITY.matcher(line)).matches()) {
+            Entity entity = findEntityByName(mCurrentGame, m.group(1));
+            String CardID = m.group(2);
+            if (!TextUtils.isEmpty(entity.CardID) && !entity.CardID.equals(CardID)) {
+                Timber.e("[Inconsistent] entity " + entity + " changed cardId " + entity.CardID + " -> " + CardID);
             }
-            updateState();
+            entity.CardID = CardID;
+            entity.card = CardDb.getCard(CardID);
+
+            HashMap<String, String> newTags = getTags(node);
+            for (String key:newTags.keySet()) {
+                tagChange(entity, key, newTags.get(key));
+
+            }
+
+            mGameLogic.entityRevealed(entity);
+        } else if ((m = HIDE_ENTITY.matcher(line)).matches()) {
+            /**
+             * do nothing and rely on tag changes instead
+             */
         }
     }
 
+    private static Entity findEntityByName(FlatGame flatGame, String name) {
+        if (TextUtils.isEmpty(name)) {
+            Timber.e("cannot find entity if name is empty");
+            return new Entity();
+        } else if (name.length() >= 2 && name.charAt(0) == '[' && name.charAt(name.length() - 1) == ']') {
+            String id = decodeEntityName(name).get("id");
+            if (TextUtils.isEmpty(id)) {
+                Timber.e("cannot find entity if name is emptybadly formated entity " + name);
+                return new Entity();
+            } else {
+                return findEntity(flatGame, name);
+            }
+        } else if ("GameEntity".equals(name)) {
+            return findEntity(flatGame, Entity.ENTITY_ID_GAME);
+        } else {
+            // this must be a battleTag
+            Entity entity = flatGame.entityMap.get(name);
+            if (entity == null) {
+                Timber.w("Adding battleTag " + name);
+                if (flatGame.battleTags.size() >= 2) {
+                    Timber.e("[Inconsistent] too many battleTags");
+                }
+                flatGame.battleTags.add(name);
+
+                entity = new Entity();
+                entity.EntityID = name;
+                flatGame.entityMap.put(name, entity);
+            }
+            return entity;
+        }
+    }
+
+    private static HashMap<String,String> decodeEntityName(String name) {
+        return decodeParams(name.substring(1, name.length() - 1));
+    }
+
+    private static Entity findEntity(FlatGame flatGame, String entityId) {
+        Entity entity = flatGame.entityMap.get(entityId);
+
+        if (entity == null){
+            /**
+             * do not crash...
+             */
+            Timber.e("unknown entity " + entityId);
+            return new Entity();
+        }
+        return entity;
+    }
 
     private static HashMap<String, String> decodeParams(String params) {
         int end = params.length();

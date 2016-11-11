@@ -10,6 +10,7 @@ import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
 import net.mbonnin.arcanetracker.parser.ArenaParser;
+import net.mbonnin.arcanetracker.parser.GameLogic;
 import net.mbonnin.arcanetracker.parser.LoadingScreenParser;
 import net.mbonnin.arcanetracker.parser.PowerParser;
 
@@ -78,9 +79,11 @@ public class ArcaneTrackerApplication extends Application {
 
         CardDb.init();
 
-        new ArenaParser(Utils.getHearthstoneLogsDir() + "Arena.log", ParserListenerArena.get());
+        new ArenaParser(Utils.getHearthstoneLogsDir() + "Arena.log", new ParserListenerArena());
         new LoadingScreenParser(Utils.getHearthstoneLogsDir() + "LoadingScreen.log", ParserListenerLoadingScreen.get());
-        new PowerParser(Utils.getHearthstoneLogsDir() + "Power.log", ParserListenerPower.get());
+
+        GameLogic gameLogic = new GameLogic(new ParserListenerPower());
+        new PowerParser(Utils.getHearthstoneLogsDir() + "Power.log", gameLogic);
     }
 
     public static Context getContext() {

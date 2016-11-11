@@ -160,7 +160,8 @@ public class LogReader implements Runnable {
                     String finalLine = line.substring(19);
 
                     if (seconds < mLastSeconds) {
-                        Timber.e("Time going backwards ? %d < %d", seconds, mLastSeconds);
+                        Timber.e("Time going backwards ? %s < %s", getTimeStr(seconds), getTimeStr(mLastSeconds));
+                        Timber.e(mLog);
                     }
                     mLastSeconds = seconds;
 
