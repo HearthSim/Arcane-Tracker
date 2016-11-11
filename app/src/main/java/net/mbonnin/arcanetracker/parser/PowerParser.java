@@ -3,6 +3,8 @@ package net.mbonnin.arcanetracker.parser;
 import android.text.TextUtils;
 
 
+import net.mbonnin.arcanetracker.Utils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -28,8 +30,6 @@ public class PowerParser {
 
     private Game mCurrentGame;
 
-    private final Pattern LINE = Pattern.compile("D ([^ ]*) ([^ ]*) - (.*)");
-
     private final Pattern BLOCK_START = Pattern.compile("BLOCK_START BlockType=(.*) Entity=(.*) EffectCardId=(.*) EffectIndex=(.*) Target=(.*)");
     private final Pattern BLOCK_END = Pattern.compile("BLOCK_END");
 
@@ -41,29 +41,6 @@ public class PowerParser {
     private final Pattern HIDE_ENTITY = Pattern.compile("HIDE_ENTITY - Entity=(.*) tag=(.*) value=(.*)");
     private final Pattern TAG_CHANGE = Pattern.compile("TAG_CHANGE Entity=(.*) tag=(.*) value=(.*)");
     private final Pattern TAG = Pattern.compile("tag=(.*) value=(.*)");
-
-    public PowerParser(String file, Listener listener) {
-        mListener = listener;
-
-        boolean readPreviousData = false;
-        //readPreviousData = true;
-        new LogReader(file, line -> parsePowerLine(line), readPreviousData);
-    }
-
-    private void parsePowerLine(String line) {
-        Matcher m;
-
-        m = LINE.matcher(line);
-        if (!m.matches()) {
-            Timber.e("invalid line: " + line);
-            return;
-        }
-
-        String tag = m.group(2);
-        if (tag.equals("PowerTaskList.DebugPrintPower()")) {
-            parsePowerTaskList(m.group(3));
-        }
-    }
 
     static class Block {
         String blockType;
@@ -79,7 +56,29 @@ public class PowerParser {
         public int depth;
     }
 
-    void parsePowerTaskList(String line) {
+    public PowerParser(String file, Listener listener) {
+        mListener = listener;
+
+        boolean readPreviousData = false;
+        //readPreviousData = true;
+        new LogReader(file, (seconds, line) -> parsePowerLine(seconds, line), readPreviousData);
+    }
+
+
+    private void parsePowerLine(int seconds, String line) {
+        String s[] = Utils.extractMethod(line);
+
+        if (s == null) {
+            Timber.e("Cannot parse line: " + line);
+            return;
+        }
+
+        if (!"PowerTaskList.DebugPrintPower()".equals(s[0])) {
+            return;
+        }
+
+        line = s[1];
+
         Timber.v("PowerTaskList" + line);
 
         int spaces = 0;

@@ -106,6 +106,23 @@ public class Utils {
         return getHearthstoneFilesDir() + "Logs/";
     }
 
+    public static String[] extractMethod(String line) {
+        int i = line.indexOf('-');
+        if (i < 2 || i >= line.length() - 2) {
+            return null;
+        }
+
+        if (line.charAt(i -1) != ' ' || line.charAt(i + 1) != ' ') {
+            return null;
+        }
+
+        String r[] = new String[2];
+        r[0] = line.substring(0, i - 1);
+        r[1] = line.substring(i + 2);
+
+        return r;
+    }
+
     public static class DummyObserver<T> extends rx.Subscriber<T> {
         @Override
         public void onCompleted() {

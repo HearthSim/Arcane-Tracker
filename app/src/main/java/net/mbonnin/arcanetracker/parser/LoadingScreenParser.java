@@ -25,13 +25,13 @@ public class LoadingScreenParser {
          * or arena screen already (and not in main menu)
          */
         mListener = listener;
-        new LogReader(file, line -> parseLoadingScreen(line), true);
+        new LogReader(file, (seconds, line) -> parseLoadingScreen(line), true);
     }
 
     private void parseLoadingScreen(String line) {
         Timber.v(line);
 
-        Pattern pattern = Pattern.compile(".* LoadingScreen.OnSceneLoaded\\(\\) - prevMode=(.*) currMode=(.*)");
+        Pattern pattern = Pattern.compile("LoadingScreen.OnSceneLoaded\\(\\) - prevMode=(.*) currMode=(.*)");
         Matcher matcher = pattern.matcher(line);
         if (matcher.matches()) {
             String prevMode = matcher.group(1);
