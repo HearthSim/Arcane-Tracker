@@ -3,7 +3,6 @@ package net.mbonnin.arcanetracker;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +33,7 @@ public class DeckAdapter extends RecyclerView.Adapter implements Deck.Listener {
         entryList.clear();
         for (Map.Entry<String, Integer> entry: mDeck.cards.entrySet()) {
             DeckEntry deckEntry = new DeckEntry();
-            deckEntry.card = ArcaneTrackerApplication.getCard(entry.getKey());
+            deckEntry.card = CardDb.getCard(entry.getKey());
             deckEntry.inDeck = entry.getValue();
             entryList.add(deckEntry);
         }
