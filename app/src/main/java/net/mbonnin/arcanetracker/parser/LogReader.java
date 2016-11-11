@@ -3,16 +3,12 @@ package net.mbonnin.arcanetracker.parser;
 import android.os.Handler;
 
 
-import net.mbonnin.arcanetracker.MainActivity;
 import net.mbonnin.arcanetracker.Utils;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.regex.Matcher;
 
 import timber.log.Timber;
 
@@ -26,9 +22,10 @@ public class LogReader implements Runnable {
     private boolean mReadPreviousData;
     private boolean mCanceled;
     private Listener mListener;
+    private int mLastSeconds;
 
     interface Listener {
-        void onLine(String line);
+        void onLine(int seconds, String line);
     }
 
     public LogReader(String log, Listener listener, boolean readPreviousData) {
@@ -39,10 +36,35 @@ public class LogReader implements Runnable {
         mReadPreviousData = readPreviousData;
         Thread thread = new Thread(this);
         thread.start();
+
     }
 
     public void cancel() {
         mCanceled = true;
+    }
+
+    private static int getSeconds(String time) {
+        String a[] = time.split(":");
+        if (a.length < 3) {
+            Timber.e("bad time" + time);
+            return 0;
+        }
+
+        int sec = 0;
+        sec += Integer.parseInt(a[0]) * 3600;
+        sec += Integer.parseInt(a[1]) * 60;
+        sec += Float.parseFloat(a[2]);
+
+        return sec;
+    }
+
+    private static String getTimeStr(int seconds) {
+        int hours = seconds / 3600;
+        seconds = seconds % 3600;
+        int min = seconds / 60;
+        seconds = seconds % 60;
+
+        return String.format("%02d:%02d:%02d", hours, min, seconds);
     }
 
     @Override
@@ -50,22 +72,25 @@ public class LogReader implements Runnable {
         File file = new File(mLog);
 
         /**
-         * stupid workaround...
+         * stupid workaround for the debugger....
+         * If we don't sleep here and put breakpoints in the parser code, it gets executed while the MainActivity is destroying and the OS kill us for ANR
          */
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (Utils.isAppDebuggable()) {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         long lastSize;
-        BufferedReader br;
+        MyVeryOwnReader myReader;
         while (!mCanceled) {
             /**
              * try to open file
              */
             try {
-                br = new BufferedReader(new FileReader(file));
+                myReader = new MyVeryOwnReader(file);
             } catch (FileNotFoundException e) {
                 //e.printStackTrace();
                 try {
@@ -80,22 +105,15 @@ public class LogReader implements Runnable {
             lastSize = file.length();
 
             if (!mReadPreviousData) {
-                /**
-                 * consume all the previous line data
-                 */
-                while (!mCanceled) {
-                    try {
-                        line = br.readLine();
-                    } catch (IOException e) {
-                        Timber.e(e);
-                    }
-                    if (line == null) {
-                        break;
-                    }
+                try {
+                    myReader.skip(lastSize);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
                 /**
-                 * assume the file has been truncated to 0 and it's safe to read all the previous data (not sure about that)
+                 * Next time we come, it is that the file the file has been truncated.
+                 * Assume it has been truncated to 0 and it's safe to read all the previous data (not sure about that)
                  */
                 mReadPreviousData = true;
             }
@@ -107,11 +125,11 @@ public class LogReader implements Runnable {
                      * somehow someone truncated the file... do what we can
                      */
                     String w = String.format("truncated file ? (%s) [%d -> %d]", mLog, lastSize, size);
-                    Utils.reportNonFatal(new Exception(w));
+                    Utils.reportNonFatal(new TruncatedFileException(w));
                     break;
                 }
                 try {
-                    line = br.readLine();
+                    line = myReader.readLine();
                 } catch (IOException e) {
                     Timber.e(e);
                     try {
@@ -131,16 +149,28 @@ public class LogReader implements Runnable {
                         Timber.e(e);
                     }
                 } else {
-                    String finalLine = line;
-                    mHandler.post(() -> mListener.onLine(finalLine));
+                    Matcher m;
+
+                    // parse the beginning of line: "D 15:24:25.6488220 "
+                    if (line.length() < 19) {
+                        Timber.e("invalid line: " + line);
+                        return;
+                    }
+
+
+                    int seconds = getSeconds(line.substring(2, 10));
+                    String finalLine = line.substring(19);
+
+                    if (seconds < mLastSeconds) {
+                        Timber.e("Time going backwards ? %d < %d", seconds, mLastSeconds);
+                    }
+                    mLastSeconds = seconds;
+
+                    mHandler.post(() -> mListener.onLine(seconds, finalLine));
                 }
             }
 
-            try {
-                br.close();
-            } catch (IOException e) {
-                Timber.e(e);
-            }
+            myReader.close();
         }
     }
 }
