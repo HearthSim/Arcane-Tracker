@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
 import net.mbonnin.arcanetracker.Card;
+import net.mbonnin.arcanetracker.CardDb;
 import net.mbonnin.arcanetracker.Deck;
 import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Utils;
@@ -40,7 +41,7 @@ public class DeckAdapter extends RecyclerView.Adapter implements Deck.Listener {
         entryList.clear();
         for (Map.Entry<String, Integer> entry: mDeck.cards.entrySet()) {
             BarItem deckEntry = new BarItem();
-            deckEntry.card = ArcaneTrackerApplication.getCard(entry.getKey());
+            deckEntry.card = CardDb.getCard(entry.getKey());
             deckEntry.count = entry.getValue();
             entryList.add(deckEntry);
         }

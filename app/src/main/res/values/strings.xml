@@ -72,4 +72,5 @@
     <string name="trackobotNetworkError">Network error while uploading to Track-o-bot</string>
     <string name="trackobotError">Could not upload to Track-o-bot :-(</string>
     <string name="trackobotSuccess">Game uploaded to Track-o-bot</string>
+    <string name="waitingForCards">Downloading Cards...</string>
 </resources>
