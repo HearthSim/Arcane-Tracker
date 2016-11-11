@@ -1,6 +1,5 @@
 package net.mbonnin.arcanetracker;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.v7.widget.RecyclerView;
@@ -14,11 +13,9 @@ import android.widget.TextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.regex.Pattern;
+import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -26,6 +23,7 @@ import timber.log.Timber;
  * Created by martin on 10/21/16.
  */
 public class CardsAdapter extends RecyclerView.Adapter {
+    private final String mLanguage;
     private int mClassIndex;
     private ArrayList<Card> mCardList = new ArrayList<>();
     private Listener mListener;
@@ -36,6 +34,18 @@ public class CardsAdapter extends RecyclerView.Adapter {
     public void setCost(int cost) {
         mCost = cost;
         filter();
+    }
+
+    public CardsAdapter() {
+        String locale = Locale.getDefault().getLanguage().toLowerCase();
+
+        if (locale.contains("fr")) {
+            mLanguage = "frfr";
+        } else if (locale.contains("ru")) {
+            mLanguage = "ruru";
+        } else {
+            mLanguage = "enus";
+        }
     }
 
     public void setDisabledCards(ArrayList<String> list) {
@@ -102,7 +112,7 @@ public class CardsAdapter extends RecyclerView.Adapter {
 
     private void filter() {
         mCardList.clear();
-        ArrayList<Card> allCards = ArcaneTrackerApplication.getCards();
+        ArrayList<Card> allCards = CardDb.getCards();
 
         String playerClass = Card.classIndexToPlayerClass(mClassIndex);
         for (Card card : allCards) {
@@ -166,7 +176,7 @@ public class CardsAdapter extends RecyclerView.Adapter {
         ImageView imageView = (ImageView) holder.itemView.findViewById(R.id.imageView);
         TextView textView = (TextView) holder.itemView.findViewById(R.id.textView);
 
-        String baseUrl = "http://vps208291.ovh.net/cards/enus/";
+        String baseUrl = "http://vps208291.ovh.net/cards/" + mLanguage + "/";
         //String baseUrl = "http://wow.zamimg.com/images/hearthstone/cards/enus/original/";
         Card card = mCardList.get(position);
         String url = baseUrl + card.id + ".png";
