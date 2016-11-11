@@ -121,7 +121,7 @@ public class Card implements Comparable<String> {
     }
 
     public static boolean isCollectible(String cardId) {
-        Card card = ArcaneTrackerApplication.getCard(cardId);
+        Card card = CardDb.getCard(cardId);
         if (card.collectible == null || !card.collectible) {
             return false;
         }

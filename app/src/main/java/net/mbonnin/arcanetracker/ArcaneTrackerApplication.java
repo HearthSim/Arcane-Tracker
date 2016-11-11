@@ -81,18 +81,8 @@ public class ArcaneTrackerApplication extends Application {
         new ArenaParser(Utils.getHearthstoneLogsDir() + "Arena.log", ParserListenerArena.get());
         new LoadingScreenParser(Utils.getHearthstoneLogsDir() + "LoadingScreen.log", ParserListenerLoadingScreen.get());
         new PowerParser(Utils.getHearthstoneLogsDir() + "Power.log", ParserListenerPower.get());
-
-        Parser.get();
     }
-
-    public static void clearPicassoCache() {
-        try {
-            sPicassoClient.cache().evictAll();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
+    
     public static Context getContext() {
         return sContext;
     }
