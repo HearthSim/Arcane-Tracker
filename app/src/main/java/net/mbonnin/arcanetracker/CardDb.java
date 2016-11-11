@@ -54,6 +54,7 @@ public class CardDb {
             }
         }
     };
+    private static boolean sReady;
 
     static void storeCards(String cards) {
         synchronized (lock) {
@@ -61,7 +62,12 @@ public class CardDb {
             }.getType());
             Collections.sort(list, (a, b) -> a.id.compareTo(b.id));
             sCardList = list;
+            sReady = true;
         }
+    }
+
+    public static boolean isReady() {
+        return sReady;
     }
 
 
