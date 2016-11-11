@@ -149,8 +149,6 @@ public class LogReader implements Runnable {
                         Timber.e(e);
                     }
                 } else {
-                    Matcher m;
-
                     // parse the beginning of line: "D 15:24:25.6488220 "
                     if (line.length() < 19) {
                         Timber.e("invalid line: " + line);

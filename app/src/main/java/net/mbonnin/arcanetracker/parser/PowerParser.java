@@ -417,23 +417,6 @@ public class PowerParser {
         }
     }
 
-    private static HashMap<String, String> allParams(String line) {
-        HashMap<String, String> map = new HashMap<>();
-
-        String result[] = splitLine(line);
-        for (int i = 1; i <= 2; i++) {
-            if (result[i] != null) {
-                HashMap<String, String> map2 = decodeParams(result[i]);
-                for (String key : map2.keySet()) {
-                    if (map2.get(key) != null && !map2.get(key).equals("")) {
-                        map.put(key, map2.get(key));
-                    }
-                }
-            }
-        }
-
-        return map;
-    }
 
     private static HashMap<String, String> decodeParams(String params) {
         int end = params.length();
@@ -474,39 +457,4 @@ public class PowerParser {
 
         return map;
     }
-
-    private static String[] splitLine(String line) {
-        int i = 0;
-        String result[] = new String[3];
-        while (i < line.length() && line.charAt(i) != '[') {
-            i++;
-        }
-        result[0] = line.substring(0, i);
-        if (i == line.length()) {
-            return result;
-        }
-
-        i++;
-        int end = i;
-        while (end < line.length() && line.charAt(end) != ']') {
-            end++;
-        }
-        result[1] = line.substring(i, end);
-        if (end >= line.length() - 1) {
-            return result;
-        }
-        result[2] = line.substring(end + 1, line.length());
-
-        return result;
-    }
-
-    private static HashMap<String, String> arrayParams(String line) {
-        String split[] = splitLine(line);
-        if (split[1] != null) {
-            return decodeParams(split[1]);
-        }
-
-        return new HashMap<>();
-    }
-
 }
