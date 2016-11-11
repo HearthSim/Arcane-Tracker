@@ -1,7 +1,10 @@
 package net.mbonnin.arcanetracker;
 
-import net.mbonnin.arcanetracker.parser.Game;
+import net.mbonnin.arcanetracker.parser.Entity;
+import net.mbonnin.arcanetracker.parser.FlatGame;
+import net.mbonnin.arcanetracker.parser.GameLogic;
 import net.mbonnin.arcanetracker.parser.LoadingScreenParser;
+import net.mbonnin.arcanetracker.parser.Player;
 import net.mbonnin.arcanetracker.parser.PowerParser;
 import net.mbonnin.arcanetracker.trackobot.Result;
 import net.mbonnin.arcanetracker.trackobot.ResultData;
@@ -16,36 +19,28 @@ import timber.log.Timber;
 /**
  * Created by martin on 11/7/16.
  */
-public class ParserListenerPower implements PowerParser.Listener {
-    static ParserListenerPower sParserListenerPower;
-    static ParserListenerPower get() {
-        if (sParserListenerPower == null) {
-            sParserListenerPower = new ParserListenerPower();
-        }
-
-        return sParserListenerPower;
-    }
+public class ParserListenerPower implements GameLogic.Listener {
 
     @Override
-    public void onGameStart(Game game) {
-        Timber.w("onGameStart");
+    public void onGameStarted(GameLogic gameLogic) {
+        Timber.w("onGameStarted");
 
         Deck deck = MainViewCompanion.getPlayerCompanion().getDeck();
         if (Settings.get(Settings.AUTO_SELECT_DECK, true)) {
             if (ParserListenerLoadingScreen.get().getMode() == LoadingScreenParser.MODE_ARENA) {
                 deck = DeckList.getArenaDeck();
             } else {
-                int classIndex = game.player.classIndex();
+                int classIndex = gameLogic.getPlayer().classIndex();
 
-                deck = activateBestDeck(classIndex, Utils.filterCollectibleCards(game.player.cards));
+                deck = activateBestDeck(classIndex, Utils.filterCollectibleCards(gameLogic.getPlayer().zone(Entity.ZONE_HAND)));
             }
         }
 
-        MainViewCompanion.getPlayerCompanion().setDeck(deck, game.player);
+        MainViewCompanion.getPlayerCompanion().setDeck(deck, gameLogic.getPlayer());
 
         DeckList.getOpponentDeck().clear();
-        DeckList.getOpponentDeck().classIndex = game.opponent.classIndex();
-        MainViewCompanion.getOpponentCompanion().setDeck(DeckList.getOpponentDeck(), game.opponent);
+        DeckList.getOpponentDeck().classIndex = gameLogic.getOpponent().classIndex();
+        MainViewCompanion.getOpponentCompanion().setDeck(DeckList.getOpponentDeck(), gameLogic.getOpponent());
     }
 
     private static Deck activateBestDeck(int classIndex, HashMap<String, Integer> initialCards) {
@@ -129,10 +124,10 @@ public class ParserListenerPower implements PowerParser.Listener {
         return matchedCards;
     }
     @Override
-    public void onGameEnd(Game game) {
-        Timber.w("onGameEnd %s", game.victory ? "victory" : "lost");
+    public void onGameEnded(GameLogic gameLogic, boolean victory) {
+        Timber.w("onGameEnd %s", victory ? "victory" : "lost");
         Deck deck = MainViewCompanion.getPlayerCompanion().getDeck();
-        if (game.victory) {
+        if (victory) {
             deck.wins++;
         } else {
             deck.losses++;
@@ -146,16 +141,13 @@ public class ParserListenerPower implements PowerParser.Listener {
                 && Trackobot.get().getUser() != null) {
             ResultData resultData = new ResultData();
             resultData.result = new Result();
-            resultData.result.coin = game.player.hasCoin;
-            resultData.result.win = game.victory;
+            resultData.result.coin = gameLogic.getPlayer().hasCoin;
+            resultData.result.win = victory;
             resultData.result.mode = mode == LoadingScreenParser.MODE_PLAY ? "ranked" : "arena";
-            resultData.result.hero = Trackobot.getHero(game.player.classIndex());
-            resultData.result.opponent = Trackobot.getHero(game.player.classIndex());
+            resultData.result.hero = Trackobot.getHero(gameLogic.getPlayer().classIndex());
+            resultData.result.opponent = Trackobot.getHero(gameLogic.getPlayer().classIndex());
 
             Trackobot.get().sendResult(resultData);
         }
-
-        game.player.listeners.clear();
-        game.opponent.listeners.clear();
     }
 }

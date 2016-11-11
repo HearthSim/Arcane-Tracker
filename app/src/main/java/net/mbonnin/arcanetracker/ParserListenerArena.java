@@ -9,13 +9,6 @@ import timber.log.Timber;
  */
 
 public class ParserListenerArena implements ArenaParser.Listener {
-    static ParserListenerArena sParserListenerArena;
-    public static ParserListenerArena get() {
-        if (sParserListenerArena == null) {
-            sParserListenerArena = new ParserListenerArena();
-        }
-        return sParserListenerArena;
-    }
 
     @Override
     public void clear() {
@@ -25,10 +18,10 @@ public class ParserListenerArena implements ArenaParser.Listener {
     }
 
     @Override
-    public void heroDetected(int classIndex) {
+    public void arenaDraftStarted(int classIndex) {
         Deck deck = DeckList.getArenaDeck();
         deck.classIndex = classIndex;
-        MainViewCompanion.getPlayerCompanion().setDeck(deck, null);
+        MainViewCompanion.getPlayerCompanion().setDeck(deck);
 
     }
 

@@ -18,6 +18,7 @@ import com.google.firebase.crash.FirebaseCrash;
 
 import net.mbonnin.arcanetracker.adapter.BarItem;
 import net.mbonnin.arcanetracker.parser.CardEntity;
+import net.mbonnin.arcanetracker.parser.Entity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -140,9 +141,9 @@ public class Utils {
         }
     }
 
-    public static HashMap<String, Integer> filterCollectibleCards(ArrayList<CardEntity> cards) {
+    public static HashMap<String, Integer> filterCollectibleCards(ArrayList<Entity> cards) {
         HashMap<String, Integer> knownCards = new HashMap<>();
-        for (CardEntity cardEntity : cards) {
+        for (Entity cardEntity : cards) {
             String cardId = cardEntity.CardID;
             if (TextUtils.isEmpty(cardId)) {
                 continue;

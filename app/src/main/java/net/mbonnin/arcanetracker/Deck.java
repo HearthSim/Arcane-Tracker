@@ -21,14 +21,6 @@ public class Deck {
 
     private transient WeakReference<Listener> mListenerRef;
 
-    public int getCountFor(String cardId) {
-        Integer a = cards.get(cardId);
-        if (a == null) {
-            a = 0;
-        }
-
-        return a;
-    }
 
     public void checkClassIndex() {
         for (String cardId: cards.keySet()) {
