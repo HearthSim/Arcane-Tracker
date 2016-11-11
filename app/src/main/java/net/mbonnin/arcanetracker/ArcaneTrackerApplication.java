@@ -82,7 +82,7 @@ public class ArcaneTrackerApplication extends Application {
         new LoadingScreenParser(Utils.getHearthstoneLogsDir() + "LoadingScreen.log", ParserListenerLoadingScreen.get());
         new PowerParser(Utils.getHearthstoneLogsDir() + "Power.log", ParserListenerPower.get());
     }
-    
+
     public static Context getContext() {
         return sContext;
     }
