@@ -74,7 +74,7 @@ public class FileTree extends Timber.Tree {
                 e.printStackTrace();
             }
 
-            start = end;
+            start = end + 1;
         }
     }
 

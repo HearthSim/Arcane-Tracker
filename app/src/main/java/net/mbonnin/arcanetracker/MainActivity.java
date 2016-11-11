@@ -3,18 +3,24 @@ package net.mbonnin.arcanetracker;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.view.ContextThemeWrapper;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.firebase.crash.FirebaseCrash;
@@ -33,22 +39,23 @@ public class MainActivity extends AppCompatActivity {
     private Button button;
     private View permissions;
     private CheckBox checkbox;
+    private Handler mHandler;
+    private AlertDialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mHandler = new Handler();
+
         contentView = findViewById(R.id.activity_main);
         button = (Button) findViewById(R.id.button);
         checkbox = (CheckBox) findViewById(R.id.checkbox);
         permissions = findViewById(R.id.permissions);
 
-        if (!Settings.get(Settings.SHOW_NEXT_TIME, true)) {
-            launchGame();
-            return;
-        }
-        checkbox.setChecked(Settings.get(Settings.SHOW_NEXT_TIME, true));
+        boolean showNextTime = Settings.get(Settings.SHOW_NEXT_TIME, true);
+        checkbox.setChecked(Settings.get(Settings.SHOW_NEXT_TIME, showNextTime));
 
         if (hasAllPermissions()) {
             permissions.setVisibility(View.GONE);
@@ -60,6 +67,11 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(v -> {
             tryToLaunchGame();
         });
+
+        if (!showNextTime) {
+            tryToLaunchGame();
+            return;
+        }
     }
 
     private boolean hasAllPermissions() {
@@ -96,18 +108,47 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void tryToLaunchGame() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            launchGame();
-        } else if (checkCallingOrSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                || checkCallingOrSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_PERMISSIONS);
-        } else if (!android.provider.Settings.canDrawOverlays(this)) {
-            Intent intent2 = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
-            startActivityForResult(intent2, REQUEST_CODE_GET_OVERLAY_PERMISSIONS);
-        } else {
-            launchGame();
+    Runnable mCardDbRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+            if (CardDb.isReady()) {
+                if (mDialog != null) {
+                    mDialog.dismiss();
+                }
+                launchGame();
+            } else {
+                mHandler.postDelayed(this, 500);
+            }
         }
+    };
+
+    private void tryToLaunchGame() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkCallingOrSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                    || checkCallingOrSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_PERMISSIONS);
+                return;
+            } else if (!android.provider.Settings.canDrawOverlays(this)) {
+                Intent intent2 = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent2, REQUEST_CODE_GET_OVERLAY_PERMISSIONS);
+                return;
+            }
+        }
+
+        if (!CardDb.isReady()) {
+            Context context = new ContextThemeWrapper(this, R.style.AppThemeLight);
+            View view = LayoutInflater.from(context).inflate(R.layout.waiting_cards_view, null);
+            mDialog = new AlertDialog.Builder(context)
+                    .setCancelable(false)
+                    .setView(view)
+                    .show();
+
+            mCardDbRunnable.run();
+            return;
+        }
+
+        launchGame();
     }
 
     private void launchGame() {
@@ -126,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                     if (read == -1) {
                         break;
                     } else if (read > 0) {
-                        outputStream.write(buffer, 0,read);
+                        outputStream.write(buffer, 0, read);
                     }
                 }
             } catch (Exception e) {
@@ -139,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
                 List<ActivityManager.RunningAppProcessInfo> runningAppProcessInfo = am.getRunningAppProcesses();
 
                 for (int i = 0; i < runningAppProcessInfo.size(); i++) {
-                    if(runningAppProcessInfo.get(i).processName.equals(HEARTHSTONE_PACKAGE_ID)) {
+                    if (runningAppProcessInfo.get(i).processName.equals(HEARTHSTONE_PACKAGE_ID)) {
                         Toast.makeText(this, "Hearthstone was already running, you might have to kill it and restart it", Toast.LENGTH_LONG).show();
                     }
                 }

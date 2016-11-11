@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_height="wrap_content"
-                android:text="Search:"
+                android:text="@string/search"
                 android:textColor="#000" />
 
             <EditText
@@ -57,7 +57,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Cost: "
+                android:text="@string/cost"
                 android:textColor="#000" />
 
             <net.mbonnin.arcanetracker.ManaSelectionView
@@ -98,7 +98,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorPrimary"
-            android:text="DONE"
+            android:text="@string/done"
             android:textColor="#fff" />
 
 

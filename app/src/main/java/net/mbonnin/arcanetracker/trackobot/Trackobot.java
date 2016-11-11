@@ -11,8 +11,12 @@ import com.google.gson.Gson;
 
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
 import net.mbonnin.arcanetracker.Card;
+import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Utils;
 
+import java.io.IOException;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 import io.paperdb.Paper;
@@ -21,6 +25,7 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.HttpException;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observer;
@@ -71,13 +76,27 @@ public class Trackobot {
 
         @Override
         public void onError(Throwable e) {
-            Toast.makeText(ArcaneTrackerApplication.getContext(), "Could not upload to Track-o-bot :-(", Toast.LENGTH_LONG).show();
+            String message;
+            Context context = ArcaneTrackerApplication.getContext();
+            if (e instanceof HttpException) {
+                message = context.getString(R.string.trackobotHttpError, ((HttpException) e).code());
+            } else if (e instanceof SocketTimeoutException) {
+                message = context.getString(R.string.trackobotTimeout);
+            } else if (e instanceof ConnectException) {
+                message = context.getString(R.string.trackobotConnectError);
+            } else if (e instanceof IOException) {
+                message = context.getString(R.string.trackobotNetworkError);
+            } else {
+                message = context.getString(R.string.trackobotError);
+            }
+            Toast.makeText(ArcaneTrackerApplication.getContext(), message, Toast.LENGTH_LONG).show();
             Utils.reportNonFatal(e);
         }
 
         @Override
         public void onNext(ResultData resultData) {
-            Toast.makeText(ArcaneTrackerApplication.getContext(), "Game uploaded to Track-o-bot", Toast.LENGTH_LONG).show();
+            Context context = ArcaneTrackerApplication.getContext();
+            Toast.makeText(ArcaneTrackerApplication.getContext(), context.getString(R.string.trackobotSuccess), Toast.LENGTH_LONG).show();
         }
     }
 
