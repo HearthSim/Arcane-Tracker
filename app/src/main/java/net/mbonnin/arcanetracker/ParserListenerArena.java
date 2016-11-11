@@ -42,7 +42,7 @@ public class ParserListenerArena implements ArenaParser.Listener {
     @Override
     public void addIfNotAlreadyThere(String cardId) {
         Deck deck = DeckList.getArenaDeck();
-        Card card = ArcaneTrackerApplication.getCard(cardId);
+        Card card = CardDb.getCard(cardId);
         if (!deck.cards.containsKey(cardId)) {
             if (card.collectible) {
                 deck.addCard(cardId, 1);

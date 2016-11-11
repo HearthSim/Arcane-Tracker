@@ -145,7 +145,7 @@ public class Utils {
         ArrayList<BarItem> list = new ArrayList<>();
         for (Map.Entry<String, Integer> entry: map.entrySet()) {
             BarItem deckEntry = new BarItem();
-            deckEntry.card = ArcaneTrackerApplication.getCard(entry.getKey());
+            deckEntry.card = CardDb.getCard(entry.getKey());
             deckEntry.count = entry.getValue();
             list.add(deckEntry);
         }

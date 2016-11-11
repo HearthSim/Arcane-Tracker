@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
 import net.mbonnin.arcanetracker.Card;
+import net.mbonnin.arcanetracker.CardDb;
 import net.mbonnin.arcanetracker.Utils;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import java.util.HashMap;
 public class Player {
 
     public int classIndex() {
-        Card card = ArcaneTrackerApplication.getCard(hero.CardID);
+        Card card = CardDb.getCard(hero.CardID);
         return Card.playerClassToClassIndex(card.playerClass);
     }
 
