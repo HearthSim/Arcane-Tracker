@@ -134,7 +134,6 @@ public class GameLogic {
     public void entityRevealed(Entity entity) {
         Player player = findController(entity);
 
-        player.guessedCards.add(entity);
 
         player.notifyListeners();
     }
