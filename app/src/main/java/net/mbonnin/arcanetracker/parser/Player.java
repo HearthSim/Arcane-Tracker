@@ -19,10 +19,6 @@ public class Player {
 
     public Entity hero;
     public Entity heroPower;
-    /**
-     * cards that are drawn from the deck
-     */
-    public ArrayList<Entity> guessedCards;
 
     public int classIndex() {
         Card card = CardDb.getCard(hero.CardID);

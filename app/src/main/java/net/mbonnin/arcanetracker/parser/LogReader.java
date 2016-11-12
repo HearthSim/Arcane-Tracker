@@ -161,7 +161,7 @@ public class LogReader implements Runnable {
 
                     if (seconds < mLastSeconds) {
                         Timber.e("Time going backwards ? %s < %s", getTimeStr(seconds), getTimeStr(mLastSeconds));
-                        Timber.e(mLog);
+                        Timber.e("on" + mLog);
                     }
                     mLastSeconds = seconds;
 

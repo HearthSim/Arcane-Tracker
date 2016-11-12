@@ -182,7 +182,7 @@ public class PowerParser {
         String oldValue = entity.tags.get(Entity.KEY_ZONE);
         entity.tags.put(key, newValue);
 
-        if (entity.EntityID.equals(Entity.ENTITY_ID_GAME)) {
+        if (Entity.ENTITY_ID_GAME.equals(entity.EntityID)) {
             if ("STEP".equals(key)) {
                 if ("BEGIN_MULLIGAN".equals(newValue)) {
                     mGameLogic.gameStepBeginMulligan();
@@ -267,7 +267,6 @@ public class PowerParser {
             HashMap<String, String> newTags = getTags(node);
             for (String key:newTags.keySet()) {
                 tagChange(entity, key, newTags.get(key));
-
             }
 
             mGameLogic.entityRevealed(entity);
@@ -280,15 +279,13 @@ public class PowerParser {
 
     private static Entity findEntityByName(FlatGame flatGame, String name) {
         if (TextUtils.isEmpty(name)) {
-            Timber.e("cannot find entity if name is empty");
-            return new Entity();
+            return unknownEntity("empty");
         } else if (name.length() >= 2 && name.charAt(0) == '[' && name.charAt(name.length() - 1) == ']') {
             String id = decodeEntityName(name).get("id");
             if (TextUtils.isEmpty(id)) {
-                Timber.e("cannot find entity if name is emptybadly formated entity " + name);
-                return new Entity();
+                return unknownEntity(name);
             } else {
-                return findEntity(flatGame, name);
+                return findEntity(flatGame, id);
             }
         } else if ("GameEntity".equals(name)) {
             return findEntity(flatGame, Entity.ENTITY_ID_GAME);
@@ -321,9 +318,15 @@ public class PowerParser {
             /**
              * do not crash...
              */
-            Timber.e("unknown entity " + entityId);
-            return new Entity();
+            return unknownEntity(entityId);
         }
+        return entity;
+    }
+
+    private static Entity unknownEntity(String entityId) {
+        Timber.e("unknown entity " + entityId);
+        Entity entity = new Entity();
+        entity.EntityID = entityId;
         return entity;
     }
 

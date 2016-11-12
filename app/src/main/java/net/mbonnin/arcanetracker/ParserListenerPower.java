@@ -1,11 +1,8 @@
 package net.mbonnin.arcanetracker;
 
 import net.mbonnin.arcanetracker.parser.Entity;
-import net.mbonnin.arcanetracker.parser.FlatGame;
 import net.mbonnin.arcanetracker.parser.GameLogic;
 import net.mbonnin.arcanetracker.parser.LoadingScreenParser;
-import net.mbonnin.arcanetracker.parser.Player;
-import net.mbonnin.arcanetracker.parser.PowerParser;
 import net.mbonnin.arcanetracker.trackobot.Result;
 import net.mbonnin.arcanetracker.trackobot.ResultData;
 import net.mbonnin.arcanetracker.trackobot.Trackobot;
@@ -32,7 +29,7 @@ public class ParserListenerPower implements GameLogic.Listener {
             } else {
                 int classIndex = gameLogic.getPlayer().classIndex();
 
-                deck = activateBestDeck(classIndex, Utils.filterCollectibleCards(gameLogic.getPlayer().zone(Entity.ZONE_HAND)));
+                deck = activateBestDeck(classIndex, Utils.getKnownOriginalDeckCards(gameLogic.getPlayer().zone(Entity.ZONE_HAND)));
             }
         }
 

@@ -141,7 +141,7 @@ public class Utils {
         }
     }
 
-    public static HashMap<String, Integer> filterCollectibleCards(ArrayList<Entity> cards) {
+    public static HashMap<String, Integer> getKnownOriginalDeckCards(ArrayList<Entity> cards) {
         HashMap<String, Integer> knownCards = new HashMap<>();
         for (Entity cardEntity : cards) {
             String cardId = cardEntity.CardID;

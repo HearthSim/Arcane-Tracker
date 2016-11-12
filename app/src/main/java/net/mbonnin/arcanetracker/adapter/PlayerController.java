@@ -6,7 +6,6 @@ import net.mbonnin.arcanetracker.Card;
 import net.mbonnin.arcanetracker.Deck;
 import net.mbonnin.arcanetracker.Settings;
 import net.mbonnin.arcanetracker.Utils;
-import net.mbonnin.arcanetracker.parser.CardEntity;
 import net.mbonnin.arcanetracker.parser.Entity;
 import net.mbonnin.arcanetracker.parser.Player;
 
@@ -38,18 +37,18 @@ public class PlayerController implements Player.Listener {
             return;
         }
 
-        ArrayList<Entity> activeCards;
+        ArrayList<Entity> entities;
         if (mPlayer == null) {
-            activeCards = new ArrayList<>();
+            entities = new ArrayList<>();
         } else {
-            activeCards = mPlayer.entities;
+            entities = mPlayer.entities;
         }
+
         /**
          * add cards to the deck if needed
          */
-        if (Settings.get(Settings.AUTO_ADD_CARDS, true) && Utils.cardMapTotal(mDeck.cards) >= Deck.MAX_CARDS) {
-            HashMap<String, Integer> knownCards = Utils.filterCollectibleCards(activeCards);
-
+        HashMap<String, Integer> knownCards = Utils.getKnownOriginalDeckCards(entities);
+        if (Settings.get(Settings.AUTO_ADD_CARDS, true) && Utils.cardMapTotal(mDeck.cards) < Deck.MAX_CARDS) {
             /**
              * now add the cards we know to the deck if needed
              */
@@ -63,7 +62,7 @@ public class PlayerController implements Player.Listener {
         }
 
         HashMap<String, Integer> map = new HashMap<String, Integer>(mDeck.cards); // we need to deep copy so we don't modify the original deck
-        for (Entity cardEntity : activeCards) {
+        for (Entity cardEntity : entities) {
             if (!Card.isCollectible(cardEntity.CardID)) {
                 continue;
             }
