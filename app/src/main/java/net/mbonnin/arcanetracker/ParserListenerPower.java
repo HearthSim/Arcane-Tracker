@@ -1,6 +1,7 @@
 package net.mbonnin.arcanetracker;
 
 import net.mbonnin.arcanetracker.parser.Entity;
+import net.mbonnin.arcanetracker.parser.EntityList;
 import net.mbonnin.arcanetracker.parser.GameLogic;
 import net.mbonnin.arcanetracker.parser.LoadingScreenParser;
 import net.mbonnin.arcanetracker.trackobot.Result;
@@ -29,7 +30,14 @@ public class ParserListenerPower implements GameLogic.Listener {
             } else {
                 int classIndex = gameLogic.getPlayer().classIndex();
 
-                deck = activateBestDeck(classIndex, Utils.getKnownOriginalDeckCards(gameLogic.getPlayer().zone(Entity.ZONE_HAND)));
+                /**
+                 * we filter the original deck to remove the coin mainly
+                 */
+                HashMap<String, Integer> map = gameLogic.getPlayer().zone(Entity.ZONE_HAND)
+                        .filter(EntityList.IS_FROM_ORIGINAL_DECK)
+                        .toCardMap();
+
+                deck = activateBestDeck(classIndex, map);
             }
         }
 
@@ -58,7 +66,7 @@ public class ParserListenerPower implements GameLogic.Listener {
         int maxScore = -1;
         Deck bestDeck = null;
 
-        for (Integer i: index) {
+        for (Integer i : index) {
             Deck candidateDeck = DeckList.get().get(i);
 
             int score = deckScore(candidateDeck, classIndex, initialCards);
@@ -103,7 +111,7 @@ public class ParserListenerPower implements GameLogic.Listener {
          *
          * if a card is not in the original deck, increase newCards. At the end, if the total of cards is > 30, the deck is not viable
          */
-        for (String cardId: mulliganCards.keySet()) {
+        for (String cardId : mulliganCards.keySet()) {
             int inDeck = Utils.cardMapGet(deckCards, cardId);
             int inMulligan = Utils.cardMapGet(mulliganCards, cardId);
 
@@ -120,6 +128,7 @@ public class ParserListenerPower implements GameLogic.Listener {
 
         return matchedCards;
     }
+
     @Override
     public void onGameEnded(GameLogic gameLogic, boolean victory) {
         Timber.w("onGameEnd %s", victory ? "victory" : "lost");

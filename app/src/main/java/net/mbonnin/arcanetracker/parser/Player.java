@@ -25,10 +25,10 @@ public class Player {
         return Card.playerClassToClassIndex(card.playerClass);
     }
 
-    public ArrayList<Entity> zone(String zoneId) {
-        ArrayList<Entity> zone = zoneMap.get(zoneId);
+    public EntityList zone(String zoneId) {
+        EntityList zone = zoneMap.get(zoneId);
         if (zone == null) {
-            zone = new ArrayList<>();
+            zone = new EntityList();
             zoneMap.put(zoneId, zone);
         }
 
@@ -66,9 +66,9 @@ public class Player {
         void onPlayerStateChanged();
     }
 
-    private HashMap<String, ArrayList<Entity>> zoneMap = new HashMap<>();
+    private HashMap<String, EntityList> zoneMap = new HashMap<>();
 
-    public ArrayList<Entity> entities = new ArrayList<>();
+    public EntityList entities = new EntityList();
 
     public void reset() {
         entities.clear();

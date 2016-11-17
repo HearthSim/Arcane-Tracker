@@ -183,10 +183,10 @@ public class PowerParser {
         entity.tags.put(key, newValue);
 
         if (Entity.ENTITY_ID_GAME.equals(entity.EntityID)) {
-            if ("STEP".equals(key)) {
-                if ("BEGIN_MULLIGAN".equals(newValue)) {
+            if (Entity.KEY_STEP.equals(key)) {
+                if (Entity.STEP_BEGIN_MULLIGAN.equals(newValue)) {
                     mGameLogic.gameStepBeginMulligan();
-                } else if ("FINAL_GAMEOVER".equals(newValue)) {
+                } else if (Entity.STEP_FINAL_GAMEOVER.equals(newValue)) {
                     mGameLogic.gameStepFinalGameover();
                     mCurrentGame = null;
                 }

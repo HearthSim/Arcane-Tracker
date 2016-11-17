@@ -16,6 +16,7 @@ public class Entity {
     public static final String KEY_CARDTYPE = "CARDTYPE";
     public static final String KEY_FIRST_PLAYER = "FIRST_PLAYER";
     public static final String KEY_PLAYSTATE = "PLAYSTATE";
+    public static final String KEY_STEP = "STEP";
 
     public static final String PLAYSTATE_WON = "WON";
 
@@ -27,11 +28,18 @@ public class Entity {
 
     public static final String ENTITY_ID_GAME = "1";
 
+    public static final String STEP_FINAL_GAMEOVER= "FINAL_GAMEOVER";
+    public static final String STEP_BEGIN_MULLIGAN = "BEGIN_MULLIGAN";
+    public static final String TRUE = "1";
+    public static final String FALSE = "0";
+
     public String EntityID;
     public String CardID; // might be null if the entity is not revealed yet
     public String PlayerID; // only valid for player entities
 
     public HashMap<String, String> tags = new HashMap();
+
+    public static final String EXTRA_KEY_ORIGINAL_DECK = "ORIGINAL_DECK";
 
     /**
      * extra information added by GameLogic

@@ -110,6 +110,10 @@ public class GameLogic {
             player.heroPower = entity;
         } else {
             player.entities.add(entity);
+
+            if (gameEntity.tags.get(Entity.KEY_STEP) == null && Entity.ZONE_DECK.equals(entity.tags.get(Entity.KEY_ZONE))) {
+                entity.extra.put(Entity.EXTRA_KEY_ORIGINAL_DECK, Entity.TRUE);
+            }
         }
 
         player.notifyListeners();

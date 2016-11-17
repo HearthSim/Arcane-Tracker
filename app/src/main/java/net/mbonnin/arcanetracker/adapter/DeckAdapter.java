@@ -9,19 +9,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
 import net.mbonnin.arcanetracker.Card;
 import net.mbonnin.arcanetracker.CardDb;
 import net.mbonnin.arcanetracker.Deck;
 import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Utils;
-import net.mbonnin.arcanetracker.parser.Player;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
 import timber.log.Timber;
+
+import static android.view.View.GONE;
 
 /**
  * Created by martin on 10/17/16.
@@ -75,6 +75,7 @@ public class DeckAdapter extends RecyclerView.Adapter implements Deck.Listener {
     }
 
     static class BarViewHolder extends RecyclerView.ViewHolder {
+        ImageView gift;
         ImageView background;
         TextView cost;
         TextView name;
@@ -90,30 +91,41 @@ public class DeckAdapter extends RecyclerView.Adapter implements Deck.Listener {
             name = ((TextView)itemView.findViewById(R.id.name));
             count = ((TextView)itemView.findViewById(R.id.count));
             overlay = itemView.findViewById(R.id.overlay);
+            gift = (ImageView)itemView.findViewById(R.id.gift);
         }
 
-        public void bind(Card card, int c) {
+
+        public void bind(BarItem entry) {
+            Card card = entry.card;
+            int c = entry.count;
+
             background.setImageDrawable(Utils.getDrawableForName(card.id));
             cost.setText(card.cost + "");
             name.setText(card.name);
+            count.setVisibility(GONE);
+            gift.setVisibility(GONE);
+
             if (c > 0) {
                 overlay.setBackgroundColor(Color.TRANSPARENT);
-                count.setVisibility(View.VISIBLE);
+
                 if (Card.RARITY_LEGENDARY.equals(card.rarity)) {
+                    count.setVisibility(View.VISIBLE);
                     count.setText("\u2605");
-                } else {
+                } else if (c == 2) {
+                    count.setVisibility(View.VISIBLE);
                     count.setText(c + "");
+                } else if (entry.gift){
+                    gift.setVisibility(View.VISIBLE);
                 }
             } else {
                 overlay.setBackgroundColor(Color.argb(150, 0, 0, 0));
-                count.setVisibility(View.INVISIBLE);
             }
         }
     }
 
     public void setDeck(Deck deck) {
         mDeck = deck;
-        mDeck.registerListener(this);
+        mDeck.setListener(this);
 
         onDeckChanged();
     }
@@ -165,7 +177,7 @@ public class DeckAdapter extends RecyclerView.Adapter implements Deck.Listener {
         Object o = list.get(position);
         if (o instanceof BarItem) {
             BarItem entry = (BarItem) o;
-            ((BarViewHolder)holder).bind(entry.card, entry.count);
+            ((BarViewHolder)holder).bind(entry);
         } else if (o instanceof String) {
             ViewGroup barTemplate = (ViewGroup) holder.itemView;
             ((TextView)barTemplate.getChildAt(0)).setText((String) o);
