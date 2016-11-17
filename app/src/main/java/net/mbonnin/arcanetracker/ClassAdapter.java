@@ -37,7 +37,6 @@ public class ClassAdapter extends RecyclerView.Adapter {
         } else {
             view.setBackgroundColor(Color.TRANSPARENT);
         }
-
     }
 
     @Override

@@ -84,7 +84,7 @@ public class Deck {
 
         return total;
     }
-    public void registerListener(Listener listener) {
+    public void setListener(Listener listener) {
         mListenerRef = new WeakReference<Listener>(listener);
     }
 

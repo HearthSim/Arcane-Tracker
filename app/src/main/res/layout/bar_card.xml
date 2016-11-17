@@ -37,14 +37,30 @@
             android:singleLine="true"
             android:textColor="#fff" />
 
-        <TextView
-            android:id="@+id/count"
-            android:layout_width="20dp"
-            android:layout_height="30dp"
-            android:background="#404040"
-            android:gravity="center"
-            android:maxLines="1"
-            android:textColor="#ff9933" />
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+
+            <TextView
+                android:id="@+id/count"
+                android:layout_width="20dp"
+                android:layout_height="30dp"
+                android:background="#404040"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:maxLines="1"
+                android:textColor="#ff9933" />
+
+            <ImageView
+                android:id="@+id/gift"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:src="@drawable/ic_card_giftcard_black_24dp"
+                android:tint="#fff" />
+        </FrameLayout>
 
     </LinearLayout>
 </FrameLayout>

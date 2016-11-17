@@ -25,7 +25,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import timber.log.Timber;
 
@@ -141,46 +143,6 @@ public class Utils {
         }
     }
 
-    public static HashMap<String, Integer> getKnownOriginalDeckCards(ArrayList<Entity> cards) {
-        HashMap<String, Integer> knownCards = new HashMap<>();
-        for (Entity cardEntity : cards) {
-            String cardId = cardEntity.CardID;
-            if (TextUtils.isEmpty(cardId)) {
-                continue;
-            }
-
-            if (!Card.isCollectible(cardId)) {
-                continue;
-            }
-
-
-            Utils.cardMapAdd(knownCards, cardId, 1);
-        }
-        return knownCards;
-    }
-
-    public static ArrayList<BarItem> cardMapToBarItems(HashMap<String, Integer> map) {
-        ArrayList<BarItem> list = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry: map.entrySet()) {
-            BarItem deckEntry = new BarItem();
-            deckEntry.card = CardDb.getCard(entry.getKey());
-            deckEntry.count = entry.getValue();
-            list.add(deckEntry);
-        }
-
-        Collections.sort(list, (a, b) -> {
-            int acost = a.card.cost == null ? 0: a.card.cost;
-            int bcost = b.card.cost == null ? 0: b.card.cost;
-
-            int ret = acost - bcost;
-            if (ret == 0) {
-                ret = a.card.name.compareTo(b.card.name);
-            }
-            return ret;
-        });
-        return list;
-    }
-
     public static int cardMapGet(HashMap<String, Integer> map, String key) {
         Integer a = map.get(key);
         if (a == null) {
@@ -192,6 +154,26 @@ public class Utils {
     public static void cardMapAdd(HashMap<String, Integer> map, String key, int diff) {
         int a = cardMapGet(map, key);
         map.put(key, a + diff);
+    }
+    public static HashMap<String, Integer> cardMapDiff(HashMap<String, Integer> a, HashMap<String, Integer> b) {
+        HashMap<String, Integer> map = new HashMap<>();
+
+        Set<String> set = new HashSet<>(a.keySet());
+        set.addAll(b.keySet());
+
+        for (String key: set) {
+            Integer an = a.get(key);
+            int bn = cardMapGet(b, key);
+
+            if (an == null) {
+                Timber.e("key %s is not in a", key);
+                continue;
+            }
+
+            map.put(key, an - bn);
+        }
+
+        return map;
     }
 
     public static boolean isNetworkConnected() {

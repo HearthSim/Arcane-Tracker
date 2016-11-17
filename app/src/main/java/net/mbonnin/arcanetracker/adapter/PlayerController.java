@@ -1,16 +1,18 @@
 package net.mbonnin.arcanetracker.adapter;
 
-import android.text.TextUtils;
-
-import net.mbonnin.arcanetracker.Card;
+import net.mbonnin.arcanetracker.CardDb;
 import net.mbonnin.arcanetracker.Deck;
+import net.mbonnin.arcanetracker.DeckList;
 import net.mbonnin.arcanetracker.Settings;
 import net.mbonnin.arcanetracker.Utils;
 import net.mbonnin.arcanetracker.parser.Entity;
+import net.mbonnin.arcanetracker.parser.EntityList;
 import net.mbonnin.arcanetracker.parser.Player;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -18,7 +20,7 @@ import timber.log.Timber;
  * Created by martin on 11/8/16.
  */
 
-public class PlayerController implements Player.Listener {
+public class PlayerController implements Player.Listener, Deck.Listener {
     private Player mPlayer;
     private Deck mDeck;
     private final DeckAdapter mAdapter;
@@ -37,57 +39,74 @@ public class PlayerController implements Player.Listener {
             return;
         }
 
-        ArrayList<Entity> entities;
+        EntityList entities;
         if (mPlayer == null) {
-            entities = new ArrayList<>();
+            entities = new EntityList();
         } else {
             entities = mPlayer.entities;
         }
 
         /**
-         * add cards to the deck if needed
+         * add cards to the deck if:
+         *
+         *    * the setting is enabled
+         *    * the deck is less than 30 cards
          */
-        HashMap<String, Integer> knownCards = Utils.getKnownOriginalDeckCards(entities);
+        EntityList originalDeck = entities.filter(EntityList.IS_FROM_ORIGINAL_DECK);
+        HashMap<String, Integer> originalDeckMap = originalDeck.toCardMap();
         if (Settings.get(Settings.AUTO_ADD_CARDS, true) && Utils.cardMapTotal(mDeck.cards) < Deck.MAX_CARDS) {
-            /**
-             * now add the cards we know to the deck if needed
-             */
-            for (String cardId : knownCards.keySet()) {
-                int found = knownCards.get(cardId);
+            for (String cardId : originalDeckMap.keySet()) {
+                int found = originalDeckMap.get(cardId);
                 if (found > Utils.cardMapGet(mDeck.cards, cardId)) {
                     Timber.w("adding card to the deck " + cardId);
-                    Utils.cardMapAdd(mDeck.cards, cardId, 1);
+                    mDeck.cards.put(cardId, found);
                 }
             }
+            DeckList.save();
         }
 
-        HashMap<String, Integer> map = new HashMap<String, Integer>(mDeck.cards); // we need to deep copy so we don't modify the original deck
-        for (Entity cardEntity : entities) {
-            if (!Card.isCollectible(cardEntity.CardID)) {
-                continue;
-            }
+        /**
+         * now we take the deck and remove the cards we know have been played
+         */
+        EntityList originalDeckPlayed = originalDeck.filter(EntityList.IS_OUTSIDE_DECK);
+        HashMap<String, Integer> remainingCardMap = Utils.cardMapDiff(mDeck.cards, originalDeckPlayed.toCardMap());
 
-            String cardId = cardEntity.CardID;
-            if (TextUtils.isEmpty(cardId)) {
-                continue;
-            }
-
-            if (!"DECK".equals(cardEntity.tags.get("ZONE"))) {
-                Utils.cardMapAdd(map, cardId, -1);
-            }
+        ArrayList<BarItem> list = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : remainingCardMap.entrySet()) {
+            BarItem deckEntry = new BarItem();
+            deckEntry.card = CardDb.getCard(entry.getKey());
+            deckEntry.count = entry.getValue();
+            list.add(deckEntry);
         }
 
-        ArrayList list = Utils.cardMapToBarItems(map);
+        EntityList createdCards = entities.filter(EntityList.IS_IN_DECK)
+                .filter(EntityList.IS_NOT_FROM_ORIGINAL_DECK)
+                .filter(EntityList.HAS_CARD_ID);
+        for (Entity entity : createdCards) {
+            BarItem deckEntry = new BarItem();
+            deckEntry.card = CardDb.getCard(entity.CardID);
+            deckEntry.count = 1;
+            deckEntry.gift = true;
+            list.add(deckEntry);
+        }
+
+        Collections.sort(list, BarItem.COMPARATOR);
 
         int total = Utils.cardMapTotal(mDeck.cards);
         if (total < Deck.MAX_CARDS) {
-            list.add(String.format("%d unknown card(s)", Deck.MAX_CARDS - total));
+            /**
+             * I'm not really sure how come this cast is working....
+             */
+            ArrayList list2 = list;
+            list2.add(String.format("%d unknown card(s)", Deck.MAX_CARDS - total));
         }
 
         mAdapter.setList(list);
     }
 
     public void setDeck(Deck deck, Player player) {
+        deck.setListener(this);
+
         mDeck = deck;
         if (mPlayer != null) {
             mPlayer.listeners.remove(this);
@@ -96,6 +115,11 @@ public class PlayerController implements Player.Listener {
         if (mPlayer != null) {
             mPlayer.registerListener(this);
         }
+        update();
+    }
+
+    @Override
+    public void onDeckChanged() {
         update();
     }
 }
