@@ -99,7 +99,7 @@ public class DeckAdapter extends RecyclerView.Adapter implements Deck.Listener {
             Card card = entry.card;
             int c = entry.count;
 
-            background.setImageDrawable(Utils.getDrawableForName(card.id));
+            background.setImageDrawable(Utils.getDrawableForName("bar_" + card.id));
             cost.setText(card.cost + "");
             name.setText(card.name);
             count.setVisibility(GONE);
