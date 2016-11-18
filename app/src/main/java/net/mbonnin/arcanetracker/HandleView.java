@@ -43,7 +43,6 @@ public class HandleView extends View {
 
     public HandleView(Context context, AttributeSet attr) {
         super(context, attr);
-        init(null, Color.RED);
     }
 
     public void init(Drawable drawable, int color) {
