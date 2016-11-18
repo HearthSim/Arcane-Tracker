@@ -56,7 +56,7 @@ public class MainService extends Service {
                 .setContentText(getString(R.string.arcane_tracker_running))
                 .addAction(R.drawable.ic_close_black_24dp, "QUIT", stopPendingIntent)
                 .addAction(R.drawable.ic_settings_black_24dp, "Settings", settingsPendingIntent)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.icon_white)
                 .build();
 
         startForeground(NOTIFICATION_ID, notification);
