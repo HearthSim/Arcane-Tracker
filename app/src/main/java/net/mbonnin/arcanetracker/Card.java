@@ -49,9 +49,14 @@ public class Card implements Comparable<String> {
     public static Card unknown() {
         Card card = new Card();
         card.name = "?";
-        card.id = "?";
-        card.type = TYPE_UNKNOWN;
+        card.playerClass = "?";
         card.cost = 0;
+        card.id = "?";
+        card.rarity = "?";
+        card.type = TYPE_UNKNOWN;
+        card.text = "?";
+        card.race = "?";
+        card.collectible = false;
         return card;
     }
 
