@@ -31,7 +31,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             if(project.hasProperty("arcane_tracker.signing")) {
-                signingConfigs.mbonnin
+                signingConfig signingConfigs.mbonnin
             }
         }
         debug {
