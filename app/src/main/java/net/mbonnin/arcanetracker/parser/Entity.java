@@ -17,6 +17,7 @@ public class Entity {
     public static final String KEY_FIRST_PLAYER = "FIRST_PLAYER";
     public static final String KEY_PLAYSTATE = "PLAYSTATE";
     public static final String KEY_STEP = "STEP";
+    public static final String KEY_TURN = "TURN";
 
     public static final String PLAYSTATE_WON = "WON";
 
@@ -25,6 +26,7 @@ public class Entity {
 
     public static final String CARDTYPE_HERO = "HERO";
     public static final String CARDTYPE_HERO_POWER = "HERO_POWER";
+    public static final String CARDTYPE_ENCHANTMENT = "ENCHANTMENT";
 
     public static final String ENTITY_ID_GAME = "1";
 

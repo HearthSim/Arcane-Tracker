@@ -2,14 +2,19 @@ package net.mbonnin.arcanetracker;
 
 import net.mbonnin.arcanetracker.parser.Entity;
 import net.mbonnin.arcanetracker.parser.EntityList;
-import net.mbonnin.arcanetracker.parser.GameLogic;
+import net.mbonnin.arcanetracker.parser.Game;
 import net.mbonnin.arcanetracker.parser.LoadingScreenParser;
-import net.mbonnin.arcanetracker.trackobot.Result;
-import net.mbonnin.arcanetracker.trackobot.ResultData;
+import net.mbonnin.arcanetracker.parser.Play;
+import net.mbonnin.arcanetracker.parser.PowerParser;
 import net.mbonnin.arcanetracker.trackobot.Trackobot;
+import net.mbonnin.arcanetracker.trackobot.model.CardPlay;
+import net.mbonnin.arcanetracker.trackobot.model.Result;
+import net.mbonnin.arcanetracker.trackobot.model.ResultData;
+import net.mbonnin.arcanetracker.trackobot.model.TrackobotCard;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 
 import timber.log.Timber;
@@ -17,10 +22,10 @@ import timber.log.Timber;
 /**
  * Created by martin on 11/7/16.
  */
-public class ParserListenerPower implements GameLogic.Listener {
+public class ParserListenerPower implements PowerParser.Listener {
 
     @Override
-    public void onGameStarted(GameLogic gameLogic) {
+    public void onGameStarted(Game game) {
         Timber.w("onGameStarted");
 
         Deck deck = MainViewCompanion.getPlayerCompanion().getDeck();
@@ -28,12 +33,12 @@ public class ParserListenerPower implements GameLogic.Listener {
             if (ParserListenerLoadingScreen.get().getMode() == LoadingScreenParser.MODE_ARENA) {
                 deck = DeckList.getArenaDeck();
             } else {
-                int classIndex = gameLogic.getPlayer().classIndex();
+                int classIndex = game.getPlayer().classIndex();
 
                 /**
                  * we filter the original deck to remove the coin mainly
                  */
-                HashMap<String, Integer> map = gameLogic.getPlayer().zone(Entity.ZONE_HAND)
+                HashMap<String, Integer> map = game.getPlayer().zone(Entity.ZONE_HAND)
                         .filter(EntityList.IS_FROM_ORIGINAL_DECK)
                         .toCardMap();
 
@@ -41,11 +46,11 @@ public class ParserListenerPower implements GameLogic.Listener {
             }
         }
 
-        MainViewCompanion.getPlayerCompanion().setDeck(deck, gameLogic.getPlayer());
+        MainViewCompanion.getPlayerCompanion().setDeck(deck, game.getPlayer());
 
         DeckList.getOpponentDeck().clear();
-        DeckList.getOpponentDeck().classIndex = gameLogic.getOpponent().classIndex();
-        MainViewCompanion.getOpponentCompanion().setDeck(DeckList.getOpponentDeck(), gameLogic.getOpponent());
+        DeckList.getOpponentDeck().classIndex = game.getOpponent().classIndex();
+        MainViewCompanion.getOpponentCompanion().setDeck(DeckList.getOpponentDeck(), game.getOpponent());
     }
 
     private static Deck activateBestDeck(int classIndex, HashMap<String, Integer> initialCards) {
@@ -130,7 +135,7 @@ public class ParserListenerPower implements GameLogic.Listener {
     }
 
     @Override
-    public void onGameEnded(GameLogic gameLogic, boolean victory) {
+    public void onGameEnded(Game game, boolean victory) {
         Timber.w("onGameEnd %s", victory ? "victory" : "lost");
         Deck deck = MainViewCompanion.getPlayerCompanion().getDeck();
         if (victory) {
@@ -147,11 +152,23 @@ public class ParserListenerPower implements GameLogic.Listener {
                 && Trackobot.get().getUser() != null) {
             ResultData resultData = new ResultData();
             resultData.result = new Result();
-            resultData.result.coin = gameLogic.getPlayer().hasCoin;
+            resultData.result.coin = game.getPlayer().hasCoin;
             resultData.result.win = victory;
             resultData.result.mode = mode == LoadingScreenParser.MODE_PLAY ? "ranked" : "arena";
-            resultData.result.hero = Trackobot.getHero(gameLogic.getPlayer().classIndex());
-            resultData.result.opponent = Trackobot.getHero(gameLogic.getPlayer().classIndex());
+            resultData.result.hero = Trackobot.getHero(game.player.classIndex());
+            resultData.result.opponent = Trackobot.getHero(game.opponent.classIndex());
+            resultData.result.added = Utils.ISO8601DATEFORMAT.format(new Date());
+
+            ArrayList<CardPlay> history = new ArrayList<>();
+            for (Play play: game.plays) {
+                CardPlay cardPlay = new CardPlay();
+                cardPlay.player = play.isOpponent ? "opponent": "me";
+                cardPlay.turn = (play.turn + 1)/2;
+                cardPlay.card_id = play.cardId;
+                history.add(cardPlay);
+            }
+
+            resultData.result.card_history = history;
 
             Trackobot.get().sendResult(resultData);
         }

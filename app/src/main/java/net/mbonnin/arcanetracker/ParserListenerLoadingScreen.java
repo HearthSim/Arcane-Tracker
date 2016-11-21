@@ -24,6 +24,8 @@ public class ParserListenerLoadingScreen implements LoadingScreenParser.Listener
     @Override
     public void modeChanged(int newMode) {
         mMode = newMode;
-
+        if (newMode == LoadingScreenParser.MODE_ARENA) {
+            MainViewCompanion.getPlayerCompanion().setDeck(DeckList.getArenaDeck(), null);
+        }
     }
 }

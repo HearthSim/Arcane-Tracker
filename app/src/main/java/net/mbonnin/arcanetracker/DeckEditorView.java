@@ -20,7 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import net.mbonnin.arcanetracker.adapter.EditableDeckAdapter;
+import net.mbonnin.arcanetracker.adapter.EditableItemAdapter;
 
 import java.util.ArrayList;
 
@@ -39,7 +39,7 @@ public class DeckEditorView extends LinearLayout {
     Button button;
     private Deck mDeck;
     private CardsAdapter mCardsAdapter;
-    private EditableDeckAdapter mDeckAdapter;
+    private EditableItemAdapter mDeckAdapter;
     private CardsAdapter.Listener mCardsAdapterListener = card -> {
         mDeck.addCard(card.id, 1);
         updateCardCount();
@@ -120,7 +120,7 @@ public class DeckEditorView extends LinearLayout {
         cardsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         cardsRecyclerView.setAdapter(mCardsAdapter);
 
-        mDeckAdapter = new EditableDeckAdapter();
+        mDeckAdapter = new EditableItemAdapter();
         mDeckAdapter.setDeck(deck);
         mDeckAdapter.registerAdapterDataObserver(mAdapterObserver);
         ArrayList<String> list = mDeckAdapter.getDisabledCards();

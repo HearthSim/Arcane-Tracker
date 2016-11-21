@@ -19,11 +19,11 @@ import timber.log.Timber;
  */
 
 public class PowerParser {
-    private final GameLogic mGameLogic;
+    private final Listener mListener;
     private LinkedList<Node> mNodeStack = new LinkedList<Node>();
     private Node mCurrentNode;
 
-    private FlatGame mCurrentGame;
+    private Game mCurrentGame;
 
     private final Pattern BLOCK_START = Pattern.compile("BLOCK_START BlockType=(.*) Entity=(.*) EffectCardId=(.*) EffectIndex=(.*) Target=(.*)");
     private final Pattern BLOCK_END = Pattern.compile("BLOCK_END");
@@ -38,6 +38,10 @@ public class PowerParser {
     private final Pattern TAG = Pattern.compile("tag=(.*) value=(.*)");
 
     static class Block {
+        public static final String TYPE_PLAY="PLAY";
+        public static final String TYPE_POWER="POWER";
+        public static final String TYPE_TRIGGER="TRIGGER";
+
         String blockType;
         String entity;
         String effectCardId;
@@ -51,8 +55,13 @@ public class PowerParser {
         public int depth;
     }
 
-    public PowerParser(String file, GameLogic gameLogic) {
-        mGameLogic = gameLogic;
+    public interface Listener {
+        void onGameStarted(Game game);
+        void onGameEnded(Game game, boolean victory);
+    }
+
+    public PowerParser(String file, Listener listener) {
+        mListener = listener;
 
         boolean readPreviousData = false;
         //readPreviousData = true;
@@ -165,6 +174,11 @@ public class PowerParser {
                 for (Node child: node.children) {
                     outputAction(block, child);
                 }
+
+                if (mCurrentGame != null && Block.TYPE_PLAY.equals(block.blockType)) {
+                    Entity entity = findEntityByName(mCurrentGame, m.group(2));
+                    GameLogic.entityPlayed(mCurrentGame, entity);
+                }
             } else if ((m = BLOCK_END.matcher(line)).matches()) {
             } else {
                 Timber.e("unknown block: " + line);
@@ -182,24 +196,25 @@ public class PowerParser {
         String oldValue = entity.tags.get(Entity.KEY_ZONE);
         entity.tags.put(key, newValue);
 
+        GameLogic.tagChanged(mCurrentGame, entity, key, oldValue, newValue);
+
+        if (!mCurrentGame.started && mCurrentGame.player != null && mCurrentGame.opponent != null) {
+            mListener.onGameStarted(mCurrentGame);
+            mCurrentGame.started = true;
+        }
+
         if (Entity.ENTITY_ID_GAME.equals(entity.EntityID)) {
             if (Entity.KEY_STEP.equals(key)) {
-                if (Entity.STEP_BEGIN_MULLIGAN.equals(newValue)) {
-                    mGameLogic.gameStepBeginMulligan();
-                } else if (Entity.STEP_FINAL_GAMEOVER.equals(newValue)) {
-                    mGameLogic.gameStepFinalGameover();
+                if (Entity.STEP_FINAL_GAMEOVER.equals(newValue)) {
+                    boolean victory = Entity.PLAYSTATE_WON.equals(mCurrentGame.player.entity.tags.get(Entity.KEY_PLAYSTATE));
+                    mListener.onGameEnded(mCurrentGame, victory);
+
                     mCurrentGame = null;
                 }
             }
-        } else {
-            if (Entity.KEY_ZONE.equals(key)) {
-                if (!TextUtils.isEmpty(oldValue) && !oldValue.equals(newValue)) {
-                    mGameLogic.zoneChanged(entity, oldValue, newValue);
-                }
-            }
         }
-
     }
+
     private void outputAction(Block block, Node node) {
         String line = node.line;
         Matcher m;
@@ -208,7 +223,7 @@ public class PowerParser {
             if (mCurrentGame != null) {
                 Timber.w("CREATE_GAME during an existing one, resuming");
             } else {
-                mCurrentGame = new FlatGame();
+                mCurrentGame = new Game();
                 for (Node child:node.children) {
                     if ((m = GameEntityPattern.matcher(child.line)).matches()) {
                         Entity entity = new Entity();
@@ -227,7 +242,7 @@ public class PowerParser {
                     }
                 }
 
-                mGameLogic.gameCreated(mCurrentGame);
+                GameLogic.gameCreated(mCurrentGame);
             }
         }
 
@@ -246,14 +261,22 @@ public class PowerParser {
                 tagChange(entity, key, value);
             }
         } else if ((m = FULL_ENTITY.matcher(line)).matches()) {
-            CardEntity entity = new CardEntity();
-            entity.EntityID = decodeEntityName(m.group(1)).get("id");
+            String entityId = decodeEntityName(m.group(1)).get("id");
+            Entity entity = mCurrentGame.entityMap.get(entityId);
+
+            boolean isNew = false;
+            if (entity == null) {
+                entity = new Entity();
+                mCurrentGame.entityMap.put(entityId, entity);
+                isNew = true;
+            }
+            entity.EntityID = entityId;
             entity.CardID = m.group(2);
             entity.tags.putAll(getTags(node));
 
-            mCurrentGame.entityMap.put(entity.EntityID, entity);
-
-            mGameLogic.entityCreated(entity);
+            if (isNew) {
+                GameLogic.entityCreated(mCurrentGame, entity);
+            }
 
         } else if ((m = SHOW_ENTITY.matcher(line)).matches()) {
             Entity entity = findEntityByName(mCurrentGame, m.group(1));
@@ -269,7 +292,7 @@ public class PowerParser {
                 tagChange(entity, key, newTags.get(key));
             }
 
-            mGameLogic.entityRevealed(entity);
+            GameLogic.entityRevealed(mCurrentGame, entity);
         } else if ((m = HIDE_ENTITY.matcher(line)).matches()) {
             /**
              * do nothing and rely on tag changes instead
@@ -277,7 +300,7 @@ public class PowerParser {
         }
     }
 
-    private static Entity findEntityByName(FlatGame flatGame, String name) {
+    private static Entity findEntityByName(Game game, String name) {
         if (TextUtils.isEmpty(name)) {
             return unknownEntity("empty");
         } else if (name.length() >= 2 && name.charAt(0) == '[' && name.charAt(name.length() - 1) == ']') {
@@ -285,23 +308,23 @@ public class PowerParser {
             if (TextUtils.isEmpty(id)) {
                 return unknownEntity(name);
             } else {
-                return findEntity(flatGame, id);
+                return getEntitySafe(game, id);
             }
         } else if ("GameEntity".equals(name)) {
-            return findEntity(flatGame, Entity.ENTITY_ID_GAME);
+            return getEntitySafe(game, Entity.ENTITY_ID_GAME);
         } else {
             // this must be a battleTag
-            Entity entity = flatGame.entityMap.get(name);
+            Entity entity = game.entityMap.get(name);
             if (entity == null) {
                 Timber.w("Adding battleTag " + name);
-                if (flatGame.battleTags.size() >= 2) {
+                if (game.battleTags.size() >= 2) {
                     Timber.e("[Inconsistent] too many battleTags");
                 }
-                flatGame.battleTags.add(name);
+                game.battleTags.add(name);
 
                 entity = new Entity();
                 entity.EntityID = name;
-                flatGame.entityMap.put(name, entity);
+                game.entityMap.put(name, entity);
             }
             return entity;
         }
@@ -311,8 +334,8 @@ public class PowerParser {
         return decodeParams(name.substring(1, name.length() - 1));
     }
 
-    private static Entity findEntity(FlatGame flatGame, String entityId) {
-        Entity entity = flatGame.entityMap.get(entityId);
+    private static Entity getEntitySafe(Game game, String entityId) {
+        Entity entity = game.entityMap.get(entityId);
 
         if (entity == null){
             /**

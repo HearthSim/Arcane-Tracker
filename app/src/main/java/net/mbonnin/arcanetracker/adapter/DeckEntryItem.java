@@ -7,8 +7,8 @@ import java.util.Comparator;
 /**
  * Created by martin on 11/8/16.
  */
-public class BarItem {
-    static public Comparator<BarItem> COMPARATOR = (a, b) -> {
+public class DeckEntryItem {
+    static public Comparator<DeckEntryItem> COMPARATOR = (a, b) -> {
         int acost = a.card.cost == null ? 0: a.card.cost;
         int bcost = b.card.cost == null ? 0: b.card.cost;
 

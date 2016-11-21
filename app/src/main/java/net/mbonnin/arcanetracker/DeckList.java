@@ -61,6 +61,7 @@ public class DeckList {
                 sArenaDeck.name = ArcaneTrackerApplication.getContext().getString(R.string.arenaDeck);
             }
         }
+        sArenaDeck.checkClassIndex();
         return sArenaDeck;
     }
 

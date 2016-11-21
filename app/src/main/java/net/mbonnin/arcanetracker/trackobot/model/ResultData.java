@@ -1,4 +1,4 @@
-package net.mbonnin.arcanetracker.trackobot;
+package net.mbonnin.arcanetracker.trackobot.model;
 
 /**
  * Created by martin on 10/25/16.
@@ -6,4 +6,6 @@ package net.mbonnin.arcanetracker.trackobot;
 
 public class ResultData {
     public Result result;
+
+
 }

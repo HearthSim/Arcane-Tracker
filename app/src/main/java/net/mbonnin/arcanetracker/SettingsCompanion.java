@@ -2,9 +2,7 @@ package net.mbonnin.arcanetracker;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
-import android.os.Environment;
 import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +14,9 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import net.mbonnin.arcanetracker.trackobot.HistoryList;
+import com.google.firebase.crash.FirebaseCrash;
+
+import net.mbonnin.arcanetracker.trackobot.model.HistoryList;
 import net.mbonnin.arcanetracker.trackobot.Trackobot;
 import net.mbonnin.arcanetracker.trackobot.Url;
 import net.mbonnin.arcanetracker.trackobot.User;
@@ -43,6 +43,10 @@ public class SettingsCompanion {
     private EditText passwordEditText;
     private ProgressBar signupProgressBar;
     private ProgressBar signinProgressBar;
+    private View retrievePassword;
+    private Button importButton;
+    private View importExplanation;
+    private ProgressBar importProgressBar;
 
     private final SeekBar.OnSeekBarChangeListener mSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
         @Override
@@ -105,12 +109,43 @@ public class SettingsCompanion {
             signupButton.setEnabled(true);
 
             if (historyList == null) {
-                Toast.makeText(ArcaneTrackerApplication.getContext(), "Cannot link trackobot account :(", Toast.LENGTH_LONG).show();
+                Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show();
                 Trackobot.get().setUser(null);
             } else {
                 updateTrackobot(settingsView);
             }
 
+        }
+    };
+
+    private Observer<HistoryList> mImportObserver = new Observer<HistoryList>() {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            e.printStackTrace();
+            importProgressBar.setVisibility(GONE);
+            importButton.setVisibility(VISIBLE);
+            importButton.setEnabled(true);
+
+            Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onNext(HistoryList historyList) {
+            importProgressBar.setVisibility(GONE);
+            importButton.setVisibility(VISIBLE);
+            importButton.setEnabled(true);
+
+            if (historyList == null) {
+                Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show();
+                Trackobot.get().setUser(null);
+            } else {
+                updateTrackobot(settingsView);
+            }
         }
     };
 
@@ -148,7 +183,8 @@ public class SettingsCompanion {
 
         @Override
         public void onError(Throwable e) {
-            Toast.makeText(ArcaneTrackerApplication.getContext(), "Could not get profile link, please try again", Toast.LENGTH_LONG).show();
+            Context context = ArcaneTrackerApplication.getContext();
+            Toast.makeText(context, context.getString(R.string.couldNotGetProfile), Toast.LENGTH_LONG).show();
             signupButton.setVisibility(VISIBLE);
             signupProgressBar.setVisibility(GONE);
             Timber.e(e);
@@ -164,7 +200,32 @@ public class SettingsCompanion {
             ArcaneTrackerApplication.getContext().startActivity(i);
         }
     };
-    private View retrievePassword;
+    private View.OnClickListener mImportButtonClicked = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Context context = ArcaneTrackerApplication.getContext();
+            File f = Trackobot.findTrackobotFile();
+            if (f == null) {
+                Toast.makeText(context, context.getString(R.string.couldNotFindTrackobotFile), Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            User user = Trackobot.parseTrackobotFile(f);
+            if (user == null) {
+                Toast.makeText(context, context.getString(R.string.couldNotOpenTrackobotFile), Toast.LENGTH_LONG).show();
+                return;
+            }
+            importButton.setVisibility(GONE);
+            importProgressBar.setVisibility(VISIBLE);
+            importButton.setEnabled(false);
+
+            Trackobot.get().setUser(user);
+
+            Trackobot.get().service().getHistoryList()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(mImportObserver);
+        }
+    };
 
 
     private void updateTrackobot(View view) {
@@ -176,6 +237,9 @@ public class SettingsCompanion {
         signinProgressBar = (ProgressBar) view.findViewById(R.id.signinProgressBar);
         signupProgressBar = (ProgressBar) view.findViewById(R.id.signupProgressBar);
         retrievePassword = view.findViewById(R.id.retrievePassword);
+        importButton = (Button) view.findViewById(R.id.trackobotImport);
+        importProgressBar = (ProgressBar)view.findViewById(R.id.importProgressBar);
+        importExplanation = view.findViewById(R.id.importExplanation);
 
         User user = Trackobot.get().getUser();
         if (user == null) {
@@ -192,6 +256,14 @@ public class SettingsCompanion {
             signupButton.setOnClickListener(mSignupButtonClicked);
 
             retrievePassword.setVisibility(VISIBLE);
+
+            importButton.setText(view.getContext().getString(R.string.importFromStorage));
+            importButton.setOnClickListener(mImportButtonClicked);
+            importButton.setEnabled(true);
+            importButton.setVisibility(VISIBLE);
+            view.findViewById(R.id.or2).setVisibility(VISIBLE);
+            importExplanation.setVisibility(VISIBLE);
+
 
         } else {
             trackobotText.setVisibility(GONE);
@@ -221,6 +293,10 @@ public class SettingsCompanion {
             });
 
             retrievePassword.setVisibility(GONE);
+
+            importExplanation.setVisibility(GONE);
+            importButton.setVisibility(GONE);
+            view.findViewById(R.id.or2).setVisibility(GONE);
 
         }
     }

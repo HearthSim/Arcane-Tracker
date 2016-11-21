@@ -11,43 +11,17 @@ import java.util.HashMap;
 import timber.log.Timber;
 
 /**
- * takes a FlatGame and turns it into a StructuredGame
+ * A bunch of helper functions
  */
 public class GameLogic {
 
-    private final Listener mListener;
-    HashMap<String,Player> playerMap;
-    private Entity gameEntity;
-
-    Player player;
-    Player opponent;
-
-    FlatGame flatGame;
-
-    public interface Listener {
-        void onGameStarted(GameLogic gameLogic);
-        void onGameEnded(GameLogic gameLogic, boolean victory);
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public Player getOpponent() {
-        return opponent;
-    }
-
-    public GameLogic(Listener listener) {
-        mListener = listener;
-    }
-
-    public void gameStepBeginMulligan() {
+    private static void gameStepBeginMulligan(Game game) {
 
         int knownCardsInHand = 0;
         int totalCardsInHand = 0;
 
-        Player player1 = playerMap.get("1");
-        Player player2 = playerMap.get("2");
+        Player player1 = game.playerMap.get("1");
+        Player player2 = game.playerMap.get("2");
 
         if (player1 == null || player2 == null) {
             Timber.e("cannot find players");
@@ -70,8 +44,8 @@ public class GameLogic {
         /**
          * now try to match a battle tag with a player
          */
-        for (String battleTag: flatGame.battleTags) {
-            Entity battleTagEntity = flatGame.entityMap.get(battleTag);
+        for (String battleTag: game.battleTags) {
+            Entity battleTagEntity = game.entityMap.get(battleTag);
             String playsFirst = battleTagEntity.tags.get(Entity.KEY_FIRST_PLAYER);
             Player player;
 
@@ -88,19 +62,24 @@ public class GameLogic {
              * make the battleTag point to the same entity..
              */
             Timber.w(battleTag + " now points to entity " + player.entity.EntityID);
-            flatGame.entityMap.put(battleTag, player.entity);
+            game.entityMap.put(battleTag, player.entity);
         }
 
-        player = player1.isOpponent ? player2:player1;
-        opponent = player1.isOpponent ? player1:player2;
-
-        mListener.onGameStarted(this);
+        game.player = player1.isOpponent ? player2:player1;
+        game.opponent = player1.isOpponent ? player1:player2;
     }
 
-    public void entityCreated(Entity entity) {
+
+    private static void zoneChanged(Game game, Entity entity, String lastZone, String newZone) {
+        Player player = game.findController(entity);
+        player.zone(lastZone).remove(entity);
+        player.zone(newZone).add(entity);
+    }
+
+    public static void entityCreated(Game game, Entity entity) {
         String playerId = entity.tags.get(Entity.KEY_CONTROLLER);
         String cardType = entity.tags.get(Entity.KEY_CARDTYPE);
-        Player player = findController(entity);
+        Player player = game.findController(entity);
 
         Timber.i("entity created %s controller=%s zone=%s ", entity.EntityID, playerId, entity.tags.get(Entity.KEY_ZONE));
 
@@ -111,7 +90,7 @@ public class GameLogic {
         } else {
             player.entities.add(entity);
 
-            if (gameEntity.tags.get(Entity.KEY_STEP) == null && Entity.ZONE_DECK.equals(entity.tags.get(Entity.KEY_ZONE))) {
+            if (game.gameEntity.tags.get(Entity.KEY_STEP) == null && Entity.ZONE_DECK.equals(entity.tags.get(Entity.KEY_ZONE))) {
                 entity.extra.put(Entity.EXTRA_KEY_ORIGINAL_DECK, Entity.TRUE);
             }
         }
@@ -119,55 +98,61 @@ public class GameLogic {
         player.notifyListeners();
     }
 
-    private Player findController(Entity entity) {
-        return findPlayer(entity.tags.get(Entity.KEY_CONTROLLER));
-    }
-
-    private Player findPlayer(String playerId) {
-        Player player = playerMap.get(playerId);
-        if (player == null) {
-            Timber.e("cannot find player " + playerId);
-            /**
-             * do not crash...
-             */
-            return new Player();
-        }
-        return player;
-    }
-
-    public void entityRevealed(Entity entity) {
-        Player player = findController(entity);
-
+    public static void entityRevealed(Game game, Entity entity) {
+        Player player = game.findController(entity);
 
         player.notifyListeners();
     }
 
-    public void gameStepFinalGameover() {
-        boolean victory = Entity.PLAYSTATE_WON.equals(player.entity.tags.get(Entity.KEY_PLAYSTATE));
-        mListener.onGameEnded(this, victory);
-    }
+    public static void gameCreated(Game game) {
+        game.playerMap = new HashMap<>();
 
-    public void gameCreated(FlatGame flatGame) {
-        this.flatGame = flatGame;
-        this.playerMap = new HashMap<>();
-        this.player = null;
-        this.opponent = null;
-
-        for (Entity entity:flatGame.entityMap.values()) {
+        for (Entity entity: game.entityMap.values()) {
             if (entity.PlayerID != null) {
                 Timber.i("adding player " + entity.PlayerID);
                 Player player = new Player();
                 player.entity = entity;
-                playerMap.put(entity.PlayerID, player);
+                game.playerMap.put(entity.PlayerID, player);
             } else if (Entity.ENTITY_ID_GAME.equals(entity.EntityID)) {
-                gameEntity = entity;
+                game.gameEntity = entity;
             }
         }
     }
 
-    public void zoneChanged(Entity entity, String lastZone, String newZone) {
-        Player player = findController(entity);
-        player.zone(lastZone).remove(entity);
-        player.zone(newZone).add(entity);
+    public static void tagChanged(Game game, Entity entity, String key, String oldValue, String newValue) {
+        if (Entity.ENTITY_ID_GAME.equals(entity.EntityID)) {
+            if (Entity.KEY_STEP.equals(key)) {
+                if (Entity.STEP_BEGIN_MULLIGAN.equals(newValue)) {
+                    GameLogic.gameStepBeginMulligan(game);
+                }
+            }
+        } else {
+            if (Entity.KEY_ZONE.equals(key)) {
+                if (!TextUtils.isEmpty(oldValue) && !oldValue.equals(newValue)) {
+                    GameLogic.zoneChanged(game, entity, oldValue, newValue);
+                }
+            }
+        }
+    }
+
+    public static void entityPlayed(Game game, Entity entity) {
+        String turn = game.gameEntity.tags.get(Entity.KEY_TURN);
+        if (turn == null) {
+            Timber.e("cannot get turn");
+            return;
+        }
+        if (entity.CardID == null) {
+            Timber.e("no CardID for play");
+            return;
+        }
+
+        Play play = new Play();
+        play.turn = Integer.parseInt(turn);
+        play.cardId = entity.CardID;
+        play.isOpponent = game.findController(entity).isOpponent;
+
+        Timber.i("%s played %s", play.isOpponent ? "opponent":"I", play.cardId);
+
+        game.plays.add(play);
     }
 }

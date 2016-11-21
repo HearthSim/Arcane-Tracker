@@ -13,7 +13,7 @@ import java.util.ArrayList;
 /**
  * Created by martin on 10/21/16.
  */
-public class EditableDeckAdapter extends DeckAdapter {
+public class EditableItemAdapter extends ItemAdapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder holder = super.onCreateViewHolder(parent, viewType);
@@ -26,7 +26,7 @@ public class EditableDeckAdapter extends DeckAdapter {
                 } else if (event.getActionMasked() == MotionEvent.ACTION_CANCEL || event.getActionMasked() == MotionEvent.ACTION_UP) {
                     holder.itemView.findViewById(R.id.overlay).setBackgroundColor(Color.TRANSPARENT);
                     if (event.getActionMasked() == MotionEvent.ACTION_UP) {
-                        BarItem entry = (BarItem) list.get(holder.getAdapterPosition());
+                        DeckEntryItem entry = (DeckEntryItem) list.get(holder.getAdapterPosition());
                         mDeck.addCard(entry.card.id, -1);
                     }
                 }
@@ -38,7 +38,7 @@ public class EditableDeckAdapter extends DeckAdapter {
 
     public ArrayList<String> getDisabledCards() {
         ArrayList<String> list = new ArrayList<>();
-        for (BarItem entry: entryList) {
+        for (DeckEntryItem entry: entryList) {
             if (entry.count == 2) {
                 list.add(entry.card.id);
             } else if (entry.count == 1 && Card.RARITY_LEGENDARY.equals(entry.card.rarity)) {

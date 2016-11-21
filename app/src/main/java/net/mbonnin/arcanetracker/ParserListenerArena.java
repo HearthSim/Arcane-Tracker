@@ -21,7 +21,7 @@ public class ParserListenerArena implements ArenaParser.Listener {
     public void arenaDraftStarted(int classIndex) {
         Deck deck = DeckList.getArenaDeck();
         deck.classIndex = classIndex;
-        MainViewCompanion.getPlayerCompanion().setDeck(deck);
+        MainViewCompanion.getPlayerCompanion().setDeck(deck, null);
 
     }
 

@@ -1,7 +1,9 @@
 package net.mbonnin.arcanetracker;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -11,8 +13,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
@@ -23,7 +27,6 @@ import timber.log.Timber;
  * Created by martin on 10/21/16.
  */
 public class CardsAdapter extends RecyclerView.Adapter {
-    private final String mLanguage;
     private int mClassIndex;
     private ArrayList<Card> mCardList = new ArrayList<>();
     private Listener mListener;
@@ -37,17 +40,6 @@ public class CardsAdapter extends RecyclerView.Adapter {
     }
 
     public CardsAdapter() {
-        String locale = Locale.getDefault().getLanguage().toLowerCase();
-
-        if (locale.contains("fr")) {
-            mLanguage = "frfr";
-        } else if (locale.contains("pt")) {
-            mLanguage = "ptbr";
-        } else if (locale.contains("ru")) {
-            mLanguage = "ruru";
-        } else {
-            mLanguage = "enus";
-        }
     }
 
     public void setDisabledCards(ArrayList<String> list) {
@@ -178,13 +170,16 @@ public class CardsAdapter extends RecyclerView.Adapter {
         ImageView imageView = (ImageView) holder.itemView.findViewById(R.id.imageView);
         TextView textView = (TextView) holder.itemView.findViewById(R.id.textView);
 
-        String baseUrl = "http://vps208291.ovh.net/cards/" + mLanguage + "/";
-        //String baseUrl = "http://wow.zamimg.com/images/hearthstone/cards/enus/original/";
         Card card = mCardList.get(position);
-        String url = baseUrl + card.id + ".png";
 
-        textView.setText(card.name);
+        if (mDisabledCards.contains(card.id)) {
+            imageView.setColorFilter(Color.argb(180, 0, 0, 0), PorterDuff.Mode.SRC_ATOP);
+        } else {
+            imageView.clearColorFilter();
+        }
 
+        String url = "card://" + card.id;
+        Timber.d("fetching " + url);
         int placeHolderRes;
         if (card.rarity.equals(Card.RARITY_LEGENDARY)) {
             placeHolderRes = R.raw.placeholder_legendary;
@@ -194,13 +189,7 @@ public class CardsAdapter extends RecyclerView.Adapter {
             placeHolderRes = R.raw.placeholder_minion;
         }
 
-        if (mDisabledCards.contains(card.id)) {
-            imageView.setColorFilter(Color.argb(180, 0, 0, 0), PorterDuff.Mode.SRC_ATOP);
-        } else {
-            imageView.clearColorFilter();
-        }
-
-        Timber.d("fetching " + url);
+        textView.setText(card.name);
         Picasso.with(imageView.getContext())
                 .load(url)
                 .placeholder(placeHolderRes)
@@ -212,7 +201,7 @@ public class CardsAdapter extends RecyclerView.Adapter {
 
                     @Override
                     public void onError() {
-                        textView.setText("");
+
                     }
                 });
     }

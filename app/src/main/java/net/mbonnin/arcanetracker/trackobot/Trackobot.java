@@ -1,19 +1,21 @@
 package net.mbonnin.arcanetracker.trackobot;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.view.ContextThemeWrapper;
+import android.os.Environment;
 import android.widget.Toast;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.crash.FirebaseCrash;
 import com.google.gson.Gson;
 
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
 import net.mbonnin.arcanetracker.Card;
 import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Utils;
+import net.mbonnin.arcanetracker.trackobot.model.ResultData;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -97,6 +99,41 @@ public class Trackobot {
         public void onNext(ResultData resultData) {
             Context context = ArcaneTrackerApplication.getContext();
             Toast.makeText(ArcaneTrackerApplication.getContext(), context.getString(R.string.trackobotSuccess), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public static File findTrackobotFile() {
+        File dir = Environment.getExternalStorageDirectory();
+        File files[] = dir.listFiles();
+        for (File f: files) {
+            if (f.isFile() &&f.getName().contains(".track-o-bot")) {
+                return f;
+            }
+        }
+
+        return null;
+    }
+
+    public static User parseTrackobotFile(File f) {
+        try {
+            User user = new User();
+            StringBuilder builder = new StringBuilder();
+            DataInputStream stream = new DataInputStream(new FileInputStream(f));
+            int usernameLen = stream.readInt();
+            for (int i = 0; i < usernameLen/2; i++) {
+                builder.append((char)stream.readShort());
+            }
+            user.username = builder.toString();
+            builder.setLength(0);
+            int passwordLen = stream.readInt();
+            for (int i = 0; i < passwordLen/2; i++) {
+                builder.append((char)stream.readShort());
+            }
+            user.password = builder.toString();
+            return user;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
