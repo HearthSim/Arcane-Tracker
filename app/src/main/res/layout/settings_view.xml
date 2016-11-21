@@ -299,6 +299,45 @@
                 android:text="@string/retrievePassword"
                 android:textColor="#808080" />
 
+            <TextView
+                android:id="@+id/or2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/or"
+                android:textColor="#000" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/trackobotImport"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:textColor="#fff" />
+
+                <ProgressBar
+                    android:id="@+id/importProgressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:backgroundTint="#fff"
+                    android:visibility="gone" />
+
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/importExplanation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:autoLink="all"
+                android:text="@string/importExplanation"
+                android:textColor="#808080" />
 
             <FrameLayout
                 android:layout_width="match_parent"

@@ -3,11 +3,14 @@ package net.mbonnin.arcanetracker;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.support.multidex.MultiDexApplication;
 import android.view.ContextThemeWrapper;
 import android.widget.Toast;
 
 import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestHandler;
 
 import net.mbonnin.arcanetracker.parser.ArenaParser;
 import net.mbonnin.arcanetracker.parser.GameLogic;
@@ -32,9 +35,8 @@ import timber.log.Timber;
  * Created by martin on 10/14/16.
  */
 
-public class ArcaneTrackerApplication extends Application {
+public class ArcaneTrackerApplication extends MultiDexApplication {
     private static Context sContext;
-    private static OkHttpClient sPicassoClient;
 
     @Override
     public void onCreate() {
@@ -59,17 +61,11 @@ public class ArcaneTrackerApplication extends Application {
 
         Paper.init(this);
 
-        /**
-         * each image is ~100k and there are ~2000 of them. Put 500 just to be safe :-D
-         */
-        int cacheSize = 500 * 1024 * 1024;
-        sPicassoClient = new OkHttpClient.Builder()
-                .cache(new Cache(getCacheDir(), cacheSize))
+        Picasso picasso = new Picasso.Builder(this)
+                .downloader(new OkHttp3Downloader(new OkHttpClient()))
+                .addRequestHandler(PicassoCardRequestHandler.get())
                 .build();
 
-        Picasso picasso = new Picasso.Builder(this)
-                .downloader(new OkHttp3Downloader(sPicassoClient))
-                .build();
         Picasso.setSingletonInstance(picasso);
         if (Utils.isAppDebuggable()) {
             Picasso.with(this).setIndicatorsEnabled(true);
@@ -82,8 +78,12 @@ public class ArcaneTrackerApplication extends Application {
         new ArenaParser(Utils.getHearthstoneLogsDir() + "Arena.log", new ParserListenerArena());
         new LoadingScreenParser(Utils.getHearthstoneLogsDir() + "LoadingScreen.log", ParserListenerLoadingScreen.get());
 
-        GameLogic gameLogic = new GameLogic(new ParserListenerPower());
-        new PowerParser(Utils.getHearthstoneLogsDir() + "Power.log", gameLogic);
+        new PowerParser(Utils.getHearthstoneLogsDir() + "Power.log", new ParserListenerPower());
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     public static Context getContext() {

@@ -1,4 +1,4 @@
-package net.mbonnin.arcanetracker.trackobot;
+package net.mbonnin.arcanetracker.trackobot.model;
 
 import java.util.ArrayList;
 
@@ -7,5 +7,5 @@ import java.util.ArrayList;
  */
 
 public class HistoryList {
-    public ArrayList<History> history;
+    public ArrayList<Object> history;
 }

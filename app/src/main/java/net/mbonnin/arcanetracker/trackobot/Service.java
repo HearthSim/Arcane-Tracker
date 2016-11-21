@@ -1,5 +1,8 @@
 package net.mbonnin.arcanetracker.trackobot;
 
+import net.mbonnin.arcanetracker.trackobot.model.HistoryList;
+import net.mbonnin.arcanetracker.trackobot.model.ResultData;
+
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;

@@ -73,4 +73,11 @@
     <string name="trackobotError">Could not upload to Track-o-bot :-(</string>
     <string name="trackobotSuccess">Game uploaded to Track-o-bot</string>
     <string name="waitingForCards">Downloading Cards...</string>
+    <string name="importFromStorage">Import Account from storage</string>
+    <string name="importExplanation">Put your .track-o-bot at the root of your phone storage for Arcane Tracker to recognize it</string>
+    <string name="couldNotGetProfile">Could not get profile link, please try again</string>
+    <string name="couldNotFindTrackobotFile">Could not find a \'.track-o-bot\' file</string>
+    <string name="couldNotOpenTrackobotFile">Could not open .track-o-bot file</string>
+    <string name="cannotLinkTrackobot">Cannot link trackobot account :(</string>
+    <string name="hand">hand</string>
 </resources>

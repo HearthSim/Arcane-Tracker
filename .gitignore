@@ -1,4 +1,6 @@
 app/google-services.json
+/app/keystore.properties
+/app/keystore.jks
 *.iml
 .gradle
 /local.properties
@@ -10,4 +12,3 @@ app/google-services.json
 /build
 /captures
 .externalNativeBuild
-app/keystore.jks

@@ -7,8 +7,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import net.mbonnin.arcanetracker.adapter.Controller;
+import net.mbonnin.arcanetracker.adapter.OpponentController;
 import net.mbonnin.arcanetracker.adapter.PlayerController;
-import net.mbonnin.arcanetracker.adapter.DeckAdapter;
+import net.mbonnin.arcanetracker.adapter.ItemAdapter;
 import net.mbonnin.arcanetracker.parser.Player;
 
 import io.paperdb.Paper;
@@ -22,13 +24,13 @@ import static android.view.View.GONE;
 
 public class DeckCompanion {
     private static final String KEY_LAST_USED_DECK_ID = "KEY_LAST_USED_DECK_ID";
-    private PlayerController mController;
+    private Controller mController;
 
     View settings;
     TextView winLoss;
     public TextView deckName;
 
-    private DeckAdapter mAdapter;
+    private ItemAdapter mAdapter;
     private RecyclerView recyclerView;
     private ViewManager mViewManager;
 
@@ -67,14 +69,14 @@ public class DeckCompanion {
         mRecyclerViewParams = new ViewManager.Params();
         mRecyclerViewParams.w = w;
         mRecyclerViewParams.h = mViewManager.getHeight() - h;
-        mAdapter = new DeckAdapter();
+        mAdapter = new ItemAdapter();
 
         if (isOpponent) {
             settings.setVisibility(GONE);
             winLoss.setVisibility(GONE);
 
 
-            mController = new PlayerController(mAdapter);
+            mController = new OpponentController(mAdapter);
             setDeck(DeckList.getOpponentDeck(), null);
         } else {
             new SettingsButtonCompanion(settings);

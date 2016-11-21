@@ -20,6 +20,11 @@ public class Player {
     public Entity hero;
     public Entity heroPower;
 
+    /**
+     * entities controlled by this player
+     */
+    public EntityList entities = new EntityList();
+
     public int classIndex() {
         Card card = CardDb.getCard(hero.CardID);
         return Card.playerClassToClassIndex(card.playerClass);
@@ -67,8 +72,6 @@ public class Player {
     }
 
     private HashMap<String, EntityList> zoneMap = new HashMap<>();
-
-    public EntityList entities = new EntityList();
 
     public void reset() {
         entities.clear();

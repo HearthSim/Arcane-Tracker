@@ -104,8 +104,10 @@ public class LogReader implements Runnable {
             String line = null;
             lastSize = file.length();
 
+            Timber.e("initial file size = %d bytes", lastSize);
             if (!mReadPreviousData) {
                 try {
+                    Timber.e("skipping %d bytes");
                     myReader.skip(lastSize);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -117,6 +119,8 @@ public class LogReader implements Runnable {
                  */
                 mReadPreviousData = true;
             }
+
+            Timber.e("start looping");
             while (!mCanceled) {
 
                 long size = file.length();
@@ -161,7 +165,7 @@ public class LogReader implements Runnable {
 
                     if (seconds < mLastSeconds) {
                         Timber.e("Time going backwards ? %s < %s", getTimeStr(seconds), getTimeStr(mLastSeconds));
-                        Timber.e("on" + mLog);
+                        Timber.e("on " + mLog);
                     }
                     mLastSeconds = seconds;
 

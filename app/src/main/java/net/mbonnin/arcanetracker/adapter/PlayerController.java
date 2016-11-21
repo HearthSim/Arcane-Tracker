@@ -7,7 +7,6 @@ import net.mbonnin.arcanetracker.Settings;
 import net.mbonnin.arcanetracker.Utils;
 import net.mbonnin.arcanetracker.parser.Entity;
 import net.mbonnin.arcanetracker.parser.EntityList;
-import net.mbonnin.arcanetracker.parser.Player;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,21 +19,15 @@ import timber.log.Timber;
  * Created by martin on 11/8/16.
  */
 
-public class PlayerController implements Player.Listener, Deck.Listener {
-    private Player mPlayer;
-    private Deck mDeck;
-    private final DeckAdapter mAdapter;
+public class PlayerController extends Controller  {
+    private final ItemAdapter mAdapter;
 
-    public PlayerController(DeckAdapter adapter) {
+    public PlayerController(ItemAdapter adapter) {
         mAdapter = adapter;
     }
 
-    @Override
-    public void onPlayerStateChanged() {
-        update();
-    }
 
-    private void update() {
+    protected void update() {
         if (mDeck == null) {
             return;
         }
@@ -68,12 +61,12 @@ public class PlayerController implements Player.Listener, Deck.Listener {
         /**
          * now we take the deck and remove the cards we know have been played
          */
-        EntityList originalDeckPlayed = originalDeck.filter(EntityList.IS_OUTSIDE_DECK);
+        EntityList originalDeckPlayed = originalDeck.filter(EntityList.IS_NOT_IN_DECK);
         HashMap<String, Integer> remainingCardMap = Utils.cardMapDiff(mDeck.cards, originalDeckPlayed.toCardMap());
 
-        ArrayList<BarItem> list = new ArrayList<>();
+        ArrayList<DeckEntryItem> list = new ArrayList<>();
         for (Map.Entry<String, Integer> entry : remainingCardMap.entrySet()) {
-            BarItem deckEntry = new BarItem();
+            DeckEntryItem deckEntry = new DeckEntryItem();
             deckEntry.card = CardDb.getCard(entry.getKey());
             deckEntry.count = entry.getValue();
             list.add(deckEntry);
@@ -83,14 +76,14 @@ public class PlayerController implements Player.Listener, Deck.Listener {
                 .filter(EntityList.IS_NOT_FROM_ORIGINAL_DECK)
                 .filter(EntityList.HAS_CARD_ID);
         for (Entity entity : createdCards) {
-            BarItem deckEntry = new BarItem();
+            DeckEntryItem deckEntry = new DeckEntryItem();
             deckEntry.card = CardDb.getCard(entity.CardID);
             deckEntry.count = 1;
             deckEntry.gift = true;
             list.add(deckEntry);
         }
 
-        Collections.sort(list, BarItem.COMPARATOR);
+        Collections.sort(list, DeckEntryItem.COMPARATOR);
 
         int total = Utils.cardMapTotal(mDeck.cards);
         if (total < Deck.MAX_CARDS) {
@@ -104,22 +97,4 @@ public class PlayerController implements Player.Listener, Deck.Listener {
         mAdapter.setList(list);
     }
 
-    public void setDeck(Deck deck, Player player) {
-        deck.setListener(this);
-
-        mDeck = deck;
-        if (mPlayer != null) {
-            mPlayer.listeners.remove(this);
-        }
-        mPlayer = player;
-        if (mPlayer != null) {
-            mPlayer.registerListener(this);
-        }
-        update();
-    }
-
-    @Override
-    public void onDeckChanged() {
-        update();
-    }
 }

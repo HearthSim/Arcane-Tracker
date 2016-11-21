@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 
+
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.2"
@@ -7,9 +8,10 @@ android {
         applicationId "net.mbonnin.arcanetracker"
         minSdkVersion 14
         targetSdkVersion 24
-        versionCode 109
-        versionName "1.09"
+        versionCode 200
+        versionName "2.00"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
         jackOptions {
             enabled true
         }
@@ -25,18 +27,31 @@ android {
         }
     }
 
+    def props = new Properties()
+    def f = project.file("keystore.properties");
+    if (f.exists()) {
+        props.load(new FileInputStream(f))
+
+        signingConfigs.mbonnin.storeFile project.file(props.keyStore)
+        signingConfigs.mbonnin.storePassword props.keyStorePassword
+        signingConfigs.mbonnin.keyAlias props.keyAlias
+        signingConfigs.mbonnin.keyPassword props.keyAliasPassword
+    }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            if(project.hasProperty("arcane_tracker.signing")) {
+            if(f.exists()) {
                 signingConfig signingConfigs.mbonnin
             }
         }
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if(f.exists()) {
+                signingConfig signingConfigs.mbonnin
+            }
         }
     }
     compileOptions {
@@ -51,7 +66,7 @@ android {
 
 ext {
     supportLibVersion = '24.2.0'
-    playServicesVersion = '9.6.1'
+    playServicesVersion = '10.0.0'
 }
 
 dependencies {
@@ -90,6 +105,7 @@ dependencies {
 
     compile 'com.android.support:appcompat-v7:24.2.1'
     testCompile 'junit:junit:4.12'
+    compile 'com.android.support:multidex:1.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

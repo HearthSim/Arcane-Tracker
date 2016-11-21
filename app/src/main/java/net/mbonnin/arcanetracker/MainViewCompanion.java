@@ -203,6 +203,7 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
 
     public void setOpen(boolean open) {
         setX(open ? mWidth:0);
+        mHideViewRunnable.run();
     }
 
     public boolean isOpen() {

@@ -7,26 +7,17 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.google.firebase.crash.FirebaseCrash;
 
-import net.mbonnin.arcanetracker.adapter.BarItem;
-import net.mbonnin.arcanetracker.parser.CardEntity;
-import net.mbonnin.arcanetracker.parser.Entity;
-
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import timber.log.Timber;
@@ -36,18 +27,21 @@ import timber.log.Timber;
  */
 
 public class Utils {
+
+    public static final SimpleDateFormat ISO8601DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+
     public static int dpToPx(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 ArcaneTrackerApplication.getContext().getResources().getDisplayMetrics());
     }
 
-    public static Drawable getDrawableForName(String cardId) {
+    public static Drawable getDrawableForName(String name) {
         Context context = ArcaneTrackerApplication.getContext();
-        int id = context.getResources().getIdentifier(cardId.toLowerCase(), "drawable", context.getPackageName());
+        int id = context.getResources().getIdentifier(name.toLowerCase(), "drawable", context.getPackageName());
         if (id > 0) {
             return context.getResources().getDrawable(id);
         } else {
-            Timber.e("could not find a bar for id " + cardId);
+            Timber.e("could not find a bar for id " + name);
             return context.getResources().getDrawable(R.drawable.hero_10);
         }
     }
