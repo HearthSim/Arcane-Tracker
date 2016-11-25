@@ -5,7 +5,7 @@
     <string name="explanation2">오버레이 창을 띄우면 게임 중 당신이 플레이한 카드와 덱에 남아 있는 카드를 보여줄겁니다.</string>
     <string name="explanation3">빛이 승리를 불러올 것입니다!</string>
     <string name="showNextTime">다음에 또 보기</string>
-    <string name="permissions">Arcane Tracker는 게임을 모니터링하고 오버레이 창을 띄우기 위해 저장소와 오버레이 권한을 필요로 합니다. 하스스톤이 실행중이라면 다시 실행해야 할 수 있습니다.</string>
+    <string name="permissions">Arcane Tracker는 게임을 모니터링하고 오버레이 창을 띄우기 위해 저장소와 다른 앱 위에 그리기 권한을 필요로 합니다. 하스스톤이 실행중이라면 다시 실행해야 할 수 있습니다.</string>
     <string name="cannot_launch">하스스톤을 실행할 수 없습니다. 설치되어있나요?</string>
     <string name="oops_permission">이런, 권한이 없습니다.</string>
     <string name="play">시작!</string>
@@ -46,7 +46,7 @@
     <string name="buttonSize">버튼 크기</string>
     <string name="overlayOpacity">오버레이 투명도</string>
     <string name="autoHide">자동 숨김</string>
-    <string name="autoQuitExplanation">하스스톤이 더이상 실행되지 않을 경우 자동적으로 오버레이를 숨깁니다.</string>
+    <string name="autoQuitExplanation">하스스톤이 더이상 실행되지 않을 경우 자동적으로 오버레이 창을 숨깁니다.</string>
     <string name="autoDetect">자동 덱 탐지</string>
     <string name="autoDetectExplanation">게임이 시작되면, 어떤 덱을 사용하는지 자동으로 탐지합니다. 한 직업의 여러 덱을 돌리면 탐지에 실패할 수 있습니다.</string>
     <string name="autoAdd">자동 카드 추가</string>
