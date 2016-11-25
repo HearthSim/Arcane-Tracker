@@ -45,6 +45,8 @@ public class CardsAdapter extends RecyclerView.Adapter {
             mLanguage = "ptbr";
         } else if (locale.contains("ru")) {
             mLanguage = "ruru";
+        } else if (locale.contains("ko")) {
+            mLanguage = "koKR";
         } else {
             mLanguage = "enus";
         }
