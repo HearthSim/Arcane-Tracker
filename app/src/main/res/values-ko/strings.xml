@@ -65,7 +65,7 @@
     <string name="createAccount">새 계정 만들기</string>
     <string name="unlinkAccount">연동 해제</string>
     <string name="openInBrowser">프로필 열기(외부 브라우저)</string>
-    <string name="decribeYourProblem">Please describe your problem here</string>
+    <string name="decribeYourProblem">여기에 문제를 설명 하십시오.</string>
     <string name="trackobotHttpError">Track-o-bot HTTP error: %1$d</string>
     <string name="trackobotTimeout">Track-o-bot에 접속 시간이 초과되었습니다.</string>
     <string name="trackobotConnectError">Track-o-bot에 접속할 수 없습니다.</string>
