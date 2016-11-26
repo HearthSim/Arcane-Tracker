@@ -124,6 +124,8 @@ public class CardDb {
             sLanguage = "ruRU";
         } else if (locale.contains("pt")) {
             sLanguage = "ptBR";
+        }else if (locale.contains("ko")) {
+            sLanguage = "koKR";
         } else {
             sLanguage = "enUS";
         }
