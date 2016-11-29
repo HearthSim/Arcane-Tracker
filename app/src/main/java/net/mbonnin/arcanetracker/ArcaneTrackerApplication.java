@@ -1,34 +1,24 @@
 package net.mbonnin.arcanetracker;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.multidex.MultiDexApplication;
 import android.view.ContextThemeWrapper;
-import android.widget.Toast;
 
 import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestHandler;
 
+import net.mbonnin.arcanetracker.hsreplay.HSReplay;
 import net.mbonnin.arcanetracker.parser.ArenaParser;
-import net.mbonnin.arcanetracker.parser.GameLogic;
+import net.mbonnin.arcanetracker.parser.BroadcastLineConsumer;
+import net.mbonnin.arcanetracker.parser.RawGameParser;
 import net.mbonnin.arcanetracker.parser.LoadingScreenParser;
+import net.mbonnin.arcanetracker.parser.LogReader;
 import net.mbonnin.arcanetracker.parser.PowerParser;
 
-import java.io.IOException;
-import java.util.Locale;
-
 import io.paperdb.Paper;
-import okhttp3.Cache;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.util.async.Async;
 import timber.log.Timber;
 
 /**
@@ -75,10 +65,35 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
 
         CardDb.init();
 
-        new ArenaParser(Utils.getHearthstoneLogsDir() + "Arena.log", new ParserListenerArena());
-        new LoadingScreenParser(Utils.getHearthstoneLogsDir() + "LoadingScreen.log", ParserListenerLoadingScreen.get());
+        boolean readPreviousData;
+        /**
+         * for Arena, we read the whole file again each time because the file is not that big and it allows us to
+         * get the arena deck contents
+         */
+        ArenaParser arenaParser = new ArenaParser(new ParserListenerArena());
+        readPreviousData = true;
+        new LogReader(Utils.getHearthstoneLogsDir() + "Arena.log", arenaParser, readPreviousData);
+        /**
+         * we need to read the whole loading screen if we start Arcane Tracker while in the 'tournament' play screen
+         * or arena screen already (and not in main menu)
+         */
+        readPreviousData = true;
+        new LogReader(Utils.getHearthstoneLogsDir() + "LoadingScreen.log", new LoadingScreenParser(ParserListenerLoadingScreen.get()), readPreviousData);
 
-        new PowerParser(Utils.getHearthstoneLogsDir() + "Power.log", new ParserListenerPower());
+        /**
+         * Power.log, we just want the incremental changes
+         */
+        readPreviousData = false;
+        PowerParser powerParser = new PowerParser(ParserListenerPower.get());
+        RawGameParser rawGameParser = new RawGameParser();
+        BroadcastLineConsumer lineConsumer = new BroadcastLineConsumer();
+        lineConsumer.add(powerParser);
+        lineConsumer.add(rawGameParser);
+
+        new LogReader(Utils.getHearthstoneLogsDir() + "Power.log", lineConsumer, readPreviousData);
+
+        HSReplay.get();
+
     }
 
     @Override

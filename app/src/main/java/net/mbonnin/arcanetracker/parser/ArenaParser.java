@@ -11,7 +11,7 @@ import timber.log.Timber;
  * Created by martin on 11/7/16.
  */
 
-public class ArenaParser {
+public class ArenaParser implements LogReader.LineConsumer {
     private final Listener mListener;
     final Pattern DraftManager$OnBegin = Pattern.compile("DraftManager.OnBegin - Got new draft deck with ID: (.*)");
     final Pattern DraftManager$OnChose = Pattern.compile("DraftManager.OnChosen\\(\\): hero=(.*) premium=NORMAL");
@@ -25,17 +25,11 @@ public class ArenaParser {
         void addIfNotAlreadyThere(String cardId);
     }
 
-    public ArenaParser(String file, Listener listener) {
+    public ArenaParser(Listener listener) {
         mListener = listener;
-
-        /**
-         * for Arena, we read the whole file again each time because the file is not that big and it allows us to
-         * get the arena deck contents
-         */
-        new LogReader(file, (seconds, line) -> parseArena(seconds, line), true);
     }
 
-    private void parseArena(int seconds, String line) {
+    public void onLine(String rawLine, int seconds, String line) {
         Timber.v(line);
 
         Matcher matcher = DraftManager$OnBegin.matcher(line);

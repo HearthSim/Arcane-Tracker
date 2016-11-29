@@ -18,7 +18,7 @@ import timber.log.Timber;
  * Created by martin on 10/27/16.
  */
 
-public class PowerParser {
+public class PowerParser implements LogReader.LineConsumer {
     private final Listener mListener;
     private LinkedList<Node> mNodeStack = new LinkedList<Node>();
     private Node mCurrentNode;
@@ -60,16 +60,12 @@ public class PowerParser {
         void onGameEnded(Game game, boolean victory);
     }
 
-    public PowerParser(String file, Listener listener) {
+    public PowerParser(Listener listener) {
         mListener = listener;
-
-        boolean readPreviousData = false;
-        //readPreviousData = true;
-        new LogReader(file, (seconds, line) -> parsePowerLine(seconds, line), readPreviousData);
     }
 
 
-    private void parsePowerLine(int seconds, String line) {
+    public void onLine(String rawLine, int seconds, String line) {
         String s[] = Utils.extractMethod(line);
 
         if (s == null) {

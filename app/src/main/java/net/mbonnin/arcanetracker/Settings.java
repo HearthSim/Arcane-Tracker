@@ -17,6 +17,7 @@ public class Settings {
     public static final String DRAWER_WIDTH = "DRAWER_WIDTH";
     public static final String BUTTON_WIDTH = "BUTTON_WIDTH";
     public static final String LOCALE = "LOCALE";
+    public static final String HSREPLAY_KEY = "HSREPLAY_KEY";
 
     private static SharedPreferences getPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(ArcaneTrackerApplication.getContext());
