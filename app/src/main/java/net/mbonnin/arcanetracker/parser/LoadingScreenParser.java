@@ -9,7 +9,7 @@ import timber.log.Timber;
  * Created by martin on 11/7/16.
  */
 
-public class LoadingScreenParser {
+public class LoadingScreenParser implements LogReader.LineConsumer {
     public static final int MODE_PLAY = 0;
     public static final int MODE_ARENA = 1;
     public static final int MODE_OTHER = 2;
@@ -19,16 +19,11 @@ public class LoadingScreenParser {
         void modeChanged(int newMode);
     }
 
-    public LoadingScreenParser(String file, Listener listener) {
-        /**
-         * we need to read the whole loading screen if we start Arcane Tracker while in the 'tournament' play screen
-         * or arena screen already (and not in main menu)
-         */
+    public LoadingScreenParser(Listener listener) {
         mListener = listener;
-        new LogReader(file, (seconds, line) -> parseLoadingScreen(line), true);
     }
 
-    private void parseLoadingScreen(String line) {
+    public void onLine(String rawLine, int seconds, String line) {
         Timber.v(line);
 
         Pattern pattern = Pattern.compile("LoadingScreen.OnSceneLoaded\\(\\) - prevMode=(.*) currMode=(.*)");

@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import okhttp3.MediaType;
 import timber.log.Timber;
 
 /**
@@ -29,6 +30,7 @@ import timber.log.Timber;
 public class Utils {
 
     public static final SimpleDateFormat ISO8601DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+    public static final MediaType JSON_MIMETYPE = MediaType.parse("application/json; charset=utf-8");
 
     public static int dpToPx(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,

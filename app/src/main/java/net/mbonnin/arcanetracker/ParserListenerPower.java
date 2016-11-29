@@ -1,5 +1,7 @@
 package net.mbonnin.arcanetracker;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import net.mbonnin.arcanetracker.parser.Entity;
 import net.mbonnin.arcanetracker.parser.EntityList;
 import net.mbonnin.arcanetracker.parser.Game;
@@ -24,9 +26,14 @@ import timber.log.Timber;
  */
 public class ParserListenerPower implements PowerParser.Listener {
 
+    private static ParserListenerPower sParserListenerPower;
+    private Game mLastGame;
+
     @Override
     public void onGameStarted(Game game) {
         Timber.w("onGameStarted");
+
+        mLastGame = game;
 
         Deck deck = MainViewCompanion.getPlayerCompanion().getDeck();
         if (Settings.get(Settings.AUTO_SELECT_DECK, true)) {
@@ -172,5 +179,19 @@ public class ParserListenerPower implements PowerParser.Listener {
 
             Trackobot.get().sendResult(resultData);
         }
+
+        FirebaseAnalytics.getInstance(ArcaneTrackerApplication.getContext()).logEvent("game_ended", null);
+    }
+
+    public static ParserListenerPower get() {
+        if (sParserListenerPower == null) {
+            sParserListenerPower = new ParserListenerPower();
+        }
+
+        return sParserListenerPower;
+    }
+
+    public Game getLastGame() {
+        return mLastGame;
     }
 }

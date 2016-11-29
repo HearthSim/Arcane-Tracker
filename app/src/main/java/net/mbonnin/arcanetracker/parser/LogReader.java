@@ -8,7 +8,6 @@ import net.mbonnin.arcanetracker.Utils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.regex.Matcher;
 
 import timber.log.Timber;
 
@@ -21,15 +20,15 @@ public class LogReader implements Runnable {
     private final Handler mHandler;
     private boolean mReadPreviousData;
     private boolean mCanceled;
-    private Listener mListener;
+    private LineConsumer mLineConsumer;
     private int mLastSeconds;
 
-    interface Listener {
-        void onLine(int seconds, String line);
+    interface LineConsumer {
+        void onLine(String rawLine, int seconds, String line);
     }
 
-    public LogReader(String log, Listener listener, boolean readPreviousData) {
-        mListener = listener;
+    public LogReader(String log, LineConsumer lineConsumer, boolean readPreviousData) {
+        mLineConsumer = lineConsumer;
         mLog = log;
 
         mHandler = new Handler();
@@ -162,6 +161,7 @@ public class LogReader implements Runnable {
 
                     int seconds = getSeconds(line.substring(2, 10));
                     String finalLine = line.substring(19);
+                    String rawLine = line;
 
                     if (seconds < mLastSeconds) {
                         Timber.e("Time going backwards ? %s < %s", getTimeStr(seconds), getTimeStr(mLastSeconds));
@@ -169,7 +169,7 @@ public class LogReader implements Runnable {
                     }
                     mLastSeconds = seconds;
 
-                    mHandler.post(() -> mListener.onLine(seconds, finalLine));
+                    mHandler.post(() -> mLineConsumer.onLine(rawLine, seconds, finalLine));
                 }
             }
 
