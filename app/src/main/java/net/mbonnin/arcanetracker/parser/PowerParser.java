@@ -188,18 +188,24 @@ public class PowerParser implements LogReader.LineConsumer {
         }
     }
 
+    private boolean isGameValid(Game game) {
+        return mCurrentGame.player != null && mCurrentGame.opponent != null;
+    }
     private void tagChange(Entity entity, String key, String newValue) {
         String oldValue = entity.tags.get(Entity.KEY_ZONE);
         entity.tags.put(key, newValue);
 
         GameLogic.tagChanged(mCurrentGame, entity, key, oldValue, newValue);
 
-        if (!mCurrentGame.started && mCurrentGame.player != null && mCurrentGame.opponent != null) {
+        if (!mCurrentGame.started && isGameValid(mCurrentGame)) {
             mListener.onGameStarted(mCurrentGame);
             mCurrentGame.started = true;
         }
 
-        if (Entity.ENTITY_ID_GAME.equals(entity.EntityID)) {
+        /**
+         * Do not crash If we get a disconnect before the mulligan (might happen ?)
+         */
+        if (Entity.ENTITY_ID_GAME.equals(entity.EntityID) && mCurrentGame.started) {
             if (Entity.KEY_STEP.equals(key)) {
                 if (Entity.STEP_FINAL_GAMEOVER.equals(newValue)) {
                     boolean victory = Entity.PLAYSTATE_WON.equals(mCurrentGame.player.entity.tags.get(Entity.KEY_PLAYSTATE));
