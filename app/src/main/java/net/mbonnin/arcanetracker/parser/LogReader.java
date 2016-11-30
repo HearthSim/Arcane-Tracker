@@ -2,7 +2,6 @@ package net.mbonnin.arcanetracker.parser;
 
 import android.os.Handler;
 
-
 import net.mbonnin.arcanetracker.Utils;
 
 import java.io.File;
@@ -18,21 +17,25 @@ import timber.log.Timber;
 public class LogReader implements Runnable {
     private final String mLog;
     private final Handler mHandler;
-    private boolean mReadPreviousData;
+    private boolean mPreviousDataRead = false;
     private boolean mCanceled;
     private LineConsumer mLineConsumer;
-    private int mLastSeconds;
+    private boolean mSkipPreviousData;
 
     interface LineConsumer {
-        void onLine(String rawLine, int seconds, String line);
+        void onLine(String line);
+        void onPreviousDataRead();
     }
 
-    public LogReader(String log, LineConsumer lineConsumer, boolean readPreviousData) {
+    public LogReader(String log, LineConsumer lineConsumer) {
+        this(log, lineConsumer, false);
+    }
+    public LogReader(String log, LineConsumer lineConsumer, boolean skipPreviousData) {
         mLineConsumer = lineConsumer;
+        mSkipPreviousData = skipPreviousData;
         mLog = log;
 
         mHandler = new Handler();
-        mReadPreviousData = readPreviousData;
         Thread thread = new Thread(this);
         thread.start();
 
@@ -68,29 +71,23 @@ public class LogReader implements Runnable {
 
     @Override
     public void run() {
-        File file = new File(mLog);
-
-        /**
-         * stupid workaround for the debugger....
-         * If we don't sleep here and put breakpoints in the parser code, it gets executed while the MainActivity is destroying and the OS kill us for ANR
-         */
-        if (Utils.isAppDebuggable()) {
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
         long lastSize;
-        MyVeryOwnReader myReader;
         while (!mCanceled) {
-            /**
+            MyVeryOwnReader myReader = null;
+            File file = new File(Utils.getHSExternalDir() + "/Logs/" + mLog);
+
+            /*
              * try to open file
              */
             try {
                 myReader = new MyVeryOwnReader(file);
-            } catch (FileNotFoundException e) {
+            } catch (FileNotFoundException ignored) {
+                /*
+                 * if the file does not exist, there is no previous data to read
+                 */
+                previousDataConsumed();
+                mSkipPreviousData = false;
+
                 //e.printStackTrace();
                 try {
                     Thread.sleep(1000);
@@ -100,26 +97,27 @@ public class LogReader implements Runnable {
                 continue;
             }
 
-            String line = null;
+            String line;
             lastSize = file.length();
 
-            Timber.e("initial file size = %d bytes", lastSize);
-            if (!mReadPreviousData) {
+            Timber.e("%s: initial file size = %d bytes", mLog, lastSize);
+            if (mSkipPreviousData) {
                 try {
-                    Timber.e("skipping %d bytes");
+                    Timber.e("%s: skipping %d bytes", mLog, lastSize);
                     myReader.skip(lastSize);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Timber.e(e);
                 }
 
-                /**
+                /*
                  * Next time we come, it is that the file the file has been truncated.
                  * Assume it has been truncated to 0 and it's safe to read all the previous data (not sure about that)
                  */
-                mReadPreviousData = true;
+                mSkipPreviousData = false;
+                previousDataConsumed();
             }
 
-            Timber.e("start looping");
+            Timber.e("%s: start looping", mLog);
             while (!mCanceled) {
 
                 long size = file.length();
@@ -127,8 +125,8 @@ public class LogReader implements Runnable {
                     /**
                      * somehow someone truncated the file... do what we can
                      */
-                    String w = String.format("truncated file ? (%s) [%d -> %d]", mLog, lastSize, size);
-                    Utils.reportNonFatal(new TruncatedFileException(w));
+                    String w = String.format("%s: truncated file ? [%d -> %d]", mLog, lastSize, size);
+                    Timber.e(w);
                     break;
                 }
                 try {
@@ -140,11 +138,18 @@ public class LogReader implements Runnable {
                     } catch (InterruptedException e1) {
                         Timber.e(e1);
                     }
-                    Timber.e("cannot read log file file" + file);
+                    Timber.e("%s: cannot read log file file", mLog);
                     Utils.reportNonFatal(e);
                     break;
                 }
                 if (line == null) {
+                    if (!mPreviousDataRead) {
+                        /**
+                         * we've reach the EOF, everything is new data now
+                         */
+                        previousDataConsumed();
+                    }
+
                     //wait until there is more of the file for us to read
                     try {
                         Thread.sleep(1000);
@@ -152,28 +157,65 @@ public class LogReader implements Runnable {
                         Timber.e(e);
                     }
                 } else {
-                    // parse the beginning of line: "D 15:24:25.6488220 "
-                    if (line.length() < 19) {
-                        Timber.e("invalid line: " + line);
-                        return;
-                    }
-
-
-                    int seconds = getSeconds(line.substring(2, 10));
-                    String finalLine = line.substring(19);
-                    String rawLine = line;
-
-                    if (seconds < mLastSeconds) {
-                        Timber.e("Time going backwards ? %s < %s", getTimeStr(seconds), getTimeStr(mLastSeconds));
-                        Timber.e("on " + mLog);
-                    }
-                    mLastSeconds = seconds;
-
-                    mHandler.post(() -> mLineConsumer.onLine(rawLine, seconds, finalLine));
+                    String finalLine = line;
+                    mHandler.post(() -> mLineConsumer.onLine(finalLine));
                 }
             }
 
             myReader.close();
         }
+    }
+
+    private void previousDataConsumed() {
+        mPreviousDataRead = true;
+        mHandler.post(() -> mLineConsumer.onPreviousDataRead());
+    }
+
+    static class LogLine {
+        public String level;
+        public String line;
+        public String method;
+        public int seconds;
+    }
+
+    public static LogLine parseLine(String line) {
+        LogLine logLine = new LogLine();
+
+        //D 19:48:03.8108410 GameState.DebugPrintPower() -     Player EntityID=3 PlayerID=2 GameAccountId=[hi=144115198130930503 lo=19268725]
+        String[] s = line.split(" ");
+        if (s.length < 3) {
+            Timber.e("invalid line: %s", line);
+            return null;
+        }
+
+        logLine.level = s[0];
+        try {
+            logLine.seconds = getSeconds(s[1]);
+        } catch (NumberFormatException e) {
+            Timber.e("bad time: %s", line);
+            return null;
+        }
+
+        logLine.method = s[2];
+
+        if (s.length == 3) {
+            logLine.line = "";
+            return logLine;
+        } else {
+            if (!"-".equals(s[3])) {
+                Timber.e("missing -: %s", line);
+                return null;
+            }
+        }
+
+        int start = line.indexOf("-");
+        if (start >= line.length() - 2) {
+            Timber.e("empty line: %s", line);
+            return null;
+        }
+        logLine.line = line.substring(start + 2);
+
+
+        return logLine;
     }
 }

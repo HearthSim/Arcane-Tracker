@@ -4,27 +4,35 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.crash.FirebaseCrash;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
-import net.mbonnin.arcanetracker.trackobot.model.HistoryList;
+import net.mbonnin.arcanetracker.hsreplay.HSReplay;
+import net.mbonnin.arcanetracker.hsreplay.model.ClaimResult;
+import net.mbonnin.arcanetracker.hsreplay.model.Token;
 import net.mbonnin.arcanetracker.trackobot.Trackobot;
 import net.mbonnin.arcanetracker.trackobot.Url;
 import net.mbonnin.arcanetracker.trackobot.User;
+import net.mbonnin.arcanetracker.trackobot.model.HistoryList;
 
 import java.io.File;
 
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static android.view.View.GONE;
@@ -35,6 +43,7 @@ import static android.view.View.VISIBLE;
  */
 
 public class SettingsCompanion {
+    private LoadableButtonCompanion mClaimViewCompanion;
     View settingsView;
     private TextView trackobotText;
     private Button signinButton;
@@ -47,6 +56,32 @@ public class SettingsCompanion {
     private Button importButton;
     private View importExplanation;
     private ProgressBar importProgressBar;
+
+    private final Observer<Token> mHSReplayTokenObserver = new Observer<Token>() {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Timber.e(e);
+        }
+
+        @Override
+        public void onNext(Token token) {
+            if (token.user != null) {
+                mClaimViewCompanion.button.setText(settingsView.getContext().getString(R.string.hsReplayClaimed, token.user.username));
+            } else {
+                mClaimViewCompanion.button.setText(settingsView.getContext().getString(R.string.hsReplayClaim));
+                mClaimViewCompanion.button.setEnabled(true);
+                DrawableCompat.setTint(mClaimViewCompanion.button.getBackground(), settingsView.getContext().getResources().getColor(R.color.colorPrimary));
+                mClaimViewCompanion.button.setOnClickListener(v -> {
+                    mClaimViewCompanion.startLoading(HSReplay.get().service().createClaim(), mHSReplayClaimObserver);
+                });
+            }
+        }
+    };
 
     private final SeekBar.OnSeekBarChangeListener mSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
         @Override
@@ -65,6 +100,28 @@ public class SettingsCompanion {
         }
     };
 
+    private final Observer<ClaimResult> mHSReplayClaimObserver = new Observer<ClaimResult>() {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Timber.e("claim error", e);
+            Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.hsReplayClaimFailed), Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onNext(ClaimResult claimResult) {
+            Intent i = new Intent();
+            i.setAction(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(claimResult.full_url));
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            ArcaneTrackerApplication.getContext().startActivity(i);
+        }
+    };
+
     Observer<User> mSignupObserver = new Observer<User>() {
         @Override
         public void onCompleted() {
@@ -73,7 +130,7 @@ public class SettingsCompanion {
 
         @Override
         public void onError(Throwable e) {
-
+            Timber.e(e);
         }
 
         @Override
@@ -81,11 +138,14 @@ public class SettingsCompanion {
             signupProgressBar.setVisibility(GONE);
             signupButton.setVisibility(VISIBLE);
             signinButton.setEnabled(true);
+
+            Context context = ArcaneTrackerApplication.getContext();
             if (user == null) {
-                Toast.makeText(ArcaneTrackerApplication.getContext(), "Cannot create trackobot account :(", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, context.getString(R.string.trackobotSignupError), Toast.LENGTH_LONG).show();
             } else {
                 Trackobot.get().setUser(user);
 
+                FirebaseAnalytics.getInstance(context).logEvent("track_o_bot_signup", null);
                 updateTrackobot(settingsView);
             }
         }
@@ -112,6 +172,7 @@ public class SettingsCompanion {
                 Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show();
                 Trackobot.get().setUser(null);
             } else {
+                FirebaseAnalytics.getInstance(ArcaneTrackerApplication.getContext()).logEvent("track_o_bot_signin", null);
                 updateTrackobot(settingsView);
             }
 
@@ -144,6 +205,7 @@ public class SettingsCompanion {
                 Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show();
                 Trackobot.get().setUser(null);
             } else {
+                FirebaseAnalytics.getInstance(ArcaneTrackerApplication.getContext()).logEvent("track_o_bot_signin", null);
                 updateTrackobot(settingsView);
             }
         }
@@ -226,6 +288,7 @@ public class SettingsCompanion {
                     .subscribe(mImportObserver);
         }
     };
+    private boolean firstTime;
 
 
     private void updateTrackobot(View view) {
@@ -303,6 +366,12 @@ public class SettingsCompanion {
 
     public SettingsCompanion(View view) {
         settingsView = view;
+        init();
+    }
+
+    private void init() {
+        View view = settingsView;
+        Context context = ArcaneTrackerApplication.getContext();
 
         updateTrackobot(view);
 
@@ -326,6 +395,12 @@ public class SettingsCompanion {
 
             ArcaneTrackerApplication.getContext().startActivity(emailIntent);
         });
+
+        Button resetCacheButton = (Button)view.findViewById(R.id.resetCache);
+        resetCacheButton.setOnClickListener(v -> {
+            PicassoCardRequestHandler.get().resetCache();
+        });
+
         SeekBar seekBar = (SeekBar) view.findViewById(R.id.seekBar);
         seekBar.setMax(100);
         seekBar.setProgress(MainViewCompanion.get().getAlphaSetting());
@@ -348,6 +423,56 @@ public class SettingsCompanion {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        Spinner spinner = (Spinner) view.findViewById(R.id.languageSpinner);
+
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(context, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        int selectedPosition = 0;
+        int i = 1;
+        String l = Settings.get(Settings.LANGUAGE, null);
+        adapter.add(context.getString(R.string._default));
+        for (Language language: Language.allLanguages) {
+            adapter.add(language.friendlyName);
+            if (l != null && language.key.equals(l)) {
+                selectedPosition = i;
+            }
+            i++;
+        }
+
+        spinner.setAdapter(adapter);
+        spinner.setSelection(selectedPosition);
+        firstTime = true;
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String newKey = position == 0 ? null: Language.allLanguages.get(position-1).key;
+                String oldKey = Settings.get(Settings.LANGUAGE, null);
+                boolean areSame = newKey == null ? oldKey == null : newKey.equals(oldKey);
+                if (!firstTime && !areSame) {
+                    Settings.set(Settings.LANGUAGE, newKey);
+                    View view2 = LayoutInflater.from(context).inflate(R.layout.please_restart, null);
+                    view2.findViewById(R.id.ok).setOnClickListener(v3 -> {
+                        ViewManager.get().removeView(view2);
+                    });
+
+                    ViewManager.Params params = new ViewManager.Params();
+                    params.w = (int) (ViewManager.get().getWidth() * 0.6f);
+                    params.h = ViewManager.get().getHeight() / 2;
+                    params.x = (ViewManager.get().getWidth() -params.w)/ 2;
+                    params.y = ViewManager.get().getHeight() / 4;
+
+                    ViewManager.get().addModalView(view2, params);
+                }
+                firstTime = false;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
@@ -390,7 +515,30 @@ public class SettingsCompanion {
             Settings.set(Settings.AUTO_ADD_CARDS, isChecked);
         });
 
-        view.findViewById(R.id.quit).setOnClickListener(v -> MainService.stop());
+        CheckBox hsReplay = (CheckBox) view.findViewById(R.id.hsReplay);
+        hsReplay.setChecked(Settings.get(Settings.HSREPLAY, Settings.DEFAULT_HSREPLAY));
+        hsReplay.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Settings.set(Settings.HSREPLAY, isChecked);
+        });
+        View hsReplayHistory = view.findViewById(R.id.hsReplayHistory);
+        if (hsReplayHistory != null) {
+            hsReplayHistory.setOnClickListener(v -> HistoryCompanion.show());
+        }
+
+        View claimView = view.findViewById(R.id.hsreplayClaim);
+
+        String token = HSReplay.get().getToken();
+        if (token == null) {
+            claimView.setVisibility(GONE);
+        } else {
+            mClaimViewCompanion = new LoadableButtonCompanion(claimView);
+            mClaimViewCompanion.button.setEnabled(false);
+
+            HSReplay.get().service().getToken(token)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(mHSReplayTokenObserver);
+        }
     }
 
 

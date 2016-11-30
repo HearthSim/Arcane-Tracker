@@ -2,6 +2,8 @@ package net.mbonnin.arcanetracker;
 
 import net.mbonnin.arcanetracker.parser.LoadingScreenParser;
 
+import timber.log.Timber;
+
 /**
  * Created by martin on 11/7/16.
  */
@@ -24,8 +26,9 @@ public class ParserListenerLoadingScreen implements LoadingScreenParser.Listener
     @Override
     public void modeChanged(int newMode) {
         mMode = newMode;
+        Timber.d("mode " + LoadingScreenParser.friendlyMode(newMode));
         if (newMode == LoadingScreenParser.MODE_ARENA) {
-            MainViewCompanion.getPlayerCompanion().setDeck(DeckList.getArenaDeck(), null);
+            MainViewCompanion.getPlayerCompanion().setDeck(DeckList.getArenaDeck());
         }
     }
 }

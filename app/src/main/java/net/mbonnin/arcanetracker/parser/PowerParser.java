@@ -1,12 +1,16 @@
 package net.mbonnin.arcanetracker.parser;
 
+import android.os.Handler;
 import android.text.TextUtils;
 
 
+import net.mbonnin.arcanetracker.Card;
 import net.mbonnin.arcanetracker.CardDb;
 import net.mbonnin.arcanetracker.Utils;
+import net.mbonnin.arcanetracker.hsreplay.HSReplay;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
@@ -19,7 +23,8 @@ import timber.log.Timber;
  */
 
 public class PowerParser implements LogReader.LineConsumer {
-    private final Listener mListener;
+    private final Handler mHandler;
+    private final GameLogic mGameLogic;
     private LinkedList<Node> mNodeStack = new LinkedList<Node>();
     private Node mCurrentNode;
 
@@ -36,6 +41,12 @@ public class PowerParser implements LogReader.LineConsumer {
     private final Pattern HIDE_ENTITY = Pattern.compile("HIDE_ENTITY - Entity=(.*) tag=(.*) value=(.*)");
     private final Pattern TAG_CHANGE = Pattern.compile("TAG_CHANGE Entity=(.*) tag=(.*) value=(.*)");
     private final Pattern TAG = Pattern.compile("tag=(.*) value=(.*)");
+
+    private StringBuilder rawBuilder;
+    private String rawMatchStart;
+    private int rawGoldRewardStateCount;
+    private Game mLastGame;
+    private boolean mReadingPreviousData = true;
 
     static class Block {
         public static final String TYPE_PLAY="PLAY";
@@ -55,31 +66,32 @@ public class PowerParser implements LogReader.LineConsumer {
         public int depth;
     }
 
-    public interface Listener {
-        void onGameStarted(Game game);
-        void onGameEnded(Game game, boolean victory);
-    }
-
-    public PowerParser(Listener listener) {
-        mListener = listener;
+    public PowerParser() {
+        mHandler = new Handler();
+        mGameLogic = GameLogic.get();
     }
 
 
-    public void onLine(String rawLine, int seconds, String line) {
-        String s[] = Utils.extractMethod(line);
+    public void onLine(String rawLine) {
+        Timber.v(rawLine);
 
-        if (s == null) {
-            Timber.e("Cannot parse line: " + line);
+        LogReader.LogLine logLine = LogReader.parseLine(rawLine);
+        if (logLine == null) {
             return;
         }
 
-        if (!"PowerTaskList.DebugPrintPower()".equals(s[0])) {
+        String line = logLine.line;
+        if (mReadingPreviousData) {
             return;
         }
 
-        line = s[1];
-
-        Timber.v("PowerTaskList" + line);
+        if (logLine.method.startsWith("GameState")) {
+            handleRawLine(rawLine);
+            return;
+        } else if (!"PowerTaskList.DebugPrintPower()".equals(logLine.method)) {
+            //Timber.e("Ignore method: " + s[0]);
+            return;
+        }
 
         int spaces = 0;
         while (spaces < line.length() && line.charAt(spaces) == ' ') {
@@ -125,6 +137,57 @@ public class PowerParser implements LogReader.LineConsumer {
         }
 
         mNodeStack.add(node);
+    }
+
+    @Override
+    public void onPreviousDataRead() {
+        mReadingPreviousData = false;
+    }
+
+    private void handleRawLine(String rawLine) {
+        if (rawLine.contains("CREATE_GAME")) {
+            rawBuilder = new StringBuilder();
+            rawMatchStart = Utils.ISO8601DATEFORMAT.format(new Date());
+
+            Timber.w(rawMatchStart + " - CREATE GAME: " + rawLine);
+            rawGoldRewardStateCount = 0;
+        }
+
+        if (rawBuilder == null) {
+            return;
+        }
+
+        rawBuilder.append(rawLine);
+        rawBuilder.append('\n');
+
+        if (rawLine.contains("GOLD_REWARD_STATE")) {
+            rawGoldRewardStateCount++;
+            if (rawGoldRewardStateCount == 2) {
+                String gameStr = rawBuilder.toString();
+                Timber.w("GOLD_REWARD_STATE finished");
+
+                long start = System.currentTimeMillis();
+                Runnable runnable = new Runnable(){
+                    @Override
+                    public void run() {
+                        if (mCurrentGame != null) {
+                            // we are still parsing the PowerState logs, wait
+                            if (System.currentTimeMillis() - start < 5000) {
+                                mHandler.post(this);
+                            } else {
+                                Timber.e("timeout waiting for PowerState to finish");
+                            }
+                        } else {
+                            HSReplay.get().uploadGame(rawMatchStart, mLastGame, gameStr);
+                        }
+                    }
+                };
+
+                runnable.run();
+                rawBuilder = null;
+            }
+        }
+
     }
 
 
@@ -173,7 +236,7 @@ public class PowerParser implements LogReader.LineConsumer {
 
                 if (mCurrentGame != null && Block.TYPE_PLAY.equals(block.blockType)) {
                     Entity entity = findEntityByName(mCurrentGame, m.group(2));
-                    GameLogic.entityPlayed(mCurrentGame, entity);
+                    mGameLogic.entityPlayed(entity);
                 }
             } else if ((m = BLOCK_END.matcher(line)).matches()) {
             } else {
@@ -189,27 +252,24 @@ public class PowerParser implements LogReader.LineConsumer {
     }
 
     private boolean isGameValid(Game game) {
-        return mCurrentGame.player != null && mCurrentGame.opponent != null;
+        return game.player != null && game.opponent != null;
     }
+
     private void tagChange(Entity entity, String key, String newValue) {
         String oldValue = entity.tags.get(Entity.KEY_ZONE);
         entity.tags.put(key, newValue);
 
-        GameLogic.tagChanged(mCurrentGame, entity, key, oldValue, newValue);
-
-        if (!mCurrentGame.started && isGameValid(mCurrentGame)) {
-            mListener.onGameStarted(mCurrentGame);
-            mCurrentGame.started = true;
-        }
+        mGameLogic.tagChanged(entity, key, oldValue, newValue);
 
         /**
          * Do not crash If we get a disconnect before the mulligan (might happen ?)
          */
-        if (Entity.ENTITY_ID_GAME.equals(entity.EntityID) && mCurrentGame.started) {
+        if (Entity.ENTITY_ID_GAME.equals(entity.EntityID) && mCurrentGame.isStarted()) {
             if (Entity.KEY_STEP.equals(key)) {
                 if (Entity.STEP_FINAL_GAMEOVER.equals(newValue)) {
                     boolean victory = Entity.PLAYSTATE_WON.equals(mCurrentGame.player.entity.tags.get(Entity.KEY_PLAYSTATE));
-                    mListener.onGameEnded(mCurrentGame, victory);
+                    mCurrentGame.victory = victory;
+                    mGameLogic.gameOver();
 
                     mCurrentGame = null;
                 }
@@ -226,25 +286,28 @@ public class PowerParser implements LogReader.LineConsumer {
                 Timber.w("CREATE_GAME during an existing one, resuming");
             } else {
                 mCurrentGame = new Game();
+                mLastGame = mCurrentGame;
                 for (Node child:node.children) {
                     if ((m = GameEntityPattern.matcher(child.line)).matches()) {
+                        /**
+                         * the game entity
+                         */
                         Entity entity = new Entity();
                         entity.EntityID = m.group(1);
                         entity.tags.putAll(getTags(child));
 
                         mCurrentGame.entityMap.put(entity.EntityID, entity);
                     } else if ((m = PlayerEntityPattern.matcher(child.line)).matches()) {
-                        String PlayerID = m.group(2);
                         Entity entity = new Entity();
                         entity.EntityID = m.group(1);
-                        entity.PlayerID = PlayerID;
+                        entity.PlayerID = m.group(2);
                         entity.tags.putAll(getTags(child));
 
                         mCurrentGame.entityMap.put(entity.EntityID, entity);
                     }
                 }
 
-                GameLogic.gameCreated(mCurrentGame);
+                mGameLogic.gameCreated(mCurrentGame);
             }
         }
 
@@ -276,8 +339,19 @@ public class PowerParser implements LogReader.LineConsumer {
             entity.CardID = m.group(2);
             entity.tags.putAll(getTags(node));
 
+            if (TextUtils.isEmpty(entity.CardID) && block != null) {
+                /**
+                 * this entity is created by something, try to guess
+                 */
+                entity.CardID = guessCardIdFromBlock(block);
+            }
+
+            if (!TextUtils.isEmpty(entity.CardID)) {
+                entity.card = CardDb.getCard(entity.CardID);
+            }
+
             if (isNew) {
-                GameLogic.entityCreated(mCurrentGame, entity);
+                mGameLogic.entityCreated(mCurrentGame, entity);
             }
 
         } else if ((m = SHOW_ENTITY.matcher(line)).matches()) {
@@ -294,12 +368,62 @@ public class PowerParser implements LogReader.LineConsumer {
                 tagChange(entity, key, newTags.get(key));
             }
 
-            GameLogic.entityRevealed(mCurrentGame, entity);
+            mGameLogic.entityRevealed(entity);
         } else if ((m = HIDE_ENTITY.matcher(line)).matches()) {
             /**
              * do nothing and rely on tag changes instead
              */
         }
+    }
+
+    private String guessCardIdFromBlock(Block block) {
+        Entity e = findEntityByName(mCurrentGame, block.entity);
+        String actionStartingCardId = e.CardID;
+
+        if (TextUtils.isEmpty(actionStartingCardId)) {
+            return "";
+        }
+
+        if (Block.TYPE_POWER.equals(block.blockType)) {
+
+            switch(actionStartingCardId) {
+                case Card.ID_GANG_UP:
+                case Card.ID_RECYCLE:
+                case Card.MANIC_SOULCASTER:
+                    return getTargetId(block);
+                case Card.ID_BENEATH_THE_GROUNDS:
+                    return Card.ID_AMBUSHTOKEN;
+                case Card.ID_IRON_JUGGERNAUT:
+                    return Card.ID_BURROWING_MINE_TOKEN;
+                case Card.FORGOTTEN_TORCH:
+                    return Card.ROARING_TORCH;
+                case Card.CURSE_OF_RAFAAM:
+                    return Card.CURSED;
+                case Card.ANCIENT_SHADE:
+                    return Card.ANCIENT_CURSE;
+                case Card.EXCAVATED_EVIL:
+                    return Card.EXCAVATED_EVIL;
+                case Card.ELISE:
+                    return Card.MAP_TO_THE_GOLDEN_MONKEY;
+                case Card.MAP_TO_THE_GOLDEN_MONKEY:
+                    return Card.GOLDEN_MONKEY;
+                case Card.DOOMCALLER:
+                    return Card.CTHUN;
+                case Card.JADE_IDOL:
+                    return Card.JADE_IDOL;
+            }
+        } else if (Block.TYPE_TRIGGER.equals(block.blockType)) {
+            switch (actionStartingCardId) {
+                case Card.WHITE_EYES:
+                    return Card.STORM_GUARDIAN;
+            }
+        }
+        return "";
+    }
+
+    private String getTargetId(Block block) {
+        Entity entity = findEntityByName(mCurrentGame, block.target);
+        return entity.CardID;
     }
 
     private static Entity findEntityByName(Game game, String name) {

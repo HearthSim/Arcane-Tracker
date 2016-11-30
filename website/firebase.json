@@ -3,6 +3,11 @@
     "rules": "database.rules.json"
   },
   "hosting": {
-    "public": "public"
+    "public": "public",
+    "redirects": [ {
+      "source": "/apk/latest.apk",
+      "destination": "/apk/2_08.apk",
+      "type" : 302
+    } ]
   }
 }

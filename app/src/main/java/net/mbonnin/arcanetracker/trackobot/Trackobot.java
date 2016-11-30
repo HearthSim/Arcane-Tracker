@@ -153,25 +153,17 @@ public class Trackobot {
             pendingResultData = new ArrayList<>();
         }
         OkHttpClient client = new OkHttpClient.Builder()
-                .authenticator((route, response) -> {
-                    synchronized (this) {
-                        if (mUser != null) {
-                            String credential;
-                            credential = Credentials.basic(mUser.username, mUser.password);
-                            return response.request().newBuilder().header("Authorization", credential).build();
-                        } else {
-                            return response.request();
-                        }
-                    }
-                })
                 .addInterceptor(chain -> {
                     Request request = chain.request();
 
                     Request.Builder requestBuilder = request.newBuilder();
                     String path = request.url().pathSegments().get(0);
                     HttpUrl.Builder urlBuilder = request.url().newBuilder();
-                    if (!path.startsWith("users") && !path.startsWith("one_time_auth") && mUser != null) {
+                    if (path.startsWith("users")) {
+
+                    } else {
                         urlBuilder.addQueryParameter("username", mUser.username);
+                        requestBuilder.addHeader("Authorization", Credentials.basic(mUser.username, mUser.password));
                     }
 
                     requestBuilder.url(urlBuilder.build());
@@ -196,6 +188,9 @@ public class Trackobot {
 
 
     public static String getHero(int classIndex) {
+        if (classIndex < 0 || classIndex >= Card.classNameList.length) {
+            return "?";
+        }
         return Card.classNameList[classIndex];
     }
 

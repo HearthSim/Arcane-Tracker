@@ -1,9 +1,8 @@
 package net.mbonnin.arcanetracker;
 
-import android.graphics.Bitmap;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -13,21 +12,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Callback;
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Locale;
-
-import timber.log.Timber;
 
 /**
  * Created by martin on 10/21/16.
  */
 public class CardsAdapter extends RecyclerView.Adapter {
-    private int mClassIndex;
+    private String mClass;
     private ArrayList<Card> mCardList = new ArrayList<>();
     private Listener mListener;
     private String mSearchQuery;
@@ -66,8 +60,18 @@ public class CardsAdapter extends RecyclerView.Adapter {
         ((AspectRatioImageView)imageView).setAspectRatio(1.51f);
 
         view.setOnTouchListener((v, event) -> {
+            int position = holder.getAdapterPosition();
+            /**
+             * the NO_POSITION case could happen if you click very fast.
+             * not sure about the other case..., maybe it's not needed anymore
+             */
+            if (position == RecyclerView.NO_POSITION
+                    || position >= mCardList.size()) {
+                return false;
+            }
+
             if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                if (mDisabledCards.contains(mCardList.get(holder.getAdapterPosition()).id)) {
+                if (mDisabledCards.contains(mCardList.get(position).id)) {
                     return false;
                 }
                 imageView.setColorFilter(Color.argb(120, 255, 255, 255), PorterDuff.Mode.SRC_OVER);
@@ -76,11 +80,7 @@ public class CardsAdapter extends RecyclerView.Adapter {
                 imageView.clearColorFilter();
 
                 if (event.getActionMasked() == MotionEvent.ACTION_UP) {
-                    int position = holder.getAdapterPosition();
-                    // not really sure how we could go outside this condition but it happens...
-                    if (position < mCardList.size()) {
-                        mListener.onClick(mCardList.get(position));
-                    }
+                    mListener.onClick(mCardList.get(position));
                 }
             }
             return false;
@@ -88,8 +88,8 @@ public class CardsAdapter extends RecyclerView.Adapter {
         return holder;
     }
 
-    public void setClass(int classIndex) {
-        mClassIndex = classIndex;
+    public void setClass(String clazz) {
+        mClass = clazz;
 
         filter();
     }
@@ -108,7 +108,6 @@ public class CardsAdapter extends RecyclerView.Adapter {
         mCardList.clear();
         ArrayList<Card> allCards = CardDb.getCards();
 
-        String playerClass = Card.classIndexToPlayerClass(mClassIndex);
         for (Card card : allCards) {
             if (card.collectible == null || !card.collectible) {
                 continue;
@@ -132,9 +131,15 @@ public class CardsAdapter extends RecyclerView.Adapter {
                     || (!card.type.equals("SPELL") && !card.type.equals("MINION") && !card.type.equals("WEAPON"))) {
                 continue;
             }*/
-            if (card.playerClass != null && playerClass == null
-                    || (card.playerClass == null && playerClass != null)
-                    || (playerClass != null && !playerClass.equals(card.playerClass))) {
+
+            if (card.playerClass == null) {
+                /**
+                 * is that possible ?
+                 */
+                continue;
+            }
+
+            if (!mClass.equals(card.playerClass)) {
                 continue;
             }
 
@@ -160,7 +165,13 @@ public class CardsAdapter extends RecyclerView.Adapter {
             mCardList.add(card);
         }
 
-        Collections.sort(mCardList, (a, b) -> a.cost - b.cost);
+        Collections.sort(mCardList, (a, b) -> {
+            int r = a.cost - b.cost;
+            if (r != 0) {
+                return r;
+            }
+            return a.name.compareTo(b.name);
+        });
 
         notifyDataSetChanged();
     }
@@ -178,32 +189,20 @@ public class CardsAdapter extends RecyclerView.Adapter {
             imageView.clearColorFilter();
         }
 
-        String url = "card://" + card.id;
-        Timber.d("fetching " + url);
-        int placeHolderRes;
-        if (card.rarity.equals(Card.RARITY_LEGENDARY)) {
-            placeHolderRes = R.raw.placeholder_legendary;
-        } else if (card.type.equals(Card.TYPE_SPELL)) {
-            placeHolderRes = R.raw.placeholder_spell;
-        } else {
-            placeHolderRes = R.raw.placeholder_minion;
-        }
+        Context context = textView.getContext();
 
         textView.setText(card.name);
-        Picasso.with(imageView.getContext())
-                .load(url)
-                .placeholder(placeHolderRes)
-                .into(imageView, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        textView.setText("");
-                    }
 
-                    @Override
-                    public void onError() {
+        Picasso.with(context).load(Utils.getCardUrl(card.id)).into(imageView, new Callback() {
+            @Override
+            public void onSuccess() {
+                textView.setText("");
+            }
 
-                    }
-                });
+            @Override
+            public void onError() {
+            }
+        });
     }
 
     @Override

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="appVersion">Version</string>
-    <string name="arcane_tracker_running">Arcante Tracker est en cours d\'execution</string>
-    <string name="authorizeAndPlay">Donner les authorisations et jouer !</string>
+    <string name="arcane_tracker_running">Arcante Tracker est en cours d\'exécution</string>
+    <string name="authorizeAndPlay">Donner les autorisations et jouer !</string>
     <string name="autoAdd">Ajouter automatique des cartes</string>
     <string name="autoDetect">Détection automatique du deck</string>
     <string name="autoAddExplanation">Si un deck contient moins de 30 cartes, détecter les cartes manquantes automatiquement.</string>
@@ -43,7 +43,7 @@
     <string name="or">ou</string>
     <string name="overlayOpacity">Opacité de l\'overlay</string>
     <string name="password">"Mot de passe: "</string>
-    <string name="permissions">Arcane Tracker a besoin des permissions de stockage et overlay pour fonctionner correctement. Si Hearthstone est déjà en cours d\'exécution, merci de le fermer avant de continuer.</string>
+    <string name="permissions">Arcane Tracker a besoin des permissions de stockage et overlay pour fonctionner correctement.</string>
     <string name="play">Jouer !</string>
     <string name="pleaseEnablePermissions">Certaines permissions sont manquantes</string>
     <string name="quit">Quitter</string>
@@ -69,4 +69,34 @@
     <string name="unlinkAccount">Déconnecter le compte</string>
     <string name="username">"Identifiant: "</string>
     <string name="welcome">Bienvenue sur Arcane Tracker !</string>
+    <string name="app_name">Arcane Tracker</string>
+    <string name="arenaDeck">Deck d\'arène</string>
+    <string name="cannotLinkTrackobot">Impossible de se connecter au compte Track-o-bot</string>
+    <string name="continue_">Oui, démarrer la partie</string>
+    <string name="couldNotFindTrackobotFile">Fichier \'.track-o-bot\' introuvable</string>
+    <string name="couldNotGetProfile">Impossible d\'ouvrir votre profil</string>
+    <string name="couldNotOpenTrackobotFile">Fichier .track-o-bot non reconnu</string>
+    <string name="hand">main</string>
+    <string name="importExplanation">Copiez le fichier \'.track-o-bot\' à la racine de votre téléphone</string>
+    <string name="importFromStorage">Importer un fichier .track-o-bot</string>
+    <string name="opponentsDeck">Deck de l\'adversaire</string>
+    <string name="please_stop_hearthstone">Dernière chose.</string>
+    <string name="stop_hearthstone_explanation">Merci de quitter Hearthsone avant de continuer. Hearthstone a besoin de redémarrer pour que le tracking fonctionne.</string>
+    <string name="waitingForCards">Téléchargement des cartes</string>
+    <string name="yourDeck">Votre Deck</string>
+    <string name="cardsLanguage">Langue des cartes</string>
+    <string name="erase_history">Effacer l\'historique</string>
+    <string name="history">Historique des parties</string>
+    <string name="historyEmpty">"Vous n'avez pas encore de parties. "</string>
+    <string name="ok">ok</string>
+    <string name="race_beast">Bête</string>
+    <string name="race_demon">Démon</string>
+    <string name="race_dragon">Dragon</string>
+    <string name="race_mechanical">Mech</string>
+    <string name="race_murloc">Murloc</string>
+    <string name="race_pirate">Pirate</string>
+    <string name="race_totem">Totem</string>
+    <string name="resetCache">Effacer le cache</string>
+    <string name="trackobotSignupError">Impossible de créer un compte Track-o-bot</string>
+    <string name="win">Victoire</string>
 </resources>

@@ -42,7 +42,7 @@ public class CreateDeckView extends CardView {
         button.setOnClickListener(v -> {
             String name = editText.getText().toString();
             if (name.equals("") || name == null) {
-                Toast.makeText(getContext(), "Please enter a name", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getContext().getString(R.string.please_enter_a_name), Toast.LENGTH_LONG).show();
                 return;
             }
 

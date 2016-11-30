@@ -34,16 +34,17 @@ public class ManaSelectionView extends LinearLayout {
     }
     public void init() {
         for (int i = 0; i <=7; i++) {
-            TextView textView = new TextView(getContext());
+            GemView textView = new GemView(getContext());
             String text = "" + i;
             if (i == 7) {
                 text += "+";
             }
             textView.setText(text);
             int w;
-            w = Utils.dpToPx(24);
+            w = Utils.dpToPx(30);
 
             LinearLayout.LayoutParams layoutParams = new LayoutParams(w, w);
+            layoutParams.leftMargin = Utils.dpToPx(2);
 
             int finalI = i;
             textView.setOnClickListener(v -> {
@@ -57,18 +58,17 @@ public class ManaSelectionView extends LinearLayout {
                 mListener.onClick(selectedIndex);
             });
 
-            textView.setTextColor(Color.BLACK);
-            textView.setGravity(Gravity.CENTER);
             addView(textView, layoutParams);
         }
+        updateViews();
     }
 
     private void updateViews() {
         for (int i = 0; i <=7; i++) {
             if (i == selectedIndex) {
-                getChildAt(i).setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                getChildAt(i).setBackgroundResource(R.drawable.cost_mana_selected);
             } else {
-                getChildAt(i).setBackgroundColor(Color.TRANSPARENT);
+                getChildAt(i).setBackgroundResource(R.drawable.cost_mana);
             }
         }
     }

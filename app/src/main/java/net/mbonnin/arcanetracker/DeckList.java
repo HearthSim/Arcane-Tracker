@@ -29,6 +29,10 @@ public class DeckList {
         return deck;
     }
 
+    public static void addDeck(Deck deck) {
+        sList.add(deck);
+        save();
+    }
     public static void deleteDeck(Deck deck) {
         sList.remove(deck);
         save();
@@ -71,5 +75,13 @@ public class DeckList {
             sOpponentDeck.name = ArcaneTrackerApplication.getContext().getString(R.string.opponentsDeck);
         }
         return sOpponentDeck;
+    }
+
+    public static void saveDeck(Deck deck) {
+        if (ARENA_DECK_ID.equals(deck.id)) {
+            saveArena();
+        } else {
+            save();
+        }
     }
 }

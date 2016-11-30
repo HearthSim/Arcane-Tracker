@@ -6,4 +6,5 @@ package net.mbonnin.arcanetracker.hsreplay.model;
 
 public class Token {
     public String key;
+    public User  user;
 }

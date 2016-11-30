@@ -1,7 +1,14 @@
 package net.mbonnin.arcanetracker.parser;
 
 import net.mbonnin.arcanetracker.Card;
+import net.mbonnin.arcanetracker.Deck;
+import net.mbonnin.arcanetracker.DeckList;
+import net.mbonnin.arcanetracker.MainViewCompanion;
+import net.mbonnin.arcanetracker.Utils;
+import net.mbonnin.arcanetracker.adapter.Controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,53 +19,60 @@ import timber.log.Timber;
  */
 
 public class ArenaParser implements LogReader.LineConsumer {
-    private final Listener mListener;
-    final Pattern DraftManager$OnBegin = Pattern.compile("DraftManager.OnBegin - Got new draft deck with ID: (.*)");
-    final Pattern DraftManager$OnChose = Pattern.compile("DraftManager.OnChosen\\(\\): hero=(.*) premium=NORMAL");
-    final Pattern Client_chooses = Pattern.compile("Client chooses: .* \\((.*)\\)");
-    final Pattern DraftManager$OnChoicesAndContents = Pattern.compile("DraftManager.OnChoicesAndContents - Draft deck contains card (.*)");
+    final Pattern DraftManager$OnChosen = Pattern.compile(".*DraftManager.OnChosen\\(\\): hero=(.*) premium=NORMAL");
+    final Pattern Client_chooses = Pattern.compile(".*Client chooses: .* \\((.*)\\)");
+    private boolean mReadingPreviousData = true;
 
-    public interface Listener {
-        void clear();
-        void arenaDraftStarted(int classIndex);
-        void addCard(String cardId);
-        void addIfNotAlreadyThere(String cardId);
-    }
-
-    public ArenaParser(Listener listener) {
-        mListener = listener;
-    }
-
-    public void onLine(String rawLine, int seconds, String line) {
+    public void onLine(String line) {
         Timber.v(line);
+        Matcher matcher;
 
-        Matcher matcher = DraftManager$OnBegin.matcher(line);
-        if (matcher.matches()) {
-            mListener.clear();
-            return;
-        }
 
-        matcher = DraftManager$OnChose.matcher(line);
-        if (matcher.matches()) {
-            mListener.arenaDraftStarted(Card.heroIdToClassIndex(matcher.group(1)));
-            return;
-        }
+        if (!mReadingPreviousData) {
+            /**
+             * a new ArenaDraft is started
+             */
+            matcher = DraftManager$OnChosen.matcher(line);
+            if (matcher.matches()) {
+                int classIndex = Card.heroIdToClassIndex(matcher.group(1));
+                Timber.d("new hero: %d", classIndex);
 
-        matcher = Client_chooses.matcher(line);
-        if (matcher.matches()) {
-            String cardId = matcher.group(1);
-            if (cardId.toLowerCase().startsWith("hero_")) {
-                // This must be a hero ("Client chooses: Tyrande Whisperwind (HERO_09a)")
-                Timber.e("skip hero " + cardId);
-            } else {
-                mListener.addCard(cardId);
+                Deck deck = DeckList.getArenaDeck();
+                deck.clear();
+                deck.classIndex = classIndex;
+
+                MainViewCompanion.getPlayerCompanion().setDeck(deck);
+
+                Controller.resetAll();
+
+                DeckList.saveArena();
+                return;
+            }
+
+            /**
+             * a card is chosen
+             */
+            matcher = Client_chooses.matcher(line);
+            if (matcher.matches()) {
+                String cardId = matcher.group(1);
+                if (cardId.toLowerCase().startsWith("hero_")) {
+                    // This must be a hero ("Client chooses: Tyrande Whisperwind (HERO_09a)")
+                    Timber.e("skip hero " + cardId);
+                } else {
+                    Deck deck = DeckList.getArenaDeck();
+                    deck.addCard(cardId, 1);
+
+                    Controller.getPlayerController().setDeck(deck);
+
+                    DeckList.saveArena();
+                }
             }
         }
+    }
 
-        matcher = DraftManager$OnChoicesAndContents.matcher(line);
-        if (matcher.matches()) {
-            String cardId = matcher.group(1);
-            mListener.addIfNotAlreadyThere(cardId);
-        }
+
+    @Override
+    public void onPreviousDataRead() {
+        mReadingPreviousData = false;
     }
 }

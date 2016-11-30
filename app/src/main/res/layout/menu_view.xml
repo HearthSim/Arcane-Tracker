@@ -50,16 +50,6 @@
             android:text="@string/renameDeck"
             android:textColor="@android:color/primary_text_light" />
         <TextView
-            android:id="@+id/resetCounter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:gravity="left"
-            android:background="?android:selectableItemBackground"
-            android:padding="13dp"
-            android:text="@string/resetCounter"
-            android:textColor="@android:color/primary_text_light" />
-        <TextView
             android:id="@+id/createDeck"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

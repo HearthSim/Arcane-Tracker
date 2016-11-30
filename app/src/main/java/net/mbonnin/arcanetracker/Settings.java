@@ -17,7 +17,14 @@ public class Settings {
     public static final String DRAWER_WIDTH = "DRAWER_WIDTH";
     public static final String BUTTON_WIDTH = "BUTTON_WIDTH";
     public static final String LOCALE = "LOCALE";
-    public static final String HSREPLAY_KEY = "HSREPLAY_KEY";
+    public static final String HSREPLAY_TOKEN = "HSREPLAY_TOKEN";
+    public static final String HSREPLAY = "HSREPLAY";
+    public static final boolean DEFAULT_HSREPLAY = false;
+    public static final String CARDSDB_VERSION = "CARDSDB_VERSION";
+    public static final String LANGUAGE = "LANGUAGE";
+    public static final String SHOW_XIAOMI_WARNING = "SHOW_XIAOMI_WARNING";
+    public static final String PICASSO_CARD_REQUEST_HANDLER_VERSION = "PICASSO_CARD_REQUEST_HANDLER_VERSION";
+    public static final String VERSION = "VERSION";
 
     private static SharedPreferences getPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(ArcaneTrackerApplication.getContext());
