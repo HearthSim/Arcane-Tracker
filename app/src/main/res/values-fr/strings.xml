@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="appVersion">Version</string>
-    <string name="arcane_tracker_running">Arcante Tracker est en cours d\'execution</string>
-    <string name="authorizeAndPlay">Donner les authorisations et jouer !</string>
+    <string name="arcane_tracker_running">Arcane Tracker est en cours d\'exécution</string>
+    <string name="authorizeAndPlay">Donner les autoorisations et jouer !</string>
     <string name="autoAdd">Ajouter automatique des cartes</string>
     <string name="autoDetect">Détection automatique du deck</string>
     <string name="autoAddExplanation">Si un deck contient moins de 30 cartes, détecter les cartes manquantes automatiquement.</string>
