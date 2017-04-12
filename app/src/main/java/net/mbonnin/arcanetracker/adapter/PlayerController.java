@@ -2,7 +2,7 @@ package net.mbonnin.arcanetracker.adapter;
 
 import net.mbonnin.arcanetracker.CardDb;
 import net.mbonnin.arcanetracker.Deck;
-import net.mbonnin.arcanetracker.DeckList;
+import net.mbonnin.arcanetracker.DeckListManager;
 import net.mbonnin.arcanetracker.Settings;
 import net.mbonnin.arcanetracker.Utils;
 import net.mbonnin.arcanetracker.parser.Entity;
@@ -11,6 +11,7 @@ import net.mbonnin.arcanetracker.parser.EntityList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -21,9 +22,15 @@ import timber.log.Timber;
 
 public class PlayerController extends Controller  {
     private final ItemAdapter mAdapter;
+    private final DeckListManager deckListManager;
+    private final CardDb cardDb;
+    private final Settings settings;
 
-    public PlayerController(ItemAdapter adapter) {
-        mAdapter = adapter;
+    public PlayerController(ItemAdapter adapter, DeckListManager deckListManager, CardDb cardDb, Settings settings) {
+        this.mAdapter = adapter;
+        this.deckListManager = deckListManager;
+        this.cardDb = cardDb;
+        this.settings = settings;
     }
 
 
@@ -47,7 +54,7 @@ public class PlayerController extends Controller  {
          */
         EntityList originalDeck = entities.filter(EntityList.IS_FROM_ORIGINAL_DECK);
         HashMap<String, Integer> originalDeckMap = originalDeck.toCardMap();
-        if (Settings.get(Settings.AUTO_ADD_CARDS, true) && Utils.cardMapTotal(mDeck.cards) < Deck.MAX_CARDS) {
+        if (settings.get(Settings.AUTO_ADD_CARDS, true) && Utils.cardMapTotal(mDeck.cards) < Deck.MAX_CARDS) {
             for (String cardId : originalDeckMap.keySet()) {
                 int found = originalDeckMap.get(cardId);
                 if (found > Utils.cardMapGet(mDeck.cards, cardId)) {
@@ -55,7 +62,7 @@ public class PlayerController extends Controller  {
                     mDeck.cards.put(cardId, found);
                 }
             }
-            DeckList.save();
+            deckListManager.save();
         }
 
         /**
@@ -64,10 +71,10 @@ public class PlayerController extends Controller  {
         EntityList originalDeckPlayed = originalDeck.filter(EntityList.IS_NOT_IN_DECK);
         HashMap<String, Integer> remainingCardMap = Utils.cardMapDiff(mDeck.cards, originalDeckPlayed.toCardMap());
 
-        ArrayList<DeckEntryItem> list = new ArrayList<>();
+        List<DeckEntryItem> list = new ArrayList<>();
         for (Map.Entry<String, Integer> entry : remainingCardMap.entrySet()) {
             DeckEntryItem deckEntry = new DeckEntryItem();
-            deckEntry.card = CardDb.getCard(entry.getKey());
+            deckEntry.card = cardDb.getCard(entry.getKey());
             deckEntry.count = entry.getValue();
             list.add(deckEntry);
         }
@@ -77,7 +84,7 @@ public class PlayerController extends Controller  {
                 .filter(EntityList.HAS_CARD_ID);
         for (Entity entity : createdCards) {
             DeckEntryItem deckEntry = new DeckEntryItem();
-            deckEntry.card = CardDb.getCard(entity.CardID);
+            deckEntry.card = cardDb.getCard(entity.CardID);
             deckEntry.count = 1;
             deckEntry.gift = true;
             list.add(deckEntry);
@@ -90,7 +97,7 @@ public class PlayerController extends Controller  {
             /**
              * I'm not really sure how come this cast is working....
              */
-            ArrayList list2 = list;
+            List list2 = list;
             list2.add(String.format("%d unknown card(s)", Deck.MAX_CARDS - total));
         }
 

@@ -23,6 +23,7 @@ import rx.Observable;
 import rx.Observer;
 import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.util.async.Async;
 import timber.log.Timber;
@@ -32,64 +33,19 @@ import timber.log.Timber;
  */
 
 public class HSReplay {
-    private static HSReplay sHSReplay;
     private final OkHttpClient mClient;
     private final OkHttpClient mS3Client;
     private String mToken;
     private Gson mGson = new Gson();
 
-    private final Observer<? super String> mKeyObserver = new Observer<String>() {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Timber.e(e);
-        }
-
-        @Override
-        public void onNext(String s) {
-            mToken = s;
-            Settings.set(Settings.HSREPLAY_KEY, s);
-        }
-    };
-    private Observer<? super Void> mUploadObserver = new Observer<Void>() {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Timber.e(e);
-        }
-
-        @Override
-        public void onNext(Void aVoid) {
-            Timber.w("HSREplay upload success");
-        }
-    };
-
-    public static HSReplay get() {
-        if (sHSReplay == null) {
-            sHSReplay = new HSReplay();
-        }
-
-        return sHSReplay;
-    }
-
-    public void uploadGame(String matchStart, String gameStr) {
+    public void uploadGame(Game game, String matchStart, String gameStr) {
         if (mToken == null) {
             return;
         }
 
-        Game game = ParserListenerPower.get().getLastGame();
         if (game == null) {
             return;
         }
-
 
         Async.start(() -> {
             UploadRequest uploadRequest = new UploadRequest();
@@ -98,10 +54,10 @@ public class HSReplay {
 
             RequestBody body = RequestBody.create(Utils.JSON_MIMETYPE, mGson.toJson(uploadRequest));
             Request request = new Request.Builder()
-                    .post(body)
-                    .addHeader("Authenticate", "Token " + mToken)
-                    .url("https://upload.hsreplay.net/v1/replay/upload/request")
-                    .build();
+                .post(body)
+                .addHeader("Authenticate", "Token " + mToken)
+                .url("https://upload.hsreplay.net/v1/replay/upload/request")
+                .build();
 
             try {
                 Response response = mClient.newCall(request).execute();
@@ -116,25 +72,24 @@ public class HSReplay {
 
             return null;
         }).subscribeOn(Schedulers.io())
-                .flatMap(putUrl -> {
-                    if (putUrl == null) {
-                        return null;
-                    }
+            .flatMap(putUrl -> {
+                if (putUrl == null) {
+                    return null;
+                }
 
-                    return putToS3(putUrl, gameStr);
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(mUploadObserver);
-
+                return putToS3(putUrl, gameStr);
+            })
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(aVoid -> Timber.w("HSREplay upload success"), Timber::e);
     }
 
     public Observable<Void> putToS3(String putUrl, String gameStr) {
         return Async.start(() -> {
             RequestBody body = RequestBody.create(MediaType.parse("text/plain"), gameStr);
             Request request = new Request.Builder()
-                    .put(body)
-                    .url(putUrl)
-                    .build();
+                .put(body)
+                .url(putUrl)
+                .build();
 
             try {
                 Response response = mS3Client.newCall(request).execute();
@@ -148,28 +103,26 @@ public class HSReplay {
         });
     }
 
-    public HSReplay() {
+    public HSReplay(Settings settings) {
         mClient = new OkHttpClient.Builder()
-                .addInterceptor(chain -> {
-                    Request request = chain.request();
+            .addInterceptor(chain -> {
+                Request request = chain.request();
 
-                    Request.Builder requestBuilder = request.newBuilder();
-                    requestBuilder.addHeader("X-Api-Key", "b70521d3-22e3-43ca-819e-68651fbb9501");
-                    request = requestBuilder.build();
+                Request.Builder requestBuilder = request.newBuilder();
+                requestBuilder.addHeader("X-Api-Key", "b70521d3-22e3-43ca-819e-68651fbb9501");
+                request = requestBuilder.build();
 
-                    return chain.proceed(request);
-                }).build();
+                return chain.proceed(request);
+            }).build();
 
-        mS3Client = new OkHttpClient.Builder()
-                //.addInterceptor(new GzipRequestInterceptor())
-                .build();
+        mS3Client = new OkHttpClient.Builder().build();
 
         if (false) {
-            mToken = Settings.get(Settings.HSREPLAY_KEY, null);
+            mToken = settings.get(Settings.HSREPLAY_KEY, null);
             if (mToken == null) {
 
                 TokenRequest tokenRequest = new TokenRequest();
-                tokenRequest.test_data = Utils.isAppDebuggable() ? true : false;
+                tokenRequest.test_data = Utils.isAppDebuggable();
 
                 RequestBody body = RequestBody.create(Utils.JSON_MIMETYPE, mGson.toJson(tokenRequest));
                 Request request = new Request.Builder()
@@ -191,8 +144,11 @@ public class HSReplay {
 
                     return null;
                 }).subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(mKeyObserver);
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(s -> {
+                        mToken = s;
+                        settings.set(Settings.HSREPLAY_KEY, s);
+                    });
             }
         }
     }

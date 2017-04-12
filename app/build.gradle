@@ -2,19 +2,16 @@ apply plugin: 'com.android.application'
 
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion '25.0.0'
+    compileSdkVersion 25
+    buildToolsVersion '25.0.2'
     defaultConfig {
         applicationId "net.mbonnin.arcanetracker"
         minSdkVersion 14
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode 201
         versionName "2.01"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
-        jackOptions {
-            enabled true
-        }
     }
 
     signingConfigs {
@@ -65,14 +62,15 @@ android {
 }
 
 ext {
-    supportLibVersion = '24.2.0'
-    playServicesVersion = '10.0.0'
+    supportLibVersion = '26.0.0-alpha1'
+    playServicesVersion = '10.2.1'
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.google.code.findbugs'
     })
 
     compile "com.android.support:support-v4:$supportLibVersion"
@@ -81,9 +79,9 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$supportLibVersion"
     compile "com.android.support:cardview-v7:$supportLibVersion"
 
-    compile 'com.google.code.gson:gson:2.7'
+    compile 'com.google.code.gson:gson:2.8.0'
     compile 'io.paperdb:paperdb:1.5'
-    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+    compile 'com.squareup.okhttp3:okhttp:3.6.0'
 
     compile 'com.jakewharton.timber:timber:4.3.1'
 
@@ -98,14 +96,20 @@ dependencies {
     compile "com.google.firebase:firebase-core:$playServicesVersion"
     compile "com.google.firebase:firebase-crash:$playServicesVersion"
 
-    compile 'com.android.support:multidex:1.0.0'
+    compile 'com.android.support:multidex:1.0.1'
     compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
 
     compile 'com.squareup.picasso:picasso:2.5.2'
 
-    compile 'com.android.support:appcompat-v7:24.2.1'
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:multidex:1.0.1'
+
+    compile 'com.google.dagger:dagger-android:2.10'
+    compile 'com.google.dagger:dagger-android-support:2.10'
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.10'
+
+    compile "com.google.dagger:dagger:2.10"
+    annotationProcessor "com.google.dagger:dagger-compiler:2.10"
+    provided 'javax.annotation:jsr250-api:1.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

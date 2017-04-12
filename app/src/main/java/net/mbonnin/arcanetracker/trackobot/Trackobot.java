@@ -15,12 +15,13 @@ import net.mbonnin.arcanetracker.trackobot.model.ResultData;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.List;
 
+import io.paperdb.Book;
 import io.paperdb.Paper;
 import okhttp3.Credentials;
 import okhttp3.HttpUrl;
@@ -44,23 +45,17 @@ public class Trackobot {
     private static final java.lang.String KEY_PENDING_RESULT_DATA = "PENDING_RESULT_DATA";
     private static Trackobot sTrackobot;
     private final Service mService;
+    private final Context context;
+    private final Book book;
     private User mUser;
-    private ArrayList<ResultData> pendingResultData;
-
-    public static Trackobot get() {
-        if (sTrackobot == null) {
-            sTrackobot = new Trackobot();
-        }
-
-        return sTrackobot;
-    }
+    private List<ResultData> pendingResultData;
 
     synchronized public void setUser(User user) {
         mUser = user;
         if (user == null) {
-            Paper.book().delete(KEY_USER);
+            book.delete(KEY_USER);
         } else {
-            Paper.book().write(KEY_USER, mUser);
+            book.write(KEY_USER, mUser);
         }
     }
 
@@ -68,18 +63,18 @@ public class Trackobot {
         return mUser;
     }
 
-    class ResultDataObserver implements Observer<ResultData> {
-        public ResultData resultData;
+    private static class ResultDataObserver implements Observer<ResultData> {
+        private final Context context;
 
-        @Override
-        public void onCompleted() {
-
+        public ResultDataObserver(Context context) {
+            this.context = context;
         }
+
+        @Override public void onCompleted() {  }
 
         @Override
         public void onError(Throwable e) {
             String message;
-            Context context = ArcaneTrackerApplication.getContext();
             if (e instanceof HttpException) {
                 message = context.getString(R.string.trackobotHttpError, ((HttpException) e).code());
             } else if (e instanceof SocketTimeoutException) {
@@ -91,14 +86,13 @@ public class Trackobot {
             } else {
                 message = context.getString(R.string.trackobotError);
             }
-            Toast.makeText(ArcaneTrackerApplication.getContext(), message, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show();
             Utils.reportNonFatal(e);
         }
 
         @Override
         public void onNext(ResultData resultData) {
-            Context context = ArcaneTrackerApplication.getContext();
-            Toast.makeText(ArcaneTrackerApplication.getContext(), context.getString(R.string.trackobotSuccess), Toast.LENGTH_LONG).show();
+            Toast.makeText(context, context.getString(R.string.trackobotSuccess), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -137,18 +131,20 @@ public class Trackobot {
         }
     }
 
-    public Trackobot() {
+    public Trackobot(Context context, Book book) {
+        this.context = context;
+        this.book = book;
 
-        mUser = Paper.book().read(KEY_USER);
+        mUser = book.read(KEY_USER);
 
         if (Utils.isAppDebuggable()) {
             mUser = new User();
             mUser.username = "bitter-void-terror-7444";
             mUser.password = "f762d37712";
-            Paper.book().write(KEY_USER, mUser);
+            book.write(KEY_USER, mUser);
         }
 
-        pendingResultData = Paper.book().read(KEY_PENDING_RESULT_DATA);
+        pendingResultData = book.read(KEY_PENDING_RESULT_DATA);
         if (pendingResultData == null) {
             pendingResultData = new ArrayList<>();
         }
@@ -194,16 +190,15 @@ public class Trackobot {
         return mService;
     }
 
-
     public static String getHero(int classIndex) {
         return Card.classNameList[classIndex];
     }
 
     public void sendResult(ResultData resultData) {
-        if (!Utils.isNetworkConnected()) {
+        if (!Utils.isNetworkConnected(context)) {
             Timber.w("offline, sendResult later");
             pendingResultData.add(resultData);
-            Paper.book().write(KEY_PENDING_RESULT_DATA, pendingResultData);
+            book.write(KEY_PENDING_RESULT_DATA, pendingResultData);
             return;
         }
 
@@ -215,7 +210,7 @@ public class Trackobot {
         while (!pendingResultData.isEmpty()) {
             ResultData pendingData = pendingResultData.remove(0);
             sendResultInternal(pendingData);
-            Paper.book().write(KEY_PENDING_RESULT_DATA, pendingResultData);
+            book.write(KEY_PENDING_RESULT_DATA, pendingResultData);
         }
 
         sendResultInternal(resultData);
@@ -223,10 +218,9 @@ public class Trackobot {
 
     public void sendResultInternal(ResultData resultData) {
         Timber.w("sendResult");
-        ResultDataObserver observer = new ResultDataObserver();
-        observer.resultData = resultData;
-        Trackobot.get().service().postResults(resultData).
-                observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
-
+        ResultDataObserver observer = new ResultDataObserver(context);
+        service().postResults(resultData)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(observer);
     }
 }

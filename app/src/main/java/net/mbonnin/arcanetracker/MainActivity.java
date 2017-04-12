@@ -28,20 +28,30 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjection;
+
 public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_PERMISSIONS = 1;
     private static final int REQUEST_CODE_GET_OVERLAY_PERMISSIONS = 2;
     public static final String HEARTHSTONE_PACKAGE_ID = "com.blizzard.wtcg.hearthstone";
-    View contentView;
+    private View contentView;
     private Button button;
     private View permissions;
     private CheckBox checkbox;
     private Handler mHandler;
     private AlertDialog mDialog;
 
+    @Inject Settings settings;
+    @Inject CardDb cardDb;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        AndroidInjection.inject(this);
+
         setContentView(R.layout.activity_main);
 
         mHandler = new Handler();
@@ -51,8 +61,8 @@ public class MainActivity extends AppCompatActivity {
         checkbox = (CheckBox) findViewById(R.id.checkbox);
         permissions = findViewById(R.id.permissions);
 
-        boolean showNextTime = Settings.get(Settings.SHOW_NEXT_TIME, true);
-        checkbox.setChecked(Settings.get(Settings.SHOW_NEXT_TIME, showNextTime));
+        boolean showNextTime = settings.get(Settings.SHOW_NEXT_TIME, true);
+        checkbox.setChecked(settings.get(Settings.SHOW_NEXT_TIME, showNextTime));
 
         if (hasAllPermissions()) {
             permissions.setVisibility(View.GONE);
@@ -109,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void run() {
-            if (CardDb.isReady()) {
+            if (cardDb.isReady()) {
                 if (mDialog != null) {
                     mDialog.dismiss();
                 }
@@ -133,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (!CardDb.isReady()) {
+        if (!cardDb.isReady()) {
             Context context = new ContextThemeWrapper(this, R.style.AppThemeLight);
             View view = LayoutInflater.from(context).inflate(R.layout.waiting_cards_view, null);
             mDialog = new AlertDialog.Builder(context)
@@ -172,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
                 Utils.reportNonFatal(e);
             }
 
-            if (Settings.get(Settings.CHECK_IF_RUNNING, true)) {
+            if (settings.get(Settings.CHECK_IF_RUNNING, true)) {
                 ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
                 List<ActivityManager.RunningAppProcessInfo> runningAppProcessInfo = am.getRunningAppProcesses();
 
@@ -181,9 +191,9 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(this, "Hearthstone was already running, you might have to kill it and restart it", Toast.LENGTH_LONG).show();
                     }
                 }
-                Settings.set(Settings.CHECK_IF_RUNNING, false);
+                settings.set(Settings.CHECK_IF_RUNNING, false);
             }
-            Settings.set(Settings.SHOW_NEXT_TIME, checkbox.isChecked());
+            settings.set(Settings.SHOW_NEXT_TIME, checkbox.isChecked());
 
             startActivity(launchIntent);
             finish();

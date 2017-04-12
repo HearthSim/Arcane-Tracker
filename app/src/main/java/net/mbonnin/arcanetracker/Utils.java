@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import okhttp3.MediaType;
@@ -32,13 +33,12 @@ public class Utils {
     public static final SimpleDateFormat ISO8601DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
     public static final MediaType JSON_MIMETYPE = MediaType.parse("application/json; charset=utf-8");
 
-    public static int dpToPx(int dp) {
+    public static int dpToPx(Context context, int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
-                ArcaneTrackerApplication.getContext().getResources().getDisplayMetrics());
+                context.getResources().getDisplayMetrics());
     }
 
-    public static Drawable getDrawableForName(String name) {
-        Context context = ArcaneTrackerApplication.getContext();
+    public static Drawable getDrawableForName(Context context, String name) {
         int id = context.getResources().getIdentifier(name.toLowerCase(), "drawable", context.getPackageName());
         if (id > 0) {
             return context.getResources().getDrawable(id);
@@ -48,8 +48,7 @@ public class Utils {
         }
     }
 
-    public static boolean is7InchesOrHigher() {
-        Context context = ArcaneTrackerApplication.getContext();
+    public static boolean is7InchesOrHigher(Context context) {
         Display display = ((WindowManager) context.getSystemService(Activity.WINDOW_SERVICE)).getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics();
         display.getMetrics(outMetrics);
@@ -66,13 +65,12 @@ public class Utils {
         return false;
     }
 
-    public static Drawable getDrawableForClassIndex(int classIndex) {
-        return getDrawableForName(Card.classIndexToHeroId(classIndex));
+    public static Drawable getDrawableForClassIndex(Context context, int classIndex) {
+        return getDrawableForName(context, Card.classIndexToHeroId(classIndex));
     }
 
     public static boolean isAppDebuggable() {
-        Context context = ArcaneTrackerApplication.getContext();
-        return (0 != (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
+        return BuildConfig.DEBUG;
     }
 
     public static void logWithDate(String s) {
@@ -88,7 +86,7 @@ public class Utils {
         FirebaseCrash.report(e);
     }
 
-    public static int cardMapTotal(HashMap<String, Integer> map) {
+    public static int cardMapTotal(Map<String, Integer> map) {
         int total = 0;
         for (String key:map.keySet()) {
             total += cardMapGet(map, key);
@@ -139,7 +137,7 @@ public class Utils {
         }
     }
 
-    public static int cardMapGet(HashMap<String, Integer> map, String key) {
+    public static int cardMapGet(Map<String, Integer> map, String key) {
         Integer a = map.get(key);
         if (a == null) {
             a = 0;
@@ -147,11 +145,11 @@ public class Utils {
         return a;
     }
 
-    public static void cardMapAdd(HashMap<String, Integer> map, String key, int diff) {
+    public static void cardMapAdd(Map<String, Integer> map, String key, int diff) {
         int a = cardMapGet(map, key);
         map.put(key, a + diff);
     }
-    public static HashMap<String, Integer> cardMapDiff(HashMap<String, Integer> a, HashMap<String, Integer> b) {
+    public static HashMap<String, Integer> cardMapDiff(Map<String, Integer> a, HashMap<String, Integer> b) {
         HashMap<String, Integer> map = new HashMap<>();
 
         Set<String> set = new HashSet<>(a.keySet());
@@ -172,12 +170,12 @@ public class Utils {
         return map;
     }
 
-    public static boolean isNetworkConnected() {
+    public static boolean isNetworkConnected(Context context) {
         /**
          * This used to be in ConnectivityReceiver.java so that we don't have to retrieve the service every time but
          * for some reason, it did not work anymore after some time
          */
-        ConnectivityManager cm = (ConnectivityManager) ArcaneTrackerApplication.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();

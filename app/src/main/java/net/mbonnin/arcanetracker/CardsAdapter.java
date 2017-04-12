@@ -19,6 +19,7 @@ import com.squareup.picasso.Picasso;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 import timber.log.Timber;
@@ -27,6 +28,7 @@ import timber.log.Timber;
  * Created by martin on 10/21/16.
  */
 public class CardsAdapter extends RecyclerView.Adapter {
+    private final CardDb cardDb;
     private int mClassIndex;
     private ArrayList<Card> mCardList = new ArrayList<>();
     private Listener mListener;
@@ -39,7 +41,8 @@ public class CardsAdapter extends RecyclerView.Adapter {
         filter();
     }
 
-    public CardsAdapter() {
+    public CardsAdapter(CardDb cardDb) {
+        this.cardDb = cardDb;
     }
 
     public void setDisabledCards(ArrayList<String> list) {
@@ -106,7 +109,7 @@ public class CardsAdapter extends RecyclerView.Adapter {
 
     private void filter() {
         mCardList.clear();
-        ArrayList<Card> allCards = CardDb.getCards();
+        List<Card> allCards = cardDb.getCards();
 
         String playerClass = Card.classIndexToPlayerClass(mClassIndex);
         for (Card card : allCards) {

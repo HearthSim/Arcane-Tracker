@@ -24,6 +24,10 @@ import net.mbonnin.arcanetracker.adapter.EditableItemAdapter;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
+import internal.di.view.AndroidViewInjection;
+
 /**
  * Created by martin on 10/21/16.
  */
@@ -62,12 +66,23 @@ public class DeckEditorView extends LinearLayout {
         cardCount.setText(mDeck.getCardCount() + "/ 30");
     }
 
+    @Inject MainViewCompanion mainViewCompanion;
+    @Inject DeckListManager deckListManager;
+    @Inject ViewManager viewManager;
+    @Inject CardDb cardDb;
+
     public DeckEditorView(Context context) {
         super(context);
+        init();
     }
 
     public DeckEditorView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
+    }
+
+    private void init() {
+        AndroidViewInjection.inject(this);
     }
 
     public static DeckEditorView build(Context context) {
@@ -115,12 +130,12 @@ public class DeckEditorView extends LinearLayout {
             }
         });
 
-        mCardsAdapter = new CardsAdapter();
+        mCardsAdapter = new CardsAdapter(cardDb);
         mCardsAdapter.setClass(mDeck.classIndex);
         cardsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         cardsRecyclerView.setAdapter(mCardsAdapter);
 
-        mDeckAdapter = new EditableItemAdapter();
+        mDeckAdapter = new EditableItemAdapter(cardDb);
         mDeckAdapter.setDeck(deck);
         mDeckAdapter.registerAdapterDataObserver(mAdapterObserver);
         ArrayList<String> list = mDeckAdapter.getDisabledCards();
@@ -136,15 +151,8 @@ public class DeckEditorView extends LinearLayout {
         });
 
         editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -163,27 +171,25 @@ public class DeckEditorView extends LinearLayout {
         close.setOnClickListener(v -> editText.setText(""));
 
         button.setOnClickListener(v -> {
-            DeckList.save();
-            DeckList.saveArena();
-            //DeckList.getPlayerGameDeck().clear();
-            MainViewCompanion.getPlayerCompanion().setDeck(deck);
-            ViewManager.get().removeView(this);
+            deckListManager.save();
+            deckListManager.saveArena();
+            //DeckListManager.getPlayerGameDeck().clear();
+            mainViewCompanion.getPlayerCompanion().setDeck(deck);
+            viewManager.removeView(this);
         });
     }
 
-    public static DeckEditorView show(Deck deck) {
-        Context context = ArcaneTrackerApplication.getContext();
+    public static DeckEditorView show(Context context, Deck deck) {
         DeckEditorView deckEditorView = DeckEditorView.build(context);
 
-        ViewManager viewManager = ViewManager.get();
         ViewManager.Params params = new ViewManager.Params();
         params.x = 0;
         params.y = 0;
-        params.w = viewManager.getUsableWidth();
-        params.h = viewManager.getUsableHeight();
+        params.w = deckEditorView.viewManager.getUsableWidth();
+        params.h = deckEditorView.viewManager.getUsableHeight();
 
         deckEditorView.setDeck(deck);
-        viewManager.addModalAndFocusableView(deckEditorView, params);
+        deckEditorView.viewManager.addModalAndFocusableView(deckEditorView, params);
 
         return deckEditorView;
     }

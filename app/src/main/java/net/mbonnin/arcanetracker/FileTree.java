@@ -86,10 +86,4 @@ public class FileTree extends Timber.Tree {
         }
     }
 
-    public static FileTree get() {
-        if (sTree == null) {
-            sTree = new FileTree(ArcaneTrackerApplication.getContext());
-        }
-        return sTree;
-    }
 }

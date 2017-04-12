@@ -1,5 +1,6 @@
 package net.mbonnin.arcanetracker.parser;
 
+import net.mbonnin.arcanetracker.ParserListenerPower;
 import net.mbonnin.arcanetracker.Utils;
 import net.mbonnin.arcanetracker.hsreplay.HSReplay;
 
@@ -12,11 +13,18 @@ import timber.log.Timber;
  */
 
 public class RawGameParser implements LogReader.LineConsumer {
-    public RawGameParser() {}
+    private final HSReplay replay;
+    private final ParserListenerPower parserListenerPower;
 
-    StringBuilder builder;
-    int goldRewardStateCount;
-    String matchStart;
+    // TODO: Should use "listen" to game complete, and publish from there.
+    public RawGameParser(HSReplay replay, ParserListenerPower parserListenerPower) {
+        this.replay = replay;
+        this.parserListenerPower = parserListenerPower;
+    }
+
+    private StringBuilder builder;
+    private int goldRewardStateCount;
+    private String matchStart;
 
     @Override
     public void onLine(String rawLine, int seconds, String line) {
@@ -58,8 +66,8 @@ public class RawGameParser implements LogReader.LineConsumer {
         }
     }
 
-    private void uploadGame(String game) {
-        HSReplay.get().uploadGame(matchStart, game);
-
+    private void uploadGame(String gameStr) {
+        Game currentGame = parserListenerPower.getLastGame();
+        replay.uploadGame(currentGame, matchStart, gameStr);
     }
 }

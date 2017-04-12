@@ -11,11 +11,15 @@ import android.view.ViewConfiguration;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
+import net.mbonnin.arcanetracker.trackobot.Trackobot;
+
+import io.paperdb.Book;
 import timber.log.Timber;
 
 public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener {
     private static DeckCompanion sOpponentCompanion;
     private final Handler mHandler;
+    private final DeckListManager deckListManager;
     private int mButtonWidth;
     private ViewManager.Params mParams;
     private static DeckCompanion sPlayerCompanion;
@@ -29,8 +33,16 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
     private int mTouchSlop;
     private float mDownY;
     private float mDownX;
+    private Toaster toaster;
+    private Settings settings;
+    private Trackobot trackobot;
+
+    public ViewManager getViewManager() {
+        return mViewManager;
+    }
 
     private ViewManager mViewManager;
+    private final FileTree tree;
 
     private View playerView;
     private View opponentView;
@@ -38,7 +50,7 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
     private HandlesView handlesView;
     private ValueAnimator mAnimator;
 
-    View mainView;
+    private View mainView;
 
     static final int STATE_PLAYER = 0;
     static final int STATE_OPPONENT = 1;
@@ -53,7 +65,6 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
     private float velocityRefX;
     private float velocityLastX;
     private long velocityRefTime;
-
 
     private final View.OnTouchListener mHandlesViewTouchListener = (v, ev) -> {
         if (ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
@@ -171,10 +182,7 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
         handlesView.update();
     }
 
-    @Override
-    public void onAnimationStart(Animator animation) {
-
-    }
+    @Override public void onAnimationStart(Animator animation) {  }
 
     @Override
     public void onAnimationEnd(Animator animation) {
@@ -187,15 +195,8 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
         }
     }
 
-    @Override
-    public void onAnimationCancel(Animator animation) {
-
-    }
-
-    @Override
-    public void onAnimationRepeat(Animator animation) {
-
-    }
+    @Override public void onAnimationCancel(Animator animation) { }
+    @Override public void onAnimationRepeat(Animator animation) {  }
 
     public View getMainView() {
         return mainView;
@@ -212,7 +213,23 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
         return mX != 0;
     }
 
-    class ClickListener implements View.OnClickListener {
+    public FileTree getTree() {
+        return tree;
+    }
+
+    public Toaster getToaster() {
+        return toaster;
+    }
+
+    public Settings getSettings() {
+        return settings;
+    }
+
+    public Trackobot getTrackobot() {
+        return trackobot;
+    }
+
+  class ClickListener implements View.OnClickListener {
         private final int newState;
 
         public ClickListener(int newState) {
@@ -229,13 +246,11 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
         }
     }
 
-    public static DeckCompanion getPlayerCompanion() {
-        MainViewCompanion.get();
+    public DeckCompanion getPlayerCompanion() {
         return sPlayerCompanion;
     }
 
-    public static DeckCompanion getOpponentCompanion() {
-        MainViewCompanion.get();
+    public DeckCompanion getOpponentCompanion() {
         return sOpponentCompanion;
     }
 
@@ -258,19 +273,8 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
         state = newState;
     }
 
-    private static MainViewCompanion sMainCompanion;
-
-    public static MainViewCompanion get() {
-        if (sMainCompanion == null) {
-            View view = LayoutInflater.from(ArcaneTrackerApplication.getContext()).inflate(R.layout.main_view, null);
-            sMainCompanion = new MainViewCompanion(view);
-        }
-
-        return sMainCompanion;
-    }
-
     public int getMinDrawerWidth() {
-        return Utils.dpToPx(50);
+        return Utils.dpToPx(mainView.getContext(), 50);
     }
 
     public int getMaxDrawerWidth() {
@@ -279,7 +283,7 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
 
     public void setDrawerWidth(int width) {
         mWidth = width;
-        Settings.set(Settings.DRAWER_WIDTH, width);
+        settings.set(Settings.DRAWER_WIDTH, width);
 
         mAnimator.cancel();
         mParams.w = width;
@@ -296,7 +300,7 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
     }
 
     public void setButtonWidth(int width) {
-        Settings.set(Settings.BUTTON_WIDTH, width);
+        settings.set(Settings.BUTTON_WIDTH, width);
         mButtonWidth = width;
         int wMeasureSpec = View.MeasureSpec.makeMeasureSpec(mButtonWidth, View.MeasureSpec.EXACTLY);
         int hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
@@ -307,9 +311,14 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
         handlesView.update();
     }
 
-    public MainViewCompanion(View v) {
-        mainView = v;
-        mViewManager = ViewManager.get();
+    public MainViewCompanion(View v, DeckListManager deckListManager, ViewManager viewManager, FileTree tree, Toaster toaster, Settings settings, CardDb cardDb, Trackobot trackobot, Book book) {
+        this.mainView = v;
+        this.deckListManager = deckListManager;
+        this.mViewManager = viewManager;
+        this.tree = tree;
+        this.toaster = toaster;
+        this.settings = settings;
+        this.trackobot = trackobot;
 
         mHandler = new Handler();
 
@@ -324,12 +333,12 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
         opponentView = v.findViewById(R.id.opponentView);
         shadow = v.findViewById(R.id.shadow);
 
-        mWidth = Settings.get(Settings.DRAWER_WIDTH, 0);
+        mWidth = settings.get(Settings.DRAWER_WIDTH, 0);
         if (mWidth < getMinDrawerWidth() || mWidth >= getMaxDrawerWidth()) {
             mWidth = (int) (0.33 * 0.5 * mViewManager.getWidth());
         }
         mX = 0;
-        mPadding = Utils.dpToPx(5);
+        mPadding = Utils.dpToPx(v.getContext(), 5);
 
         mParams = new ViewManager.Params();
         mParams.x = 0;
@@ -337,16 +346,16 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
         mParams.w = 0;
         mParams.h = mViewManager.getHeight();
 
-        sPlayerCompanion = new DeckCompanion(playerView, false);
-        sOpponentCompanion = new DeckCompanion(opponentView, true);
+        sPlayerCompanion = new DeckCompanion(playerView, false, this, deckListManager, viewManager, settings, cardDb, book);
+        sOpponentCompanion = new DeckCompanion(opponentView, true, this, deckListManager, viewManager, settings, cardDb, book);
 
         handlesView = (HandlesView) LayoutInflater.from(v.getContext()).inflate(R.layout.handles_view, null);
         handlesView.setListener(mHandlesViewTouchListener);
 
-        mButtonWidth = Settings.get(Settings.BUTTON_WIDTH, 0);
+        mButtonWidth = settings.get(Settings.BUTTON_WIDTH, 0);
         if (mButtonWidth < getMinButtonWidth() || mButtonWidth >= getMaxButtonWidth()) {
-            int dp = Utils.is7InchesOrHigher() ? 50 : 30;
-            mButtonWidth = Utils.dpToPx(dp);
+            int dp = Utils.is7InchesOrHigher(v.getContext()) ? 50 : 30;
+            mButtonWidth = Utils.dpToPx(v.getContext(), dp);
         }
 
         int wMeasureSpec = View.MeasureSpec.makeMeasureSpec(mButtonWidth, View.MeasureSpec.EXACTLY);
@@ -355,7 +364,7 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
         handlesView.getParams().w = handlesView.getMeasuredWidth();
         handlesView.getParams().h = handlesView.getMeasuredHeight();
         handlesView.getParams().x = mPadding;
-        handlesView.getParams().y = ViewManager.get().getHeight() - handlesView.getParams().h - Utils.dpToPx(50);
+        handlesView.getParams().y = viewManager.getHeight() - handlesView.getParams().h - Utils.dpToPx(handlesView.getContext(), 50);
         configureHandles(handlesView);
 
         setState(STATE_PLAYER, false);
@@ -364,11 +373,11 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
     }
 
     public int getMaxButtonWidth() {
-        return Utils.dpToPx(75);
+        return Utils.dpToPx(mainView.getContext(), 75);
     }
 
     public int getMinButtonWidth() {
-        return Utils.dpToPx(20);
+        return Utils.dpToPx(mainView.getContext(), 20);
     }
 
     public void show(boolean show) {
@@ -384,7 +393,7 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
         HandleView handleView = (HandleView) v.findViewById(R.id.settingsHandle);
         Drawable drawable = v.getContext().getResources().getDrawable(R.drawable.settings_handle);
         handleView.init(drawable, v.getContext().getResources().getColor(R.color.gray));
-        handleView.setOnClickListener(v2 -> SettingsCompanion.show());
+        handleView.setOnClickListener(v2 -> SettingsCompanion.show(v.getContext(), this));
 
         handleView = (HandleView) v.findViewById(R.id.opponentHandle);
         drawable = v.getContext().getResources().getDrawable(R.drawable.icon_white);
@@ -402,10 +411,10 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
         float a = 0.5f + progress / 200f;
         mainView.setAlpha(a);
         handlesView.setAlpha(a);
-        Settings.set(Settings.ALPHA, progress);
+        settings.set(Settings.ALPHA, progress);
     }
 
     public int getAlphaSetting() {
-        return Settings.get(Settings.ALPHA, 100);
+        return settings.get(Settings.ALPHA, 100);
     }
 }

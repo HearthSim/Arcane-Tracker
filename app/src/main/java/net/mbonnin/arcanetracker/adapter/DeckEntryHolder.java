@@ -23,7 +23,7 @@ class DeckEntryHolder extends RecyclerView.ViewHolder {
 
     public DeckEntryHolder(View itemView) {
         super(itemView);
-        RecyclerView.LayoutParams params = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(30));
+        RecyclerView.LayoutParams params = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(itemView.getContext(), 30));
         itemView.setLayoutParams(params);
         background = ((ImageView)(itemView.findViewById(R.id.background)));
         cost = ((TextView)itemView.findViewById(R.id.cost));
@@ -38,7 +38,7 @@ class DeckEntryHolder extends RecyclerView.ViewHolder {
         Card card = entry.card;
         int c = entry.count;
 
-        background.setImageDrawable(Utils.getDrawableForName("bar_" + card.id));
+        background.setImageDrawable(Utils.getDrawableForName(background.getContext() ,"bar_" + card.id));
         cost.setText(card.cost + "");
         name.setText(card.name);
         count.setVisibility(GONE);

@@ -2,6 +2,7 @@ package net.mbonnin.arcanetracker;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -12,7 +13,7 @@ import timber.log.Timber;
 public class Deck {
     public static final int MAX_CARDS = 30;
 
-    public HashMap<String, Integer> cards = new HashMap<>();
+    public Map<String, Integer> cards = new HashMap<>();
     public String name;
     public int classIndex;
     public String id;
@@ -21,28 +22,11 @@ public class Deck {
 
     private transient WeakReference<Listener> mListenerRef;
 
-
-    public void checkClassIndex() {
-        for (String cardId: cards.keySet()) {
-            Card card = CardDb.getCard(cardId);
-            int ci = Card.playerClassToClassIndex(card.playerClass);
-            if (ci >= 0 && ci < Card.CLASS_INDEX_NEUTRAL) {
-                if (classIndex != ci) {
-                    Timber.e("inconsistent class index, force to" + Card.classIndexToPlayerClass(ci));
-                    classIndex = ci;
-                }
-                return;
-            }
-        }
-    }
-
     public interface Listener {
         void onDeckChanged();
     }
 
-    public Deck() {
-
-    }
+    public Deck() { }
 
     public void addCard(String cardId, int add) {
         if (add > 0 && getCardCount() >= 30) {
@@ -85,7 +69,7 @@ public class Deck {
         return total;
     }
     public void setListener(Listener listener) {
-        mListenerRef = new WeakReference<Listener>(listener);
+        mListenerRef = new WeakReference<>(listener);
     }
 
     public void clear() {

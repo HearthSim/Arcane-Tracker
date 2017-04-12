@@ -110,7 +110,7 @@ public class GameLogic {
         for (Entity entity: game.entityMap.values()) {
             if (entity.PlayerID != null) {
                 Timber.i("adding player " + entity.PlayerID);
-                Player player = new Player();
+                Player player = new Player(game.getCardDb());
                 player.entity = entity;
                 game.playerMap.put(entity.PlayerID, player);
             } else if (Entity.ENTITY_ID_GAME.equals(entity.EntityID)) {

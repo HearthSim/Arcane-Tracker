@@ -41,7 +41,7 @@ public class ManaSelectionView extends LinearLayout {
             }
             textView.setText(text);
             int w;
-            w = Utils.dpToPx(24);
+            w = Utils.dpToPx(textView.getContext(), 24);
 
             LinearLayout.LayoutParams layoutParams = new LayoutParams(w, w);
 

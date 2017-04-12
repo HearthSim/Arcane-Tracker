@@ -14,6 +14,7 @@ import net.mbonnin.arcanetracker.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -26,18 +27,22 @@ public class ItemAdapter extends RecyclerView.Adapter implements Deck.Listener {
     static final int TYPE_DECK_ENTRY = 0;
     static final int TYPE_STRING = 1;
     static final int TYPE_HEADER = 2;
+    private final CardDb cardDb;
 
-    ArrayList<Object> list = new ArrayList<>();
+    protected List<Object> list = new ArrayList<>();
     protected Deck mDeck;
+    protected List<DeckEntryItem> entryList = new ArrayList<>();
 
-    ArrayList<DeckEntryItem> entryList = new ArrayList<>();
+    public ItemAdapter(CardDb cardDb) {
+        this.cardDb = cardDb;
+    }
 
     @Override
     public void onDeckChanged() {
         entryList.clear();
         for (Map.Entry<String, Integer> entry: mDeck.cards.entrySet()) {
             DeckEntryItem deckEntry = new DeckEntryItem();
-            deckEntry.card = CardDb.getCard(entry.getKey());
+            deckEntry.card = cardDb.getCard(entry.getKey());
             deckEntry.count = entry.getValue();
             entryList.add(deckEntry);
         }
@@ -65,7 +70,7 @@ public class ItemAdapter extends RecyclerView.Adapter implements Deck.Listener {
         notifyDataSetChanged();
     }
 
-    public void setList(ArrayList list) {
+    public void setList(List list) {
         this.list = list;
         notifyDataSetChanged();
     }
@@ -116,7 +121,7 @@ public class ItemAdapter extends RecyclerView.Adapter implements Deck.Listener {
         }
 
         ViewGroup barTemplate = (ViewGroup) LayoutInflater.from(context).inflate(R.layout.bar_template, null);
-        RecyclerView.LayoutParams params2 = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(30));
+        RecyclerView.LayoutParams params2 = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(context, 30));
         barTemplate.setLayoutParams(params2);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 

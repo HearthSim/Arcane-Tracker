@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 
 public class BroadcastLineConsumer implements LogReader.LineConsumer {
-    ArrayList<LogReader.LineConsumer> consumerList = new ArrayList<>();
+    private ArrayList<LogReader.LineConsumer> consumerList = new ArrayList<>();
 
     public void add(LogReader.LineConsumer consumer) {
         consumerList.add(consumer);
