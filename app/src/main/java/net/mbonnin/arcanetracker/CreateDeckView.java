@@ -10,17 +10,32 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import javax.inject.Inject;
+
+import internal.di.view.AndroidViewInjection;
+
 /**
  * Created by martin on 10/20/16.
  */
 
 public class CreateDeckView extends CardView {
+
+    @Inject MainViewCompanion mainViewCompanion;
+    @Inject DeckListManager deckListManager;
+    @Inject ViewManager viewManager;
+
     public CreateDeckView(Context context) {
         super(context);
+        init();
     }
 
     public CreateDeckView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
+    }
+
+    private void init() {
+        AndroidViewInjection.inject(this);
     }
 
     public static CreateDeckView create(Context context) {
@@ -46,12 +61,10 @@ public class CreateDeckView extends CardView {
                 return;
             }
 
-            Deck deck = DeckList.createDeck(adapter.getSelectedClassIndex());
+            Deck deck = deckListManager.createDeck(adapter.getSelectedClassIndex());
             deck.name = name;
 
-            MainViewCompanion.getPlayerCompanion().setDeck(deck);
-
-            ViewManager viewManager = ViewManager.get();
+            mainViewCompanion.getPlayerCompanion().setDeck(deck);
 
             viewManager.removeView(CreateDeckView.this);
 
@@ -63,7 +76,6 @@ public class CreateDeckView extends CardView {
             params.w = viewManager.getWidth();
             params.h = viewManager.getHeight();
             viewManager.addView(deckEditorView, params);
-
         });
     }
 }

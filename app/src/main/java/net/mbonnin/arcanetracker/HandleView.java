@@ -1,7 +1,5 @@
 package net.mbonnin.arcanetracker;
 
-import android.animation.Animator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
@@ -12,7 +10,10 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.animation.AccelerateInterpolator;
+
+import javax.inject.Inject;
+
+import internal.di.view.AndroidViewInjection;
 
 /**
  * Created by martin on 10/28/16.
@@ -22,7 +23,7 @@ public class HandleView extends View {
     private int mTouchSlop;
     private int mShadowSize;
     private Paint mBlurPaint;
-    private ViewManager mViewManager;
+    @Inject ViewManager mViewManager;
 
     private ViewManager.Params mParams;
     private int mLayoutX, mLayoutY;
@@ -46,8 +47,8 @@ public class HandleView extends View {
     }
 
     public void init(Drawable drawable, int color) {
-        mShadowSize = Utils.dpToPx(3);
-        mViewManager = ViewManager.get();
+        AndroidViewInjection.inject(this);
+        mShadowSize = Utils.dpToPx(getContext(), 3);
 
         // for blur
         setLayerType(LAYER_TYPE_SOFTWARE, null);

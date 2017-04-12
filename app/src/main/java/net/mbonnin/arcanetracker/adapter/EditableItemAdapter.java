@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 import android.view.ViewGroup;
 
 import net.mbonnin.arcanetracker.Card;
+import net.mbonnin.arcanetracker.CardDb;
 import net.mbonnin.arcanetracker.R;
 
 import java.util.ArrayList;
@@ -14,6 +15,11 @@ import java.util.ArrayList;
  * Created by martin on 10/21/16.
  */
 public class EditableItemAdapter extends ItemAdapter {
+
+    public EditableItemAdapter(CardDb cardDb) {
+        super(cardDb);
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder holder = super.onCreateViewHolder(parent, viewType);

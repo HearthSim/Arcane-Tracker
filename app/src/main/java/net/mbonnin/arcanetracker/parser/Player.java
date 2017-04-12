@@ -7,11 +7,13 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by martin on 11/7/16.
  */
 public class Player {
+    private final CardDb cardDb;
     public Entity entity;
     public String battleTag;
     public boolean isOpponent;
@@ -20,13 +22,17 @@ public class Player {
     public Entity hero;
     public Entity heroPower;
 
+    public Player(CardDb cardDb) {
+        this.cardDb = cardDb;
+    }
+
     /**
      * entities controlled by this player
      */
     public EntityList entities = new EntityList();
 
     public int classIndex() {
-        Card card = CardDb.getCard(hero.CardID);
+        Card card = cardDb.getCard(hero.CardID);
         return Card.playerClassToClassIndex(card.playerClass);
     }
 
@@ -77,6 +83,6 @@ public class Player {
         entities.clear();
     }
 
-    public ArrayList<WeakReference<Listener>> listeners = new ArrayList<>();
+    public List<WeakReference<Listener>> listeners = new ArrayList<>();
 
 }

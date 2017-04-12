@@ -24,7 +24,7 @@ public class ClassAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         View view = holder.itemView;
-        ((ImageView)view.findViewById(R.id.imageView)).setImageDrawable(Utils.getDrawableForName(String.format("hero_%02d_round", position + 1)));
+        ((ImageView)view.findViewById(R.id.imageView)).setImageDrawable(Utils.getDrawableForName(view.getContext(), String.format("hero_%02d_round", position + 1)));
         ((TextView)view.findViewById(R.id.className)).setText(Card.classNameList[position]);
 
         view.setOnClickListener(v -> {

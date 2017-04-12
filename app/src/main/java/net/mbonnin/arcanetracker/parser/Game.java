@@ -1,7 +1,11 @@
 package net.mbonnin.arcanetracker.parser;
 
+import net.mbonnin.arcanetracker.CardDb;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -13,17 +17,22 @@ import timber.log.Timber;
  */
 public class Game {
 
-    public HashMap<String, Entity> entityMap = new HashMap<>();
-    public ArrayList<String> battleTags = new ArrayList<>();
+    private final CardDb cardDb;
+    public Map<String, Entity> entityMap = new HashMap<>();
+    public List<String> battleTags = new ArrayList<>();
 
-    HashMap<String,Player> playerMap = new HashMap<>();
+    Map<String,Player> playerMap = new HashMap<>();
     Entity gameEntity;
 
     public Player player;
     public Player opponent;
 
-    public ArrayList<Play> plays = new ArrayList<>();
+    public List<Play> plays = new ArrayList<>();
     public boolean started;
+
+    public Game(CardDb cardDb) {
+        this.cardDb = cardDb;
+    }
 
     public Player getPlayer() {
         return player;
@@ -43,8 +52,12 @@ public class Game {
             /**
              * do not crash...
              */
-            return new Player();
+            return new Player(cardDb);
         }
         return player;
+    }
+
+    public CardDb getCardDb() {
+        return cardDb;
     }
 }

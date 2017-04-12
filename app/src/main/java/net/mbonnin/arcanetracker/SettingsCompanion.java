@@ -23,8 +23,12 @@ import net.mbonnin.arcanetracker.trackobot.User;
 
 import java.io.File;
 
+import javax.inject.Inject;
+
 import rx.Observer;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 import static android.view.View.GONE;
@@ -35,121 +39,21 @@ import static android.view.View.VISIBLE;
  */
 
 public class SettingsCompanion {
-    View settingsView;
-    private TextView trackobotText;
+    public final View settingsView;
+    private final Toaster toaster;
+    private final ViewManager viewManager;
     private Button signinButton;
     private Button signupButton;
     private EditText usernameEditText;
     private EditText passwordEditText;
     private ProgressBar signupProgressBar;
     private ProgressBar signinProgressBar;
-    private View retrievePassword;
     private Button importButton;
-    private View importExplanation;
     private ProgressBar importProgressBar;
+    private Settings settings;
+    private final Trackobot trackobot;
 
-    private final SeekBar.OnSeekBarChangeListener mSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
-        @Override
-        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            MainViewCompanion.get().setAlphaSetting(progress);
-        }
-
-        @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {
-
-        }
-
-        @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {
-
-        }
-    };
-
-    Observer<User> mSignupObserver = new Observer<User>() {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-
-        }
-
-        @Override
-        public void onNext(User user) {
-            signupProgressBar.setVisibility(GONE);
-            signupButton.setVisibility(VISIBLE);
-            signinButton.setEnabled(true);
-            if (user == null) {
-                Toast.makeText(ArcaneTrackerApplication.getContext(), "Cannot create trackobot account :(", Toast.LENGTH_LONG).show();
-            } else {
-                Trackobot.get().setUser(user);
-
-                updateTrackobot(settingsView);
-            }
-        }
-    };
-
-    private Observer<HistoryList> mSigninObserver = new Observer<HistoryList>() {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-
-        }
-
-        @Override
-        public void onNext(HistoryList historyList) {
-            signinProgressBar.setVisibility(GONE);
-            signinButton.setVisibility(VISIBLE);
-            signupButton.setEnabled(true);
-
-            if (historyList == null) {
-                Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show();
-                Trackobot.get().setUser(null);
-            } else {
-                updateTrackobot(settingsView);
-            }
-
-        }
-    };
-
-    private Observer<HistoryList> mImportObserver = new Observer<HistoryList>() {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            e.printStackTrace();
-            importProgressBar.setVisibility(GONE);
-            importButton.setVisibility(VISIBLE);
-            importButton.setEnabled(true);
-
-            Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show();
-        }
-
-        @Override
-        public void onNext(HistoryList historyList) {
-            importProgressBar.setVisibility(GONE);
-            importButton.setVisibility(VISIBLE);
-            importButton.setEnabled(true);
-
-            if (historyList == null) {
-                Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show();
-                Trackobot.get().setUser(null);
-            } else {
-                updateTrackobot(settingsView);
-            }
-        }
-    };
-
-    private View.OnClickListener mSigninButtonClicked = v -> {
+    private void handleSigninButtonClick() {
         signinButton.setVisibility(GONE);
         signinProgressBar.setVisibility(VISIBLE);
         signupButton.setEnabled(false);
@@ -157,91 +61,99 @@ public class SettingsCompanion {
         User user = new User();
         user.username = usernameEditText.getText().toString();
         user.password = passwordEditText.getText().toString();
-        Trackobot.get().setUser(user);
+        trackobot.setUser(user);
 
-        Trackobot.get().service().getHistoryList()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(mSigninObserver);
-    };
+        trackobot.service().getHistoryList()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(historyList -> {
+                signinProgressBar.setVisibility(GONE);
+                signinButton.setVisibility(VISIBLE);
+                signupButton.setEnabled(true);
 
-    private View.OnClickListener mSignupButtonClicked = v -> {
+                if (historyList == null) {
+                    toaster.toast(R.string.cannotLinkTrackobot, Toast.LENGTH_LONG);
+                    trackobot.setUser(null);
+                } else {
+                    updateTrackobot(settingsView);
+                }
+            });
+    }
 
+    private void handleSignupButtonClick() {
         signupButton.setVisibility(GONE);
         signupProgressBar.setVisibility(VISIBLE);
         signinButton.setEnabled(false);
 
-        Trackobot.get().service().createUser()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(mSignupObserver);
+        trackobot.service().createUser()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(user -> {
+                signupProgressBar.setVisibility(GONE);
+                signupButton.setVisibility(VISIBLE);
+                signinButton.setEnabled(true);
+                if (user == null) {
+                    toaster.toast("Cannot create trackobot account :(", Toast.LENGTH_LONG);
+                } else {
+                    trackobot.setUser(user);
+                    updateTrackobot(settingsView);
+                }
+            });
     };
 
-    private Observer<? super Url> mOneTimeAuthObserver = new Observer<Url>() {
-        @Override
-        public void onCompleted() {
-
+    private void handleImportButtonClick() {
+        File f = Trackobot.findTrackobotFile();
+        if (f == null) {
+            toaster.toast(R.string.couldNotFindTrackobotFile, Toast.LENGTH_LONG);
+            return;
         }
 
-        @Override
-        public void onError(Throwable e) {
-            Context context = ArcaneTrackerApplication.getContext();
-            Toast.makeText(context, context.getString(R.string.couldNotGetProfile), Toast.LENGTH_LONG).show();
-            signupButton.setVisibility(VISIBLE);
-            signupProgressBar.setVisibility(GONE);
-            Timber.e(e);
+        User user = Trackobot.parseTrackobotFile(f);
+        if (user == null) {
+            toaster.toast(R.string.couldNotOpenTrackobotFile, Toast.LENGTH_LONG);
+            return;
         }
+        importButton.setVisibility(GONE);
+        importProgressBar.setVisibility(VISIBLE);
+        importButton.setEnabled(false);
 
-        @Override
-        public void onNext(Url url) {
-            ViewManager.get().removeView(settingsView);
+        trackobot.setUser(user);
 
-            Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setData(Uri.parse(url.url));
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            ArcaneTrackerApplication.getContext().startActivity(i);
-        }
-    };
-    private View.OnClickListener mImportButtonClicked = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Context context = ArcaneTrackerApplication.getContext();
-            File f = Trackobot.findTrackobotFile();
-            if (f == null) {
-                Toast.makeText(context, context.getString(R.string.couldNotFindTrackobotFile), Toast.LENGTH_LONG).show();
-                return;
-            }
+        trackobot.service().getHistoryList()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(historyList -> {
+                importProgressBar.setVisibility(GONE);
+                importButton.setVisibility(VISIBLE);
+                importButton.setEnabled(true);
 
-            User user = Trackobot.parseTrackobotFile(f);
-            if (user == null) {
-                Toast.makeText(context, context.getString(R.string.couldNotOpenTrackobotFile), Toast.LENGTH_LONG).show();
-                return;
-            }
-            importButton.setVisibility(GONE);
-            importProgressBar.setVisibility(VISIBLE);
-            importButton.setEnabled(false);
+                if (historyList == null) {
+                    toaster.toast(R.string.cannotLinkTrackobot, Toast.LENGTH_LONG);
+                    trackobot.setUser(null);
+                } else {
+                    updateTrackobot(settingsView);
+                }
+            }, e -> {
+                e.printStackTrace();
+                importProgressBar.setVisibility(GONE);
+                importButton.setVisibility(VISIBLE);
+                importButton.setEnabled(true);
 
-            Trackobot.get().setUser(user);
-
-            Trackobot.get().service().getHistoryList()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(mImportObserver);
-        }
-    };
-
+                toaster.toast(R.string.cannotLinkTrackobot, Toast.LENGTH_LONG);
+            });
+    }
 
     private void updateTrackobot(View view) {
         signupButton = (Button) view.findViewById(R.id.trackobotSignup);
         signinButton = (Button) view.findViewById(R.id.trackobotSignin);
-        trackobotText = ((TextView) (view.findViewById(R.id.trackobotText)));
+        TextView trackobotText = ((TextView) (view.findViewById(R.id.trackobotText)));
         passwordEditText = (EditText) view.findViewById(R.id.password);
         usernameEditText = (EditText) view.findViewById(R.id.username);
         signinProgressBar = (ProgressBar) view.findViewById(R.id.signinProgressBar);
         signupProgressBar = (ProgressBar) view.findViewById(R.id.signupProgressBar);
-        retrievePassword = view.findViewById(R.id.retrievePassword);
+        View retrievePassword = view.findViewById(R.id.retrievePassword);
         importButton = (Button) view.findViewById(R.id.trackobotImport);
         importProgressBar = (ProgressBar)view.findViewById(R.id.importProgressBar);
-        importExplanation = view.findViewById(R.id.importExplanation);
+        View importExplanation = view.findViewById(R.id.importExplanation);
 
-        User user = Trackobot.get().getUser();
+        User user = trackobot.getUser();
         if (user == null) {
             trackobotText.setText(view.getContext().getString(R.string.trackobotExplanation));
             view.findViewById(R.id.or).setVisibility(VISIBLE);
@@ -250,20 +162,19 @@ public class SettingsCompanion {
             passwordEditText.setEnabled(true);
 
             signinButton.setText(view.getContext().getString(R.string.linkAccount));
-            signinButton.setOnClickListener(mSigninButtonClicked);
+            signinButton.setOnClickListener(v -> handleSigninButtonClick());
 
             signupButton.setText(view.getContext().getString(R.string.createAccount));
-            signupButton.setOnClickListener(mSignupButtonClicked);
+            signupButton.setOnClickListener(v -> handleSignupButtonClick());
 
             retrievePassword.setVisibility(VISIBLE);
 
             importButton.setText(view.getContext().getString(R.string.importFromStorage));
-            importButton.setOnClickListener(mImportButtonClicked);
+            importButton.setOnClickListener(v -> handleImportButtonClick());
             importButton.setEnabled(true);
             importButton.setVisibility(VISIBLE);
             view.findViewById(R.id.or2).setVisibility(VISIBLE);
             importExplanation.setVisibility(VISIBLE);
-
 
         } else {
             trackobotText.setVisibility(GONE);
@@ -276,7 +187,7 @@ public class SettingsCompanion {
 
             signinButton.setText(view.getContext().getString(R.string.unlinkAccount));
             signinButton.setOnClickListener(v -> {
-                Trackobot.get().setUser(null);
+                trackobot.setUser(null);
                 usernameEditText.setText("");
                 passwordEditText.setText("");
                 updateTrackobot(settingsView);
@@ -287,9 +198,21 @@ public class SettingsCompanion {
                 signupProgressBar.setVisibility(VISIBLE);
                 signupButton.setVisibility(GONE);
 
-                Trackobot.get().service().createOneTimeAuth()
+                trackobot.service().createOneTimeAuth()
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(mOneTimeAuthObserver);
+                        .subscribe(url -> {
+                            viewManager.removeView(settingsView);
+
+                            Intent i = new Intent(Intent.ACTION_VIEW);
+                            i.setData(Uri.parse(url.url));
+                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            view.getContext().startActivity(i);
+                        }, e -> {
+                            toaster.toast(R.string.couldNotGetProfile, Toast.LENGTH_LONG);
+                            signupButton.setVisibility(VISIBLE);
+                            signupProgressBar.setVisibility(GONE);
+                            Timber.e(e);
+                        });
             });
 
             retrievePassword.setVisibility(GONE);
@@ -301,8 +224,12 @@ public class SettingsCompanion {
         }
     }
 
-    public SettingsCompanion(View view) {
-        settingsView = view;
+    public SettingsCompanion(View view, MainViewCompanion mainViewCompanion, ViewManager viewManager, FileTree tree, Toaster toaster, Settings settings, Trackobot trackobot) {
+        this.settingsView = view;
+        this.toaster = toaster;
+        this.viewManager = viewManager;
+        this.settings = settings;
+        this.trackobot = trackobot;
 
         updateTrackobot(view);
 
@@ -311,7 +238,7 @@ public class SettingsCompanion {
 
         Button feedbackButton = (Button)view.findViewById(R.id.feedBackButton);
         feedbackButton.setOnClickListener(v -> {
-            ViewManager.get().removeView(settingsView);
+            viewManager.removeView(settingsView);
 
             Intent emailIntent = new Intent(Intent.ACTION_SEND);
             emailIntent.setType("text/plain");
@@ -320,86 +247,83 @@ public class SettingsCompanion {
             emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Arcane Tracker Feedback");
             emailIntent.putExtra(Intent.EXTRA_TEXT, view.getContext().getString(R.string.decribeYourProblem));
 
-            FileTree.get().sync();
-            Uri uri = FileProvider.getUriForFile(view.getContext(), "net.mbonnin.arcanetracker.fileprovider", FileTree.get().getFile());
+            tree.sync();
+            Uri uri = FileProvider.getUriForFile(view.getContext(), "net.mbonnin.arcanetracker.fileprovider", tree.getFile());
             emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
 
-            ArcaneTrackerApplication.getContext().startActivity(emailIntent);
+            feedbackButton.getContext().startActivity(emailIntent);
         });
         SeekBar seekBar = (SeekBar) view.findViewById(R.id.seekBar);
         seekBar.setMax(100);
-        seekBar.setProgress(MainViewCompanion.get().getAlphaSetting());
+        seekBar.setProgress(mainViewCompanion.getAlphaSetting());
+        SeekBar.OnSeekBarChangeListener mSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mainViewCompanion.setAlphaSetting(progress);
+            }
+            @Override public void onStartTrackingTouch(SeekBar seekBar) { }
+            @Override public void onStopTrackingTouch(SeekBar seekBar) { }
+        };
         seekBar.setOnSeekBarChangeListener(mSeekBarChangeListener);
 
-        MainViewCompanion c = MainViewCompanion.get();
         seekBar = (SeekBar) view.findViewById(R.id.drawerSizeBar);
-        seekBar.setMax(MainViewCompanion.get().getMaxDrawerWidth() - MainViewCompanion.get().getMinDrawerWidth());
-        seekBar.setProgress(MainViewCompanion.get().getDrawerWidth() - MainViewCompanion.get().getMinDrawerWidth());
+        seekBar.setMax(mainViewCompanion.getMaxDrawerWidth() - mainViewCompanion.getMinDrawerWidth());
+        seekBar.setProgress(mainViewCompanion.getDrawerWidth() - mainViewCompanion.getMinDrawerWidth());
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                MainViewCompanion.get().setDrawerWidth(progress + MainViewCompanion.get().getMinDrawerWidth());
+                mainViewCompanion.setDrawerWidth(progress + mainViewCompanion.getMinDrawerWidth());
             }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
+            @Override public void onStartTrackingTouch(SeekBar seekBar) {  }
+            @Override public void onStopTrackingTouch(SeekBar seekBar) {  }
         });
 
         seekBar = (SeekBar) view.findViewById(R.id.buttonSizeBar);
-        seekBar.setMax(c.getMaxButtonWidth() - c.getMinButtonWidth());
-        seekBar.setProgress(c.getButtonWidth() - c.getMinButtonWidth());
+        seekBar.setMax(mainViewCompanion.getMaxButtonWidth() - mainViewCompanion.getMinButtonWidth());
+        seekBar.setProgress(mainViewCompanion.getButtonWidth() - mainViewCompanion.getMinButtonWidth());
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                c.setButtonWidth(progress + c.getMinButtonWidth());
+                mainViewCompanion.setButtonWidth(progress + mainViewCompanion.getMinButtonWidth());
             }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
+            @Override public void onStartTrackingTouch(SeekBar seekBar) { }
+            @Override public void onStopTrackingTouch(SeekBar seekBar) { }
         });
 
         CheckBox autoQuit = (CheckBox) view.findViewById(R.id.autoQuit);
-        autoQuit.setChecked(Settings.get(Settings.AUTO_QUIT, true));
+        autoQuit.setChecked(settings.get(Settings.AUTO_QUIT, true));
         autoQuit.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Settings.set(Settings.AUTO_QUIT, isChecked);
+            settings.set(Settings.AUTO_QUIT, isChecked);
         });
 
         CheckBox autoSelectDeck = (CheckBox) view.findViewById(R.id.autoSelectDeck);
-        autoSelectDeck.setChecked(Settings.get(Settings.AUTO_SELECT_DECK, true));
+        autoSelectDeck.setChecked(settings.get(Settings.AUTO_SELECT_DECK, true));
         autoSelectDeck.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Settings.set(Settings.AUTO_SELECT_DECK, isChecked);
+            settings.set(Settings.AUTO_SELECT_DECK, isChecked);
         });
 
         CheckBox autoAddCards = (CheckBox) view.findViewById(R.id.autoAddCards);
-        autoAddCards.setChecked(Settings.get(Settings.AUTO_ADD_CARDS, true));
+        autoAddCards.setChecked(settings.get(Settings.AUTO_ADD_CARDS, true));
         autoAddCards.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Settings.set(Settings.AUTO_ADD_CARDS, isChecked);
+            settings.set(Settings.AUTO_ADD_CARDS, isChecked);
         });
 
-        view.findViewById(R.id.quit).setOnClickListener(v -> MainService.stop());
+        view.findViewById(R.id.quit).setOnClickListener(v -> MainService.stop(view.getContext()));
     }
 
-
-    public static void show() {
-        Context context = ArcaneTrackerApplication.getContext();
-        ViewManager viewManager = ViewManager.get();
+    public static void show(Context context, MainViewCompanion mainViewCompanion) {
         View view2 = LayoutInflater.from(context).inflate(R.layout.settings_view, null);
 
-        new SettingsCompanion(view2);
+        ViewManager viewManager = mainViewCompanion.getViewManager();
+        FileTree fileTree = mainViewCompanion.getTree();
+        Toaster toaster = mainViewCompanion.getToaster();
+        Settings settings = mainViewCompanion.getSettings();
+        Trackobot trackobot = mainViewCompanion.getTrackobot();
+
+        // TODO: why???
+        new SettingsCompanion(view2, mainViewCompanion, viewManager, fileTree, toaster, settings, trackobot);
 
         ViewManager.Params params = new ViewManager.Params();
         params.x = viewManager.getWidth() / 4;

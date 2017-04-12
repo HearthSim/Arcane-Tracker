@@ -1,5 +1,6 @@
 package net.mbonnin.arcanetracker;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,7 @@ import net.mbonnin.arcanetracker.adapter.PlayerController;
 import net.mbonnin.arcanetracker.adapter.ItemAdapter;
 import net.mbonnin.arcanetracker.parser.Player;
 
+import io.paperdb.Book;
 import io.paperdb.Paper;
 import timber.log.Timber;
 
@@ -21,86 +23,85 @@ import static android.view.View.GONE;
 /**
  * Created by martin on 10/14/16.
  */
-
 public class DeckCompanion {
     private static final String KEY_LAST_USED_DECK_ID = "KEY_LAST_USED_DECK_ID";
+    private Context context;
+    private final CardDb cardDb;
+    private final Book book;
     private Controller mController;
 
-    View settings;
-    TextView winLoss;
-    public TextView deckName;
+    private TextView winLoss;
+    private TextView deckName;
 
     private ItemAdapter mAdapter;
-    private RecyclerView recyclerView;
-    private ViewManager mViewManager;
 
-    private ViewManager.Params mParams;
-    private ViewManager.Params mRecyclerViewParams;
     private boolean isOpponent;
     private Deck mDeck;
     private ImageView background;
     private Player mPlayer;
 
-    public DeckCompanion(View v, boolean isOpponent) {
-        mViewManager = ViewManager.get();
+    public DeckCompanion(View v, boolean isOpponent, MainViewCompanion mainViewCompanion, DeckListManager deckListManager, ViewManager viewManager, Settings settings, CardDb cardDb, Book book) {
         this.isOpponent = isOpponent;
+        this.context = v.getContext();
+        this.cardDb = cardDb;
+        this.book = book;
 
-        Timber.d("screen: " + mViewManager.getWidth() + "x" + mViewManager.getHeight());
+        Timber.d("screen: " + viewManager.getWidth() + "x" + viewManager.getHeight());
 
-        int w = (int) (0.33 * 0.5 * mViewManager.getWidth());
-        int h = mViewManager.getHeight();
+        int w = (int) (0.33 * 0.5 * viewManager.getWidth());
+        int h = viewManager.getHeight();
 
-        settings = v.findViewById(R.id.edit);
+        View settingsView = v.findViewById(R.id.edit);
         winLoss = (TextView) v.findViewById(R.id.winLoss);
         deckName = (TextView) v.findViewById(R.id.deckName);
         background = (ImageView) v.findViewById(R.id.background);
-        recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
 
-        int x = Settings.get("x" + isOpponent, -1);
+        int x = settings.get("x" + isOpponent, -1);
         if (x == -1) {
             x = 0;
         }
-        mParams = new ViewManager.Params();
+        ViewManager.Params mParams = new ViewManager.Params();
         mParams.x = x;
         mParams.y = 0;
         mParams.w = w;
         mParams.h = h;
 
-        mRecyclerViewParams = new ViewManager.Params();
+        ViewManager.Params mRecyclerViewParams = new ViewManager.Params();
         mRecyclerViewParams.w = w;
-        mRecyclerViewParams.h = mViewManager.getHeight() - h;
-        mAdapter = new ItemAdapter();
+        mRecyclerViewParams.h = viewManager.getHeight() - h;
+        mAdapter = new ItemAdapter(cardDb);
 
         if (isOpponent) {
-            settings.setVisibility(GONE);
+            settingsView.setVisibility(GONE);
             winLoss.setVisibility(GONE);
 
 
-            mController = new OpponentController(mAdapter);
-            setDeck(DeckList.getOpponentDeck(), null);
+            mController = new OpponentController(cardDb,context.getString(R.string.hand),mAdapter);
+            setDeck(deckListManager.getOpponentDeck(), null);
         } else {
-            new SettingsButtonCompanion(settings);
-            String lastUsedId = Paper.book().read(KEY_LAST_USED_DECK_ID);
+            new SettingsButtonCompanion(settingsView, mainViewCompanion, deckListManager, viewManager);
+            String lastUsedId = book.read(KEY_LAST_USED_DECK_ID);
 
             Deck deck = null;
             if (lastUsedId != null) {
-                for (Deck deck2 : DeckList.get()) {
+                for (Deck deck2 : deckListManager.get()) {
                     if (deck2.id.equals(lastUsedId)) {
                         deck = deck2;
                         break;
                     }
                 }
-                if (deck == null && lastUsedId.equals(DeckList.ARENA_DECK_ID)) {
-                    deck = DeckList.getArenaDeck();
+                if (deck == null && lastUsedId.equals(DeckListManager.ARENA_DECK_ID)) {
+                    deck = deckListManager.getArenaDeck();
                 }
             }
 
             if (deck == null) {
-                deck = DeckList.createDeck(Card.CLASS_INDEX_WARRIOR);
-                Paper.book().write(KEY_LAST_USED_DECK_ID, deck.id);
+                deck = deckListManager.createDeck(Card.CLASS_INDEX_WARRIOR);
+                book.write(KEY_LAST_USED_DECK_ID, deck.id);
             }
 
-            mController = new PlayerController(mAdapter);
+            mController = new PlayerController(mAdapter, deckListManager, cardDb, settings);
             setDeck(deck, null);
         }
 
@@ -115,15 +116,15 @@ public class DeckCompanion {
 
     public void setDeck(Deck deck, Player player) {
         if (!isOpponent) {
-            Paper.book().write(KEY_LAST_USED_DECK_ID, deck.id);
+            book.write(KEY_LAST_USED_DECK_ID, deck.id);
             winLoss.setText(deck.wins + " - " + deck.losses);
         }
 
-        deck.checkClassIndex();
+        cardDb.checkClassIndex(deck);
 
         mDeck = deck;
         mPlayer = player;
-        background.setBackgroundDrawable(Utils.getDrawableForClassIndex(deck.classIndex));
+        background.setBackgroundDrawable(Utils.getDrawableForClassIndex(context, deck.classIndex));
         deckName.setText(deck.name);
         mAdapter.setDeck(deck);
 

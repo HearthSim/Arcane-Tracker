@@ -11,6 +11,7 @@ import android.widget.TextView;
  * Created by martin on 10/19/16.
  */
 public class DeckListAdapter extends RecyclerView.Adapter {
+    private final DeckListManager deckListManager;
     OnDeckSelected onDeckSelectedListener;
 
     public interface OnDeckSelected {
@@ -22,12 +23,13 @@ public class DeckListAdapter extends RecyclerView.Adapter {
 
     }
 
-    public DeckListAdapter() {
+    public DeckListAdapter(DeckListManager deckListManager) {
+        this.deckListManager = deckListManager;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(ArcaneTrackerApplication.getContext()).inflate(R.layout.deck_line_view, null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.deck_line_view, null);
         return new RecyclerView.ViewHolder(view) {};
     }
 
@@ -36,20 +38,20 @@ public class DeckListAdapter extends RecyclerView.Adapter {
         View view = holder.itemView;
 
         Deck deck;
-        if (position >= DeckList.get().size()) {
-            deck = DeckList.getArenaDeck();
+        if (position >= deckListManager.get().size()) {
+            deck = deckListManager.getArenaDeck();
         } else {
-            deck = DeckList.get().get(position);
+            deck = deckListManager.get().get(position);
         }
 
         view.setOnClickListener(v -> onDeckSelectedListener.onClick(deck));
 
-        ((ImageView)(view.findViewById(R.id.deckImageRound))).setImageDrawable(Utils.getDrawableForName(String.format("hero_%02d_round", deck.classIndex + 1)));
+        ((ImageView)(view.findViewById(R.id.deckImageRound))).setImageDrawable(Utils.getDrawableForName(view.getContext(), String.format("hero_%02d_round", deck.classIndex + 1)));
         ((TextView)(view.findViewById(R.id.deckName))).setText(deck.name);
     }
 
     @Override
     public int getItemCount() {
-        return DeckList.get().size() + 1;
+        return deckListManager.get().size() + 1;
     }
 }

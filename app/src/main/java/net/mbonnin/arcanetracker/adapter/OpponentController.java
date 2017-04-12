@@ -1,12 +1,6 @@
 package net.mbonnin.arcanetracker.adapter;
 
-import android.text.TextUtils;
-
-import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
-import net.mbonnin.arcanetracker.Card;
 import net.mbonnin.arcanetracker.CardDb;
-import net.mbonnin.arcanetracker.R;
-import net.mbonnin.arcanetracker.parser.Entity;
 import net.mbonnin.arcanetracker.parser.EntityList;
 
 import java.util.ArrayList;
@@ -19,13 +13,15 @@ import java.util.Map;
  */
 
 public class OpponentController extends Controller {
+    private final CardDb cardDb;
     private final ItemAdapter mAdapter;
 
-    HeaderItem mHandHeader = new HeaderItem();
+    private HeaderItem mHandHeader = new HeaderItem();
 
-    public OpponentController(ItemAdapter adapter) {
+    public OpponentController(CardDb cardDb, String handHeader, ItemAdapter adapter) {
+        this.cardDb = cardDb;
         mAdapter = adapter;
-        mHandHeader.title = ArcaneTrackerApplication.getContext().getString(R.string.hand);
+        mHandHeader.title = handHeader;
         mHandHeader.onClicked = () -> {
             mHandHeader.expanded = !mHandHeader.expanded;
             update();
@@ -71,7 +67,7 @@ public class OpponentController extends Controller {
         ArrayList<DeckEntryItem> knownItems = new ArrayList<>();
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
             DeckEntryItem deckEntry = new DeckEntryItem();
-            deckEntry.card = CardDb.getCard(entry.getKey());
+            deckEntry.card = cardDb.getCard(entry.getKey());
             deckEntry.count = entry.getValue();
             knownItems.add(deckEntry);
         }

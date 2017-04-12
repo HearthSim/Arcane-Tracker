@@ -125,8 +125,8 @@ public class Card implements Comparable<String> {
         return -1;
     }
 
-    public static boolean isCollectible(String cardId) {
-        Card card = CardDb.getCard(cardId);
+    public static boolean isCollectible(CardDb cardDb, String cardId) {
+        Card card = cardDb.getCard(cardId);
         if (card.collectible == null || !card.collectible) {
             return false;
         }

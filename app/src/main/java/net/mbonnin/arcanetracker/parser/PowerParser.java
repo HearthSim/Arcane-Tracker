@@ -19,6 +19,7 @@ import timber.log.Timber;
  */
 
 public class PowerParser implements LogReader.LineConsumer {
+    private final CardDb cardDb;
     private final Listener mListener;
     private LinkedList<Node> mNodeStack = new LinkedList<Node>();
     private Node mCurrentNode;
@@ -60,10 +61,10 @@ public class PowerParser implements LogReader.LineConsumer {
         void onGameEnded(Game game, boolean victory);
     }
 
-    public PowerParser(Listener listener) {
-        mListener = listener;
+    public PowerParser(CardDb cardDb, Listener listener) {
+        this.cardDb = cardDb;
+        this.mListener = listener;
     }
-
 
     public void onLine(String rawLine, int seconds, String line) {
         String s[] = Utils.extractMethod(line);
@@ -225,7 +226,7 @@ public class PowerParser implements LogReader.LineConsumer {
             if (mCurrentGame != null) {
                 Timber.w("CREATE_GAME during an existing one, resuming");
             } else {
-                mCurrentGame = new Game();
+                mCurrentGame = new Game(cardDb);
                 for (Node child:node.children) {
                     if ((m = GameEntityPattern.matcher(child.line)).matches()) {
                         Entity entity = new Entity();
@@ -287,7 +288,7 @@ public class PowerParser implements LogReader.LineConsumer {
                 Timber.e("[Inconsistent] entity " + entity + " changed cardId " + entity.CardID + " -> " + CardID);
             }
             entity.CardID = CardID;
-            entity.card = CardDb.getCard(CardID);
+            entity.card = cardDb.getCard(CardID);
 
             HashMap<String, String> newTags = getTags(node);
             for (String key:newTags.keySet()) {

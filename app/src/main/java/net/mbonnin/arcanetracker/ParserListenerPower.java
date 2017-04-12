@@ -12,12 +12,12 @@ import net.mbonnin.arcanetracker.trackobot.Trackobot;
 import net.mbonnin.arcanetracker.trackobot.model.CardPlay;
 import net.mbonnin.arcanetracker.trackobot.model.Result;
 import net.mbonnin.arcanetracker.trackobot.model.ResultData;
-import net.mbonnin.arcanetracker.trackobot.model.TrackobotCard;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -26,8 +26,22 @@ import timber.log.Timber;
  */
 public class ParserListenerPower implements PowerParser.Listener {
 
-    private static ParserListenerPower sParserListenerPower;
+    private final ParserListenerLoadingScreen parserListenerLoadingScreen;
+    private final MainViewCompanion mainViewCompanion;
+    private final DeckListManager deckListManager;
+    private final Settings settings;
+    private final Trackobot trackobot;
+    private final FirebaseAnalytics firebaseAnalytics;
     private Game mLastGame;
+
+    public ParserListenerPower(ParserListenerLoadingScreen parserListenerLoadingScreen, MainViewCompanion mainViewCompanion, DeckListManager deckListManager, Settings settings, Trackobot trackobot, FirebaseAnalytics firebaseAnalytics) {
+        this.parserListenerLoadingScreen = parserListenerLoadingScreen;
+        this.mainViewCompanion = mainViewCompanion;
+        this.deckListManager = deckListManager;
+        this.settings = settings;
+        this.trackobot = trackobot;
+        this.firebaseAnalytics = firebaseAnalytics;
+    }
 
     @Override
     public void onGameStarted(Game game) {
@@ -35,10 +49,10 @@ public class ParserListenerPower implements PowerParser.Listener {
 
         mLastGame = game;
 
-        Deck deck = MainViewCompanion.getPlayerCompanion().getDeck();
-        if (Settings.get(Settings.AUTO_SELECT_DECK, true)) {
-            if (ParserListenerLoadingScreen.get().getMode() == LoadingScreenParser.MODE_ARENA) {
-                deck = DeckList.getArenaDeck();
+        Deck deck = mainViewCompanion.getPlayerCompanion().getDeck();
+        if (settings.get(Settings.AUTO_SELECT_DECK, true)) {
+            if (parserListenerLoadingScreen.getMode() == LoadingScreenParser.MODE_ARENA) {
+                deck = deckListManager.getArenaDeck();
             } else {
                 int classIndex = game.getPlayer().classIndex();
 
@@ -53,15 +67,15 @@ public class ParserListenerPower implements PowerParser.Listener {
             }
         }
 
-        MainViewCompanion.getPlayerCompanion().setDeck(deck, game.getPlayer());
+        mainViewCompanion.getPlayerCompanion().setDeck(deck, game.getPlayer());
 
-        DeckList.getOpponentDeck().clear();
-        DeckList.getOpponentDeck().classIndex = game.getOpponent().classIndex();
-        MainViewCompanion.getOpponentCompanion().setDeck(DeckList.getOpponentDeck(), game.getOpponent());
+        deckListManager.getOpponentDeck().clear();
+        deckListManager.getOpponentDeck().classIndex = game.getOpponent().classIndex();
+        mainViewCompanion.getOpponentCompanion().setDeck(deckListManager.getOpponentDeck(), game.getOpponent());
     }
 
-    private static Deck activateBestDeck(int classIndex, HashMap<String, Integer> initialCards) {
-        Deck deck = MainViewCompanion.getPlayerCompanion().getDeck();
+    private Deck activateBestDeck(int classIndex, Map<String, Integer> initialCards) {
+        Deck deck = mainViewCompanion.getPlayerCompanion().getDeck();
         if (deckScore(deck, classIndex, initialCards) != -1) {
             // the current deck works fine
             return deck;
@@ -69,17 +83,17 @@ public class ParserListenerPower implements PowerParser.Listener {
 
         // sort the deck list by descending number of cards. We'll try to get the one with the most cards.
         ArrayList<Integer> index = new ArrayList<>();
-        for (int i = 0; i < DeckList.get().size(); i++) {
+        for (int i = 0; i < deckListManager.get().size(); i++) {
             index.add(i);
         }
 
-        Collections.sort(index, (a, b) -> DeckList.get().get(b).getCardCount() - DeckList.get().get(a).getCardCount());
+        Collections.sort(index, (a, b) -> deckListManager.get().get(b).getCardCount() - deckListManager.get().get(a).getCardCount());
 
         int maxScore = -1;
         Deck bestDeck = null;
 
         for (Integer i : index) {
-            Deck candidateDeck = DeckList.get().get(i);
+            Deck candidateDeck = deckListManager.get().get(i);
 
             int score = deckScore(candidateDeck, classIndex, initialCards);
 
@@ -94,7 +108,7 @@ public class ParserListenerPower implements PowerParser.Listener {
             /**
              * No good candidate, create a new deck
              */
-            bestDeck = DeckList.createDeck(classIndex);
+//            bestDeck = DeckListManager.createDeck(classIndex);
         }
 
         return bestDeck;
@@ -103,7 +117,7 @@ public class ParserListenerPower implements PowerParser.Listener {
     /**
      *
      */
-    private static int deckScore(Deck deck, int classIndex, HashMap<String, Integer> mulliganCards) {
+    private int deckScore(Deck deck, int classIndex, Map<String, Integer> mulliganCards) {
         if (deck.classIndex != classIndex) {
             return -1;
         }
@@ -114,7 +128,7 @@ public class ParserListenerPower implements PowerParser.Listener {
         /**
          * copy the cards
          */
-        HashMap<String, Integer> deckCards = new HashMap<>(deck.cards);
+        Map<String, Integer> deckCards = new HashMap<>(deck.cards);
 
         /**
          * iterate through the mulligan cards.
@@ -144,19 +158,19 @@ public class ParserListenerPower implements PowerParser.Listener {
     @Override
     public void onGameEnded(Game game, boolean victory) {
         Timber.w("onGameEnd %s", victory ? "victory" : "lost");
-        Deck deck = MainViewCompanion.getPlayerCompanion().getDeck();
+        Deck deck = mainViewCompanion.getPlayerCompanion().getDeck();
         if (victory) {
             deck.wins++;
         } else {
             deck.losses++;
         }
-        MainViewCompanion.getPlayerCompanion().setDeck(deck);
+        mainViewCompanion.getPlayerCompanion().setDeck(deck);
 
-        DeckList.save();
+        deckListManager.save();
 
-        int mode = ParserListenerLoadingScreen.get().getMode();
+        int mode = parserListenerLoadingScreen.getMode();
         if (mode == LoadingScreenParser.MODE_ARENA || mode == LoadingScreenParser.MODE_PLAY
-                && Trackobot.get().getUser() != null) {
+                && trackobot.getUser() != null) {
             ResultData resultData = new ResultData();
             resultData.result = new Result();
             resultData.result.coin = game.getPlayer().hasCoin;
@@ -177,18 +191,10 @@ public class ParserListenerPower implements PowerParser.Listener {
 
             resultData.result.card_history = history;
 
-            Trackobot.get().sendResult(resultData);
+            trackobot.sendResult(resultData);
         }
 
-        FirebaseAnalytics.getInstance(ArcaneTrackerApplication.getContext()).logEvent("game_ended", null);
-    }
-
-    public static ParserListenerPower get() {
-        if (sParserListenerPower == null) {
-            sParserListenerPower = new ParserListenerPower();
-        }
-
-        return sParserListenerPower;
+        firebaseAnalytics.logEvent("game_ended", null);
     }
 
     public Game getLastGame() {

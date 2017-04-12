@@ -94,14 +94,6 @@ public class ViewManager {
         }
     }
 
-    public static  ViewManager get() {
-        if (sViewManager == null) {
-            sViewManager = new ViewManager(ArcaneTrackerApplication.getContext());
-        }
-
-        return sViewManager;
-    }
-
     public void addModalAndFocusableView(View view, Params params) {
         addModalViewIternal(view, params, 0);
     }

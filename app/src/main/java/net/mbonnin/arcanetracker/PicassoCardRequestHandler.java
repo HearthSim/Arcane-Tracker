@@ -25,15 +25,16 @@ import rx.schedulers.Schedulers;
 import rx.util.async.Async;
 
 public class PicassoCardRequestHandler extends RequestHandler {
-    private static PicassoCardRequestHandler sHandler;
+    private final Context context;
     private final OkHttpClient mOkHttpClient;
     private final String mLanguage;
     private HashMap<String, Callback> mPendingCallbacks = new HashMap<>();
-    File dir;
+    private File dir;
 
-    private PicassoCardRequestHandler() {
-        mOkHttpClient = new OkHttpClient();
-        dir = ArcaneTrackerApplication.getContext().getCacheDir();
+    public PicassoCardRequestHandler(Context context, OkHttpClient okHttpClient, File cacheDir) {
+        this.context = context;
+        mOkHttpClient = okHttpClient;
+        dir = cacheDir;
 
         String locale = Locale.getDefault().getLanguage().toLowerCase();
 
@@ -57,7 +58,7 @@ public class PicassoCardRequestHandler extends RequestHandler {
         return false;
     }
 
-    private static void copyInputStreamToFile( InputStream in, File file ) {
+    private void copyInputStreamToFile( InputStream in, File file ) {
         try {
             OutputStream out = new FileOutputStream(file);
             byte[] buf = new byte[1024];
@@ -162,7 +163,6 @@ public class PicassoCardRequestHandler extends RequestHandler {
             if (f.exists()) {
                 return new Result(new FileInputStream(f), Picasso.LoadedFrom.NETWORK);
             } else {
-                Context context = ArcaneTrackerApplication.getContext();
                 int id = context.getResources().getIdentifier(cardId.toLowerCase(), "drawable", context.getPackageName());
                 if (id > 0) {
                     return new Result(context.getResources().openRawResource(id), Picasso.LoadedFrom.DISK);
@@ -171,13 +171,5 @@ public class PicassoCardRequestHandler extends RequestHandler {
                 }
             }
         }
-    }
-
-    public static RequestHandler get() {
-        if (sHandler == null) {
-            sHandler = new PicassoCardRequestHandler();
-        }
-
-        return sHandler;
     }
 }

@@ -19,14 +19,12 @@ public class StopServiceBroadcastReceiver extends BroadcastReceiver {
         return intent;
     }
 
-    public static void init() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(ACTION);
-        ArcaneTrackerApplication.getContext().registerReceiver(new StopServiceBroadcastReceiver(), filter);
+    public static void start(Context context) {
+        context.registerReceiver(new StopServiceBroadcastReceiver(), new IntentFilter(ACTION));
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        MainService.stop();
+        MainService.stop(context);
     }
 }

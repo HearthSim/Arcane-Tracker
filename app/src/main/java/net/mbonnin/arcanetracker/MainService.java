@@ -3,6 +3,7 @@ package net.mbonnin.arcanetracker;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -11,6 +12,10 @@ import android.widget.Toast;
 
 import java.io.File;
 
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjection;
+
 /**
  * Created by martin on 10/14/16.
  */
@@ -18,10 +23,14 @@ import java.io.File;
 public class MainService extends Service {
     private static final int NOTIFICATION_ID = 42;
 
-    public static void stop() {
+    @Inject MainViewCompanion mainViewCompanion;
+    @Inject QuitDetector quitDetector;
+    @Inject ViewManager viewManager;
+
+    public static void stop(Context context) {
         Intent serviceIntent = new Intent();
-        serviceIntent.setClass(ArcaneTrackerApplication.getContext(), MainService.class);
-        ArcaneTrackerApplication.getContext().stopService(serviceIntent);
+        serviceIntent.setClass(context, MainService.class);
+        context.stopService(serviceIntent);
     }
 
     @Nullable
@@ -34,11 +43,13 @@ public class MainService extends Service {
     public void onCreate() {
         super.onCreate();
 
+        AndroidInjection.inject(this);
+
         Utils.logWithDate("MainService.onCreate()");
 
-        MainViewCompanion.get().setState(MainViewCompanion.STATE_PLAYER, false);
-        MainViewCompanion.get().show(true);
-        QuitDetector.get().start();
+        mainViewCompanion.setState(MainViewCompanion.STATE_PLAYER, false);
+        mainViewCompanion.show(true);
+        quitDetector.start();
 
         File file = new File(Utils.getHearthstoneFilesDir());
         if (!file.exists()) {
@@ -49,7 +60,7 @@ public class MainService extends Service {
         Intent intent = StopServiceBroadcastReceiver.getIntent();
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Intent intent2 = new Intent(ArcaneTrackerApplication.getContext(), SettingsActivity.class);
+        Intent intent2 = new Intent(this, SettingsActivity.class);
         PendingIntent settingsPendingIntent = PendingIntent.getActivity(this, 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Notification notification = new NotificationCompat.Builder(this)
@@ -67,11 +78,11 @@ public class MainService extends Service {
     public void onDestroy() {
         super.onDestroy();
 
-        QuitDetector.get().stop();
+        quitDetector.stop();
         Utils.logWithDate("MainService.onDestroy()");
 
         stopForeground(true);
-        ViewManager.get().removeAllViews();
+        viewManager.removeAllViews();
 
         Toast.makeText(this, "Bye bye", Toast.LENGTH_LONG).show();
 

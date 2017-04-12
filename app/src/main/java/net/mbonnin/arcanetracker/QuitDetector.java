@@ -10,6 +10,9 @@ import timber.log.Timber;
  */
 
 public class QuitDetector {
+    private final MainViewCompanion mainViewCompanion;
+    private final ViewManager viewManager;
+    private final Settings settings;
     private Handler mHandler;
     private int[] mPosition = new int[2];
 
@@ -19,38 +22,29 @@ public class QuitDetector {
 
     private int state = STATE_NOTHING;
 
-    static QuitDetector sQuitDetector;
-
-    public static QuitDetector get() {
-        if (sQuitDetector == null) {
-            sQuitDetector = new QuitDetector();
-        }
-        return sQuitDetector;
-    }
-
     private final Runnable mCheckFullScreenRunnable = new Runnable() {
 
         @Override
         public void run() {
 
-            View view = MainViewCompanion.get().getMainView();
+            View view = mainViewCompanion.getMainView();
             view.getLocationOnScreen(mPosition);
 
             //Timber.i("view %d - %d", mPosition[1], view.getHeight());
             if (mPosition[1] != 0) {
-                if (Settings.get(Settings.AUTO_QUIT, true)) {
+                if (settings.get(Settings.AUTO_QUIT, true)) {
                     if (state == STATE_NOTHING) {
                         Timber.i("Exit FullScreen detected");
-                        state = MainViewCompanion.get().isOpen() ? STATE_WAS_OPEN: STATE_WAS_CLOSED;
-                        MainViewCompanion.get().setOpen(false);
-                        ViewManager.get().removeAllViewsExcept(view);
+                        state = mainViewCompanion.isOpen() ? STATE_WAS_OPEN: STATE_WAS_CLOSED;
+                        mainViewCompanion.setOpen(false);
+                        viewManager.removeAllViewsExcept(view);
                     }
                 }
             } else {
                 if (state != STATE_NOTHING) {
                     Timber.i("Back to FullScreen");
-                    MainViewCompanion.get().setOpen(state == STATE_WAS_OPEN);
-                    MainViewCompanion.get().show(true);
+                    mainViewCompanion.setOpen(state == STATE_WAS_OPEN);
+                    mainViewCompanion.show(true);
                     state = STATE_NOTHING;
                 }
             }
@@ -66,7 +60,10 @@ public class QuitDetector {
         mHandler.removeCallbacks(mCheckFullScreenRunnable);
     }
 
-    public QuitDetector() {
-        mHandler = new Handler();
+    public QuitDetector(MainViewCompanion mainViewCompanion, ViewManager viewManager, Settings settings) {
+        this.mainViewCompanion = mainViewCompanion;
+        this.viewManager = viewManager;
+        this.settings = settings;
+        this.mHandler = new Handler();
     }
 }
