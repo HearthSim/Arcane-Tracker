@@ -133,8 +133,6 @@
     <string name="no">No</string>
     <string name="yes">Yes</string>
     <string name="whatsNew">What\'s new</string>
-    <string name="item1">• Support for deckstrings</string>
-    <string name="subItem1">You can now paste decks copied from the game. Just click \"new deck\"</string>
-    <string name="item2">• Mark HSReplay.net uploads as Arena when needed</string>
-    <string name="item3">• You can now edit the win/loss counter</string>
+    <string name="changelog_213">Support for deckstrings{-}You can now paste decks copied from the game. Just click \"new deck\" after copying your deck.\nMark HSReplay.net uploads as Arena when needed\nYou can now edit the win/loss counter</string>
+    <string name="cVersion">Version %s</string>
 </resources>

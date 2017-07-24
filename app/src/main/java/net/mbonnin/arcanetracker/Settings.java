@@ -25,6 +25,7 @@ public class Settings {
     public static final String SHOW_XIAOMI_WARNING = "SHOW_XIAOMI_WARNING";
     public static final String PICASSO_CARD_REQUEST_HANDLER_VERSION = "PICASSO_CARD_REQUEST_HANDLER_VERSION";
     public static final String VERSION = "VERSION";
+    public static final String SHOW_CHANGELOG = "SHOW_CHANGELOG";
 
     private static SharedPreferences getPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(ArcaneTrackerApplication.getContext());
