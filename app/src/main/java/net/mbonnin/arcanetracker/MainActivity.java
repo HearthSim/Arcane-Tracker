@@ -179,18 +179,6 @@ public class MainActivity extends AppCompatActivity {
                     .show();
             return;
         }
-        if (Settings.get(Settings.CHECK_IF_RUNNING, true)) {
-            mDialog = new AlertDialog.Builder(context)
-                    .setTitle(getString(R.string.please_stop_hearthstone))
-                    .setMessage(getString(R.string.stop_hearthstone_explanation))
-                    .setPositiveButton(getString(R.string.continue_), (dialog, which) -> {
-                        dialog.dismiss();
-                        Settings.set(Settings.CHECK_IF_RUNNING, false);
-                        tryToLaunchGame();
-                    })
-                    .show();
-            return;
-        }
 
         launchGame();
     }

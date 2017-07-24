@@ -3,10 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/arcane_tracker.iml" filepath="$PROJECT_DIR$/arcane_tracker.iml" />
       <module fileurl="file://$PROJECT_DIR$/arcane_tracker3.iml" filepath="$PROJECT_DIR$/arcane_tracker3.iml" />
-      <module fileurl="file://$PROJECT_DIR$/arcane_tracker_new.iml" filepath="$PROJECT_DIR$/arcane_tracker_new.iml" />
     </modules>
   </component>
 </project>
