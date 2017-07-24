@@ -15,8 +15,6 @@ public class EntityList extends ArrayList<Entity> {
     public static final Predicate<Entity> IS_IN_HAND = new ZonePredicate(Entity.ZONE_HAND);
 
     public static final Predicate<Entity> HAS_CARD_ID = entity -> !TextUtils.isEmpty(entity.CardID);
-    public static final Predicate<Entity> IS_FROM_ORIGINAL_DECK = entity -> Entity.TRUE.equals(entity.extra.get(Entity.EXTRA_KEY_ORIGINAL_DECK));
-    public static final Predicate<Entity> IS_NOT_FROM_ORIGINAL_DECK = entity -> !IS_FROM_ORIGINAL_DECK.apply(entity);
     private static final Predicate<Entity> IS_ENCHANTMENT = new CardTypePredicate(Entity.CARDTYPE_ENCHANTMENT);
     public static final Predicate<Entity> IS_NOT_ENCHANTMENT = new NegatePredicate(IS_ENCHANTMENT);
 

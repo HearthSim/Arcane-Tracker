@@ -14,6 +14,17 @@ public class LoadingScreenParser implements LogReader.LineConsumer {
     public static final int MODE_ARENA = 1;
     public static final int MODE_OTHER = 2;
     private final Listener mListener;
+    private boolean mReadingPreviousData = true;
+    private int mCurrentMode;
+
+    public static String friendlyMode(int mode) {
+        switch (mode) {
+            case MODE_ARENA: return "ARENA";
+            case MODE_PLAY: return "PLAY";
+            case MODE_OTHER: return "OTHER";
+            default: return "?";
+        }
+    }
 
     public interface Listener {
         void modeChanged(int newMode);
@@ -23,10 +34,10 @@ public class LoadingScreenParser implements LogReader.LineConsumer {
         mListener = listener;
     }
 
-    public void onLine(String rawLine, int seconds, String line) {
+    public void onLine(String line) {
         Timber.v(line);
 
-        Pattern pattern = Pattern.compile("LoadingScreen.OnSceneLoaded\\(\\) - prevMode=(.*) currMode=(.*)");
+        Pattern pattern = Pattern.compile(".*LoadingScreen.OnSceneLoaded\\(\\) - prevMode=(.*) currMode=(.*)");
         Matcher matcher = pattern.matcher(line);
         if (matcher.matches()) {
             String prevMode = matcher.group(1);
@@ -43,8 +54,19 @@ public class LoadingScreenParser implements LogReader.LineConsumer {
                 newMode = MODE_PLAY;
             }
 
-            mListener.modeChanged(newMode);
+            if (!mReadingPreviousData) {
+                /**
+                 * do not trigger the mode changes for previous modes, it selects the arena deck at startup always
+                 */
+                mListener.modeChanged(newMode);
+            }
+            mCurrentMode = newMode;
         }
     }
 
+    @Override
+    public void onPreviousDataRead() {
+        mReadingPreviousData = false;
+        mListener.modeChanged(mCurrentMode);
+    }
 }

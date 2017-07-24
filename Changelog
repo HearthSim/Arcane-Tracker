@@ -1,16 +1,36 @@
-1.09
-• added french & russian translations
+**2.01**
 
-1.08
-• fixed a case when detection was not working properly
+* Gadgetzan support
 
-1.07
-• hotfix for API levels < 19
+**Version 2.00**
 
-1.06
-• added settings to change the size of the drawer/buttons
-• fix the 7+ filtering bug
-• added settings to auto-hide the overlay when outside hearthstone
-• fixed the hero considered as a card in arena
-• fix a bug when buttons could become unresponsive
+* Added Portuguese (Thanks Dedni !)
+* Added Korean (Thanks 노용진 and Youbeebee !)
+* Allow to import a .track-o-bot file if put at the root of your phone storage
+* Be more robust to disconnects
+* Upload the card history to track-o-bot
+* Allow to have more than 2 cards of a kind in Arena.
+* Don't display amount of card in deck when there's only one of it
+* New icon
+* Fix a bug where the left side of the screen was not touchable, even if the tracker was hidden
+
+**Version 1.09**
+
+* added french & russian translations
+
+**Version 1.08**
+
+* fixed a case when detection was not working properly
+
+**Version 1.07**
+
+* hotfix for API levels < 19
+
+**Version 1.06**
+
+* added settings to change the size of the drawer/buttons
+* fix the 7+ filtering bug
+* added settings to auto-hide the overlay when outside hearthstone
+* fixed the hero considered as a card in arena
+* fix a bug when buttons could become unresponsive
 

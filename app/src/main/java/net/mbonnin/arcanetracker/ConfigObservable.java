@@ -14,7 +14,6 @@ import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subjects.ReplaySubject;
-import rx.util.async.Async;
 import timber.log.Timber;
 
 /**
@@ -25,7 +24,7 @@ public class ConfigObservable {
     static Observable<Config> get() {
         ReplaySubject<Config> subject = ReplaySubject.create();
 
-        Async.start(() -> {
+        Observable.fromCallable(() -> {
             Request request = new Request.Builder().url("https://arcanetracker.com/config.json").get().build();
 
             Response response = null;

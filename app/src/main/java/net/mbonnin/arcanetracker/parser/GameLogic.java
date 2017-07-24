@@ -4,9 +4,15 @@ package net.mbonnin.arcanetracker.parser;
  * Created by martin on 11/11/16.
  */
 
+import android.os.Handler;
 import android.text.TextUtils;
 
+import net.mbonnin.arcanetracker.Card;
+import net.mbonnin.arcanetracker.CardDb;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -14,9 +20,52 @@ import timber.log.Timber;
  * A bunch of helper functions
  */
 public class GameLogic {
+    private static GameLogic sGameLogic;
+    private final Handler mHandler;
 
-    private static void gameStepBeginMulligan(Game game) {
+    private ArrayList<Listener> mListenerList = new ArrayList<>();
+    private Game mGame;
+    private int mCurrentTurn;
 
+
+    public void gameOver() {
+        for (Listener listener : mListenerList) {
+            listener.gameOver();
+        }
+    }
+
+    public GameLogic() {
+        mHandler = new Handler();
+    }
+    public interface Listener {
+        /**
+         * when gameStarted is called, game.player and game.opponent are set
+         * the initial mulligan cards are known too. It's ok to store 'game' as there can be only one at a time
+         */
+        void gameStarted(Game game);
+
+        void gameOver();
+
+        /**
+         * this is called whenever something changes :)
+         */
+        void somethingChanged();
+    }
+
+    public static GameLogic get() {
+        if (sGameLogic == null) {
+            sGameLogic = new GameLogic();
+        }
+        return sGameLogic;
+    }
+
+    public void addListener(Listener listener) {
+        mListenerList.add(listener);
+    }
+
+    private void gameStepBeginMulligan() {
+
+        Game game = mGame;
         int knownCardsInHand = 0;
         int totalCardsInHand = 0;
 
@@ -28,7 +77,12 @@ public class GameLogic {
             return;
         }
 
-        for (Entity entity: player1.zone(Entity.ZONE_HAND)) {
+        EntityList entities = game.getEntityList(entity -> {
+            return "1".equals(entity.tags.get(Entity.KEY_CONTROLLER))
+                    && Entity.ZONE_HAND.equals(entity.tags.get(Entity.KEY_ZONE));
+        });
+
+        for (Entity entity : entities) {
             if (!TextUtils.isEmpty(entity.CardID)) {
                 knownCardsInHand++;
             }
@@ -44,15 +98,15 @@ public class GameLogic {
         /**
          * now try to match a battle tag with a player
          */
-        for (String battleTag: game.battleTags) {
+        for (String battleTag : game.battleTags) {
             Entity battleTagEntity = game.entityMap.get(battleTag);
             String playsFirst = battleTagEntity.tags.get(Entity.KEY_FIRST_PLAYER);
             Player player;
 
             if ("1".equals(playsFirst)) {
-                player = player1.hasCoin ? player2: player1;
+                player = player1.hasCoin ? player2 : player1;
             } else {
-                player = player1.hasCoin ? player1: player2;
+                player = player1.hasCoin ? player1 : player2;
             }
 
             player.entity.tags.putAll(battleTagEntity.tags);
@@ -65,18 +119,11 @@ public class GameLogic {
             game.entityMap.put(battleTag, player.entity);
         }
 
-        game.player = player1.isOpponent ? player2:player1;
-        game.opponent = player1.isOpponent ? player1:player2;
+        game.player = player1.isOpponent ? player2 : player1;
+        game.opponent = player1.isOpponent ? player1 : player2;
     }
 
-
-    private static void zoneChanged(Game game, Entity entity, String lastZone, String newZone) {
-        Player player = game.findController(entity);
-        player.zone(lastZone).remove(entity);
-        player.zone(newZone).add(entity);
-    }
-
-    public static void entityCreated(Game game, Entity entity) {
+    public void entityCreated(Game game, Entity entity) {
         String playerId = entity.tags.get(Entity.KEY_CONTROLLER);
         String cardType = entity.tags.get(Entity.KEY_CARDTYPE);
         Player player = game.findController(entity);
@@ -88,26 +135,51 @@ public class GameLogic {
         } else if (Entity.CARDTYPE_HERO_POWER.equals(cardType)) {
             player.heroPower = entity;
         } else {
-            player.entities.add(entity);
+            if (Entity.ZONE_HAND.equals(entity.tags.get(Entity.KEY_ZONE))){
+                entity.extra.drawTurn = (mCurrentTurn + 1) / 2;
+            }
 
-            if (game.gameEntity.tags.get(Entity.KEY_STEP) == null && Entity.ZONE_DECK.equals(entity.tags.get(Entity.KEY_ZONE))) {
-                entity.extra.put(Entity.EXTRA_KEY_ORIGINAL_DECK, Entity.TRUE);
+            if (game.gameEntity.tags.get(Entity.KEY_STEP) == null) {
+                if (Entity.ZONE_DECK.equals(entity.tags.get(Entity.KEY_ZONE))) {
+                    entity.extra.originalController = entity.tags.get(Entity.KEY_CONTROLLER);
+                } else if (Entity.ZONE_HAND.equals(entity.tags.get(Entity.KEY_ZONE))){
+                    // this mush be the coin
+                    entity.CardID = Card.ID_COIN;
+                    entity.extra.drawTurn = 0;
+                    entity.card = CardDb.getCard(Card.ID_COIN);
+                }
             }
         }
 
-        player.notifyListeners();
+        notifyListeners();
     }
 
-    public static void entityRevealed(Game game, Entity entity) {
-        Player player = game.findController(entity);
+    private Runnable mListenerRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mGame != null && mGame.player != null && mGame.opponent != null)
+                for (Listener listener : mListenerList) {
+                    listener.somethingChanged();
+                }
+        }
+    };
 
-        player.notifyListeners();
+    private void notifyListeners() {
+        mHandler.removeCallbacks(mListenerRunnable);
+        mHandler.postDelayed(mListenerRunnable, 200);
     }
 
-    public static void gameCreated(Game game) {
+    public void entityRevealed(Entity entity) {
+        Timber.i("entity revealed %s", entity.EntityID);
+
+        notifyListeners();
+    }
+
+    public void gameCreated(Game game) {
+        mGame = game;
         game.playerMap = new HashMap<>();
 
-        for (Entity entity: game.entityMap.values()) {
+        for (Entity entity : game.entityMap.values()) {
             if (entity.PlayerID != null) {
                 Timber.i("adding player " + entity.PlayerID);
                 Player player = new Player();
@@ -119,40 +191,75 @@ public class GameLogic {
         }
     }
 
-    public static void tagChanged(Game game, Entity entity, String key, String oldValue, String newValue) {
+    public void tagChanged(Entity entity, String key, String oldValue, String newValue) {
         if (Entity.ENTITY_ID_GAME.equals(entity.EntityID)) {
+            if (Entity.KEY_TURN.equals(key)) {
+                try {
+                    mCurrentTurn = Integer.parseInt(newValue);
+                    Timber.d("turn: " + mCurrentTurn);
+                } catch (Exception e) {
+                    Timber.e(e);
+                }
+
+            }
             if (Entity.KEY_STEP.equals(key)) {
                 if (Entity.STEP_BEGIN_MULLIGAN.equals(newValue)) {
-                    GameLogic.gameStepBeginMulligan(game);
-                }
-            }
-        } else {
-            if (Entity.KEY_ZONE.equals(key)) {
-                if (!TextUtils.isEmpty(oldValue) && !oldValue.equals(newValue)) {
-                    GameLogic.zoneChanged(game, entity, oldValue, newValue);
+                    gameStepBeginMulligan();
+                    if (mGame.isStarted()) {
+                        for (Listener listener : mListenerList) {
+                            listener.gameStarted(mGame);
+                        }
+                    }
                 }
             }
         }
+
+        if (Entity.KEY_ZONE.equals(key)) {
+            if (Entity.ZONE_DECK.equals(oldValue) && Entity.ZONE_HAND.equals(newValue)) {
+                String step = mGame.gameEntity.tags.get(Entity.KEY_STEP);
+                if (step == null) {
+                    // this is the original mulligan
+                    entity.extra.drawTurn = 0;
+                } else if (Entity.STEP_BEGIN_MULLIGAN.equals(step)) {
+                    entity.extra.drawTurn = 0;
+                    entity.extra.mulliganed = true;
+                } else {
+                    entity.extra.drawTurn = (mCurrentTurn + 1) / 2;
+                }
+            } else if (Entity.ZONE_HAND.equals(oldValue) && Entity.ZONE_PLAY.equals(newValue)) {
+                entity.extra.playTurn = (mCurrentTurn + 1) / 2;
+            } else if (Entity.ZONE_HAND.equals(oldValue) && Entity.ZONE_SECRET.equals(newValue)) {
+                entity.extra.playTurn = (mCurrentTurn + 1) / 2;
+            } else if (Entity.ZONE_PLAY.equals(oldValue) && Entity.ZONE_GRAVEYARD.equals(newValue)) {
+                entity.extra.diedTurn = (mCurrentTurn + 1) / 2;
+            } else if (Entity.ZONE_HAND.equals(oldValue) && Entity.ZONE_DECK.equals(newValue)) {
+                /**
+                 * card was put back in the deck (most likely from mulligan)
+                 */
+                entity.extra.drawTurn = -1;
+            }
+        }
+
+        notifyListeners();
     }
 
-    public static void entityPlayed(Game game, Entity entity) {
-        String turn = game.gameEntity.tags.get(Entity.KEY_TURN);
-        if (turn == null) {
-            Timber.e("cannot get turn");
-            return;
-        }
+    public void entityPlayed(Entity entity) {
+        Game game = mGame;
+
         if (entity.CardID == null) {
             Timber.e("no CardID for play");
             return;
         }
 
         Play play = new Play();
-        play.turn = Integer.parseInt(turn);
+        play.turn = mCurrentTurn;
         play.cardId = entity.CardID;
         play.isOpponent = game.findController(entity).isOpponent;
 
-        Timber.i("%s played %s", play.isOpponent ? "opponent":"I", play.cardId);
+        Timber.i("%s played %s", play.isOpponent ? "opponent" : "I", play.cardId);
 
         game.plays.add(play);
+
+        notifyListeners();
     }
 }

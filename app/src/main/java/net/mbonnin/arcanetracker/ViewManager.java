@@ -59,7 +59,7 @@ public class ViewManager {
         }
     }
 
-    static class Params {
+    public static class Params {
         public int x, y, w, h;
     }
 

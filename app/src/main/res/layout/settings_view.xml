@@ -53,6 +53,39 @@
                 android:text="@string/sendFeedback"
                 android:textColor="#fff" />
 
+            <Button
+                android:id="@+id/resetCache"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="@string/resetCache"
+                android:textColor="#fff" />
+
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:id="@+id/languageLayout"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cardsLanguage"
+                    android:textColor="#000"
+                    android:layout_weight="1"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+                <Spinner
+                    android:id="@+id/languageSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                </Spinner>
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -182,6 +215,49 @@
                 android:layout_marginTop="5dp"
                 android:text="@string/autoAddExplanation"
                 android:textColor="#808080" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:id="@+id/hsReplayTitle"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="HSReplay.net"
+                    android:textColor="#000"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <CheckBox
+                    android:id="@+id/hsReplay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/hsReplayDescription"
+                android:layout_marginTop="5dp"
+                android:text="@string/hsReplayExplanation"
+                android:textColor="#808080" />
+
+            <!--<Button
+                android:id="@+id/hsReplayHistory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/history"
+                android:backgroundTint="@color/colorPrimary"
+                android:textColor="#fff" />-->
+
+            <include layout="@layout/loadable_button_view"
+                android:id="@+id/hsreplayClaim"></include>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -338,22 +414,6 @@
                 android:autoLink="all"
                 android:text="@string/importExplanation"
                 android:textColor="#808080" />
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:layout_weight="1">
-
-                <Button
-                    android:id="@+id/quit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|right"
-                    android:backgroundTint="@color/colorAccent"
-                    android:text="@string/quitArcaneTracker"
-                    android:textColor="#fff" />
-            </FrameLayout>
         </LinearLayout>
     </ScrollView>
 </android.support.v7.widget.CardView>

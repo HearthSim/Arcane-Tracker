@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
+import com.esotericsoftware.kryo.util.Util;
+
 /**
  * Created by martin on 10/24/16.
  */
@@ -27,6 +29,6 @@ public class StopServiceBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        MainService.stop();
+        Utils.exitApp();
     }
 }

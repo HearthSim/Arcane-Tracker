@@ -10,6 +10,7 @@ import android.widget.TextView;
 import net.mbonnin.arcanetracker.CardDb;
 import net.mbonnin.arcanetracker.Deck;
 import net.mbonnin.arcanetracker.R;
+import net.mbonnin.arcanetracker.Typefaces;
 import net.mbonnin.arcanetracker.Utils;
 
 import java.util.ArrayList;
@@ -22,59 +23,16 @@ import timber.log.Timber;
  * Created by martin on 10/17/16.
  */
 
-public class ItemAdapter extends RecyclerView.Adapter implements Deck.Listener {
+public class ItemAdapter extends RecyclerView.Adapter {
     static final int TYPE_DECK_ENTRY = 0;
     static final int TYPE_STRING = 1;
     static final int TYPE_HEADER = 2;
 
     ArrayList<Object> list = new ArrayList<>();
-    protected Deck mDeck;
-
-    ArrayList<DeckEntryItem> entryList = new ArrayList<>();
-
-    @Override
-    public void onDeckChanged() {
-        entryList.clear();
-        for (Map.Entry<String, Integer> entry: mDeck.cards.entrySet()) {
-            DeckEntryItem deckEntry = new DeckEntryItem();
-            deckEntry.card = CardDb.getCard(entry.getKey());
-            deckEntry.count = entry.getValue();
-            entryList.add(deckEntry);
-        }
-
-        for (DeckEntryItem e:entryList) {
-            if (e.card.cost == null) {
-                Timber.e(new Exception("bad card " + e.card.id));
-                e.card.cost = 0;
-            }
-        }
-        Collections.sort(entryList, (a,b) -> {
-            int ret = a.card.cost - b.card.cost;
-            if (ret == 0) {
-                ret = a.card.name.compareTo(b.card.name);
-            }
-            return ret;
-        });
-
-        populateList();
-    }
-
-    protected void populateList() {
-        list.clear();
-        list.addAll(entryList);
-        notifyDataSetChanged();
-    }
 
     public void setList(ArrayList list) {
         this.list = list;
         notifyDataSetChanged();
-    }
-
-    public void setDeck(Deck deck) {
-        mDeck = deck;
-        mDeck.setListener(this);
-
-        onDeckChanged();
     }
 
     @Override
@@ -88,7 +46,7 @@ public class ItemAdapter extends RecyclerView.Adapter implements Deck.Listener {
             return TYPE_HEADER;
         }
 
-        Timber.e("unsupported type");
+        Timber.e("unsupported type at position %d: %s", position, o.toString());
         return -1;
     }
 
@@ -141,12 +99,15 @@ public class ItemAdapter extends RecyclerView.Adapter implements Deck.Listener {
             ((TextView)barTemplate.getChildAt(0)).setText((String) o);
         } else if (o instanceof HeaderItem) {
             HeaderItem headerItem = (HeaderItem)o;
-            TextView textView = (TextView)holder.itemView;
-            String text = headerItem.expanded ?"▼":"▶";
+            TextView textView = (TextView)holder.itemView.findViewById(R.id.textView);
+            textView.setTypeface(Typefaces.belwe());
+            String text = "";//headerItem.expanded ?"▼":"▶";
             textView.setText(text + headerItem.title);
-            textView.setOnClickListener(v -> {
-                headerItem.onClicked.run();
-            });
+            if (headerItem.onClicked != null) {
+                textView.setOnClickListener(v -> {
+                    headerItem.onClicked.run();
+                });
+            }
         }
     }
 

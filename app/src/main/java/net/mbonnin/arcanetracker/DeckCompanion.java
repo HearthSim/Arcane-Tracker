@@ -3,15 +3,13 @@ package net.mbonnin.arcanetracker;
 import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import net.mbonnin.arcanetracker.adapter.Controller;
-import net.mbonnin.arcanetracker.adapter.OpponentController;
-import net.mbonnin.arcanetracker.adapter.PlayerController;
-import net.mbonnin.arcanetracker.adapter.ItemAdapter;
-import net.mbonnin.arcanetracker.parser.Player;
 
 import io.paperdb.Paper;
 import timber.log.Timber;
@@ -30,7 +28,6 @@ public class DeckCompanion {
     TextView winLoss;
     public TextView deckName;
 
-    private ItemAdapter mAdapter;
     private RecyclerView recyclerView;
     private ViewManager mViewManager;
 
@@ -39,7 +36,6 @@ public class DeckCompanion {
     private boolean isOpponent;
     private Deck mDeck;
     private ImageView background;
-    private Player mPlayer;
 
     public DeckCompanion(View v, boolean isOpponent) {
         mViewManager = ViewManager.get();
@@ -69,17 +65,16 @@ public class DeckCompanion {
         mRecyclerViewParams = new ViewManager.Params();
         mRecyclerViewParams.w = w;
         mRecyclerViewParams.h = mViewManager.getHeight() - h;
-        mAdapter = new ItemAdapter();
 
         if (isOpponent) {
             settings.setVisibility(GONE);
             winLoss.setVisibility(GONE);
 
 
-            mController = new OpponentController(mAdapter);
-            setDeck(DeckList.getOpponentDeck(), null);
+            mController = Controller.getOpponentController();
+            setDeck(DeckList.getOpponentDeck());
         } else {
-            new SettingsButtonCompanion(settings);
+            new EditButtonCompanion(settings);
             String lastUsedId = Paper.book().read(KEY_LAST_USED_DECK_ID);
 
             Deck deck = null;
@@ -100,34 +95,59 @@ public class DeckCompanion {
                 Paper.book().write(KEY_LAST_USED_DECK_ID, deck.id);
             }
 
-            mController = new PlayerController(mAdapter);
-            setDeck(deck, null);
+            mController = Controller.getPlayerController();
+            setDeck(deck);
         }
 
         recyclerView.setBackgroundColor(Color.BLACK);
         recyclerView.setLayoutManager(new LinearLayoutManager(v.getContext()));
-        recyclerView.setAdapter(mAdapter);
+        recyclerView.setAdapter(mController.getAdapter());
     }
 
     public void setDeck(Deck deck) {
-        setDeck(deck, mPlayer);
-    }
-
-    public void setDeck(Deck deck, Player player) {
         if (!isOpponent) {
             Paper.book().write(KEY_LAST_USED_DECK_ID, deck.id);
             winLoss.setText(deck.wins + " - " + deck.losses);
+
+            winLoss.setOnClickListener(v2 -> {
+                View view2 = LayoutInflater.from(v2.getContext()).inflate(R.layout.edit_win_loss, null);
+
+                EditText win = (EditText) view2.findViewById(R.id.win);
+                win.setText(Integer.toString(deck.wins));
+                EditText losses = (EditText) view2.findViewById(R.id.loss);
+                losses.setText(Integer.toString(deck.losses));
+                view2.findViewById(R.id.ok).setOnClickListener(v3 -> {
+                    mViewManager.removeView(view2);
+                    try {
+                        deck.wins = Integer.parseInt(win.getText().toString());
+                    } catch (Exception e) {
+                        deck.wins = 0;
+                    }
+                    try {
+                        deck.losses = Integer.parseInt(losses.getText().toString());
+                    } catch (Exception e) {
+                        deck.losses = 0;
+                    }
+
+                    DeckList.saveDeck(deck);
+
+                    MainViewCompanion.getPlayerCompanion().setDeck(deck);
+                });
+                view2.findViewById(R.id.cancel).setOnClickListener(v3 -> {
+                    mViewManager.removeView(view2);
+                });
+
+                mViewManager.addCenteredView(view2);
+            });
         }
 
         deck.checkClassIndex();
 
         mDeck = deck;
-        mPlayer = player;
         background.setBackgroundDrawable(Utils.getDrawableForClassIndex(deck.classIndex));
         deckName.setText(deck.name);
-        mAdapter.setDeck(deck);
 
-        mController.setDeck(deck, player);
+        mController.setDeck(deck);
     }
 
     public Deck getDeck() {

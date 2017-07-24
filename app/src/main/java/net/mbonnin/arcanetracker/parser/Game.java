@@ -1,5 +1,7 @@
 package net.mbonnin.arcanetracker.parser;
 
+import com.android.internal.util.Predicate;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -23,7 +25,8 @@ public class Game {
     public Player opponent;
 
     public ArrayList<Play> plays = new ArrayList<>();
-    public boolean started;
+    public boolean victory;
+    public int bnetGameType;
 
     public Player getPlayer() {
         return player;
@@ -46,5 +49,20 @@ public class Game {
             return new Player();
         }
         return player;
+    }
+
+    public EntityList getEntityList(Predicate<Entity> predicate) {
+        EntityList entityList = new EntityList();
+        for (Entity entity: entityMap.values()) {
+            if (predicate.apply(entity)) {
+                entityList.add(entity);
+            }
+        }
+
+        return entityList;
+    }
+
+    public boolean isStarted() {
+        return player != null && opponent != null;
     }
 }

@@ -1,23 +1,26 @@
 package net.mbonnin.arcanetracker;
 
 import android.content.Context;
-import android.os.Environment;
-import android.util.Log;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 import timber.log.Timber;
 
-public class FileTree extends Timber.Tree {
+public class FileTree extends Timber.DebugTree {
     private static FileTree sTree;
     private File mFile;
     private BufferedWriter mWriter = null;
 
+    SimpleDateFormat mDateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.ENGLISH);
+
     public FileTree(Context context) {
+        super();
         mFile = new File(context.getExternalFilesDir(null), "ArcaneTracker.log");
 
         if (mFile.length() >= 5*1024*1024) {
@@ -43,6 +46,8 @@ public class FileTree extends Timber.Tree {
     }
     @Override
     protected void log(int priority, String tag, String message, Throwable t) {
+        super.log(priority, tag, message, t);
+
         if (mWriter == null) {
             /**
              * maybe we don't have permission yet, try later;
@@ -54,6 +59,7 @@ public class FileTree extends Timber.Tree {
         }
 
         int start = 0;
+        String time = mDateFormat.format(Calendar.getInstance().getTime());
         while (start < message.length()) {
             int end = message.indexOf('\n', start);
 
@@ -69,7 +75,7 @@ public class FileTree extends Timber.Tree {
             }
 
             try {
-                mWriter.write(s);
+                mWriter.write(time + " " + tag + " " + s);
             } catch (IOException e) {
                 e.printStackTrace();
             }

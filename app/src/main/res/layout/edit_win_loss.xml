@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    xmlns:tools="http://schemas.android.com/tools"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fff"
+        android:padding="15dp">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="@string/setWinLoss"
+            android:textColor="#000"
+            android:textSize="18sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <EditText
+            android:id="@+id/win"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:textColor="#000"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:inputType="numberDecimal"
+            app:layout_constraintRight_toLeftOf="@+id/hyphen"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            tools:text="2"/>
+
+        <TextView
+            android:id="@+id/hyphen"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:text="-"
+            android:textColor="#000"
+            app:layout_constraintBottom_toBottomOf="@id/win"
+            app:layout_constraintLeft_toRightOf="@+id/win"
+            app:layout_constraintRight_toLeftOf="@+id/loss"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            />
+
+        <EditText
+            android:id="@+id/loss"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="#000"
+            app:layout_constraintLeft_toRightOf="@+id/hyphen"
+            app:layout_constraintRight_toRightOf="parent"
+            android:inputType="numberDecimal"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            tools:text="0"/>
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView"
+            android:background="@null"
+            android:text="@string/cancel"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/ok"
+            app:layout_constraintTop_toBottomOf="@id/win"/>
+
+        <Button
+            android:id="@+id/ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="@string/ok"
+            android:textColor="#fff"
+            android:layout_marginLeft="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/cancel"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/win"/>
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

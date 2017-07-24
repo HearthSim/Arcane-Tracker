@@ -1,20 +1,33 @@
-apply plugin: 'com.android.application'
+buildscript {
+    ext.kotlin_version = '1.1.0'
+    repositories {
+        maven {url "https://maven.google.com"}
+        jcenter()
+    }
 
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.google.gms:google-services:3.0.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'me.tatarka:gradle-retrolambda:3.6.1'
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'me.tatarka.retrolambda'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion '25.0.0'
+    compileSdkVersion 25
+    buildToolsVersion '25.0.2'
     defaultConfig {
         applicationId "net.mbonnin.arcanetracker"
         minSdkVersion 14
-        targetSdkVersion 24
-        versionCode 201
-        versionName "2.01"
+        targetSdkVersion 25
+        versionCode 213
+        versionName "2.13"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
-        jackOptions {
-            enabled true
-        }
     }
 
     signingConfigs {
@@ -27,6 +40,9 @@ android {
         }
     }
 
+    lintOptions {
+        abortOnError false
+    }
     def props = new Properties()
     def f = project.file("keystore.properties");
     if (f.exists()) {
@@ -61,12 +77,22 @@ android {
 
     lintOptions {
         lintConfig file('lint.xml')
+        checkReleaseBuilds false
+    }
+
+    packagingOptions {
+        exclude 'META-INF/INDEX.LIST'
     }
 }
 
 ext {
-    supportLibVersion = '24.2.0'
-    playServicesVersion = '10.0.0'
+    supportLibVersion = '25.4.0'
+    playServicesVersion = '11.0.1'
+}
+
+repositories {
+    jcenter()
+    maven {url "https://maven.google.com"}
 }
 
 dependencies {
@@ -81,14 +107,15 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$supportLibVersion"
     compile "com.android.support:cardview-v7:$supportLibVersion"
 
-    compile 'com.google.code.gson:gson:2.7'
+    compile "com.android.support.constraint:constraint-layout:1.0.2"
+
+    compile 'com.google.code.gson:gson:2.8.1'
     compile 'io.paperdb:paperdb:1.5'
-    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+    compile 'com.squareup.okhttp3:okhttp:3.7.0'
 
-    compile 'com.jakewharton.timber:timber:4.3.1'
+    compile 'com.jakewharton.timber:timber:4.5.1'
 
-    compile 'io.reactivex:rxjava:1.1.6'
-    compile 'io.reactivex:rxjava-async-util:0.21.0'
+    compile 'io.reactivex:rxjava:1.2.1'
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
@@ -98,14 +125,26 @@ dependencies {
     compile "com.google.firebase:firebase-core:$playServicesVersion"
     compile "com.google.firebase:firebase-crash:$playServicesVersion"
 
-    compile 'com.android.support:multidex:1.0.0'
+    compile 'com.android.support:multidex:1.0.1'
     compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
-
     compile 'com.squareup.picasso:picasso:2.5.2'
 
-    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile "com.google.firebase:firebase-messaging:$playServicesVersion"
+
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:multidex:1.0.1'
+}
+
+if (!file('google-services.json').exists()){
+    println 'copying google-services.json.mock'
+    copy {
+        from("./")
+        into("./")
+        include("google-services.json.mock")
+        rename { String fileName ->
+            fileName.replace('.mock', '')
+        }
+    }
 }
 
 apply plugin: 'com.google.gms.google-services'

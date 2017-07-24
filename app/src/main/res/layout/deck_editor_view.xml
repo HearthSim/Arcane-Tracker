@@ -2,81 +2,105 @@
 <net.mbonnin.arcanetracker.DeckEditorView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff"
+    android:background="#303030"
     android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="#fff"
-        android:orientation="vertical">
+    <RelativeLayout
+        android:id="@+id/filters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="top"
+        android:background="@color/black"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp">
+
+        <FrameLayout
+            android:id="@+id/classImageView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp">
+
+            <View
+                android:id="@+id/classImageViewDisabled"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#80000000"></View>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/neutralImageView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/classImageView">
+
+            <View
+                android:id="@+id/neutralImageViewDisabled"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#80000000"></View>
+
+        </FrameLayout>
+
+        <net.mbonnin.arcanetracker.ManaSelectionView
+            android:id="@+id/manaSelectionView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@id/neutralImageView" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/manaSelectionView"
+            android:background="@drawable/search_backround"
             android:gravity="center"
             android:orientation="horizontal">
 
-            <Spinner
-                android:id="@+id/spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_marginLeft="20dp"
                 android:layout_height="wrap_content"
-                android:text="@string/search"
-                android:textColor="#000" />
+                android:layout_marginLeft="5dp"
+                android:text="@string/search" />
 
             <EditText
                 android:id="@+id/editText"
-                android:layout_width="match_parent"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_marginRight="5dp"
+                android:backgroundTint="#303030"
+                android:ellipsize="end"
                 android:imeOptions="actionDone"
                 android:maxLines="1"
-                android:singleLine="true"
-                android:textColor="#000" />
-
-            <ImageButton
-                android:id="@+id/close"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:backgroundTint="#00ffffff"
-                android:src="@drawable/ic_close_black_24dp" />
+                android:singleLine="true" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/cost"
-                android:textColor="#000" />
-
-            <net.mbonnin.arcanetracker.ManaSelectionView
-                android:id="@+id/manaSelectionView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/cardsRecyclerView"
-
-            android:layout_width="match_parent"
+        <ImageButton
+            android:id="@+id/close"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
-    </LinearLayout>
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:backgroundTint="@null"
+            android:src="@drawable/ic_close_black_24dp"
+            android:visibility="gone"
+            android:tint="#fff" />
+    </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="170dp"
+        android:id="@+id/deck"
+        android:layout_width="100dp"
         android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/filters"
         android:background="#000"
         android:orientation="vertical">
 
@@ -103,5 +127,34 @@
 
 
     </LinearLayout>
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/filters"
+        android:layout_toRightOf="@+id/deck">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/cardsRecyclerView"
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+
+        <View
+            android:layout_width="5dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="left"
+            android:background="@drawable/gradient"></View>
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_below="@+id/filters"
+        android:layout_gravity="top"
+        android:background="@drawable/gradient_vertical"></View>
 
 </net.mbonnin.arcanetracker.DeckEditorView>

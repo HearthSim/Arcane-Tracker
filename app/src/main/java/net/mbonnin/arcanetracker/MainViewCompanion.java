@@ -2,6 +2,7 @@ package net.mbonnin.arcanetracker;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -204,7 +205,11 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
     public void setOpen(boolean open) {
         setX(open ? mWidth:0);
         if (!open) {
-            mHideViewRunnable.run();
+            mParams.w = 1;
+            mViewManager.updateView(mainView, mParams);
+        } else {
+            mParams.w = mWidth;
+            mViewManager.updateView(mainView, mParams);
         }
     }
 
@@ -384,7 +389,32 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
         HandleView handleView = (HandleView) v.findViewById(R.id.settingsHandle);
         Drawable drawable = v.getContext().getResources().getDrawable(R.drawable.settings_handle);
         handleView.init(drawable, v.getContext().getResources().getColor(R.color.gray));
-        handleView.setOnClickListener(v2 -> SettingsCompanion.show());
+        handleView.setOnClickListener(v2 -> {
+            View view = LayoutInflater.from(v.getContext()).inflate(R.layout.more_view, null);
+
+            int wMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+            view.measure(wMeasureSpec, wMeasureSpec);
+
+            int a[] = new int[2];
+            v2.getLocationOnScreen(a);
+
+            ViewManager.Params params = new ViewManager.Params();
+            params.x = a[0] + v2.getWidth() / 2;
+            params.y = a[1] + v2.getHeight() / 2 - view.getMeasuredHeight();
+            params.w = view.getMeasuredWidth();
+            params.h = view.getMeasuredHeight();
+
+            view.findViewById(R.id.settings).setOnClickListener(v3 -> {
+                mViewManager.removeView(view);
+                SettingsCompanion.show();
+            });
+            view.findViewById(R.id.hsReplayHistory).setOnClickListener(v3 -> {
+                mViewManager.removeView(view);
+                HistoryCompanion.show();
+            });
+            view.findViewById(R.id.quit).setOnClickListener(v3 -> Utils.exitApp());
+            mViewManager.addModalView(view, params);
+        });
 
         handleView = (HandleView) v.findViewById(R.id.opponentHandle);
         drawable = v.getContext().getResources().getDrawable(R.drawable.icon_white);
