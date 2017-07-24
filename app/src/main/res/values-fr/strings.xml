@@ -69,9 +69,6 @@
     <string name="unlinkAccount">Déconnecter le compte</string>
     <string name="username">"Identifiant: "</string>
     <string name="welcome">Bienvenue sur Arcane Tracker !</string>
-<<<<<<< HEAD
-</resources>
-=======
     <string name="app_name">Arcane Tracker</string>
     <string name="arenaDeck">Deck d\'arène</string>
     <string name="cannotLinkTrackobot">Impossible de se connecter au compte Track-o-bot</string>
@@ -103,4 +100,3 @@
     <string name="trackobotSignupError">Impossible de créer un compte Track-o-bot</string>
     <string name="win">Victoire</string>
 </resources>
->>>>>>> 213_branch
