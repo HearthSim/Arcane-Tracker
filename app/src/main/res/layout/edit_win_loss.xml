@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
                                     xmlns:app="http://schemas.android.com/apk/res-auto"
-                                    xmlns:tools="http://schemas.android.com/tools"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content">
 
@@ -23,17 +22,13 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-        <EditText
+        <NumberPicker
             android:id="@+id/win"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="end"
-            android:textColor="#000"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:inputType="numberDecimal"
             app:layout_constraintRight_toLeftOf="@+id/hyphen"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
-            tools:text="2"/>
+            app:layout_constraintTop_toBottomOf="@+id/textView"/>
 
         <TextView
             android:id="@+id/hyphen"
@@ -48,16 +43,13 @@
             app:layout_constraintTop_toBottomOf="@+id/textView"
             />
 
-        <EditText
+        <NumberPicker
             android:id="@+id/loss"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="#000"
             app:layout_constraintLeft_toRightOf="@+id/hyphen"
             app:layout_constraintRight_toRightOf="parent"
-            android:inputType="numberDecimal"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
-            tools:text="0"/>
+            app:layout_constraintTop_toBottomOf="@+id/textView"/>
 
         <Button
             android:id="@+id/cancel"
@@ -77,10 +69,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textView"
+            android:layout_marginLeft="20dp"
             android:backgroundTint="@color/colorPrimary"
             android:text="@string/ok"
             android:textColor="#fff"
-            android:layout_marginLeft="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/cancel"
             app:layout_constraintRight_toRightOf="parent"

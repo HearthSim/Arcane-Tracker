@@ -5,8 +5,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import net.mbonnin.arcanetracker.adapter.Controller;
@@ -112,19 +112,23 @@ public class DeckCompanion {
             winLoss.setOnClickListener(v2 -> {
                 View view2 = LayoutInflater.from(v2.getContext()).inflate(R.layout.edit_win_loss, null);
 
-                EditText win = (EditText) view2.findViewById(R.id.win);
-                win.setText(Integer.toString(deck.wins));
-                EditText losses = (EditText) view2.findViewById(R.id.loss);
-                losses.setText(Integer.toString(deck.losses));
+                NumberPicker win = (NumberPicker) view2.findViewById(R.id.win);
+                win.setMinValue(0);
+                win.setMaxValue(999);
+                win.setValue(deck.wins);
+                NumberPicker losses = (NumberPicker) view2.findViewById(R.id.loss);
+                losses.setMinValue(0);
+                losses.setMaxValue(999);
+                losses.setValue(deck.losses);
                 view2.findViewById(R.id.ok).setOnClickListener(v3 -> {
                     mViewManager.removeView(view2);
                     try {
-                        deck.wins = Integer.parseInt(win.getText().toString());
+                        deck.wins = win.getValue();
                     } catch (Exception e) {
                         deck.wins = 0;
                     }
                     try {
-                        deck.losses = Integer.parseInt(losses.getText().toString());
+                        deck.losses = losses.getValue();
                     } catch (Exception e) {
                         deck.losses = 0;
                     }
