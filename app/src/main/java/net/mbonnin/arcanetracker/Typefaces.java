@@ -25,7 +25,7 @@ public class Typefaces {
             return sMap.get(assetName);
         }
         try {
-            typeface = Typeface.createFromAsset(ArcaneTrackerApplication.getContext().getAssets(), "");
+            typeface = Typeface.createFromAsset(ArcaneTrackerApplication.getContext().getAssets(), assetName);
         } catch (Exception e) {
             Timber.e(e);
         }
