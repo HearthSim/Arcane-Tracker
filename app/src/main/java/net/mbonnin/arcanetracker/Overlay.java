@@ -47,6 +47,7 @@ public class Overlay {
             int v = BuildConfig.VERSION_CODE;
 
             LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.changelog);
+            int foundChangelog = 0;
             while (v > version) {
                 int id = context.getResources().getIdentifier("changelog_" + v, "string", context.getPackageName());
                 if (id > 0) {
@@ -58,6 +59,7 @@ public class Overlay {
                     textView.setTypeface(Typeface.DEFAULT_BOLD);
 
                     linearLayout.addView(textView);
+                    foundChangelog++;
 
                     String items[] = c.split("\n");
                     for (String item: items) {
@@ -80,11 +82,13 @@ public class Overlay {
 
                 v--;
             }
-            view.findViewById(R.id.ok).setOnClickListener(unused -> {
-                ViewManager.get().removeView(view);
-                Settings.set(Settings.SHOW_CHANGELOG, checkBox.isChecked());
-            });
-            ViewManager.get().addModalView(view, params);
+            if (foundChangelog > 0) {
+                view.findViewById(R.id.ok).setOnClickListener(unused -> {
+                    ViewManager.get().removeView(view);
+                    Settings.set(Settings.SHOW_CHANGELOG, checkBox.isChecked());
+                });
+                ViewManager.get().addModalView(view, params);
+            }
         }
     }
 
