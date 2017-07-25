@@ -24,10 +24,11 @@ android {
         applicationId "net.mbonnin.arcanetracker"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 213
-        versionName "2.13"
+        versionCode 214
+        versionName "2.14"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
     }
 
     signingConfigs {
@@ -43,6 +44,11 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    dataBinding {
+        enabled = true
+    }
+
     def props = new Properties()
     def f = project.file("keystore.properties");
     if (f.exists()) {

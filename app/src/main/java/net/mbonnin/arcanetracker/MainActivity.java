@@ -85,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
             tryToLaunchGame();
             return;
         }
+
+        InAppBilling.get();
     }
 
     private boolean hasAllPermissions() {

@@ -5,12 +5,14 @@ import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.support.v7.content.res.AppCompatResources;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
+import android.widget.TextView;
 
 import timber.log.Timber;
 
@@ -392,6 +394,9 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
         handleView.setOnClickListener(v2 -> {
             View view = LayoutInflater.from(v.getContext()).inflate(R.layout.more_view, null);
 
+            Drawable d = AppCompatResources.getDrawable(v.getContext(), R.drawable.heart);
+            ((TextView)view.findViewById(R.id.donate)).setCompoundDrawables(null, null, d, null);
+
             int wMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
             view.measure(wMeasureSpec, wMeasureSpec);
 
@@ -411,6 +416,14 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
             view.findViewById(R.id.hsReplayHistory).setOnClickListener(v3 -> {
                 mViewManager.removeView(view);
                 HistoryCompanion.show();
+            });
+            view.findViewById(R.id.donate).setOnClickListener(v3 -> {
+                mViewManager.removeView(view);
+                Intent intent = new Intent();
+                intent.setClass(ArcaneTrackerApplication.getContext(), DonateActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                ArcaneTrackerApplication.getContext().startActivity(intent);
             });
             view.findViewById(R.id.quit).setOnClickListener(v3 -> Utils.exitApp());
             mViewManager.addModalView(view, params);
