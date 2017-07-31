@@ -45,7 +45,7 @@ public class DonateActivity extends AppCompatActivity {
         Timber.d("error is " + result.getResponse());
 
         if (result.getResponse() == IabHelper.IABHELPER_USER_CANCELLED) {
-            // the user just pressed outside the poput, fail silently
+            // the user just pressed outside the popup, fail silently
             return;
         }
         displayDialog(result.isSuccess() ? R.string.thank_you : R.string.purchase_failed);
@@ -91,14 +91,20 @@ public class DonateActivity extends AppCompatActivity {
             if (purchase != null) {
                 buttonList.get(i).setText(getString(purchasedIdList.get(i)));
 
-                buttonList.get(i).setOnClickListener(v -> {
-                    Timber.d("consume");
-                    try {
-                        InAppBilling.get().consume(purchase, mConsumeFinishListener);
-                    } catch (IabHelper.IabAsyncInProgressException e) {
-                        e.printStackTrace();
-                    }
-                });
+                if (true) {
+                    // do not allow users to consume purchases. They might give some priviledges
+                    // at some point
+                    buttonList.get(i).setOnClickListener(null);
+                } else {
+                    buttonList.get(i).setOnClickListener(v -> {
+                        Timber.d("consume");
+                        try {
+                            InAppBilling.get().consume(purchase, mConsumeFinishListener);
+                        } catch (IabHelper.IabAsyncInProgressException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
 
             } else {
                 Spannable buttonLabel = new SpannableString("  " + text);
