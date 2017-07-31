@@ -123,9 +123,6 @@
     <string name="keyword">keyword</string>
     <string name="please_enter_a_name">Please enter a name</string>
     <string name="could_not_find_replay">Could not find replay :-(</string>
-    <string name="patch_7_1">Hearthstone has been patched :-(</string>
-    <string name="patch_7_1_explanation">Since latest patch (7.1), it looks like hearthstone does not output logs anymore, making tracking impossible :-(. We\'re looking into this and hopefully we can find a solution soon. Please reach out if you know any solution or workaround.</string>
-    <string name="patch_7_1_confirm">Whatever, let me try</string>
     <string name="overlay_explanation">You need to enable the overlay permissions for Arcane tracker to be displayed. The can be done in your phone settings.</string>
     <string name="importDeck">Import deck</string>
     <string name="setWinLoss">Won - Lost</string>
