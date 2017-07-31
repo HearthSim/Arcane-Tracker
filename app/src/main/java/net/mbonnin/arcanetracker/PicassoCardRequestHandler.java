@@ -21,7 +21,7 @@ import okio.Sink;
 import timber.log.Timber;
 
 public class PicassoCardRequestHandler extends RequestHandler {
-    private static final int VERSION = 1;
+    private static final int VERSION = 2; // bump here to force flushing the cache
     private static final int ENTRY_COUNT = 1;
     private static PicassoCardRequestHandler sHandler;
     DiskLruCache cache;
@@ -29,14 +29,6 @@ public class PicassoCardRequestHandler extends RequestHandler {
     private PicassoCardRequestHandler() {
         File file = new File(ArcaneTrackerApplication.getContext().getCacheDir(), "cardsCache");
         cache = DiskLruCache.create(FileSystem.SYSTEM, file, VERSION, ENTRY_COUNT, 250 * 1024*1024);
-
-        if (Settings.get(Settings.PICASSO_CARD_REQUEST_HANDLER_VERSION, VERSION) != VERSION) {
-            try {
-                cache.evictAll();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @Override

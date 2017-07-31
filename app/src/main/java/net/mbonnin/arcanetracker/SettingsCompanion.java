@@ -550,9 +550,9 @@ public class SettingsCompanion {
         new SettingsCompanion(view2);
 
         ViewManager.Params params = new ViewManager.Params();
-        params.x = viewManager.getWidth() / 4;
+        params.x = (int) (viewManager.getWidth() * 0.15);
         params.y = viewManager.getHeight() / 16;
-        params.w = viewManager.getWidth() / 2;
+        params.w = (int) (viewManager.getWidth() * 0.70);
         params.h = 7 * viewManager.getHeight() / 8;
 
         viewManager.addModalAndFocusableView(view2, params);
