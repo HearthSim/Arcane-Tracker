@@ -23,7 +23,6 @@ import com.example.android.trivialdrivesample.util.Purchase;
 import net.mbonnin.arcanetracker.databinding.DonateBinding;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import timber.log.Timber;
@@ -33,29 +32,94 @@ import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
 import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
 import static android.view.View.VISIBLE;
-import static net.mbonnin.arcanetracker.ArcaneTrackerApplication.getContext;
 
 public class DonateActivity extends AppCompatActivity {
     private static final int ACTIVITY_RESULT_IAB_FINISHED = 42;
-    private HashMap<String, Purchase> mPurchases = new HashMap<>();
 
     private IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = (result, info) -> {
-        if (result.isSuccess()){
-            mPurchases.put(info.getSku(), info);
+        if (result.isSuccess()) {
+            InAppBilling.get().getPurchaseMap().put(info.getSku(), info);
+            updateButtons();
+        }
+
+        Timber.d("error is " + result.getResponse());
+
+        if (result.getResponse() == IabHelper.IABHELPER_USER_CANCELLED) {
+            // the user just pressed outside the poput, fail silently
+            return;
         }
         displayDialog(result.isSuccess() ? R.string.thank_you : R.string.purchase_failed);
     };
+    private IabHelper.OnConsumeFinishedListener mConsumeFinishListener = (purchase, result) -> {
+        if (result.isSuccess()) {
+            InAppBilling.get().getPurchaseMap().remove(purchase.getSku());
+            updateButtons();
+        }
+    };
+    private Inventory mInventory;
 
     private void displayDialog(int resId) {
         try {
             new AlertDialog.Builder(DonateActivity.this)
                     .setTitle(getString(resId))
                     .setPositiveButton(R.string.ok, (dialog, which) -> {
-                        finish();
+                        dialog.dismiss();
                     })
                     .show();
         } catch (Exception e) {
             Timber.e(e);
+        }
+    }
+
+    private void updateButtons() {
+        List<Button> buttonList = Arrays.asList(binding.holyLight, binding.blessingOfKings, binding.dinosize);
+        List<String> skuList = Arrays.asList(InAppBilling.SKU_HOLY_LIGHT, InAppBilling.SKU_BLESSING_OF_KINGS, InAppBilling.SKU_DINOSIZE);
+        List<Integer> textIdList = Arrays.asList(R.string.holy_light, R.string.blessing_of_kings, R.string.dinosize);
+        List<Integer> purchasedIdList = Arrays.asList(R.string.holy_light_purchased, R.string.blessing_of_kings_purchased, R.string.dinosize_purchased);
+        List<Integer> compoundIdList = Arrays.asList(R.drawable.sun, R.drawable.king, R.drawable.dino);
+
+
+        for (int i = 0; i < skuList.size(); i++) {
+            String text = getString(textIdList.get(i), mInventory.getSkuDetails(skuList.get(i)).getPrice());
+            text = text.toUpperCase();
+
+            String sku = skuList.get(i);
+
+            buttonList.get(i).setTypeface(Typeface.DEFAULT_BOLD);
+
+            Purchase purchase = InAppBilling.get().getPurchaseMap().get(sku);
+            if (purchase != null) {
+                buttonList.get(i).setText(getString(purchasedIdList.get(i)));
+
+                buttonList.get(i).setOnClickListener(v -> {
+                    Timber.d("consume");
+                    try {
+                        InAppBilling.get().consume(purchase, mConsumeFinishListener);
+                    } catch (IabHelper.IabAsyncInProgressException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+            } else {
+                Spannable buttonLabel = new SpannableString("  " + text);
+                Drawable d = getResources().getDrawable(compoundIdList.get(i));
+                int size = (int) (buttonList.get(i).getTextSize() * 1.4f);
+                d.setBounds(0, 0, size, size);
+
+                buttonList.get(i).setTransformationMethod(null);
+                buttonLabel.setSpan(new ImageSpan(d, ImageSpan.ALIGN_BOTTOM), 0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+                buttonList.get(i).setText(buttonLabel);
+
+                buttonList.get(i).setOnClickListener(v -> {
+                    Timber.d("launchPurchaseFlow");
+                    try {
+                        InAppBilling.get().launchPurchaseFlow(this, sku, ACTIVITY_RESULT_IAB_FINISHED, mPurchaseFinishedListener);
+                    } catch (Exception e) {
+                        Timber.e(e);
+                        displayDialog(R.string.purchase_failed);
+                    }
+                });
+            }
         }
     }
 
@@ -96,67 +160,12 @@ public class DonateActivity extends AppCompatActivity {
     }
 
     private void onInventory(Inventory inventory) {
+        mInventory = inventory;
         binding.buttonsContainer.setVisibility(View.VISIBLE);
         binding.buttonsContainer.setEnabled(false);
         binding.progressBar.setVisibility(GONE);
 
-        List<Button> button = Arrays.asList(binding.holyLight, binding.blessingOfKings, binding.dinosize);
-        List<String> sku = Arrays.asList(InAppBilling.SKU_HOLY_LIGHT, InAppBilling.SKU_BLESSING_OF_KINGS, InAppBilling.SKU_DINOSIZE);
-        List<Integer> textId = Arrays.asList(R.string.holy_light, R.string.blessing_of_kings, R.string.dinosize);
-        List<Integer> compoundId = Arrays.asList(R.drawable.sun, R.drawable.king, R.drawable.dino);
-
-        for (Purchase purchase: inventory.getAllPurchases()) {
-            mPurchases.put(purchase.getSku(), purchase);
-        }
-
-        for (int i = 0; i < sku.size(); i++) {
-            String text = getContext().getString(textId.get(i), inventory.getSkuDetails(sku.get(i)).getPrice());
-            text = text.toUpperCase();
-
-            Spannable buttonLabel = new SpannableString("  " + text);
-            Drawable d = getResources().getDrawable(compoundId.get(i));
-            int size = (int) (button.get(i).getTextSize() * 1.4f);
-            d.setBounds(0, 0, size, size);
-
-            button.get(i).setTransformationMethod(null);
-            buttonLabel.setSpan(new ImageSpan(d, ImageSpan.ALIGN_BOTTOM), 0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-            button.get(i).setText(buttonLabel);
-            button.get(i).setTypeface(Typeface.DEFAULT_BOLD);
-
-            String finalSku = sku.get(i);
-            button.get(i).setOnClickListener(v -> {
-                ViewManager.get().removeView(binding.getRoot());
-
-                if (mPurchases.get(finalSku) != null) {
-                    try {
-                        InAppBilling.get().getHelper().consumeAsync(inventory.getPurchase(finalSku), (purchase, result) -> {
-                            if (result.isSuccess()) {
-                                mPurchases.remove(finalSku);
-                                launchPurchase(finalSku);
-                            } else {
-                                displayDialog(R.string.purchase_failed);
-                            }
-                        });
-                    } catch (IabHelper.IabAsyncInProgressException e) {
-                        e.printStackTrace();
-                        displayDialog(R.string.purchase_failed);
-                    }
-                } else {
-                    launchPurchase(finalSku);
-                }
-            });
-        }
-    }
-
-    private void launchPurchase(String finalSku) {
-        Timber.d("launchPurchaseFlow");
-        try {
-            InAppBilling.get().getHelper().launchPurchaseFlow(this, finalSku, ACTIVITY_RESULT_IAB_FINISHED, mPurchaseFinishedListener);
-        } catch (Exception e) {
-            Timber.e(e);
-            displayDialog(R.string.purchase_failed);
-        }
-
+        updateButtons();
     }
 
     @Override
@@ -182,7 +191,7 @@ public class DonateActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ACTIVITY_RESULT_IAB_FINISHED) {
-            InAppBilling.get().getHelper().handleActivityResult(requestCode, resultCode, data);
+            InAppBilling.get().handleActivityResult(requestCode, resultCode, data);
         }
     }
 }

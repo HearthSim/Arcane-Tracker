@@ -136,7 +136,7 @@
     <string name="changelog_213">Support for deckstrings{-}You can now paste decks copied from the game. Just click \"new deck\" after copying your deck.\nMark HSReplay.net uploads as Arena when needed\nYou can now edit the win/loss counter</string>
     <string name="cVersion">Version %s</string>
     <string name="helpUs">Help Arcane Tracker</string>
-    <string name="donateExplanation">Arcane Tracker is free and without ads. It’s made by only one person (me) in his spare time (evenings and nights). If you like the app, please consider donating through the buttons below, it’ll allow me to spend more time coding new features :-).</string>
+    <string name="donateExplanation">Arcane Tracker is free and without ads. It’s made by only one person (me) in his spare time (nights). If you like the app, please consider donating through the buttons below, it’ll allow me to spend more time coding new features :-).</string>
     <string name="donateExplanation2">May the light be with you !</string>
     <string name="holy_light">Holy Light - %s</string>
     <string name="blessing_of_kings">Blessing of Kings - %s</string>
@@ -145,4 +145,7 @@
     <string name="iabError">Could not retrieve details :-(. Please come back later.</string>
     <string name="thank_you">Thank You !!!!</string>
     <string name="purchase_failed">Something went wrong :-(</string>
+    <string name="holy_light_purchased">Thank you for the holy light !! 🙏</string>
+    <string name="blessing_of_kings_purchased">You\'ve blessed Arcane Tracker !! Thanks ! 👑</string>
+    <string name="dinosize_purchased">Dinosize in progress... 🥚</string>
 </resources>
