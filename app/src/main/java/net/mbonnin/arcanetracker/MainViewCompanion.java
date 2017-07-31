@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
@@ -395,7 +396,10 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
             View view = LayoutInflater.from(v.getContext()).inflate(R.layout.more_view, null);
 
             Drawable d = AppCompatResources.getDrawable(v.getContext(), R.drawable.heart);
+            d.setBounds(0, 0, Utils.dpToPx(26), Utils.dpToPx(24));
             ((TextView)view.findViewById(R.id.donate)).setCompoundDrawables(null, null, d, null);
+            ((TextView)view.findViewById(R.id.donate)).setCompoundDrawablePadding(Utils.dpToPx(13));
+            view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
             int wMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
             view.measure(wMeasureSpec, wMeasureSpec);
