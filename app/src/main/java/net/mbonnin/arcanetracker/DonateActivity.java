@@ -86,6 +86,7 @@ public class DonateActivity extends AppCompatActivity {
             String sku = skuList.get(i);
 
             buttonList.get(i).setTypeface(Typeface.DEFAULT_BOLD);
+            buttonList.get(i).setTransformationMethod(null);
 
             Purchase purchase = InAppBilling.get().getPurchaseMap().get(sku);
             if (purchase != null) {
@@ -112,7 +113,6 @@ public class DonateActivity extends AppCompatActivity {
                 int size = (int) (buttonList.get(i).getTextSize() * 1.4f);
                 d.setBounds(0, 0, size, size);
 
-                buttonList.get(i).setTransformationMethod(null);
                 buttonLabel.setSpan(new ImageSpan(d, ImageSpan.ALIGN_BOTTOM), 0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
                 buttonList.get(i).setText(buttonLabel);
 

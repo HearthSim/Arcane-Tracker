@@ -1,12 +1,14 @@
 package net.mbonnin.arcanetracker.hsreplay;
 
 import android.os.Build;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
 import net.mbonnin.arcanetracker.BuildConfig;
 import net.mbonnin.arcanetracker.MainViewCompanion;
+import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Settings;
 import net.mbonnin.arcanetracker.Utils;
 import net.mbonnin.arcanetracker.hsreplay.model.Token;
@@ -93,7 +95,9 @@ public class HSReplay {
         return mGameList;
     }
 
-    public void uploadGameDebug(String matchStart, String friendlyPlayerId, GameSummary summary, String gameStr) {
+    public void doUploadGame(String matchStart, String friendlyPlayerId, GameSummary summary, String gameStr) {
+        Timber.w("doUploadGame");
+
         UploadRequest uploadRequest = new UploadRequest();
         uploadRequest.match_start = matchStart;
         uploadRequest.build = 20022;
@@ -108,18 +112,22 @@ public class HSReplay {
                     Timber.w("put_url is " + upload.put_url);
 
                     if (upload.put_url == null) {
-                        return null;
+                        return Observable.error(new Exception("no put_url"));
                     }
 
-                    if (summary != null) {
-                        summary.hsreplayUrl = upload.url;
-                        Paper.book().write(KEY_GAME_LIST, mGameList);
-                    }
+                    summary.hsreplayUrl = upload.url;
+                    Paper.book().write(KEY_GAME_LIST, mGameList);
+
                     return putToS3(upload.put_url, gameStr).subscribeOn(Schedulers.io());
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(mUploadObserver);
+                .subscribe(unused -> {
+                    Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.hsreplaySuccess), Toast.LENGTH_LONG).show();
+                }, error -> {
+                    Timber.e(error);
+                    Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.hsreplayError), Toast.LENGTH_LONG).show();
+                });
     }
 
     public void uploadGame(String matchStart, Game game, String gameStr) {
@@ -145,7 +153,7 @@ public class HSReplay {
         }
 
         if (Settings.get(Settings.HSREPLAY, Settings.DEFAULT_HSREPLAY)) {
-            uploadGameDebug(matchStart, game.player.entity.PlayerID, summary, gameStr);
+            doUploadGame(matchStart, game.player.entity.PlayerID, summary, gameStr);
         }
     }
 
@@ -218,7 +226,7 @@ public class HSReplay {
             }
         }
 
-        //uploadGameDebug(Utils.ISO8601DATEFORMAT.format(new Date()), "1", null, "toto");
+        //doUploadGame(Utils.ISO8601DATEFORMAT.format(new Date()), "1", null, "toto");
     }
 
     private void generateToken() {

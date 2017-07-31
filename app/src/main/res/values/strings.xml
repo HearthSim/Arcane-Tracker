@@ -148,4 +148,6 @@
     <string name="holy_light_purchased">Thank you for the holy light !! 🙏</string>
     <string name="blessing_of_kings_purchased">You\'ve blessed Arcane Tracker !! Thanks ! 👑</string>
     <string name="dinosize_purchased">Dinosize in progress... 🥚</string>
+    <string name="hsreplayError">Could not upload to HSReplay.net :-(</string>
+    <string name="hsreplaySuccess">Game uploaded to HSReplay.net</string>
 </resources>
