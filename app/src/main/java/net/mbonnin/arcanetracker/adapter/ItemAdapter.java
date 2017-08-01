@@ -70,8 +70,6 @@ public class ItemAdapter extends RecyclerView.Adapter {
         }
 
         ViewGroup barTemplate = (ViewGroup) LayoutInflater.from(context).inflate(R.layout.bar_template, null);
-        RecyclerView.LayoutParams params2 = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(30));
-        barTemplate.setLayoutParams(params2);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         barTemplate.addView(view, 0, params);
@@ -105,6 +103,8 @@ public class ItemAdapter extends RecyclerView.Adapter {
                 });
             }
         }
+        RecyclerView.LayoutParams params2 = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(22));
+        holder.itemView.setLayoutParams(params2);
     }
 
     @Override

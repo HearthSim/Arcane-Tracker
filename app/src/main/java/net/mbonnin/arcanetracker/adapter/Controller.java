@@ -56,21 +56,31 @@ public class Controller implements GameLogic.Listener {
     }
 
     private ArrayList getDeck() {
-        EntityList deckEntities = getEntityList(Entity.ZONE_DECK);
+        EntityList entityList = mGame.getEntityList(entity -> mPlayerId.equals(entity.extra.originalController));
 
         if (mDeck != null && !mOpponent) {
             assignCardsFromDeck();
         }
 
-        ArrayList<Object> list = new ArrayList<>();
-        list.add(new HeaderItem(Utils.getString(R.string.deck)));
+        /*
+         * Add all the gifts
+         */
+        entityList.addAll(mGame.getEntityList(entity -> {
+            return Entity.ZONE_DECK.equals(entity.tags.get(Entity.KEY_ZONE))
+                    && !mPlayerId.equals(entity.extra.originalController)
+                    && mPlayerId.equals(entity.tags.get(Entity.KEY_CONTROLLER));
+        }));
 
-        list.addAll(entityListToItemList(deckEntities));
-
-        return list;
+        return entityListToItemList(entityList, entity -> {
+            if (mOpponent) {
+                return true;
+            } else {
+                return Entity.ZONE_DECK.equals(entity.tags.get(Entity.KEY_ZONE));
+            }
+        });
     }
 
-    private ArrayList entityListToItemList(EntityList entityList) {
+    private ArrayList entityListToItemList(EntityList entityList, Function<Entity, Boolean> increasesCount) {
         /*
          * remove and count the really unknown cards
          */
@@ -138,7 +148,9 @@ public class Controller implements GameLogic.Listener {
                         }
                     }
                     deckEntry.entityList.add(entity);
-                    deckEntry.count++;
+                    if (increasesCount.apply(entity)) {
+                        deckEntry.count++;
+                    }
                     deckEntry.card = entity.extra.tmpCard;
                     deckEntry.gift = entity.extra.tmpIsGift;
                 };
@@ -281,9 +293,10 @@ public class Controller implements GameLogic.Listener {
             });
             if (mOpponent) {
                 list.addAll(getHand());
+                list.add(new HeaderItem(Utils.getString(R.string.deck)));
             }
             list.addAll(getDeck());
-            list.addAll(getGraveyard());
+            //list.addAll(getGraveyard());
         } else {
             if (mDeck != null) {
                 list.addAll(getNoGame());
@@ -299,19 +312,25 @@ public class Controller implements GameLogic.Listener {
         ArrayList<Object> list = new ArrayList<>();
         list.add(new HeaderItem(Utils.getString(R.string.graveyard)));
 
-        list.addAll(entityListToItemList(entityList));
+        list.addAll(entityListToItemList(entityList, entity -> true));
 
         return list;
     }
 
     private List<Object> getNoGame() {
         List<Object> list = new ArrayList<>();
+        list.add(new HeaderItem(Utils.getString(R.string.deck)));
+        int unknown = Deck.MAX_CARDS;
+
         for (Map.Entry<String, Integer> entry : mDeck.cards.entrySet()) {
             DeckEntryItem deckEntry = new DeckEntryItem();
             deckEntry.card = CardDb.getCard(entry.getKey());
             deckEntry.count = entry.getValue();
             list.add(deckEntry);
+            unknown -= deckEntry.count;
         }
+
+        list.add(ArcaneTrackerApplication.getContext().getString(R.string.unknown_cards, unknown));
         return list;
     }
 
