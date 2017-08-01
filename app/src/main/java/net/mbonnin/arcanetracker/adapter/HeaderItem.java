@@ -1,7 +1,5 @@
 package net.mbonnin.arcanetracker.adapter;
 
-import java.util.ArrayList;
-
 /**
  * Created by martin on 11/8/16.
  */
@@ -11,4 +9,8 @@ public class HeaderItem {
     String title;
 
     Runnable onClicked;
+
+    public HeaderItem(String title) {
+        this.title = title;
+    }
 }

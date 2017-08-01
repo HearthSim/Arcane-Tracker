@@ -174,6 +174,10 @@ public class Utils {
         return i == null ? 0 : i;
     }
 
+    public static String getString(int resId) {
+        return ArcaneTrackerApplication.getContext().getString(resId);
+    }
+
     public static class DummyObserver<T> extends rx.Subscriber<T> {
         @Override
         public void onCompleted() {

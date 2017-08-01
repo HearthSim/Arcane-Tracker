@@ -61,7 +61,9 @@ public class Entity {
         /**
          * used from Controller.java to affect a temporary id to cards we don't know yet
          */
-        public String tmpCardId;
+        public Card tmpCard;
+        public boolean tmpIsGift;
+
         public String originalController;
         public int drawTurn = -1;
         public int playTurn = -1;

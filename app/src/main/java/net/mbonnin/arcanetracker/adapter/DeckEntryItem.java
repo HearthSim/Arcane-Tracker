@@ -19,6 +19,7 @@ public class DeckEntryItem {
         }
         return ret;
     };
+
     public Card card;
     public int count;
     public boolean gift;

@@ -33,7 +33,7 @@ public class EditableItemAdapter extends ItemAdapter {
     }
 
     private void update() {
-        ArrayList<DeckEntryItem> list = new ArrayList<>();
+        ArrayList<Object> list = new ArrayList<>();
         for (Map.Entry<String, Integer> entry: mDeck.cards.entrySet()) {
             DeckEntryItem item = new DeckEntryItem();
             item.card = CardDb.getCard(entry.getKey());
@@ -41,7 +41,7 @@ public class EditableItemAdapter extends ItemAdapter {
             list.add(item);
         }
 
-        Collections.sort(list, (a,b) -> a.card.cost - b.card.cost);
+        Collections.sort(list, (a,b) -> ((DeckEntryItem)a).card.cost - ((DeckEntryItem)b).card.cost);
 
         setList(list);
     }

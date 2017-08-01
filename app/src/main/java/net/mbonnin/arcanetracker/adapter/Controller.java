@@ -3,11 +3,18 @@ package net.mbonnin.arcanetracker.adapter;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.annimon.stream.Collector;
+import com.annimon.stream.Stream;
+import com.annimon.stream.function.BiConsumer;
+import com.annimon.stream.function.Function;
+import com.annimon.stream.function.Supplier;
+
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
 import net.mbonnin.arcanetracker.Card;
 import net.mbonnin.arcanetracker.CardDb;
 import net.mbonnin.arcanetracker.Deck;
 import net.mbonnin.arcanetracker.R;
+import net.mbonnin.arcanetracker.Utils;
 import net.mbonnin.arcanetracker.parser.Entity;
 import net.mbonnin.arcanetracker.parser.EntityList;
 import net.mbonnin.arcanetracker.parser.Game;
@@ -15,10 +22,10 @@ import net.mbonnin.arcanetracker.parser.GameLogic;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-
-import timber.log.Timber;
 
 /**
  * Created by martin on 11/21/16.
@@ -31,6 +38,7 @@ public class Controller implements GameLogic.Listener {
     private final ItemAdapter mAdapter;
     protected Deck mDeck;
     private Game mGame;
+    private String mPlayerId;
 
     public Controller(boolean opponent) {
         mOpponent = opponent;
@@ -48,175 +56,190 @@ public class Controller implements GameLogic.Listener {
     }
 
     private ArrayList getDeck() {
-        EntityList originalDeckEntityList;
-        if (mGame == null) {
-            /*
-             * we don't have a game yet so we just create fake entities
-             */
-            originalDeckEntityList = new EntityList();
+        EntityList deckEntities = getEntityList(Entity.ZONE_DECK);
 
-            for (int i = 0; i < Deck.MAX_CARDS; i++) {
-                Entity entity = new Entity();
-                entity.EntityID = Integer.toString(i);
-                entity.tags.put(Entity.KEY_ZONE, Entity.ZONE_DECK);
-                originalDeckEntityList.add(entity);
-            }
-        } else {
-            String playerId = mOpponent ? mGame.opponent.entity.PlayerID:mGame.player.entity.PlayerID;
-            originalDeckEntityList = mGame.getEntityList(entity -> playerId.equals(entity.extra.originalController));
+        if (mDeck != null && !mOpponent) {
+            assignCardsFromDeck();
         }
 
+        ArrayList<Object> list = new ArrayList<>();
+        list.add(new HeaderItem(Utils.getString(R.string.deck)));
+
+        list.addAll(entityListToItemList(deckEntities));
+
+        return list;
+    }
+
+    private ArrayList entityListToItemList(EntityList entityList) {
         /*
-         * give a card Id to the unknown cards in the deck
+         * remove and count the really unknown cards
          */
-        if (mDeck != null) {
-            ArrayList<String> cardIdsFromDeck = new ArrayList<>();
-            for (Map.Entry<String, Integer> entry: mDeck.cards.entrySet()) {
-                for (int i = 0; i < entry.getValue(); i++) {
-                    cardIdsFromDeck.add(entry.getKey());
-                }
-            }
-
-            /*
-             * 1st pass: remove the known card ids
-             */
-            for (Entity entity: originalDeckEntityList) {
-                if (!TextUtils.isEmpty(entity.CardID)) {
-                    Iterator<String> it = cardIdsFromDeck.iterator();
-                    while(it.hasNext()) {
-                        String next = it.next();
-                        if (next.equals(entity.CardID)) {
-                            it.remove();
-                            break;
-                        }
-                    }
-                }
-            }
-
-            /*
-             * 2nd pass: assign a cardId to the cards we still don't know
-             */
-            int i = 0;
-            for (Entity entity: originalDeckEntityList) {
-                if (TextUtils.isEmpty(entity.CardID)) {
-                    if (i < cardIdsFromDeck.size()) {
-                        entity.extra.tmpCardId = cardIdsFromDeck.get(i);
-                        i++;
-                    }
-                } else {
-                    entity.extra.tmpCardId = entity.CardID;
-                }
-            }
-        }
-
-        /*
-         * remove the unknown cards and count them
-         */
-        Iterator<Entity> it = originalDeckEntityList.iterator();
         int unknownCards = 0;
+        Iterator<Entity> it = entityList.iterator();
         while (it.hasNext()) {
             Entity entity = it.next();
-            if (TextUtils.isEmpty(entity.extra.tmpCardId)) {
-                unknownCards++;
+            if (!entity.extra.tmpIsGift
+                    && entity.extra.tmpCard == Card.UNKNOWN) {
                 it.remove();
+                unknownCards++;
             }
-        }
-        Collections.sort(originalDeckEntityList, (a,b) -> a.extra.tmpCardId.compareTo(b.extra.tmpCardId));
-
-        /*
-         * merge all the items with the same tmpCardId
-         */
-        DeckEntryItem deckEntry = null;
-        ArrayList<DeckEntryItem> deckEntryItemList = new ArrayList<>();
-        for (Entity entity: originalDeckEntityList) {
-            if (deckEntry == null || entity.extra.tmpCardId.compareTo(deckEntry.card.id) != 0) {
-                if (deckEntry != null) {
-                    deckEntryItemList.add(deckEntry);
-                }
-                deckEntry = new DeckEntryItem();
-                deckEntry.card = CardDb.getCard(entity.extra.tmpCardId);
-            }
-            if (!mOpponent) {
-                if (Entity.ZONE_DECK.equals(entity.tags.get(Entity.KEY_ZONE))) {
-                    deckEntry.count += 1;
-                }
-            } else {
-                deckEntry.count += 1;
-            }
-            deckEntry.entityList.add(entity);
-        }
-        if (deckEntry != null) {
-            deckEntryItemList.add(deckEntry);
         }
 
         /*
-         * Add all the gifts on their separate line
+         * Sort and merge
          */
-        if (mGame != null) {
-            String playerId = mOpponent ? mGame.opponent.entity.PlayerID:mGame.player.entity.PlayerID;
-
-            EntityList createdCards = mGame.getEntityList(entity -> {
-                return Entity.ZONE_DECK.equals(entity.tags.get(Entity.KEY_ZONE))
-                        && !playerId.equals(entity.extra.originalController)
-                        && playerId.equals(entity.tags.get(Entity.KEY_CONTROLLER))
-                        && !TextUtils.isEmpty(entity.CardID);
-            });
-            for (Entity entity : createdCards) {
-                deckEntry = new DeckEntryItem();
-                deckEntry.card = entity.card;
-                deckEntry.count = 1;
-                deckEntry.gift = true;
-                deckEntry.entityList.add(entity);
-                deckEntryItemList.add(deckEntry);
+        Comparator<Entity> comparator = (a, b) -> {
+            int acost = a.card.cost == null ? 0 : a.card.cost;
+            int bcost = b.card.cost == null ? 0 : b.card.cost;
+            if (acost < 0) {
+                acost = Integer.MAX_VALUE;
             }
-        }
-
-        for (DeckEntryItem deckEntryItem: deckEntryItemList) {
-            if (deckEntryItem.card == null) {
-                Timber.e("no card for %s", deckEntryItem.toString());
-                deckEntryItem.card = Card.unknown();
+            if (bcost < 0) {
+                bcost = Integer.MAX_VALUE;
             }
-        }
-        Collections.sort(deckEntryItemList, DeckEntryItem.COMPARATOR);
-        for (DeckEntryItem deckEntryItem: deckEntryItemList) {
-            Collections.sort(deckEntryItem.entityList, (a,b) -> a.extra.drawTurn - b.extra.drawTurn);
+
+            int ret = acost - bcost;
+
+            if (ret != 0) {
+                return ret;
+            }
+
+            ret = a.card.name.compareTo(b.card.name);
+            if (ret != 0) {
+                return ret;
+            }
+
+            int aGift = a.extra.tmpIsGift ? 1 : 0;
+            int bGift = b.extra.tmpIsGift ? 1 : 0;
+
+            return bGift - aGift;
+        };
+        Collections.sort(entityList, comparator);
+
+        Collector<Entity, ArrayList<DeckEntryItem>, ArrayList<DeckEntryItem>> collector = new Collector<Entity, ArrayList<DeckEntryItem>, ArrayList<DeckEntryItem>>() {
+
+            @Override
+            public Supplier<ArrayList<DeckEntryItem>> supplier() {
+                return ArrayList::new;
+            }
+
+            @Override
+            public BiConsumer<ArrayList<DeckEntryItem>, Entity> accumulator() {
+                return (list, entity) -> {
+                    DeckEntryItem deckEntry;
+                    if (list.size() == 0 || entity.extra.tmpIsGift) {
+                        deckEntry = new DeckEntryItem();
+                        list.add(deckEntry);
+                    } else {
+                        deckEntry = list.get(list.size() - 1);
+                        if (entity.extra.tmpCard != deckEntry.card) {
+                            deckEntry = new DeckEntryItem();
+                            list.add(deckEntry);
+                        }
+                    }
+                    deckEntry.entityList.add(entity);
+                    deckEntry.count++;
+                    deckEntry.card = entity.extra.tmpCard;
+                    deckEntry.gift = entity.extra.tmpIsGift;
+                };
+            }
+
+            @Override
+            public Function<ArrayList<DeckEntryItem>, ArrayList<DeckEntryItem>> finisher() {
+                return list -> list;
+            }
+        };
+
+        ArrayList<DeckEntryItem> deckEntryItemList = Stream.of(entityList).collect(collector);
+
+        /*
+         * sort the entity list
+         */
+        for (DeckEntryItem deckEntryItem : deckEntryItemList) {
+            Collections.sort(deckEntryItem.entityList, (a, b) -> a.extra.drawTurn - b.extra.drawTurn);
         }
 
+        ArrayList<Object> itemList = new ArrayList<>();
+        itemList.addAll(deckEntryItemList);
         if (unknownCards > 0) {
-            /*
-             * I'm not really sure how come this cast is working....
-             */
-            ((ArrayList) deckEntryItemList).add(ArcaneTrackerApplication.getContext().getString(R.string.unknown_cards, unknownCards));
+            itemList.add(ArcaneTrackerApplication.getContext().getString(R.string.unknown_cards, unknownCards));
         }
 
-        return deckEntryItemList;
+        return itemList;
+    }
+
+    /*
+     * this attempts to map the knowledge that we have of mDeck to the unknown entities
+     * this assumes that an original card is either known or still in deck
+     * this sets tmpCard
+     *
+     * what needs to be handled is hemet, maybe others ?
+     */
+    private void assignCardsFromDeck() {
+        EntityList originalDeckEntityList = mGame.getEntityList(entity -> mPlayerId.equals(entity.extra.originalController));
+        ArrayList<String> cardIdsFromDeck = new ArrayList<>();
+
+        /*
+         * build a list of all the ids in mDeck
+         */
+        for (Map.Entry<String, Integer> entry : mDeck.cards.entrySet()) {
+            for (int i = 0; i < entry.getValue(); i++) {
+                cardIdsFromDeck.add(entry.getKey());
+            }
+        }
+
+        /*
+         * remove the ones that have been revealed already
+         */
+        for (Entity entity : originalDeckEntityList) {
+            if (!TextUtils.isEmpty(entity.CardID)) {
+                Iterator<String> it = cardIdsFromDeck.iterator();
+                while (it.hasNext()) {
+                    String next = it.next();
+                    if (next.equals(entity.CardID)) {
+                        it.remove();
+                        break;
+                    }
+                }
+            }
+        }
+
+        /*
+         * assign a tmpCard to the cards we still don't know
+         */
+        int i = 0;
+        for (Entity entity : originalDeckEntityList) {
+            if (entity.card == null) {
+                if (i < cardIdsFromDeck.size()) {
+                    entity.extra.tmpCard = CardDb.getCard(cardIdsFromDeck.get(i));
+                    i++;
+                }
+            }
+        }
+    }
+
+    private EntityList getEntityList(String zone) {
+        return mGame.getEntityList(entity -> mPlayerId.equals(entity.tags.get(Entity.KEY_CONTROLLER))
+                && zone.equals(entity.tags.get(Entity.KEY_ZONE)));
     }
 
     private static int compareNullSafe(String a, String b) {
         if (a == null) {
-            return b == null ? 0: 1;
+            return b == null ? 0 : 1;
         } else {
-            return b == null ? -1: a.compareTo(b);
+            return b == null ? -1 : a.compareTo(b);
         }
     }
+
     private ArrayList getHand() {
-        ArrayList list = new ArrayList();
+        ArrayList<Object> list = new ArrayList<>();
         Context context = ArcaneTrackerApplication.getContext();
-        String playerId = mGame.opponent.entity.PlayerID;
 
-        EntityList entities = mGame.getEntityList(entity -> {
-            return playerId.equals(entity.tags.get(Entity.KEY_CONTROLLER))
-                    && Entity.ZONE_HAND.equals(entity.tags.get(Entity.KEY_ZONE));
-        });
+        EntityList entities = getEntityList(Entity.ZONE_HAND);
 
-        Collections.sort(entities, (a, b) -> {
-            return compareNullSafe(a.tags.get(Entity.KEY_ZONE_POSITION), b.tags.get(Entity.KEY_ZONE_POSITION));
-        });
+        Collections.sort(entities, (a, b) -> compareNullSafe(a.tags.get(Entity.KEY_ZONE_POSITION), b.tags.get(Entity.KEY_ZONE_POSITION)));
 
-        HeaderItem headerItem = new HeaderItem();
-        headerItem.title = context.getString(R.string.hand) + " (" + entities.size() + ")";
-        headerItem.expanded = true;
-        list.add(headerItem);
+        list.add(new HeaderItem(context.getString(R.string.hand) + " (" + entities.size() + ")"));
         for (Entity entity : entities) {
             DeckEntryItem deckEntry = new DeckEntryItem();
             if (TextUtils.isEmpty(entity.CardID)) {
@@ -230,27 +253,66 @@ public class Controller implements GameLogic.Listener {
             } else {
                 deckEntry.card = entity.card;
             }
+            deckEntry.gift = entity.extra.tmpIsGift;
             deckEntry.count = 1;
             deckEntry.entityList.add(entity);
             list.add(deckEntry);
         }
 
-        headerItem = new HeaderItem();
-        headerItem.title = context.getString(R.string.played);
-        headerItem.expanded = true;
-        list.add(headerItem);
         return list;
     }
 
 
     protected void update() {
-        ArrayList list = new ArrayList();
-        if (mOpponent && mGame != null) {
-            list.addAll(getHand());
+        ArrayList<Object> list = new ArrayList();
+
+        if (mGame != null) {
+            /*
+             * initialize stuff
+             */
+            EntityList allEntities = mGame.getEntityList(entity -> true);
+            Stream.of(allEntities).forEach(entity -> entity.extra.tmpIsGift = compareNullSafe(entity.tags.get(Entity.KEY_CONTROLLER), entity.extra.originalController) != 0);
+            Stream.of(allEntities).forEach(entity -> {
+                if (entity.card != null) {
+                    entity.extra.tmpCard = entity.card;
+                } else {
+                    entity.extra.tmpCard = Card.UNKNOWN;
+                }
+            });
+            if (mOpponent) {
+                list.addAll(getHand());
+            }
+            list.addAll(getDeck());
+            list.addAll(getGraveyard());
+        } else {
+            if (mDeck != null) {
+                list.addAll(getNoGame());
+            }
         }
-        list.addAll(getDeck());
         mAdapter.setList(list);
 
+    }
+
+    private List<Object> getGraveyard() {
+        EntityList entityList = getEntityList(Entity.ZONE_GRAVEYARD);
+
+        ArrayList<Object> list = new ArrayList<>();
+        list.add(new HeaderItem(Utils.getString(R.string.graveyard)));
+
+        list.addAll(entityListToItemList(entityList));
+
+        return list;
+    }
+
+    private List<Object> getNoGame() {
+        List<Object> list = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : mDeck.cards.entrySet()) {
+            DeckEntryItem deckEntry = new DeckEntryItem();
+            deckEntry.card = CardDb.getCard(entry.getKey());
+            deckEntry.count = entry.getValue();
+            list.add(deckEntry);
+        }
+        return list;
     }
 
 
@@ -262,6 +324,7 @@ public class Controller implements GameLogic.Listener {
     @Override
     public void gameStarted(Game game) {
         mGame = game;
+        mPlayerId = mOpponent ? mGame.opponent.entity.PlayerID : mGame.player.entity.PlayerID;
         update();
     }
 

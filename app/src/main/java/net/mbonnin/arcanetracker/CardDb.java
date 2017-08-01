@@ -42,11 +42,11 @@ public class CardDb {
              * can happen  the very first launch
              * or maybe even later in some cases, the calling code does not check for null so we need to be robust to that
              */
-            return Card.unknown();
+            return Card.UNKNOWN;
         }
         int index = Collections.binarySearch(sCardList, key);
         if (index < 0) {
-            return Card.unknown();
+            return Card.UNKNOWN;
         } else {
             return sCardList.get(index);
         }

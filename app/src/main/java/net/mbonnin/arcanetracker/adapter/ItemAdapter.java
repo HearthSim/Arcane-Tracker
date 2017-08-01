@@ -7,15 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import net.mbonnin.arcanetracker.CardDb;
-import net.mbonnin.arcanetracker.Deck;
 import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Typefaces;
 import net.mbonnin.arcanetracker.Utils;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map;
 
 import timber.log.Timber;
 
@@ -30,7 +26,7 @@ public class ItemAdapter extends RecyclerView.Adapter {
 
     ArrayList<Object> list = new ArrayList<>();
 
-    public void setList(ArrayList list) {
+    public void setList(ArrayList<Object> list) {
         this.list = list;
         notifyDataSetChanged();
     }

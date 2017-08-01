@@ -3,6 +3,10 @@ package net.mbonnin.arcanetracker.parser;
 import android.text.TextUtils;
 
 import com.android.internal.util.Predicate;
+import com.annimon.stream.Collector;
+import com.annimon.stream.function.BiConsumer;
+import com.annimon.stream.function.Function;
+import com.annimon.stream.function.Supplier;
 
 import net.mbonnin.arcanetracker.Utils;
 
@@ -17,6 +21,22 @@ public class EntityList extends ArrayList<Entity> {
     public static final Predicate<Entity> HAS_CARD_ID = entity -> !TextUtils.isEmpty(entity.CardID);
     private static final Predicate<Entity> IS_ENCHANTMENT = new CardTypePredicate(Entity.CARDTYPE_ENCHANTMENT);
     public static final Predicate<Entity> IS_NOT_ENCHANTMENT = new NegatePredicate(IS_ENCHANTMENT);
+    public static final Collector<? super Entity, ? extends Object, EntityList> COLLECTOR = new Collector<Entity, EntityList, EntityList>() {
+        @Override
+        public Supplier<EntityList> supplier() {
+            return EntityList::new;
+        }
+
+        @Override
+        public BiConsumer<EntityList, Entity> accumulator() {
+            return ArrayList::add;
+        }
+
+        @Override
+        public Function<EntityList, EntityList> finisher() {
+            return list -> list;
+        }
+    };
 
     public static class CardTypePredicate implements Predicate<Entity> {
         private final String mCardType;

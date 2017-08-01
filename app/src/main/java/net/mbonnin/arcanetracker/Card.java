@@ -75,6 +75,9 @@ public class Card implements Comparable<String> {
     public static final String JADE_IDOL = "CFM_602";
     public static final String WHITE_EYES = "CFM_324";
     public static final String STORM_GUARDIAN = "CFM_324t";
+    public static final Card UNKNOWN = unknown();
+
+    public static final int UNKNOWN_COST = -1;
 
     public String name;
     public String playerClass;
@@ -102,7 +105,7 @@ public class Card implements Comparable<String> {
         Card card = new Card();
         card.name = "?";
         card.playerClass = "?";
-        card.cost = -1;
+        card.cost = UNKNOWN_COST;
         card.id = "?";
         card.rarity = "?";
         card.type = TYPE_UNKNOWN;
