@@ -7,20 +7,14 @@ import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
 import net.mbonnin.arcanetracker.Card;
 import net.mbonnin.arcanetracker.CardDb;
 import net.mbonnin.arcanetracker.Deck;
-import net.mbonnin.arcanetracker.DeckList;
 import net.mbonnin.arcanetracker.R;
-import net.mbonnin.arcanetracker.Settings;
-import net.mbonnin.arcanetracker.Utils;
 import net.mbonnin.arcanetracker.parser.Entity;
 import net.mbonnin.arcanetracker.parser.EntityList;
 import net.mbonnin.arcanetracker.parser.Game;
 import net.mbonnin.arcanetracker.parser.GameLogic;
-import net.mbonnin.arcanetracker.parser.Player;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -54,22 +48,25 @@ public class Controller implements GameLogic.Listener {
     }
 
     private ArrayList getDeck() {
-        EntityList originalDeck;
+        EntityList originalDeckEntityList;
         if (mGame == null) {
-            originalDeck = new EntityList();
+            /*
+             * we don't have a game yet so we just create fake entities
+             */
+            originalDeckEntityList = new EntityList();
 
             for (int i = 0; i < Deck.MAX_CARDS; i++) {
                 Entity entity = new Entity();
                 entity.EntityID = Integer.toString(i);
                 entity.tags.put(Entity.KEY_ZONE, Entity.ZONE_DECK);
-                originalDeck.add(entity);
+                originalDeckEntityList.add(entity);
             }
         } else {
             String playerId = mOpponent ? mGame.opponent.entity.PlayerID:mGame.player.entity.PlayerID;
-            originalDeck = mGame.getEntityList(entity -> playerId.equals(entity.extra.originalController));
+            originalDeckEntityList = mGame.getEntityList(entity -> playerId.equals(entity.extra.originalController));
         }
 
-        /**
+        /*
          * give a card Id to the unknown cards in the deck
          */
         if (mDeck != null) {
@@ -80,10 +77,10 @@ public class Controller implements GameLogic.Listener {
                 }
             }
 
-            /**
+            /*
              * 1st pass: remove the known card ids
              */
-            for (Entity entity: originalDeck) {
+            for (Entity entity: originalDeckEntityList) {
                 if (!TextUtils.isEmpty(entity.CardID)) {
                     Iterator<String> it = cardIdsFromDeck.iterator();
                     while(it.hasNext()) {
@@ -95,11 +92,12 @@ public class Controller implements GameLogic.Listener {
                     }
                 }
             }
-            /**
+
+            /*
              * 2nd pass: assign a cardId to the cards we still don't know
              */
             int i = 0;
-            for (Entity entity: originalDeck) {
+            for (Entity entity: originalDeckEntityList) {
                 if (TextUtils.isEmpty(entity.CardID)) {
                     if (i < cardIdsFromDeck.size()) {
                         entity.extra.tmpCardId = cardIdsFromDeck.get(i);
@@ -111,10 +109,10 @@ public class Controller implements GameLogic.Listener {
             }
         }
 
-        /**
+        /*
          * remove the unknown cards and count them
          */
-        Iterator<Entity> it = originalDeck.iterator();
+        Iterator<Entity> it = originalDeckEntityList.iterator();
         int unknownCards = 0;
         while (it.hasNext()) {
             Entity entity = it.next();
@@ -123,17 +121,14 @@ public class Controller implements GameLogic.Listener {
                 it.remove();
             }
         }
-        Collections.sort(originalDeck, (a,b) -> {
-            int r = a.extra.tmpCardId.compareTo(b.extra.tmpCardId);
-            return r;
-        });
+        Collections.sort(originalDeckEntityList, (a,b) -> a.extra.tmpCardId.compareTo(b.extra.tmpCardId));
 
-        /**
+        /*
          * merge all the items with the same tmpCardId
          */
         DeckEntryItem deckEntry = null;
         ArrayList<DeckEntryItem> deckEntryItemList = new ArrayList<>();
-        for (Entity entity: originalDeck) {
+        for (Entity entity: originalDeckEntityList) {
             if (deckEntry == null || entity.extra.tmpCardId.compareTo(deckEntry.card.id) != 0) {
                 if (deckEntry != null) {
                     deckEntryItemList.add(deckEntry);
@@ -154,7 +149,7 @@ public class Controller implements GameLogic.Listener {
             deckEntryItemList.add(deckEntry);
         }
 
-        /**
+        /*
          * Add all the gifts on their separate line
          */
         if (mGame != null) {
@@ -188,11 +183,10 @@ public class Controller implements GameLogic.Listener {
         }
 
         if (unknownCards > 0) {
-            /**
+            /*
              * I'm not really sure how come this cast is working....
              */
-            ArrayList list2 = deckEntryItemList;
-            list2.add(ArcaneTrackerApplication.getContext().getString(R.string.unknown_cards, unknownCards));
+            ((ArrayList) deckEntryItemList).add(ArcaneTrackerApplication.getContext().getString(R.string.unknown_cards, unknownCards));
         }
 
         return deckEntryItemList;

@@ -123,6 +123,7 @@ public class HSReplay {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(unused -> {
+                    Timber.d("hsreplay upload success");
                     Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.hsreplaySuccess), Toast.LENGTH_LONG).show();
                 }, error -> {
                     Timber.e(error);
@@ -131,7 +132,9 @@ public class HSReplay {
     }
 
     public void uploadGame(String matchStart, Game game, String gameStr) {
-        Timber.w("uploadGame");
+        boolean hsReplayEnabled = Settings.get(Settings.HSREPLAY, Settings.DEFAULT_HSREPLAY);
+
+        Timber.w("uploadGame [game=%s] [hsReplayEnabled=%b] [token=%s]", game, hsReplayEnabled, mToken);
         if (game == null) {
             return;
         }
@@ -152,7 +155,7 @@ public class HSReplay {
             return;
         }
 
-        if (Settings.get(Settings.HSREPLAY, Settings.DEFAULT_HSREPLAY)) {
+        if (hsReplayEnabled) {
             doUploadGame(matchStart, game.player.entity.PlayerID, summary, gameStr);
         }
     }
