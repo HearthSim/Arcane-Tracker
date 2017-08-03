@@ -51,6 +51,7 @@ public class PowerParser implements LogReader.LineConsumer {
         public static final String TYPE_PLAY = "PLAY";
         public static final String TYPE_POWER = "POWER";
         public static final String TYPE_TRIGGER = "TRIGGER";
+        public static final String TYPE_ATTACK = "ATTACK";
 
         String blockType;
         String entity;
@@ -323,6 +324,37 @@ public class PowerParser implements LogReader.LineConsumer {
             if (!TextUtils.isEmpty(key)) {
                 Entity entity = findEntityByName(mCurrentGame, entityName);
                 tagChange(entity, key, value);
+
+
+                /*
+                 * detect if the hero or a minion was attacked for the secret detector
+                 */
+                if (Block.TYPE_ATTACK.equals(block.blockType)
+                        && key.equals((Entity.KEY_DEFENDING))
+                        && value.equals("1")) {
+                    String opponentPlayerId = mCurrentGame.getOpponent().entity.PlayerID;
+                    if (entity.CardID != null) {
+                        Card card = CardDb.getCard(entity.CardID);
+
+                        EntityList opponentSecretEntityList = mCurrentGame.getEntityList(e -> opponentPlayerId.equals(e.tags.get(Entity.KEY_CONTROLLER)));
+                        if (opponentPlayerId.equals(entity.tags.get(Entity.KEY_CONTROLLER))) {
+                            for (Entity e2 : opponentSecretEntityList) {
+                                if (Card.TYPE_HERO.equals(card.type)) {
+                                    e2.extra.opponentHeroWasAttacked = true;
+                                } else {
+                                    e2.extra.minonWasAttacked = true;
+                                }
+                            }
+                        } else {
+                            for (Entity e2 : opponentSecretEntityList) {
+                                if (Card.TYPE_HERO.equals(card.type)) {
+                                    e2.extra.playerHeroWasAttacked = true;
+                                }
+                            }
+                        }
+                    }
+
+                }
             }
         } else if ((m = FULL_ENTITY.matcher(line)).matches()) {
             String entityId = decodeEntityName(m.group(1)).get("id");

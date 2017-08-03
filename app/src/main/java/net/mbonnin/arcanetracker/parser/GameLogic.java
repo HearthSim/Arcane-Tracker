@@ -231,8 +231,20 @@ public class GameLogic {
                 entity.extra.playTurn = (mCurrentTurn + 1) / 2;
             } else if (Entity.ZONE_PLAY.equals(oldValue) && Entity.ZONE_GRAVEYARD.equals(newValue)) {
                 entity.extra.diedTurn = (mCurrentTurn + 1) / 2;
+                String opponentPlayerId = mGame.getOpponent().entity.PlayerID;
+                if (opponentPlayerId.equals(entity.tags.get(Entity.KEY_CONTROLLER))) {
+                    /*
+                     * one of the oponent minion died, remember it for the secret detector
+                     */
+                    EntityList opponentSecretEntityList = mGame.getEntityList(e -> opponentPlayerId.equals(e.tags.get(Entity.KEY_CONTROLLER)));
+                    if (opponentPlayerId.equals(entity.tags.get(Entity.KEY_CONTROLLER))) {
+                        for (Entity e2 : opponentSecretEntityList) {
+                            e2.extra.opponentMinionDied = true;
+                        }
+                    }
+                }
             } else if (Entity.ZONE_HAND.equals(oldValue) && Entity.ZONE_DECK.equals(newValue)) {
-                /**
+                /*
                  * card was put back in the deck (most likely from mulligan)
                  */
                 entity.extra.drawTurn = -1;
@@ -258,6 +270,9 @@ public class GameLogic {
         Timber.i("%s played %s", play.isOpponent ? "opponent" : "I", play.cardId);
 
         if (!play.isOpponent) {
+            /*
+             * detect if we played a minion or spell for the secret detector
+             */
             String opponentPlayerId = mGame.getOpponent().entity.PlayerID;
             EntityList opponentSecretEntityList = mGame.getEntityList(e -> opponentPlayerId.equals(e.tags.get(Entity.KEY_CONTROLLER)));
             for (Entity e2: opponentSecretEntityList) {

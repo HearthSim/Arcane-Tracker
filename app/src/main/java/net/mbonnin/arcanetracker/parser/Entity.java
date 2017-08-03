@@ -20,6 +20,7 @@ public class Entity {
     public static final String KEY_STEP = "STEP";
     public static final String KEY_TURN = "TURN";
     public static final String KEY_ZONE_POSITION = "ZONE_POSITION";
+    public static final String KEY_DEFENDING = "DEFENDING";
 
     public static final String PLAYSTATE_WON = "WON";
 
@@ -69,10 +70,15 @@ public class Entity {
         public int playTurn = -1;
         public int diedTurn = -1;
         public boolean mulliganed;
+        public String createdBy;
+
         public boolean minionPlayed;
         public boolean spellPlayed;
         public boolean heroPowerPlayed;
-        public String createdBy;
+        public boolean opponentHeroWasAttacked;
+        public boolean minonWasAttacked;
+        public boolean playerHeroWasAttacked;
+        public boolean opponentMinionDied;
     }
 
     public void dump() {
