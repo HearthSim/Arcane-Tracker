@@ -12,7 +12,6 @@ import net.mbonnin.arcanetracker.CardDb;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import timber.log.Timber;
 
@@ -257,6 +256,20 @@ public class GameLogic {
         play.isOpponent = game.findController(entity).isOpponent;
 
         Timber.i("%s played %s", play.isOpponent ? "opponent" : "I", play.cardId);
+
+        if (!play.isOpponent) {
+            String opponentPlayerId = mGame.getOpponent().entity.PlayerID;
+            EntityList opponentSecretEntityList = mGame.getEntityList(e -> opponentPlayerId.equals(e.tags.get(Entity.KEY_CONTROLLER)));
+            for (Entity e2: opponentSecretEntityList) {
+                if (Card.TYPE_MINION.equals(entity.card.type)) {
+                    e2.extra.minionPlayed = true;
+                } else if (Card.TYPE_SPELL.equals(entity.card.type)) {
+                    e2.extra.spellPlayed = true;
+                } else if (Card.TYPE_HERO_POWER.equals(entity.card.type)) {
+                    e2.extra.heroPowerPlayed = true;
+                }
+            }
+        }
 
         game.plays.add(play);
 

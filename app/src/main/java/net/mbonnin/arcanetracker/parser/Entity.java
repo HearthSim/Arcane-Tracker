@@ -69,6 +69,10 @@ public class Entity {
         public int playTurn = -1;
         public int diedTurn = -1;
         public boolean mulliganed;
+        public boolean minionPlayed;
+        public boolean spellPlayed;
+        public boolean heroPowerPlayed;
+        public String createdBy;
     }
 
     public void dump() {

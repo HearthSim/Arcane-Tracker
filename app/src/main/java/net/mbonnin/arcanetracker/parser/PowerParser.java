@@ -3,7 +3,6 @@ package net.mbonnin.arcanetracker.parser;
 import android.os.Handler;
 import android.text.TextUtils;
 
-
 import net.mbonnin.arcanetracker.Card;
 import net.mbonnin.arcanetracker.CardDb;
 import net.mbonnin.arcanetracker.Utils;
@@ -49,9 +48,9 @@ public class PowerParser implements LogReader.LineConsumer {
     private boolean mReadingPreviousData = true;
 
     static class Block {
-        public static final String TYPE_PLAY="PLAY";
-        public static final String TYPE_POWER="POWER";
-        public static final String TYPE_TRIGGER="TRIGGER";
+        public static final String TYPE_PLAY = "PLAY";
+        public static final String TYPE_POWER = "POWER";
+        public static final String TYPE_TRIGGER = "TRIGGER";
 
         String blockType;
         String entity;
@@ -101,14 +100,14 @@ public class PowerParser implements LogReader.LineConsumer {
         if (spaces == line.length()) {
             Timber.e("empty line: " + line);
             return;
-        } else if (spaces %4 != 0) {
+        } else if (spaces % 4 != 0) {
             Timber.e("bad indentation: " + line);
             return;
         }
 
         line = line.substring(spaces);
 
-        int depth = spaces/4;
+        int depth = spaces / 4;
 
         Node node = new Node();
         node.depth = depth;
@@ -127,7 +126,7 @@ public class PowerParser implements LogReader.LineConsumer {
             outputCurrentNode();
             mCurrentNode = node;
         } else if (BLOCK_END.matcher(parent.line).matches()) {
-            /**
+            /*
              * BLOCK_END is a special case :-/
              */
             outputCurrentNode();
@@ -167,7 +166,7 @@ public class PowerParser implements LogReader.LineConsumer {
                 Timber.w("GOLD_REWARD_STATE finished");
 
                 long start = System.currentTimeMillis();
-                Runnable runnable = new Runnable(){
+                Runnable runnable = new Runnable() {
                     @Override
                     public void run() {
                         if (mCurrentGame != null) {
@@ -194,7 +193,7 @@ public class PowerParser implements LogReader.LineConsumer {
     HashMap<String, String> getTags(Node node) {
         HashMap<String, String> map = new HashMap<>();
 
-        for (Node child: node.children) {
+        for (Node child : node.children) {
             Matcher m = TAG.matcher(child.line);
             if (m.matches()) {
                 String key = m.group(1);
@@ -230,7 +229,7 @@ public class PowerParser implements LogReader.LineConsumer {
                 block.effectIndex = m.group(4);
                 block.target = m.group(5);
 
-                for (Node child: node.children) {
+                for (Node child : node.children) {
                     outputAction(block, child);
                 }
 
@@ -261,7 +260,7 @@ public class PowerParser implements LogReader.LineConsumer {
 
         mGameLogic.tagChanged(entity, key, oldValue, newValue);
 
-        /**
+        /*
          * Do not crash If we get a disconnect before the mulligan (might happen ?)
          */
         if (Entity.ENTITY_ID_GAME.equals(entity.EntityID) && mCurrentGame.isStarted()) {
@@ -287,7 +286,7 @@ public class PowerParser implements LogReader.LineConsumer {
             } else {
                 mCurrentGame = new Game();
                 mLastGame = mCurrentGame;
-                for (Node child:node.children) {
+                for (Node child : node.children) {
                     if ((m = GameEntityPattern.matcher(child.line)).matches()) {
                         /**
                          * the game entity
@@ -337,17 +336,16 @@ public class PowerParser implements LogReader.LineConsumer {
             }
             entity.EntityID = entityId;
             entity.CardID = m.group(2);
+            if (!TextUtils.isEmpty(entity.CardID)) {
+                entity.card = CardDb.getCard(entity.CardID);
+            }
             entity.tags.putAll(getTags(node));
 
             if (TextUtils.isEmpty(entity.CardID) && block != null) {
-                /**
+                /*
                  * this entity is created by something, try to guess
                  */
-                entity.CardID = guessCardIdFromBlock(block);
-            }
-
-            if (!TextUtils.isEmpty(entity.CardID)) {
-                entity.card = CardDb.getCard(entity.CardID);
+                tryToGuessCardIdFromBlock(entity, block);
             }
 
             if (isNew) {
@@ -364,7 +362,7 @@ public class PowerParser implements LogReader.LineConsumer {
             entity.card = CardDb.getCard(CardID);
 
             HashMap<String, String> newTags = getTags(node);
-            for (String key:newTags.keySet()) {
+            for (String key : newTags.keySet()) {
                 tagChange(entity, key, newTags.get(key));
             }
 
@@ -376,49 +374,128 @@ public class PowerParser implements LogReader.LineConsumer {
         }
     }
 
-    private String guessCardIdFromBlock(Block block) {
+    private void tryToGuessCardIdFromBlock(Entity entity, Block block) {
         Entity e = findEntityByName(mCurrentGame, block.entity);
         String actionStartingCardId = e.CardID;
 
         if (TextUtils.isEmpty(actionStartingCardId)) {
-            return "";
+            return;
         }
+
+        String guessedId = null;
 
         if (Block.TYPE_POWER.equals(block.blockType)) {
 
-            switch(actionStartingCardId) {
+            switch (actionStartingCardId) {
                 case Card.ID_GANG_UP:
                 case Card.ID_RECYCLE:
+                case Card.SHADOWCASTER:
                 case Card.MANIC_SOULCASTER:
-                    return getTargetId(block);
+                    guessedId = getTargetId(block);
+                    break;
                 case Card.ID_BENEATH_THE_GROUNDS:
-                    return Card.ID_AMBUSHTOKEN;
+                    guessedId = Card.ID_AMBUSHTOKEN;
+                    break;
                 case Card.ID_IRON_JUGGERNAUT:
-                    return Card.ID_BURROWING_MINE_TOKEN;
+                    guessedId = Card.ID_BURROWING_MINE_TOKEN;
+                    break;
                 case Card.FORGOTTEN_TORCH:
-                    return Card.ROARING_TORCH;
+                    guessedId = Card.ROARING_TORCH;
+                    break;
                 case Card.CURSE_OF_RAFAAM:
-                    return Card.CURSED;
+                    guessedId = Card.CURSED;
+                    break;
                 case Card.ANCIENT_SHADE:
-                    return Card.ANCIENT_CURSE;
+                    guessedId = Card.ANCIENT_CURSE;
+                    break;
                 case Card.EXCAVATED_EVIL:
-                    return Card.EXCAVATED_EVIL;
+                    guessedId = Card.EXCAVATED_EVIL;
+                    break;
                 case Card.ELISE:
-                    return Card.MAP_TO_THE_GOLDEN_MONKEY;
+                    guessedId = Card.MAP_TO_THE_GOLDEN_MONKEY;
+                    break;
                 case Card.MAP_TO_THE_GOLDEN_MONKEY:
-                    return Card.GOLDEN_MONKEY;
+                    guessedId = Card.GOLDEN_MONKEY;
+                    break;
                 case Card.DOOMCALLER:
-                    return Card.CTHUN;
+                    guessedId = Card.CTHUN;
+                    break;
                 case Card.JADE_IDOL:
-                    return Card.JADE_IDOL;
+                    guessedId = Card.JADE_IDOL;
+                    break;
+                case Card.FLAME_GEYSER:
+                case Card.FIREFLY:
+                    guessedId = Card.FLAME_ELEMENTAL;
+                    break;
+                case Card.STEAM_SURGER:
+                    guessedId = Card.FLAME_GEYSER;
+                    break;
+                case Card.RAZORPETAL_VOLLEY:
+                case Card.RAZORPETAL_LASHER:
+                    guessedId = Card.RAZORPETAL;
+                    break;
+                case Card.BURGLY_BULLY:
+                    guessedId = Card.ID_COIN;
+                    break;
+                case Card.MUKLA_TYRANT:
+                case Card.KING_MUKLA:
+                    guessedId = Card.BANANA;
+                    break;
+                case Card.JUNGLE_GIANTS:
+                    guessedId = Card.BARNABUS;
+                    break;
+                case Card.THE_MARSH_QUEEN:
+                    guessedId = Card.QUEEN_CARNASSA;
+                    break;
+                case Card.OPEN_THE_WAYGATE:
+                    guessedId = Card.TIME_WARP;
+                    break;
+                case Card.THE_LAST_KALEIDOSAUR:
+                    guessedId = Card.GALVADON;
+                    break;
+                case Card.AWAKEN_THE_MAKERS:
+                    guessedId = Card.AMARA;
+                    break;
+                case Card.CAVERNS_BELOW:
+                    guessedId = Card.CRYSTAL_CORE;
+                    break;
+                case Card.UNITE_THE_MURLOCS:
+                    guessedId = Card.MEGAFIN;
+                    break;
+                case Card.LAKKARI_SACRIFICE:
+                    guessedId = Card.NETHER_PORTAL;
+                    break;
+                case Card.FIRE_PLUME:
+                    guessedId = Card.SULFURAS;
+                    break;
             }
         } else if (Block.TYPE_TRIGGER.equals(block.blockType)) {
             switch (actionStartingCardId) {
+                case Card.PYROS2:
+                    guessedId = Card.PYROS6;
+                    break;
+                case Card.PYROS6:
+                    guessedId = Card.PYROS10;
+                    break;
                 case Card.WHITE_EYES:
-                    return Card.STORM_GUARDIAN;
+                    guessedId = Card.STORM_GUARDIAN;
+                    break;
+                case Card.DEADLY_FORK:
+                    guessedId = Card.SHARP_FORK;
+                    break;
+                case Card.IGNEOUS_ELEMENTAL:
+                    guessedId = Card.FLAME_ELEMENTAL;
+                    break;
+                case Card.RHONIN:
+                    guessedId = Card.ARCANE_MISSILE;
+                    break;
             }
         }
-        return "";
+        if (guessedId != null) {
+            entity.CardID = guessedId;
+            entity.card = CardDb.getCard(guessedId);
+            entity.extra.createdBy = guessedId;
+        }
     }
 
     private String getTargetId(Block block) {
@@ -456,14 +533,14 @@ public class PowerParser implements LogReader.LineConsumer {
         }
     }
 
-    private static HashMap<String,String> decodeEntityName(String name) {
+    private static HashMap<String, String> decodeEntityName(String name) {
         return decodeParams(name.substring(1, name.length() - 1));
     }
 
     private static Entity getEntitySafe(Game game, String entityId) {
         Entity entity = game.entityMap.get(entityId);
 
-        if (entity == null){
+        if (entity == null) {
             /**
              * do not crash...
              */

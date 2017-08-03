@@ -11,10 +11,10 @@ import timber.log.Timber;
 public class Card implements Comparable<String> {
     public static final String classNameList[] = {"Warrior", "Shaman", "Rogue", "Paladin", "Hunter", "Druid", "Warlock", "Mage", "Priest", "Neutral"};
 
-    public static final String RARITY_LEGENDARY="LEGENDARY";
+    public static final String RARITY_LEGENDARY = "LEGENDARY";
 
-    public static final String TYPE_HERO="HERO";
-    public static final String TYPE_UNKNOWN="TYPE_UNKNOWN";
+    public static final String TYPE_HERO = "HERO";
+    public static final String TYPE_UNKNOWN = "TYPE_UNKNOWN";
     public static final String TYPE_SPELL = "SPELL";
     public static final String TYPE_MINION = "MINION";
     public static final String TYPE_WEAPON = "WEAPON";
@@ -78,6 +78,44 @@ public class Card implements Comparable<String> {
     public static final Card UNKNOWN = unknown();
 
     public static final int UNKNOWN_COST = -1;
+    public static final String FLAME_ELEMENTAL = "UNG_809t1";
+    public static final String FLAME_GEYSER = "UNG_018";
+    public static final String PYROS2 = "UNG_027";
+    public static final String PYROS6 = "UNG_027t2";
+    public static final String PYROS10 = "UNG_027t4";
+    public static final String STEAM_SURGER = "UNG_021";
+    public static final String RAZORPETAL_LASHER = "UNG_058";
+    public static final String RAZORPETAL = "UNG_057t1";
+    public static final String RAZORPETAL_VOLLEY = "UNG_057";
+    public static final String DEADLY_FORK = "KAR_094";
+    public static final String SHARP_FORK = "KAR_094a";
+    public static final String SHADOWCASTER = "OG_291";
+    public static final String FIREFLY = "UNG_809";
+    public static final String IGNEOUS_ELEMENTAL = "UNG_845";
+    public static final String BURGLY_BULLY = "CFM_669";
+    public static final String BANANA = "EX1_014t";
+    public static final String KING_MUKLA ="EX1_014";
+    public static final String MUKLA_TYRANT = "OG_122";
+    public static final String RHONIN = "AT_009";
+    public static final String ARCANE_MISSILE = "EX1_277";
+    public static final String JUNGLE_GIANTS = "UNG_116";
+    public static final String BARNABUS = "UNG_116t";
+    public static final String THE_MARSH_QUEEN = "UNG_920";
+    public static final String QUEEN_CARNASSA ="UNG_920t1";
+    public static final String OPEN_THE_WAYGATE ="UNG_028";
+    public static final String TIME_WARP = "UNG_028t";
+    public static final String THE_LAST_KALEIDOSAUR = "UNG_954";
+    public static final String GALVADON = "UNG_954t1";
+    public static final String AWAKEN_THE_MAKERS = "UNG_940";
+    public static final String AMARA = "UNG_940t8";
+    public static final String CAVERNS_BELOW = "UNG_067";
+    public static final String CRYSTAL_CORE = "UNG_067t1";
+    public static final String UNITE_THE_MURLOCS = "UNG_942";
+    public static final String MEGAFIN = "UNG_942t";
+    public static final String LAKKARI_SACRIFICE = "UNG_829";
+    public static final String NETHER_PORTAL = "UNG_829t1";
+    public static final String FIRE_PLUME = "UNG_934";
+    public static final String SULFURAS = "UNG_934t1";
 
     public String name;
     public String playerClass;
@@ -184,13 +222,14 @@ public class Card implements Comparable<String> {
 
         return "?";
     }
+
     public static String classIndexToHeroId(int classIndex) {
         return String.format("hero_%02d", classIndex + 1);
     }
 
     public static int playerClassToClassIndex(String playerClass) {
         for (int i = 0; i < CLASS_INDEX_NEUTRAL; i++) {
-            if (classIndexToPlayerClass(i).equals(playerClass)){
+            if (classIndexToPlayerClass(i).equals(playerClass)) {
                 return i;
             }
         }

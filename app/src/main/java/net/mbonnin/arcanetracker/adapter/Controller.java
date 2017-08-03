@@ -21,15 +21,13 @@ import net.mbonnin.arcanetracker.parser.Game;
 import net.mbonnin.arcanetracker.parser.GameLogic;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by martin on 11/21/16.
- */
 public class Controller implements GameLogic.Listener {
     private static Controller sPlayerController;
     private static Controller sOpponentController;
@@ -292,6 +290,8 @@ public class Controller implements GameLogic.Listener {
                 }
             });
             if (mOpponent) {
+                list.add(new HeaderItem(Utils.getString(R.string.secrets)));
+                list.addAll(getSecrets());
                 list.addAll(getHand());
                 list.add(new HeaderItem(Utils.getString(R.string.deck)));
             }
@@ -304,6 +304,35 @@ public class Controller implements GameLogic.Listener {
         }
         mAdapter.setList(list);
 
+    }
+
+    private Collection<?> getSecrets() {
+        ArrayList<Object> list = new ArrayList<>();
+
+        EntityList entities = getEntityList(Entity.ZONE_SECRET);
+
+        Collections.sort(entities, (a, b) -> compareNullSafe(a.tags.get(Entity.KEY_ZONE_POSITION), b.tags.get(Entity.KEY_ZONE_POSITION)));
+
+        for (Entity entity : entities) {
+            DeckEntryItem deckEntry = new DeckEntryItem();
+            if (TextUtils.isEmpty(entity.CardID)) {
+                deckEntry.card = Card.unknown();
+                StringBuilder builder = new StringBuilder();
+                builder.append("#").append(entity.extra.drawTurn);
+                if (entity.extra.mulliganed) {
+                    builder.append(" (M)");
+                }
+                deckEntry.card.name = builder.toString();
+            } else {
+                deckEntry.card = entity.card;
+            }
+            deckEntry.gift = entity.extra.tmpIsGift;
+            deckEntry.count = 1;
+            deckEntry.entityList.add(entity);
+            list.add(deckEntry);
+        }
+
+        return list;
     }
 
     private List<Object> getGraveyard() {

@@ -148,4 +148,5 @@
     <string name="hsreplayError">Could not upload to HSReplay.net :-(</string>
     <string name="hsreplaySuccess">Game uploaded to HSReplay.net</string>
     <string name="graveyard">Graveyard</string>
+    <string name="secrets">Secrets</string>
 </resources>
