@@ -38,8 +38,9 @@ public class Entity {
 
     public static final String ENTITY_ID_GAME = "1";
 
-    public static final String STEP_FINAL_GAMEOVER= "FINAL_GAMEOVER";
+    public static final String STEP_FINAL_GAMEOVER = "FINAL_GAMEOVER";
     public static final String STEP_BEGIN_MULLIGAN = "BEGIN_MULLIGAN";
+    public static final String KEY_CLASS = "CLASS";
 
     public String EntityID;
     public String CardID; // might be null if the entity is not revealed yet
@@ -55,7 +56,7 @@ public class Entity {
 
     @Override
     public String toString() {
-        return String.format(Locale.ENGLISH, "CardEntity [id=%s][CardID=%s]%s", EntityID, CardID, card != null ? "(" + card.name + ")" :"");
+        return String.format(Locale.ENGLISH, "CardEntity [id=%s][CardID=%s]%s", EntityID, CardID, card != null ? "(" + card.name + ")" : "");
     }
 
     public static class Extra {
@@ -82,7 +83,7 @@ public class Entity {
     }
 
     public void dump() {
-        for (String key:tags.keySet()) {
+        for (String key : tags.keySet()) {
             Timber.v("   " + key + "=" + tags.get(key));
         }
     }

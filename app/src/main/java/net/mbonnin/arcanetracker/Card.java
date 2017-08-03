@@ -11,6 +11,9 @@ import timber.log.Timber;
 public class Card implements Comparable<String> {
     public static final String classNameList[] = {"Warrior", "Shaman", "Rogue", "Paladin", "Hunter", "Druid", "Warlock", "Mage", "Priest", "Neutral"};
 
+    public static final Card UNKNOWN = unknown();
+    public static final int UNKNOWN_COST = -1;
+
     public static final String RARITY_LEGENDARY = "LEGENDARY";
 
     public static final String TYPE_HERO = "HERO";
@@ -75,9 +78,6 @@ public class Card implements Comparable<String> {
     public static final String JADE_IDOL = "CFM_602";
     public static final String WHITE_EYES = "CFM_324";
     public static final String STORM_GUARDIAN = "CFM_324t";
-    public static final Card UNKNOWN = unknown();
-
-    public static final int UNKNOWN_COST = -1;
     public static final String FLAME_ELEMENTAL = "UNG_809t1";
     public static final String FLAME_GEYSER = "UNG_018";
     public static final String PYROS2 = "UNG_027";
@@ -94,15 +94,15 @@ public class Card implements Comparable<String> {
     public static final String IGNEOUS_ELEMENTAL = "UNG_845";
     public static final String BURGLY_BULLY = "CFM_669";
     public static final String BANANA = "EX1_014t";
-    public static final String KING_MUKLA ="EX1_014";
+    public static final String KING_MUKLA = "EX1_014";
     public static final String MUKLA_TYRANT = "OG_122";
     public static final String RHONIN = "AT_009";
     public static final String ARCANE_MISSILE = "EX1_277";
     public static final String JUNGLE_GIANTS = "UNG_116";
     public static final String BARNABUS = "UNG_116t";
     public static final String THE_MARSH_QUEEN = "UNG_920";
-    public static final String QUEEN_CARNASSA ="UNG_920t1";
-    public static final String OPEN_THE_WAYGATE ="UNG_028";
+    public static final String QUEEN_CARNASSA = "UNG_920t1";
+    public static final String OPEN_THE_WAYGATE = "UNG_028";
     public static final String TIME_WARP = "UNG_028t";
     public static final String THE_LAST_KALEIDOSAUR = "UNG_954";
     public static final String GALVADON = "UNG_954t1";
@@ -116,6 +116,34 @@ public class Card implements Comparable<String> {
     public static final String NETHER_PORTAL = "UNG_829t1";
     public static final String FIRE_PLUME = "UNG_934";
     public static final String SULFURAS = "UNG_934t1";
+    public static final String BEAR_TRAP = "AT_060";
+    public static final String CAT_TRICK = "KAR_004";
+    public static final String DART_TRAP = "LOE_021";
+    public static final String EXPLOSIVE_TRAP = "EX1_610";
+    public static final String FREEZING_TRAP = "EX1_611";
+    public static final String HIDDEN_CACHE = "CFM_026";
+    public static final String MISDIRECTION = "EX1_533";
+    public static final String SNAKE_TRAP = "EX1_554";
+    public static final String SNIPE = "EX1_609";
+    public static final String COUNTERSPELL = "EX1_287";
+    public static final String DUPLICATE = "FP1_018";
+    public static final String MIRROR_ENTITY = "EX1_294";
+    public static final String MANA_BIND = "UNG_024";
+    public static final String ICE_BLOCK = "EX1_295";
+    public static final String EFFIGY = "AT_002";
+    public static final String ICE_BARRIER = "EX1_289";
+    public static final String POTION_OF_POLYMORPH = "CFM_620";
+    public static final String SPELL_BENDER = "tt_010";
+    public static final String VAPORIZE = "EX1_594";
+    public static final String COMPETITIVE_SPIRIT = "AT_073";
+    public static final String AVENGE = "FP1_020";
+    public static final String EYE_FOR_EYE ="EX1_132";
+    public static final String GETAWAY_KOD = "CFM_800";
+    public static final String NOBLE_SACRIFIC = "EX1_130";
+    public static final String REDEMPTION = "EX1_136";
+    public static final String REPENTANCE = "EX1_379";
+    public static final String SACRED_TRIAL = "LOE_027";
+
 
     public String name;
     public String playerClass;

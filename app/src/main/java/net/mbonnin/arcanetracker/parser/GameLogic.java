@@ -36,6 +36,7 @@ public class GameLogic {
     public GameLogic() {
         mHandler = new Handler();
     }
+
     public interface Listener {
         /**
          * when gameStarted is called, game.player and game.opponent are set
@@ -134,14 +135,14 @@ public class GameLogic {
         } else if (Entity.CARDTYPE_HERO_POWER.equals(cardType)) {
             player.heroPower = entity;
         } else {
-            if (Entity.ZONE_HAND.equals(entity.tags.get(Entity.KEY_ZONE))){
+            if (Entity.ZONE_HAND.equals(entity.tags.get(Entity.KEY_ZONE))) {
                 entity.extra.drawTurn = (mCurrentTurn + 1) / 2;
             }
 
             if (game.gameEntity.tags.get(Entity.KEY_STEP) == null) {
                 if (Entity.ZONE_DECK.equals(entity.tags.get(Entity.KEY_ZONE))) {
                     entity.extra.originalController = entity.tags.get(Entity.KEY_CONTROLLER);
-                } else if (Entity.ZONE_HAND.equals(entity.tags.get(Entity.KEY_ZONE))){
+                } else if (Entity.ZONE_HAND.equals(entity.tags.get(Entity.KEY_ZONE))) {
                     // this mush be the coin
                     entity.CardID = Card.ID_COIN;
                     entity.extra.drawTurn = 0;
@@ -232,15 +233,13 @@ public class GameLogic {
             } else if (Entity.ZONE_PLAY.equals(oldValue) && Entity.ZONE_GRAVEYARD.equals(newValue)) {
                 entity.extra.diedTurn = (mCurrentTurn + 1) / 2;
                 String opponentPlayerId = mGame.getOpponent().entity.PlayerID;
+                /*
+                 * one of the oponent minion died, remember it for the secret detector
+                 */
+                EntityList opponentSecretEntityList = mGame.getEntityList(e -> opponentPlayerId.equals(e.tags.get(Entity.KEY_CONTROLLER)));
                 if (opponentPlayerId.equals(entity.tags.get(Entity.KEY_CONTROLLER))) {
-                    /*
-                     * one of the oponent minion died, remember it for the secret detector
-                     */
-                    EntityList opponentSecretEntityList = mGame.getEntityList(e -> opponentPlayerId.equals(e.tags.get(Entity.KEY_CONTROLLER)));
-                    if (opponentPlayerId.equals(entity.tags.get(Entity.KEY_CONTROLLER))) {
-                        for (Entity e2 : opponentSecretEntityList) {
-                            e2.extra.opponentMinionDied = true;
-                        }
+                    for (Entity e2 : opponentSecretEntityList) {
+                        e2.extra.opponentMinionDied = true;
                     }
                 }
             } else if (Entity.ZONE_HAND.equals(oldValue) && Entity.ZONE_DECK.equals(newValue)) {
@@ -275,7 +274,7 @@ public class GameLogic {
              */
             String opponentPlayerId = mGame.getOpponent().entity.PlayerID;
             EntityList opponentSecretEntityList = mGame.getEntityList(e -> opponentPlayerId.equals(e.tags.get(Entity.KEY_CONTROLLER)));
-            for (Entity e2: opponentSecretEntityList) {
+            for (Entity e2 : opponentSecretEntityList) {
                 if (Card.TYPE_MINION.equals(entity.card.type)) {
                     e2.extra.minionPlayed = true;
                 } else if (Card.TYPE_SPELL.equals(entity.card.type)) {

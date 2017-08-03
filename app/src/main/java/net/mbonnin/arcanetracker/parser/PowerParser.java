@@ -329,7 +329,7 @@ public class PowerParser implements LogReader.LineConsumer {
                 /*
                  * detect if the hero or a minion was attacked for the secret detector
                  */
-                if (Block.TYPE_ATTACK.equals(block.blockType)
+                if (block != null && Block.TYPE_ATTACK.equals(block.blockType)
                         && key.equals((Entity.KEY_DEFENDING))
                         && value.equals("1")) {
                     String opponentPlayerId = mCurrentGame.getOpponent().entity.PlayerID;

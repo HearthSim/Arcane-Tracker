@@ -5,21 +5,17 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import net.mbonnin.arcanetracker.Card;
-import net.mbonnin.arcanetracker.CardRenderer;
 import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Utils;
 import net.mbonnin.arcanetracker.ViewManager;
@@ -66,7 +62,7 @@ class DeckEntryHolder extends RecyclerView.ViewHolder implements View.OnTouchLis
 
             detailsView = new DetailsView(itemView.getContext());
 
-            /**
+            /*
              * bitmap might be null if the card comes from the Hand
              */
             detailsView.configure(bitmap, deckEntry, (int) (ViewManager.get().getHeight()/1.5f));

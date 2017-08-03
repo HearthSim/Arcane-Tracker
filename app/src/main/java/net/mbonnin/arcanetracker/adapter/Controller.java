@@ -316,13 +316,24 @@ public class Controller implements GameLogic.Listener {
         for (Entity entity : entities) {
             DeckEntryItem deckEntry = new DeckEntryItem();
             if (TextUtils.isEmpty(entity.CardID)) {
+                String clazz = entity.tags.get(Entity.KEY_CLASS);
+
                 deckEntry.card = Card.unknown();
-                StringBuilder builder = new StringBuilder();
-                builder.append("#").append(entity.extra.drawTurn);
-                if (entity.extra.mulliganed) {
-                    builder.append(" (M)");
+                if (clazz != null){
+                    int classIndex = Card.niceNameToClassIndexNC(clazz);
+                    switch (classIndex) {
+                        case Card.CLASS_INDEX_HUNTER:
+                            deckEntry.card.id = "secret_h";
+                            break;
+                        case Card.CLASS_INDEX_MAGE:
+                            deckEntry.card.id = "secret_m";
+                            break;
+                        case Card.CLASS_INDEX_PALADIN:
+                            deckEntry.card.id = "secret_p";
+                            break;
+                    }
                 }
-                deckEntry.card.name = builder.toString();
+                deckEntry.card.name = "";
             } else {
                 deckEntry.card = entity.card;
             }
@@ -348,7 +359,6 @@ public class Controller implements GameLogic.Listener {
 
     private List<Object> getNoGame() {
         List<Object> list = new ArrayList<>();
-        list.add(new HeaderItem(Utils.getString(R.string.deck)));
         int unknown = Deck.MAX_CARDS;
 
         for (Map.Entry<String, Integer> entry : mDeck.cards.entrySet()) {
@@ -359,7 +369,9 @@ public class Controller implements GameLogic.Listener {
             unknown -= deckEntry.count;
         }
 
-        list.add(ArcaneTrackerApplication.getContext().getString(R.string.unknown_cards, unknown));
+        if (unknown > 0) {
+            list.add(ArcaneTrackerApplication.getContext().getString(R.string.unknown_cards, unknown));
+        }
         return list;
     }
 
