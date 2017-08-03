@@ -99,8 +99,8 @@ public class Controller implements GameLogic.Listener {
          * Sort and merge
          */
         Comparator<Entity> comparator = (a, b) -> {
-            int acost = a.card.cost == null ? 0 : a.card.cost;
-            int bcost = b.card.cost == null ? 0 : b.card.cost;
+            int acost = a.extra.tmpCard.cost == null ? 0 : a.extra.tmpCard.cost;
+            int bcost = b.extra.tmpCard.cost == null ? 0 : b.extra.tmpCard.cost;
             if (acost < 0) {
                 acost = Integer.MAX_VALUE;
             }
@@ -114,7 +114,7 @@ public class Controller implements GameLogic.Listener {
                 return ret;
             }
 
-            ret = a.card.name.compareTo(b.card.name);
+            ret = a.extra.tmpCard.name.compareTo(b.extra.tmpCard.name);
             if (ret != 0) {
                 return ret;
             }
