@@ -113,6 +113,7 @@
     <string name="drawnTurn">Drawn turn: %d</string>
     <string name="playedTurn">Played Turn: %d</string>
     <string name="diedTurn">Died turn: %d</string>
+    <string name="createdBy">Created by: %s</string>
     <string name="card">Card [%s]</string>
     <string name="noInfoYet">In deck</string>
     <string name="inDeck">In deck</string>
@@ -149,4 +150,5 @@
     <string name="hsreplaySuccess">Game uploaded to HSReplay.net</string>
     <string name="graveyard">Graveyard</string>
     <string name="secrets">Secrets</string>
+    <string name="possibleSecrets">Possible secrets:</string>
 </resources>

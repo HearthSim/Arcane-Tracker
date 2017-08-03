@@ -75,15 +75,21 @@ public class DetailsView extends LinearLayout {
                 builder.append(getContext().getString(R.string.diedTurn, entity.extra.diedTurn));
                 builder.append("\n");
             }
+
+            if (!TextUtils.isEmpty(entity.extra.createdBy)) {
+                builder.append(getContext().getString(R.string.createdBy, CardDb.getCard(entity.extra.createdBy).name));
+            }
+
+            if (Entity.ZONE_SECRET.equals(entity.tags.get(Entity.KEY_ZONE))
+                    && TextUtils.isEmpty(entity.CardID)) {
+                builder.append(Utils.getString(R.string.possibleSecrets));
+                appendPossibleSecrets((LinearLayout) b.getRoot(), entity);
+            }
+
             String s = builder.toString();
 
             b.textView.setText(s);
             b.textView.setTypeface(Typefaces.franklin());
-
-            if (Entity.ZONE_SECRET.equals(entity.tags.get(Entity.KEY_ZONE))
-                    && TextUtils.isEmpty(entity.CardID)) {
-                appendPossibleSecrets((LinearLayout) b.getRoot(), entity);
-            }
 
             addView(b.getRoot(), layoutParams);
             i++;

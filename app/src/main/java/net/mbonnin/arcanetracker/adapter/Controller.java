@@ -290,8 +290,11 @@ public class Controller implements GameLogic.Listener {
                 }
             });
             if (mOpponent) {
-                list.add(new HeaderItem(Utils.getString(R.string.secrets)));
-                list.addAll(getSecrets());
+                Collection<?> secrets = getSecrets();
+                if (secrets.size() > 0) {
+                    list.add(new HeaderItem(Utils.getString(R.string.secrets)));
+                    list.addAll(secrets);
+                }
                 list.addAll(getHand());
                 list.add(new HeaderItem(Utils.getString(R.string.deck)));
             }
