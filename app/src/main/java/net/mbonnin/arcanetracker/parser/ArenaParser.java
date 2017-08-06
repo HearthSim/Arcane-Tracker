@@ -4,11 +4,8 @@ import net.mbonnin.arcanetracker.Card;
 import net.mbonnin.arcanetracker.Deck;
 import net.mbonnin.arcanetracker.DeckList;
 import net.mbonnin.arcanetracker.MainViewCompanion;
-import net.mbonnin.arcanetracker.Utils;
 import net.mbonnin.arcanetracker.adapter.Controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,7 +16,7 @@ import timber.log.Timber;
  */
 
 public class ArenaParser implements LogReader.LineConsumer {
-    final Pattern DraftManager$OnChosen = Pattern.compile(".*DraftManager.OnChosen\\(\\): hero=(.*) premium=NORMAL");
+    final Pattern DraftManager$OnChosen = Pattern.compile(".*DraftManager.OnChosen\\(\\): hero=(.*) .*");
     final Pattern Client_chooses = Pattern.compile(".*Client chooses: .* \\((.*)\\)");
     private boolean mReadingPreviousData = true;
 
