@@ -1,4 +1,6 @@
 <resources>
+    <string name="changelog_213">Support for deckstrings{-}You can now paste decks copied from the game. Just click \"new deck\" after copying your deck.\nMark HSReplay.net uploads as Arena when needed\nYou can now edit the win/loss counter</string>
+    <string name="changelog_214">Fixed a bug that did not detect new arena runs if your hero was golden.\nIncrease the time we wait for logs to complete at the end of a game.{-}This should fix some instances where the logs are not uploaded to hsreplay.net\nImproved french translations</string>
     <string name="app_name">Arcane Tracker</string>
     <string name="welcome">Welcome to Arcane Tracker !</string>
     <string name="explanation1">Arcane tracker will now start Hearthstone and monitor the cards you and your opponent play in the background.</string>
@@ -131,7 +133,6 @@
     <string name="no">No</string>
     <string name="yes">Yes</string>
     <string name="whatsNew">What\'s new</string>
-    <string name="changelog_213">Support for deckstrings{-}You can now paste decks copied from the game. Just click \"new deck\" after copying your deck.\nMark HSReplay.net uploads as Arena when needed\nYou can now edit the win/loss counter</string>
     <string name="cVersion">Version %s</string>
     <string name="helpUs">Help Arcane Tracker</string>
     <string name="donateExplanation">Arcane Tracker is free and without ads. It’s made by only one person (me) in his spare time (nights). If you like the app, please consider donating through the buttons below, it’ll allow me to spend more time coding new features :-).</string>
