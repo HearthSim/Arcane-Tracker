@@ -401,6 +401,29 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
             ((TextView)view.findViewById(R.id.donate)).setCompoundDrawablePadding(Utils.dpToPx(13));
             view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
+            view.findViewById(R.id.settings).setOnClickListener(v3 -> {
+                mViewManager.removeView(view);
+                SettingsCompanion.show();
+            });
+            view.findViewById(R.id.hsReplayHistory).setOnClickListener(v3 -> {
+                mViewManager.removeView(view);
+                HistoryCompanion.show();
+            });
+            View donateView = view.findViewById(R.id.donate);
+            if (false) {
+                donateView.setOnClickListener(v3 -> {
+                    mViewManager.removeView(view);
+                    Intent intent = new Intent();
+                    intent.setClass(ArcaneTrackerApplication.getContext(), DonateActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                    ArcaneTrackerApplication.getContext().startActivity(intent);
+                });
+            } else {
+                donateView.setVisibility(View.GONE);
+            }
+            view.findViewById(R.id.quit).setOnClickListener(v3 -> Utils.exitApp());
+
             int wMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
             view.measure(wMeasureSpec, wMeasureSpec);
 
@@ -413,23 +436,6 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
             params.w = view.getMeasuredWidth();
             params.h = view.getMeasuredHeight();
 
-            view.findViewById(R.id.settings).setOnClickListener(v3 -> {
-                mViewManager.removeView(view);
-                SettingsCompanion.show();
-            });
-            view.findViewById(R.id.hsReplayHistory).setOnClickListener(v3 -> {
-                mViewManager.removeView(view);
-                HistoryCompanion.show();
-            });
-            view.findViewById(R.id.donate).setOnClickListener(v3 -> {
-                mViewManager.removeView(view);
-                Intent intent = new Intent();
-                intent.setClass(ArcaneTrackerApplication.getContext(), DonateActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                ArcaneTrackerApplication.getContext().startActivity(intent);
-            });
-            view.findViewById(R.id.quit).setOnClickListener(v3 -> Utils.exitApp());
             mViewManager.addModalView(view, params);
         });
 
