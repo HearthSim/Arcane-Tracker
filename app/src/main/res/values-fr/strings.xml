@@ -145,4 +145,6 @@
     <string name="xiaomi_explanation">On dirait que vous jouez sur un téléphone XIaomi. Rendez vous dans les paramètres systèmes pour autoriser la superposition aux autres applis.</string>
     <string name="yes">Oui</string>
     <string name="_default">Par défaut</string>
+    <string name="showWhatsNew">Montrer les nouveautés</string>
+
 </resources>
