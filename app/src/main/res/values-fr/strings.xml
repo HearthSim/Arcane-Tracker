@@ -108,7 +108,7 @@
     <string name="diedTurn">Mort: tour %d</string>
     <string name="dinosize">Gigantosaurisation !!! - %s</string>
     <string name="dinosize_purchased">Gigantosaurisation en cours... 🥚</string>
-    <string name="donate">Doner</string>
+    <string name="donate">Donner</string>
     <string name="donateExplanation">Arcane Tracker est gratuit et sans publicité. Toute contribution est bienvenue pour m\'aider à rajouter de nouvelles fonctionnalités !</string>
     <string name="donateExplanation2">Que la lumière vous apporte la victoire !</string>
     <string name="drawnTurn">Piochée: tour %d</string>
