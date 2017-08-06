@@ -172,7 +172,7 @@ public class PowerParser implements LogReader.LineConsumer {
                     public void run() {
                         if (mCurrentGame != null) {
                             // we are still parsing the PowerState logs, wait
-                            if (System.currentTimeMillis() - start < 15000) {
+                            if (System.currentTimeMillis() - start < 30000) {
                                 mHandler.post(this);
                             } else {
                                 Timber.e("timeout waiting for PowerState to finish");
