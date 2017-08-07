@@ -1,5 +1,7 @@
 package net.mbonnin.arcanetracker.parser;
 
+import android.os.Handler;
+
 import net.mbonnin.arcanetracker.Card;
 import net.mbonnin.arcanetracker.Deck;
 import net.mbonnin.arcanetracker.DeckList;
@@ -18,15 +20,19 @@ import timber.log.Timber;
 public class ArenaParser implements LogReader.LineConsumer {
     final Pattern DraftManager$OnChosen = Pattern.compile(".*DraftManager.OnChosen\\(\\): hero=(.*) .*");
     final Pattern Client_chooses = Pattern.compile(".*Client chooses: .* \\((.*)\\)");
+    private final Handler mHandler;
     private boolean mReadingPreviousData = true;
 
+    public ArenaParser() {
+        mHandler = new Handler();
+    }
     public void onLine(String line) {
         Timber.v(line);
         Matcher matcher;
 
 
         if (!mReadingPreviousData) {
-            /**
+            /*
              * a new ArenaDraft is started
              */
             matcher = DraftManager$OnChosen.matcher(line);
@@ -34,15 +40,7 @@ public class ArenaParser implements LogReader.LineConsumer {
                 int classIndex = Card.heroIdToClassIndex(matcher.group(1));
                 Timber.d("new hero: %d", classIndex);
 
-                Deck deck = DeckList.getArenaDeck();
-                deck.clear();
-                deck.classIndex = classIndex;
-
-                MainViewCompanion.getPlayerCompanion().setDeck(deck);
-
-                Controller.resetAll();
-
-                DeckList.saveArena();
+                mHandler.post(() -> newArenaRun(classIndex));
                 return;
             }
 
@@ -56,15 +54,31 @@ public class ArenaParser implements LogReader.LineConsumer {
                     // This must be a hero ("Client chooses: Tyrande Whisperwind (HERO_09a)")
                     Timber.e("skip hero " + cardId);
                 } else {
-                    Deck deck = DeckList.getArenaDeck();
-                    deck.addCard(cardId, 1);
-
-                    Controller.getPlayerController().setDeck(deck);
-
-                    DeckList.saveArena();
+                    mHandler.post(() -> newArenaCard(cardId));
                 }
             }
         }
+    }
+
+    private void newArenaCard(String cardId) {
+        Deck deck = DeckList.getArenaDeck();
+        deck.addCard(cardId, 1);
+
+        Controller.getPlayerController().setDeck(deck);
+
+        DeckList.saveArena();
+    }
+
+    private void newArenaRun(int classIndex) {
+        Deck deck = DeckList.getArenaDeck();
+        deck.clear();
+        deck.classIndex = classIndex;
+
+        MainViewCompanion.getPlayerCompanion().setDeck(deck);
+
+        Controller.resetAll();
+
+        DeckList.saveArena();
     }
 
 

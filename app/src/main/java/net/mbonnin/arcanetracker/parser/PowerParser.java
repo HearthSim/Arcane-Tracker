@@ -25,7 +25,7 @@ public class PowerParser implements LogReader.LineConsumer {
     private final Handler mHandler;
     private final GameLogic mGameLogic;
     private LinkedList<Node> mNodeStack = new LinkedList<Node>();
-    private Node mCurrentNode;
+    private Node mCurrentRoot;
 
     private Game mCurrentGame;
 
@@ -115,6 +115,7 @@ public class PowerParser implements LogReader.LineConsumer {
         node.line = line;
 
         Node parent = null;
+        // lookup the parent this node belongs to
         while (!mNodeStack.isEmpty()) {
             Node node2 = mNodeStack.peekLast();
             if (depth == node2.depth + 1) {
@@ -124,14 +125,14 @@ public class PowerParser implements LogReader.LineConsumer {
             mNodeStack.removeLast();
         }
         if (parent == null) {
-            outputCurrentNode();
-            mCurrentNode = node;
+            outputCurrentRoot();
+            mCurrentRoot = node;
         } else if (BLOCK_END.matcher(parent.line).matches()) {
             /*
              * BLOCK_END is a special case :-/
              */
-            outputCurrentNode();
-            mCurrentNode = node;
+            outputCurrentRoot();
+            mCurrentRoot = node;
         } else {
             parent.children.add(node);
         }
@@ -183,7 +184,7 @@ public class PowerParser implements LogReader.LineConsumer {
                     }
                 };
 
-                runnable.run();
+                mHandler.post(runnable);
                 rawBuilder = null;
             }
         }
@@ -208,13 +209,13 @@ public class PowerParser implements LogReader.LineConsumer {
     }
 
 
-    private void outputCurrentNode() {
-        if (mCurrentNode == null) {
+    private void outputCurrentRoot() {
+        if (mCurrentRoot == null) {
             return;
         }
 
-        Node node = mCurrentNode;
-        mCurrentNode = null;
+        Node node = mCurrentRoot;
+        mCurrentRoot = null;
         mNodeStack.clear();
 
         String line = node.line;
