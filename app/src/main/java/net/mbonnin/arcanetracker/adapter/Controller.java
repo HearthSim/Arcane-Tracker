@@ -372,6 +372,21 @@ public class Controller implements GameLogic.Listener {
             unknown -= deckEntry.count;
         }
 
+        Collections.sort(list, (a,b) -> {
+            DeckEntryItem da = (DeckEntryItem) a;
+            DeckEntryItem db = (DeckEntryItem) b;
+
+            int acost = da.card.cost == null ? 0 : da.card.cost;
+            int bcost = db.card.cost == null ? 0 : db.card.cost;
+            if (acost < 0) {
+                acost = Integer.MAX_VALUE;
+            }
+            if (bcost < 0) {
+                bcost = Integer.MAX_VALUE;
+            }
+            return acost - bcost;
+        });
+
         if (unknown > 0) {
             list.add(ArcaneTrackerApplication.getContext().getString(R.string.unknown_cards, unknown));
         }
