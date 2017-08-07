@@ -1,7 +1,5 @@
 package net.mbonnin.arcanetracker.parser;
 
-import android.os.Handler;
-
 import net.mbonnin.arcanetracker.Utils;
 
 import java.io.File;
@@ -16,7 +14,6 @@ import timber.log.Timber;
 
 public class LogReader implements Runnable {
     private final String mLog;
-    private final Handler mHandler;
     private boolean mPreviousDataRead = false;
     private boolean mCanceled;
     private LineConsumer mLineConsumer;
@@ -35,7 +32,6 @@ public class LogReader implements Runnable {
         mSkipPreviousData = skipPreviousData;
         mLog = log;
 
-        mHandler = new Handler();
         Thread thread = new Thread(this);
         thread.start();
 
@@ -122,7 +118,7 @@ public class LogReader implements Runnable {
 
                 long size = file.length();
                 if (size < lastSize) {
-                    /**
+                    /*
                      * somehow someone truncated the file... do what we can
                      */
                     String w = String.format("%s: truncated file ? [%d -> %d]", mLog, lastSize, size);
@@ -144,7 +140,7 @@ public class LogReader implements Runnable {
                 }
                 if (line == null) {
                     if (!mPreviousDataRead) {
-                        /**
+                        /*
                          * we've reach the EOF, everything is new data now
                          */
                         previousDataConsumed();
@@ -157,8 +153,7 @@ public class LogReader implements Runnable {
                         Timber.e(e);
                     }
                 } else {
-                    String finalLine = line;
-                    mHandler.post(() -> mLineConsumer.onLine(finalLine));
+                    mLineConsumer.onLine(line);
                 }
             }
 
@@ -168,7 +163,7 @@ public class LogReader implements Runnable {
 
     private void previousDataConsumed() {
         mPreviousDataRead = true;
-        mHandler.post(() -> mLineConsumer.onPreviousDataRead());
+        mLineConsumer.onPreviousDataRead();
     }
 
     static class LogLine {

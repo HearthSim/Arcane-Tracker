@@ -116,7 +116,7 @@ public class GameLogicListener implements GameLogic.Listener {
 
         Deck deck = MainViewCompanion.getPlayerCompanion().getDeck();
         if (Settings.get(Settings.AUTO_SELECT_DECK, true)) {
-            if (ParserListenerLoadingScreen.get().getMode() == LoadingScreenParser.MODE_ARENA) {
+            if (LoadingScreenParser.get().getMode() == LoadingScreenParser.MODE_ARENA) {
                 deck = DeckList.getArenaDeck();
             } else {
                 int classIndex = game.getPlayer().classIndex();
@@ -142,7 +142,7 @@ public class GameLogicListener implements GameLogic.Listener {
         MainViewCompanion.getOpponentCompanion().setDeck(DeckList.getOpponentDeck());
 
         mGame = game;
-        mGame.bnetGameType = ParserListenerLoadingScreen.get().getMode() == LoadingScreenParser.MODE_ARENA ? BnetGameType.BGT_ARENA : BnetGameType.BGT_UNKNOWN;
+        mGame.bnetGameType = LoadingScreenParser.get().getMode() == LoadingScreenParser.MODE_ARENA ? BnetGameType.BGT_ARENA : BnetGameType.BGT_UNKNOWN;
     }
 
     @Override
@@ -166,7 +166,7 @@ public class GameLogicListener implements GameLogic.Listener {
             DeckList.save();
         }
 
-        int mode = ParserListenerLoadingScreen.get().getMode();
+        int mode = LoadingScreenParser.get().getMode();
 
         if ((Utils.isAppDebuggable() || mode == LoadingScreenParser.MODE_ARENA || mode == LoadingScreenParser.MODE_PLAY)
                 && Trackobot.get().getUser() != null) {

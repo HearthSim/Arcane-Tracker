@@ -10,12 +10,27 @@ import timber.log.Timber;
  */
 
 public class LoadingScreenParser implements LogReader.LineConsumer {
+    private static LoadingScreenParser sParser;
+
     public static final int MODE_PLAY = 0;
     public static final int MODE_ARENA = 1;
     public static final int MODE_OTHER = 2;
-    private final Listener mListener;
     private boolean mReadingPreviousData = true;
-    private int mCurrentMode;
+    private int mParsedMode;
+    private volatile int mMode;
+
+    public static LoadingScreenParser get() {
+        if (sParser == null) {
+            sParser = new LoadingScreenParser();
+        }
+        return sParser;
+    }
+
+    private LoadingScreenParser() {}
+
+    public int getMode(){
+        return mMode;
+    }
 
     public static String friendlyMode(int mode) {
         switch (mode) {
@@ -26,13 +41,6 @@ public class LoadingScreenParser implements LogReader.LineConsumer {
         }
     }
 
-    public interface Listener {
-        void modeChanged(int newMode);
-    }
-
-    public LoadingScreenParser(Listener listener) {
-        mListener = listener;
-    }
 
     public void onLine(String line) {
         Timber.v(line);
@@ -55,18 +63,18 @@ public class LoadingScreenParser implements LogReader.LineConsumer {
             }
 
             if (!mReadingPreviousData) {
-                /**
+                /*
                  * do not trigger the mode changes for previous modes, it selects the arena deck at startup always
                  */
-                mListener.modeChanged(newMode);
+                mMode = mParsedMode;
             }
-            mCurrentMode = newMode;
+            mParsedMode = newMode;
         }
     }
 
     @Override
     public void onPreviousDataRead() {
         mReadingPreviousData = false;
-        mListener.modeChanged(mCurrentMode);
+        mMode = mParsedMode;
     }
 }

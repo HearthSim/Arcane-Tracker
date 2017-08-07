@@ -93,7 +93,7 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
          * we need to read the whole loading screen if we start Arcane Tracker while in the 'tournament' play screen
          * or arena screen already (and not in main menu)
          */
-        new LogReader("LoadingScreen.log", new LoadingScreenParser(ParserListenerLoadingScreen.get()));
+        new LogReader("LoadingScreen.log", LoadingScreenParser.get());
 
         /*
          * Power.log, we just want the incremental changes
