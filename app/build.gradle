@@ -24,8 +24,8 @@ android {
         applicationId "net.mbonnin.arcanetracker"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 216
-        versionName "2.16"
+        versionCode 217
+        versionName "2.17"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
