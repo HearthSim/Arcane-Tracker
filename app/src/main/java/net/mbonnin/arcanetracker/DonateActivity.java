@@ -96,6 +96,7 @@ public class DonateActivity extends AppCompatActivity {
                     // do not allow users to consume purchases. They might give some priviledges
                     // at some point
                     buttonList.get(i).setOnClickListener(null);
+                    buttonList.get(i).setEnabled(false);
                 } else {
                     buttonList.get(i).setOnClickListener(v -> {
                         Timber.d("consume");
@@ -116,6 +117,7 @@ public class DonateActivity extends AppCompatActivity {
                 buttonLabel.setSpan(new ImageSpan(d, ImageSpan.ALIGN_BOTTOM), 0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
                 buttonList.get(i).setText(buttonLabel);
 
+                buttonList.get(i).setEnabled(true);
                 buttonList.get(i).setOnClickListener(v -> {
                     Timber.d("launchPurchaseFlow");
                     try {
