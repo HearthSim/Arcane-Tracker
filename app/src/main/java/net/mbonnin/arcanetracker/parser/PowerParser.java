@@ -7,6 +7,15 @@ import net.mbonnin.arcanetracker.Card;
 import net.mbonnin.arcanetracker.CardDb;
 import net.mbonnin.arcanetracker.Utils;
 import net.mbonnin.arcanetracker.hsreplay.HSReplay;
+import net.mbonnin.arcanetracker.parser.power.BlockTag;
+import net.mbonnin.arcanetracker.parser.power.CreateGameTag;
+import net.mbonnin.arcanetracker.parser.power.FullEntityTag;
+import net.mbonnin.arcanetracker.parser.power.GameEntityTag;
+import net.mbonnin.arcanetracker.parser.power.HideEntityTag;
+import net.mbonnin.arcanetracker.parser.power.PlayerTag;
+import net.mbonnin.arcanetracker.parser.power.ShowEntityTag;
+import net.mbonnin.arcanetracker.parser.power.TagChangeTag;
+import net.mbonnin.arcanetracker.parser.power.UnknownTag;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,16 +38,18 @@ public class PowerParser implements LogReader.LineConsumer {
 
     private Game mCurrentGame;
 
-    private final Pattern BLOCK_START = Pattern.compile("BLOCK_START BlockType=(.*) Entity=(.*) EffectCardId=(.*) EffectIndex=(.*) Target=(.*)");
-    private final Pattern BLOCK_END = Pattern.compile("BLOCK_END");
+
+    private final Pattern BLOCK_START_PATTERN = Pattern.compile("BLOCK_START BlockType=(.*) Entity=(.*) EffectCardId=(.*) EffectIndex=(.*) Target=(.*)");
+    private final Pattern BLOCK_END_PATTERN = Pattern.compile("BLOCK_END");
 
     private final Pattern GameEntityPattern = Pattern.compile("GameEntity EntityID=(.*)");
     private final Pattern PlayerEntityPattern = Pattern.compile("Player EntityID=(.*) PlayerID=(.*) GameAccountId=(.*)");
 
-    private final Pattern FULL_ENTITY = Pattern.compile("FULL_ENTITY - Updating (.*) CardID=(.*)");
-    private final Pattern SHOW_ENTITY = Pattern.compile("SHOW_ENTITY - Updating Entity=(.*) CardID=(.*)");
-    private final Pattern HIDE_ENTITY = Pattern.compile("HIDE_ENTITY - Entity=(.*) tag=(.*) value=(.*)");
+    private final Pattern FULL_ENTITY = Pattern.compile("FULL_ENTITY - Creating ID=(.*) CardID=(.*)");
     private final Pattern TAG_CHANGE = Pattern.compile("TAG_CHANGE Entity=(.*) tag=(.*) value=(.*)");
+    private final Pattern SHOW_ENTITY = Pattern.compile("SHOW_ENTITY - Updating Entity=(.*) CardID=(.*)");
+
+    private final Pattern HIDE_ENTITY = Pattern.compile("HIDE_ENTITY - Entity=(.*) tag=(.*) value=(.*)");
     private final Pattern TAG = Pattern.compile("tag=(.*) value=(.*)");
 
     private StringBuilder rawBuilder;
@@ -73,8 +84,6 @@ public class PowerParser implements LogReader.LineConsumer {
 
 
     public void onLine(String rawLine) {
-        Timber.v(rawLine);
-
         LogReader.LogLine logLine = LogReader.parseLine(rawLine);
         if (logLine == null) {
             return;
@@ -85,13 +94,16 @@ public class PowerParser implements LogReader.LineConsumer {
             return;
         }
 
-        if (logLine.method.startsWith("GameState")) {
-            handleRawLine(rawLine);
+        if (!logLine.method.startsWith("GameState"))
             return;
-        } else if (!"PowerTaskList.DebugPrintPower()".equals(logLine.method)) {
-            //Timber.e("Ignore method: " + s[0]);
+
+        handleRawLine(rawLine);
+
+        if (!logLine.method.equals("GameState.DebugPrintPower()")){
             return;
         }
+
+        Timber.v(rawLine);
 
         int spaces = 0;
         while (spaces < line.length() && line.charAt(spaces) == ' ') {
@@ -108,6 +120,11 @@ public class PowerParser implements LogReader.LineConsumer {
 
         line = line.substring(spaces);
 
+        if ("BLOCK_END".equals(line)) {
+            // just ignore the BLOCK_END stuff, we'll just base our parsing on indentation
+            return;
+        }
+
         int depth = spaces / 4;
 
         Node node = new Node();
@@ -115,7 +132,10 @@ public class PowerParser implements LogReader.LineConsumer {
         node.line = line;
 
         Node parent = null;
-        // lookup the parent this node belongs to
+
+        /*
+         * lookup the parent this node belongs to
+         */
         while (!mNodeStack.isEmpty()) {
             Node node2 = mNodeStack.peekLast();
             if (depth == node2.depth + 1) {
@@ -125,13 +145,13 @@ public class PowerParser implements LogReader.LineConsumer {
             mNodeStack.removeLast();
         }
         if (parent == null) {
-            outputCurrentRoot();
-            mCurrentRoot = node;
-        } else if (BLOCK_END.matcher(parent.line).matches()) {
-            /*
-             * BLOCK_END is a special case :-/
-             */
-            outputCurrentRoot();
+            if (node.depth > 0) {
+                Timber.e("orphan node");
+                return;
+            }
+            if (mCurrentRoot != null) {
+                outputCurrentRoot(mCurrentRoot);
+            }
             mCurrentRoot = node;
         } else {
             parent.children.add(node);
@@ -209,46 +229,93 @@ public class PowerParser implements LogReader.LineConsumer {
     }
 
 
-    private void outputCurrentRoot() {
-        if (mCurrentRoot == null) {
-            return;
+    private void outputCurrentRoot(Node node) {
+        dumpNode(node);
+
+        try {
+            Object tag = parseTag(node);
+            mHandler.post(() -> GameLogic.get().handleAction(tag));
+        } catch (Exception e) {
+            Timber.e("cannot parse tag");
+            Timber.e(e);
         }
+    }
 
-        Node node = mCurrentRoot;
-        mCurrentRoot = null;
-        mNodeStack.clear();
-
+    private Object parseTag(Node node) {
+        Matcher m;
         String line = node.line;
 
-        Matcher m;
+        if (("CREATE_GAME".equals(line))) {
+            CreateGameTag tag = new CreateGameTag();
 
-        if (node.depth == 0) {
-            if ((m = BLOCK_START.matcher(line)).matches()) {
-                Block block = new Block();
-                block.blockType = m.group(1);
-                block.entity = m.group(2);
-                block.effectCardId = m.group(3);
-                block.effectIndex = m.group(4);
-                block.target = m.group(5);
+            tag.gameEntity = (GameEntityTag) parseTag(node.children.get(0));
+            tag.player1 = (PlayerTag) parseTag(node.children.get(1));
+            tag.player2 = (PlayerTag) parseTag(node.children.get(2));
 
-                for (Node child : node.children) {
-                    outputAction(block, child);
-                }
+            return tag;
+        } else if ((m = GameEntityPattern.matcher(line)).matches()) {
+            GameEntityTag tag = new GameEntityTag();
+            tag.EntityID = m.group(1);
+            tag.tags.putAll(getTags(node));
 
-                if (mCurrentGame != null && Block.TYPE_PLAY.equals(block.blockType)) {
-                    Entity entity = findEntityByName(mCurrentGame, m.group(2));
-                    mGameLogic.entityPlayed(entity);
-                }
-            } else if ((m = BLOCK_END.matcher(line)).matches()) {
-            } else {
-                Timber.e("unknown block: " + line);
+            return tag;
+        } else if ((m = PlayerEntityPattern.matcher(line)).matches()) {
+            PlayerTag tag = new PlayerTag();
+            tag.EntityID = m.group(1);
+            tag.PlayerID = m.group(2);
+            tag.tags.putAll(getTags(node));
+
+            return tag;
+        } else if ((m = FULL_ENTITY.matcher(line)).matches()) {
+            FullEntityTag tag = new FullEntityTag();
+            tag.ID = m.group(1);
+            tag.CardID = m.group(2);
+            tag.tags.putAll(getTags(node));
+
+            return tag;
+        } else if ((m = TAG_CHANGE.matcher(line)).matches()) {
+            TagChangeTag tag = new TagChangeTag();
+            tag.ID = m.group(1);
+            tag.tag = m.group(2);
+            tag.value = m.group(3);
+
+            return tag;
+        } else if ((m = BLOCK_START_PATTERN.matcher(line)).matches()) {
+            BlockTag tag = new BlockTag();
+            tag.BlockType = m.group(1);
+            tag.Entity = m.group(2);
+            tag.EffectCardId = m.group(3);
+            tag.EffectIndex = m.group(4);
+            tag.Target = m.group(5);
+
+            for (Node child : node.children) {
+                tag.children.add(parseTag(child));
             }
 
-            return;
-        } else if (node.depth == 1) {
-            outputAction(null, node);
+            return tag;
+        } else if ((m = SHOW_ENTITY.matcher(line)).matches()) {
+            ShowEntityTag tag = new ShowEntityTag();
+            tag.Entity = getEntityIdFromNameOrId(m.group(1));
+            tag.CardID = m.group(2);
+
+            return tag;
+        } else if ((m = HIDE_ENTITY.matcher(line)).matches()) {
+            HideEntityTag tag = new HideEntityTag();
+            tag.Entity = getEntityIdFromNameOrId(m.group(1));
+            tag.tag = m.group(2);
+            tag.value = m.group(3);
+            
+            return tag;
         } else {
-            Timber.e("ignore block" + line);
+            Timber.e("unknown tag: " + line);
+            return new UnknownTag();
+        }
+    }
+
+    private void dumpNode(Node node) {
+        Timber.v(node.line);
+        for (Node child: node.children) {
+            dumpNode(child);
         }
     }
 
@@ -534,6 +601,14 @@ public class PowerParser implements LogReader.LineConsumer {
     private String getTargetId(Block block) {
         Entity entity = findEntityByName(mCurrentGame, block.target);
         return entity.CardID;
+    }
+
+    private static String getEntityIdFromNameOrId(String nameOrId) {
+        if (nameOrId.length() >= 2 && nameOrId.charAt(0) == '[' && nameOrId.charAt(nameOrId.length() - 1) == ']') {
+            return decodeEntityName(nameOrId).get("id");
+        } else {
+            return nameOrId;
+        }
     }
 
     private static Entity findEntityByName(Game game, String name) {

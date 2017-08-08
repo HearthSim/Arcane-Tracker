@@ -37,6 +37,10 @@ public class GameLogic {
         mHandler = new Handler();
     }
 
+    public void handleAction(Object action) {
+
+    }
+
     public interface Listener {
         /**
          * when gameStarted is called, game.player and game.opponent are set
