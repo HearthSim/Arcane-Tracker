@@ -106,7 +106,7 @@ public class PowerParser implements LogReader.LineConsumer {
             return;
         }
 
-        line = line.substring(spaces);
+        line = line.substring(spaces).trim();
 
         int depth = spaces / 4;
 

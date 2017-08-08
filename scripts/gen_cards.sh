@@ -19,10 +19,14 @@ done
 fi
 
 # requires python 3 and a recent version of setuptools
+# ./configure --prefix=/home/martin/something
+# make -j 9 && make install
+
 if false
 then
 git clone https://github.com/HearthSim/UnityPack
 cd UnityPack
+pip3 install --upgrade setuptools
 python3 setup.py install
 fi
 
