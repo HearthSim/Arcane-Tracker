@@ -1,6 +1,8 @@
 <resources>
     <string name="changelog_213">Support for deckstrings. You can now paste decks copied from the game. Just click \"new deck\" after copying your deck.\nMark HSReplay.net uploads as Arena when needed\nYou can now edit the win/loss counter.</string>
     <string name="changelog_214">Fixed a bug that prevented the tracker to detect new arena runs if your hero was golden.\nIncreased the time we wait for logs to complete at the end of a game. This should fix some instances where the logs are not uploaded to hsreplay.net.\nImproved french translations.</string>
+    <string name="changelog_217">Added support for the Frozen Throne extension.</string>
+    <string name="changelog_218">Fixed a crash at startup for devices on kitkat and below.</string>
     <string name="app_name">Arcane Tracker</string>
     <string name="welcome">Welcome to Arcane Tracker !</string>
     <string name="explanation1">Arcane tracker will now start Hearthstone and monitor the cards you and your opponent play in the background.</string>
