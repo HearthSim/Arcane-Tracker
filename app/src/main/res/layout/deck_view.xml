@@ -51,7 +51,7 @@
                     android:layout_marginRight="3dp"
                     android:background="?android:selectableItemBackground"
                     android:padding="5dp"
-                    app:srcCompat="@drawable/ic_mode_edit_black_24dp"
+                    android:src="@drawable/ic_mode_edit_black_24dp"
                     android:tint="@android:color/white" />
             </LinearLayout>
 
