@@ -138,13 +138,13 @@ public class LogReader implements Runnable {
                     } catch (InterruptedException e1) {
                         Timber.e(e1);
                     }
-                    Timber.e("%s: cannot read log file file", mLog);
-                    Utils.reportNonFatal(e);
+                    Timber.e("%s: cannot read log file", mLog);
+                    Utils.reportNonFatal(new Exception("cannot read log file " + mLog, e));
                     break;
                 }
                 if (line == null) {
                     if (!mPreviousDataRead) {
-                        /**
+                        /*
                          * we've reach the EOF, everything is new data now
                          */
                         previousDataConsumed();
