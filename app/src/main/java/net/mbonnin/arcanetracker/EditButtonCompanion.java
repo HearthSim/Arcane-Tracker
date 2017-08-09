@@ -124,29 +124,39 @@ public class EditButtonCompanion {
         mViewManager.addModalView(view, params);
     };
 
-    private void newDeckClicked(Context context) {
+    Deck detectDeckFromClipboard(Context context) {
         ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-        if (clipboard.hasPrimaryClip()) {
-            ClipData.Item item = clipboard.getPrimaryClip().getItemAt(0);
-            String pasteData = item.getText().toString();
-            Deck deck = DeckString.parse(pasteData);
+        if (!clipboard.hasPrimaryClip()) {
+            return null;
+        }
 
-            if (deck != null) {
-                View view = LayoutInflater.from(context).inflate(R.layout.import_deckstring, null);
-                view.findViewById(R.id.ok).setOnClickListener(v -> {
-                    mViewManager.removeView(view);
-                    DeckList.addDeck(deck);
-                    MainViewCompanion.getPlayerCompanion().setDeck(deck);
-                });
-                view.findViewById(R.id.cancel).setOnClickListener(v -> {
-                    mViewManager.removeView(view);
-                    showNewDeckDialog(context);
-                });
+        ClipData.Item item = clipboard.getPrimaryClip().getItemAt(0);
 
-                mViewManager.addCenteredView(view);
+        if (item.getText() == null) {
+            return null;
 
-                return;
-            }
+        }
+        String pasteData = item.getText().toString();
+        return DeckString.parse(pasteData);
+    }
+    private void newDeckClicked(Context context) {
+        Deck deck = detectDeckFromClipboard(context);
+
+        if (deck != null) {
+            View view = LayoutInflater.from(context).inflate(R.layout.import_deckstring, null);
+            view.findViewById(R.id.ok).setOnClickListener(v -> {
+                mViewManager.removeView(view);
+                DeckList.addDeck(deck);
+                MainViewCompanion.getPlayerCompanion().setDeck(deck);
+            });
+            view.findViewById(R.id.cancel).setOnClickListener(v -> {
+                mViewManager.removeView(view);
+                showNewDeckDialog(context);
+            });
+
+            mViewManager.addCenteredView(view);
+
+            return;
         }
 
         showNewDeckDialog(context);
