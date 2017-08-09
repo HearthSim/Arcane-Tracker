@@ -232,11 +232,11 @@ public class GameLogic {
                 entity.extra.playTurn = (mCurrentTurn + 1) / 2;
             } else if (Entity.ZONE_PLAY.equals(oldValue) && Entity.ZONE_GRAVEYARD.equals(newValue)) {
                 entity.extra.diedTurn = (mCurrentTurn + 1) / 2;
-                String opponentPlayerId = mGame.getOpponent().entity.PlayerID;
                 /*
                  * one of the oponent minion died, remember it for the secret detector
                  */
                 try {
+                    String opponentPlayerId = mGame.getOpponent().entity.PlayerID;
                     EntityList opponentSecretEntityList = mGame.getEntityList(e -> opponentPlayerId.equals(e.tags.get(Entity.KEY_CONTROLLER)));
                     if (opponentPlayerId.equals(entity.tags.get(Entity.KEY_CONTROLLER))) {
                         for (Entity e2 : opponentSecretEntityList) {
