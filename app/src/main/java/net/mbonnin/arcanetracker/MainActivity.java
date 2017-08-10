@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 Snackbar.make(contentView, getString(R.string.cannot_locate_heathstone_install), Snackbar.LENGTH_LONG).show();
-                Utils.reportNonFatal(e);
+                Utils.reportNonFatal(new Exception("cannot locate hearthstone install directory", e));
             }
 
             startActivity(launchIntent);

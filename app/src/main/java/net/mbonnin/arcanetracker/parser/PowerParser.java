@@ -118,7 +118,7 @@ public class PowerParser implements LogReader.LineConsumer {
             return;
         }
 
-        line = line.substring(spaces);
+        line = line.substring(spaces).trim();
 
         if ("BLOCK_END".equals(line)) {
             // just ignore the BLOCK_END stuff, we'll just base our parsing on indentation
@@ -397,31 +397,35 @@ public class PowerParser implements LogReader.LineConsumer {
                 /*
                  * detect if the hero or a minion was attacked for the secret detector
                  */
-                if (block != null && Block.TYPE_ATTACK.equals(block.blockType)
-                        && key.equals((Entity.KEY_DEFENDING))
-                        && value.equals("1")) {
-                    String opponentPlayerId = mCurrentGame.getOpponent().entity.PlayerID;
-                    if (entity.CardID != null) {
-                        Card card = CardDb.getCard(entity.CardID);
+                try {
+                    if (block != null && Block.TYPE_ATTACK.equals(block.blockType)
+                            && key.equals((Entity.KEY_DEFENDING))
+                            && value.equals("1")) {
+                        String opponentPlayerId = mCurrentGame.getOpponent().entity.PlayerID;
+                        if (entity.CardID != null) {
+                            Card card = CardDb.getCard(entity.CardID);
 
-                        EntityList opponentSecretEntityList = mCurrentGame.getEntityList(e -> opponentPlayerId.equals(e.tags.get(Entity.KEY_CONTROLLER)));
-                        if (opponentPlayerId.equals(entity.tags.get(Entity.KEY_CONTROLLER))) {
-                            for (Entity e2 : opponentSecretEntityList) {
-                                if (Card.TYPE_HERO.equals(card.type)) {
-                                    e2.extra.opponentHeroWasAttacked = true;
-                                } else {
-                                    e2.extra.minonWasAttacked = true;
+                            EntityList opponentSecretEntityList = mCurrentGame.getEntityList(e -> opponentPlayerId.equals(e.tags.get(Entity.KEY_CONTROLLER)));
+                            if (opponentPlayerId.equals(entity.tags.get(Entity.KEY_CONTROLLER))) {
+                                for (Entity e2 : opponentSecretEntityList) {
+                                    if (Card.TYPE_HERO.equals(card.type)) {
+                                        e2.extra.opponentHeroWasAttacked = true;
+                                    } else {
+                                        e2.extra.minonWasAttacked = true;
+                                    }
                                 }
-                            }
-                        } else {
-                            for (Entity e2 : opponentSecretEntityList) {
-                                if (Card.TYPE_HERO.equals(card.type)) {
-                                    e2.extra.playerHeroWasAttacked = true;
+                            } else {
+                                for (Entity e2 : opponentSecretEntityList) {
+                                    if (Card.TYPE_HERO.equals(card.type)) {
+                                        e2.extra.playerHeroWasAttacked = true;
+                                    }
                                 }
                             }
                         }
-                    }
 
+                    }
+                } catch (Exception e) {
+                    Timber.e(e);
                 }
             }
         } else if ((m = FULL_ENTITY.matcher(line)).matches()) {

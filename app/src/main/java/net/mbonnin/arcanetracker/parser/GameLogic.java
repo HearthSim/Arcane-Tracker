@@ -236,15 +236,19 @@ public class GameLogic {
                 entity.extra.playTurn = (mCurrentTurn + 1) / 2;
             } else if (Entity.ZONE_PLAY.equals(oldValue) && Entity.ZONE_GRAVEYARD.equals(newValue)) {
                 entity.extra.diedTurn = (mCurrentTurn + 1) / 2;
-                String opponentPlayerId = mGame.getOpponent().entity.PlayerID;
                 /*
                  * one of the oponent minion died, remember it for the secret detector
                  */
-                EntityList opponentSecretEntityList = mGame.getEntityList(e -> opponentPlayerId.equals(e.tags.get(Entity.KEY_CONTROLLER)));
-                if (opponentPlayerId.equals(entity.tags.get(Entity.KEY_CONTROLLER))) {
-                    for (Entity e2 : opponentSecretEntityList) {
-                        e2.extra.opponentMinionDied = true;
+                try {
+                    String opponentPlayerId = mGame.getOpponent().entity.PlayerID;
+                    EntityList opponentSecretEntityList = mGame.getEntityList(e -> opponentPlayerId.equals(e.tags.get(Entity.KEY_CONTROLLER)));
+                    if (opponentPlayerId.equals(entity.tags.get(Entity.KEY_CONTROLLER))) {
+                        for (Entity e2 : opponentSecretEntityList) {
+                            e2.extra.opponentMinionDied = true;
+                        }
                     }
+                } catch (Exception e) {
+                    Timber.e(e);
                 }
             } else if (Entity.ZONE_HAND.equals(oldValue) && Entity.ZONE_DECK.equals(newValue)) {
                 /*
@@ -276,16 +280,20 @@ public class GameLogic {
             /*
              * detect if we played a minion or spell for the secret detector
              */
-            String opponentPlayerId = mGame.getOpponent().entity.PlayerID;
-            EntityList opponentSecretEntityList = mGame.getEntityList(e -> opponentPlayerId.equals(e.tags.get(Entity.KEY_CONTROLLER)));
-            for (Entity e2 : opponentSecretEntityList) {
-                if (Card.TYPE_MINION.equals(entity.card.type)) {
-                    e2.extra.minionPlayed = true;
-                } else if (Card.TYPE_SPELL.equals(entity.card.type)) {
-                    e2.extra.spellPlayed = true;
-                } else if (Card.TYPE_HERO_POWER.equals(entity.card.type)) {
-                    e2.extra.heroPowerPlayed = true;
+            try {
+                String opponentPlayerId = mGame.getOpponent().entity.PlayerID;
+                EntityList opponentSecretEntityList = mGame.getEntityList(e -> opponentPlayerId.equals(e.tags.get(Entity.KEY_CONTROLLER)));
+                for (Entity e2 : opponentSecretEntityList) {
+                    if (Card.TYPE_MINION.equals(entity.card.type)) {
+                        e2.extra.minionPlayed = true;
+                    } else if (Card.TYPE_SPELL.equals(entity.card.type)) {
+                        e2.extra.spellPlayed = true;
+                    } else if (Card.TYPE_HERO_POWER.equals(entity.card.type)) {
+                        e2.extra.heroPowerPlayed = true;
+                    }
                 }
+            } catch (Exception e) {
+                Timber.e(e);
             }
         }
 

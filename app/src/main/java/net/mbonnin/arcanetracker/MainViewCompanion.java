@@ -410,7 +410,7 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
                 HistoryCompanion.show();
             });
             View donateView = view.findViewById(R.id.donate);
-            if (false) {
+            if (true) {
                 donateView.setOnClickListener(v3 -> {
                     mViewManager.removeView(view);
                     Intent intent = new Intent();

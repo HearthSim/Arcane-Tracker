@@ -5,9 +5,11 @@ import android.os.Environment;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.stream.MalformedJsonException;
 
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
 import net.mbonnin.arcanetracker.Card;
+import net.mbonnin.arcanetracker.Lce;
 import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Utils;
 import net.mbonnin.arcanetracker.trackobot.model.ResultData;
@@ -26,6 +28,7 @@ import okhttp3.Credentials;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.HttpException;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -66,40 +69,6 @@ public class Trackobot {
 
     public User getUser() {
         return mUser;
-    }
-
-    class ResultDataObserver implements Observer<ResultData> {
-        public ResultData resultData;
-
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            String message;
-            Context context = ArcaneTrackerApplication.getContext();
-            if (e instanceof HttpException) {
-                message = context.getString(R.string.trackobotHttpError, ((HttpException) e).code());
-            } else if (e instanceof SocketTimeoutException) {
-                message = context.getString(R.string.trackobotTimeout);
-            } else if (e instanceof ConnectException) {
-                message = context.getString(R.string.trackobotConnectError);
-            } else if (e instanceof IOException) {
-                message = context.getString(R.string.trackobotNetworkError);
-            } else {
-                message = context.getString(R.string.trackobotError);
-            }
-            Toast.makeText(ArcaneTrackerApplication.getContext(), message, Toast.LENGTH_LONG).show();
-            Utils.reportNonFatal(e);
-        }
-
-        @Override
-        public void onNext(ResultData resultData) {
-            Context context = ArcaneTrackerApplication.getContext();
-            Toast.makeText(ArcaneTrackerApplication.getContext(), context.getString(R.string.trackobotSuccess), Toast.LENGTH_LONG).show();
-        }
     }
 
     public static File findTrackobotFile() {
@@ -218,10 +187,52 @@ public class Trackobot {
 
     public void sendResultInternal(ResultData resultData) {
         Timber.w("sendResult");
-        ResultDataObserver observer = new ResultDataObserver();
-        observer.resultData = resultData;
-        Trackobot.get().service().postResults(resultData).
-                observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
+        Trackobot.get().service()
+                .postResults(resultData)
+                .observeOn(Schedulers.io())
+                .map(this::responseToLce)
+                .onErrorReturn(Lce::error)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::handleResponse);
+    }
 
+    private void handleResponse(Lce<Object> lce) {
+        if (lce.getData() != null) {
+            Context context = ArcaneTrackerApplication.getContext();
+            Toast.makeText(ArcaneTrackerApplication.getContext(), context.getString(R.string.trackobotSuccess), Toast.LENGTH_LONG).show();
+        } else if (lce.getError() != null) {
+            Throwable e = lce.getError();
+            String message;
+            Context context = ArcaneTrackerApplication.getContext();
+            if (e instanceof HttpException) {
+                message = context.getString(R.string.trackobotHttpError, ((HttpException) e).code());
+            } else if (e instanceof SocketTimeoutException) {
+                message = context.getString(R.string.trackobotTimeout);
+            } else if (e instanceof ConnectException) {
+                message = context.getString(R.string.trackobotConnectError);
+            } else if (e instanceof IOException) {
+                message = context.getString(R.string.trackobotNetworkError);
+            } else {
+                message = context.getString(R.string.trackobotError);
+            }
+
+            Toast.makeText(ArcaneTrackerApplication.getContext(), message, Toast.LENGTH_LONG).show();
+            Utils.reportNonFatal(e);
+        }
+    }
+
+    private Lce<Object> responseToLce(Response<ResultData> response) {
+        if (response.isSuccessful()) {
+            return Lce.data(new Object());
+        } else {
+            try {
+                String body = new String(response.errorBody().bytes());
+                return Lce.error(new Exception(body));
+            } catch (IOException e) {
+                e.printStackTrace();
+                return Lce.error(e);
+            }
+        }
     }
 }
+

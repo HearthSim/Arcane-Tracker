@@ -3,6 +3,7 @@ package net.mbonnin.arcanetracker.trackobot;
 import net.mbonnin.arcanetracker.trackobot.model.HistoryList;
 import net.mbonnin.arcanetracker.trackobot.model.ResultData;
 
+import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -23,5 +24,5 @@ public interface Service {
     Observable<HistoryList> getHistoryList();
 
     @POST("profile/results.json")
-    Observable<ResultData> postResults(@Body ResultData resultData);
+    Observable<Response<ResultData>> postResults(@Body ResultData resultData);
 }
