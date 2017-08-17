@@ -3,6 +3,7 @@
     <string name="changelog_214">Fixed a bug that prevented the tracker to detect new arena runs if your hero was golden.\nIncreased the time we wait for logs to complete at the end of a game. This should fix some instances where the logs are not uploaded to hsreplay.net.\nImproved french translations.</string>
     <string name="changelog_217">Added support for the Frozen Throne extension.</string>
     <string name="changelog_219">Fixed a crash at startup for devices on kitkat and below.</string>
+    <string name="changelog_220">Fixed a crash when clicking \'new deck\'\nImproved the HSReplay.net settings.</string>
     <string name="app_name">Arcane Tracker</string>
     <string name="welcome">Welcome to Arcane Tracker !</string>
     <string name="explanation1">Arcane tracker will now start Hearthstone and monitor the cards you and your opponent play in the background.</string>
