@@ -555,7 +555,10 @@ public class SettingsCompanion {
             }
         } else {
             mHsReplayCompanion2.setText(Utils.getString(R.string.hsReplayDisable), v -> {
+                mHsReplayState.userName = null;
+                mHsReplayState.token = null;
                 HSReplay.get().unlink();
+                updateHsReplay();
             });
         }
 
@@ -566,7 +569,7 @@ public class SettingsCompanion {
             mHsReplayCompanion1.view().setVisibility(GONE);
         } else {
             mHsReplayCompanion1.view().setVisibility(VISIBLE);
-            if (mHsReplayState.userNameLoading) {
+            if (mHsReplayState.userNameLoading || mHsReplayState.claimUrlLoading) {
                 mHsReplayCompanion1.setLoading();
             } else if (mHsReplayState.userName != null) {
                 mHsReplayCompanion1.setText(Utils.getString(R.string.openInBrowser), v -> {

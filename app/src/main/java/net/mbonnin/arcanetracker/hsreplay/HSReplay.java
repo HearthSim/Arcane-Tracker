@@ -31,7 +31,6 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
-import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -48,42 +47,6 @@ public class HSReplay {
     private String mToken;
     private ArrayList<GameSummary> mGameList;
     private Service mService;
-    private String mUserName;
-
-    private final Observer<Token> mTokenObserver = new Observer<Token>() {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Timber.e("createTokenError" + e);
-        }
-
-        @Override
-        public void onNext(Token token) {
-            mToken = token.key;
-            Timber.w("got token=" + mToken);
-            Settings.set(Settings.HSREPLAY_TOKEN, mToken);
-        }
-    };
-    private Observer<? super Void> mUploadObserver = new Observer<Void>() {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Timber.e(e);
-        }
-
-        @Override
-        public void onNext(Void aVoid) {
-            Timber.w("HSREplay upload success");
-        }
-    };
 
     public static HSReplay get() {
         if (sHSReplay == null) {
@@ -134,7 +97,7 @@ public class HSReplay {
     }
 
     public void uploadGame(String matchStart, Game game, String gameStr) {
-        boolean hsReplayEnabled = Settings.get(Settings.HSREPLAY, Settings.DEFAULT_HSREPLAY);
+        boolean hsReplayEnabled = HSReplay.get().token() != null;
 
         Timber.w("uploadGame [game=%s] [hsReplayEnabled=%b] [token=%s]", game, hsReplayEnabled, mToken);
         if (game == null) {
