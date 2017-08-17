@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,8 +20,6 @@ import android.widget.Toast;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import net.mbonnin.arcanetracker.hsreplay.HSReplay;
-import net.mbonnin.arcanetracker.hsreplay.model.ClaimResult;
-import net.mbonnin.arcanetracker.hsreplay.model.Token;
 import net.mbonnin.arcanetracker.trackobot.Trackobot;
 import net.mbonnin.arcanetracker.trackobot.Url;
 import net.mbonnin.arcanetracker.trackobot.User;
@@ -32,7 +29,6 @@ import java.io.File;
 
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static android.view.View.GONE;
@@ -43,7 +39,7 @@ import static android.view.View.VISIBLE;
  */
 
 public class SettingsCompanion {
-    private LoadableButtonCompanion mClaimViewCompanion;
+    private LoadableButtonCompanion mHsReplayCompanion1;
     View settingsView;
     private TextView trackobotText;
     private Button signinButton;
@@ -56,32 +52,6 @@ public class SettingsCompanion {
     private Button importButton;
     private View importExplanation;
     private ProgressBar importProgressBar;
-
-    private final Observer<Token> mHSReplayTokenObserver = new Observer<Token>() {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Timber.e(e);
-        }
-
-        @Override
-        public void onNext(Token token) {
-            if (token.user != null) {
-                mClaimViewCompanion.button.setText(settingsView.getContext().getString(R.string.hsReplayClaimed, token.user.username));
-            } else {
-                mClaimViewCompanion.button.setText(settingsView.getContext().getString(R.string.hsReplayClaim));
-                mClaimViewCompanion.button.setEnabled(true);
-                DrawableCompat.setTint(mClaimViewCompanion.button.getBackground(), settingsView.getContext().getResources().getColor(R.color.colorPrimary));
-                mClaimViewCompanion.button.setOnClickListener(v -> {
-                    mClaimViewCompanion.startLoading(HSReplay.get().service().createClaim(), mHSReplayClaimObserver);
-                });
-            }
-        }
-    };
 
     private final SeekBar.OnSeekBarChangeListener mSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
         @Override
@@ -97,28 +67,6 @@ public class SettingsCompanion {
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
 
-        }
-    };
-
-    private final Observer<ClaimResult> mHSReplayClaimObserver = new Observer<ClaimResult>() {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Timber.e("claim error", e);
-            Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.hsReplayClaimFailed), Toast.LENGTH_LONG).show();
-        }
-
-        @Override
-        public void onNext(ClaimResult claimResult) {
-            Intent i = new Intent();
-            i.setAction(Intent.ACTION_VIEW);
-            i.setData(Uri.parse(claimResult.full_url));
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            ArcaneTrackerApplication.getContext().startActivity(i);
         }
     };
 
@@ -289,6 +237,7 @@ public class SettingsCompanion {
         }
     };
     private boolean firstTime;
+    private LoadableButtonCompanion mHsReplayCompanion2;
 
 
     private void updateTrackobot(View view) {
@@ -301,7 +250,7 @@ public class SettingsCompanion {
         signupProgressBar = (ProgressBar) view.findViewById(R.id.signupProgressBar);
         retrievePassword = view.findViewById(R.id.retrievePassword);
         importButton = (Button) view.findViewById(R.id.trackobotImport);
-        importProgressBar = (ProgressBar)view.findViewById(R.id.importProgressBar);
+        importProgressBar = (ProgressBar) view.findViewById(R.id.importProgressBar);
         importExplanation = view.findViewById(R.id.importExplanation);
 
         User user = Trackobot.get().getUser();
@@ -376,16 +325,16 @@ public class SettingsCompanion {
         updateTrackobot(view);
 
         TextView appVersion = (TextView) view.findViewById(R.id.appVersion);
-        appVersion.setText(view.getContext().getString(R.string.thisIsArcaneTracker, BuildConfig.VERSION_NAME, Utils.isAppDebuggable() ? " (debug)":""));
+        appVersion.setText(view.getContext().getString(R.string.thisIsArcaneTracker, BuildConfig.VERSION_NAME, Utils.isAppDebuggable() ? " (debug)" : ""));
 
-        Button feedbackButton = (Button)view.findViewById(R.id.feedBackButton);
+        Button feedbackButton = (Button) view.findViewById(R.id.feedBackButton);
         feedbackButton.setOnClickListener(v -> {
             ViewManager.get().removeView(settingsView);
 
             Intent emailIntent = new Intent(Intent.ACTION_SEND);
             emailIntent.setType("text/plain");
             emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@arcanetracker.com"});
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"support@arcanetracker.com"});
             emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Arcane Tracker Feedback");
             emailIntent.putExtra(Intent.EXTRA_TEXT, view.getContext().getString(R.string.decribeYourProblem));
 
@@ -396,7 +345,7 @@ public class SettingsCompanion {
             ArcaneTrackerApplication.getContext().startActivity(emailIntent);
         });
 
-        Button resetCacheButton = (Button)view.findViewById(R.id.resetCache);
+        Button resetCacheButton = (Button) view.findViewById(R.id.resetCache);
         resetCacheButton.setOnClickListener(v -> {
             PicassoCardRequestHandler.get().resetCache();
         });
@@ -436,7 +385,7 @@ public class SettingsCompanion {
         int i = 1;
         String l = Settings.get(Settings.LANGUAGE, null);
         adapter.add(context.getString(R.string._default));
-        for (Language language: Language.allLanguages) {
+        for (Language language : Language.allLanguages) {
             adapter.add(language.friendlyName);
             if (l != null && language.key.equals(l)) {
                 selectedPosition = i;
@@ -450,7 +399,7 @@ public class SettingsCompanion {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String newKey = position == 0 ? null: Language.allLanguages.get(position-1).key;
+                String newKey = position == 0 ? null : Language.allLanguages.get(position - 1).key;
                 String oldKey = Settings.get(Settings.LANGUAGE, null);
                 boolean areSame = newKey == null ? oldKey == null : newKey.equals(oldKey);
                 if (!firstTime && !areSame) {
@@ -463,7 +412,7 @@ public class SettingsCompanion {
                     ViewManager.Params params = new ViewManager.Params();
                     params.w = (int) (ViewManager.get().getWidth() * 0.6f);
                     params.h = ViewManager.get().getHeight() / 2;
-                    params.x = (ViewManager.get().getWidth() -params.w)/ 2;
+                    params.x = (ViewManager.get().getWidth() - params.w) / 2;
                     params.y = ViewManager.get().getHeight() / 4;
 
                     ViewManager.get().addModalView(view2, params);
@@ -515,32 +464,150 @@ public class SettingsCompanion {
             Settings.set(Settings.AUTO_ADD_CARDS, isChecked);
         });
 
-        CheckBox hsReplay = (CheckBox) view.findViewById(R.id.hsReplay);
-        hsReplay.setChecked(Settings.get(Settings.HSREPLAY, Settings.DEFAULT_HSREPLAY));
-        hsReplay.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Settings.set(Settings.HSREPLAY, isChecked);
-        });
-        View hsReplayHistory = view.findViewById(R.id.hsReplayHistory);
-        if (hsReplayHistory != null) {
-            hsReplayHistory.setOnClickListener(v -> HistoryCompanion.show());
+        View hsReplay1 = view.findViewById(R.id.hsReplayButton1);
+        View hsReplay2 = view.findViewById(R.id.hsReplayButton2);
+
+        mHsReplayCompanion1 = new LoadableButtonCompanion(hsReplay1);
+        mHsReplayCompanion2 = new LoadableButtonCompanion(hsReplay2);
+
+        mHsReplayState = new HsReplayState();
+        mHsReplayState.token = HSReplay.get().token();
+        if (mHsReplayState.token != null) {
+            checkUserName();
+        }
+        updateHsReplay();
+    }
+
+    private void checkUserName() {
+        HSReplay.get().getUser()
+                .subscribe(lce -> {
+                    if (lce.isLoading()) {
+                        mHsReplayState.userNameLoading = true;
+                    } else if (lce.getData() != null) {
+                        mHsReplayState.userNameLoading = false;
+                        if (lce.getData().user != null && lce.getData().user.username != null) {
+                            mHsReplayState.userName = lce.getData().user.username;
+                        }
+                    } else if (lce.getError() != null) {
+                        mHsReplayState.userNameLoading = false;
+                        Utils.reportNonFatal(new Exception("HsReplay username error", lce.getError()));
+                        Toast.makeText(settingsView.getContext(), Utils.getString(R.string.hsReplayUsernameError), Toast.LENGTH_LONG).show();
+                    }
+                    updateHsReplay();
+                });
+    }
+
+    static class HsReplayState {
+        public String token;
+        public boolean tokenLoading;
+        public String userName;
+        public boolean userNameLoading;
+        public boolean claimUrlLoading;
+    }
+
+    HsReplayState mHsReplayState;
+
+    private void handleTokenLce(Lce<String> lce) {
+        if (lce.isLoading()) {
+            mHsReplayState.tokenLoading = true;
+        } else if (lce.getError() != null) {
+            mHsReplayState.tokenLoading = false;
+            Utils.reportNonFatal(new Exception("HsReplay token error", lce.getError()));
+            Toast.makeText(settingsView.getContext(), Utils.getString(R.string.hsReplayTokenError), Toast.LENGTH_LONG).show();
+        } else {
+            mHsReplayState.tokenLoading = false;
+            mHsReplayState.token = lce.getData();
+        }
+        updateHsReplay();
+
+    }
+
+    private void updateHsReplay() {
+
+        TextView hsReplayDescription = (TextView) settingsView.findViewById(R.id.hsReplayDescription);
+
+        /*
+         * state of the description
+         */
+        if (mHsReplayState.token == null) {
+            hsReplayDescription.setText(Utils.getString(R.string.hsReplayExplanation));
+        } else {
+            if (mHsReplayState.userName == null) {
+                hsReplayDescription.setText(Utils.getString(R.string.hsReplayExplanationNoUserName));
+            } else {
+                hsReplayDescription.setText(Utils.getString(R.string.hsReplayExplanationWithUserName, mHsReplayState.userName));
+            }
         }
 
-        View claimView = view.findViewById(R.id.hsreplayClaim);
-
-        String token = HSReplay.get().getToken();
-        if (token == null) {
-            claimView.setVisibility(GONE);
+        /*
+         * state of the 2nd button
+         * we do this one first because this is the enable/disable one (most important goes last)
+         */
+        if (mHsReplayState.token == null) {
+            if (mHsReplayState.tokenLoading) {
+                mHsReplayCompanion2.setLoading();
+            } else {
+                mHsReplayCompanion2.setText(Utils.getString(R.string.hsReplayEnable), v -> {
+                    HSReplay.get()
+                            .createToken()
+                            .subscribe(this::handleTokenLce);
+                });
+            }
         } else {
-            mClaimViewCompanion = new LoadableButtonCompanion(claimView);
-            mClaimViewCompanion.button.setEnabled(false);
+            mHsReplayCompanion2.setText(Utils.getString(R.string.hsReplayDisable), v -> {
+                HSReplay.get().unlink();
+            });
+        }
 
-            HSReplay.get().service().getToken(token)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(mHSReplayTokenObserver);
+        /*
+         * state of the 1st button
+         */
+        if (mHsReplayState.token == null) {
+            mHsReplayCompanion1.view().setVisibility(GONE);
+        } else {
+            mHsReplayCompanion1.view().setVisibility(VISIBLE);
+            if (mHsReplayState.userNameLoading) {
+                mHsReplayCompanion1.setLoading();
+            } else if (mHsReplayState.userName != null) {
+                mHsReplayCompanion1.setText(Utils.getString(R.string.openInBrowser), v -> {
+                    ViewManager.get().removeView(settingsView);
+
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse("https://hsreplay.net/games/mine/"));
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    ArcaneTrackerApplication.getContext().startActivity(i);
+                });
+            } else {
+                mHsReplayCompanion1.setText(Utils.getString(R.string.hsReplayClaim), v -> {
+                    HSReplay.get()
+                            .getClaimUrl()
+                            .subscribe(this::handleClaimUrlLce);
+                });
+
+            }
         }
     }
 
+    private void handleClaimUrlLce(Lce<String> lce) {
+        if (lce.isLoading()) {
+            mHsReplayState.claimUrlLoading = true;
+        } else if (lce.getError() != null) {
+            mHsReplayState.claimUrlLoading = false;
+            Toast.makeText(ArcaneTrackerApplication.getContext(), Utils.getString(R.string.hsReplayClaimFailed), Toast.LENGTH_LONG).show();
+            Utils.reportNonFatal(new Exception("HSReplay claim url", lce.getError()));
+        } else if (lce.getData() != null) {
+            mHsReplayState.claimUrlLoading = false;
+
+            ViewManager.get().removeView(settingsView);
+
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(lce.getData()));
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            ArcaneTrackerApplication.getContext().startActivity(i);
+        }
+
+        updateHsReplay();
+    }
 
     public static void show() {
         Context context = ArcaneTrackerApplication.getContext();

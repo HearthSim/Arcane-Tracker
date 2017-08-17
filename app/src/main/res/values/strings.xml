@@ -155,4 +155,12 @@
     <string name="secrets">Secrets</string>
     <string name="possibleSecrets">Possible secrets:</string>
     <string name="showWhatsNew">Show what\'s new</string>
+    <string name="hsReplayLinkedTo">Linked to HSReplay.net account %s</string>
+    <string name="hsReplayLinkError">Could not link HSReplay.net account</string>
+    <string name="hsReplayTokenError">Could not enable HSReplay.net, please try again later</string>
+    <string name="hsReplayEnable">Enable HSReplay.net games upload</string>
+    <string name="hsReplayDisable">Disable HSReplay.net games upload</string>
+    <string name="hsReplayUsernameError">Cannot check claim status</string>
+    <string name="hsReplayExplanationNoUserName"><![CDATA[You have enabled HSReplay.net. Your games are now uploaded to hsreplay.net. You can check them from settings -> game history. By claiming them using the button below, they will be linked to your account.]]></string>
+    <string name="hsReplayExplanationWithUserName">You have enabled HSReplay.net game uploads. The games have been claimed by user: \'%s\'.</string>
 </resources>
