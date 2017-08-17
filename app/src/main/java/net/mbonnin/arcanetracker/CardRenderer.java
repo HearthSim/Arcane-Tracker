@@ -138,7 +138,16 @@ public class CardRenderer {
 
         drawCardArt(canvas, card);
 
-        drawAssetIfExists(canvas, "frame-" + card.type.toLowerCase() + "-" + card.playerClass.toLowerCase(), 0, 0);
+        String type;
+        if (Card.TYPE_HERO.equals(card.type)) {
+            // special case until I add support for heroes cards
+            type = Card.TYPE_MINION;
+        } else {
+            type = card.type;
+        }
+        type = type.toLowerCase();
+
+        drawAssetIfExists(canvas, "frame-" + type + "-" + card.playerClass.toLowerCase(), 0, 0);
 
         if (!TextUtils.isEmpty(card.multiClassGroup)) {
             drawAssetIfExists(canvas, "multi-" + card.multiClassGroup.toLowerCase(), 17, 88);
@@ -459,6 +468,7 @@ public class CardRenderer {
         Path clipPath = new Path();
 
         switch (card.type) {
+            default:
             case Card.TYPE_MINION: {
                 dx = 100;
                 dy = 75;
@@ -484,8 +494,6 @@ public class CardRenderer {
                 clipPath.addOval(rect, Path.Direction.CCW);
                 break;
             }
-            default:
-                return;
         }
 
         canvas.save();
