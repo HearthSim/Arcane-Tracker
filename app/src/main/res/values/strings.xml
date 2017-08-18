@@ -164,4 +164,6 @@
     <string name="hsReplayUsernameError">Cannot check claim status</string>
     <string name="hsReplayExplanationNoUserName"><![CDATA[You have enabled HSReplay.net. Your games are now uploaded to hsreplay.net. You can check them from the \'game history\' menu. By claiming them using the button below, they will also be linked to your hsreplay account.]]></string>
     <string name="hsReplayExplanationWithUserName">You have enabled HSReplay.net game uploads. The games have been claimed by user: \'%s\'.</string>
+    <string name="noBrowserFound">No external browser found to open url. Please install chrome or any other browser.</string>
+    <string name="noEmailFound">No email application found</string>
 </resources>

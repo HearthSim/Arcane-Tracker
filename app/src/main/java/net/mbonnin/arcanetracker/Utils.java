@@ -16,6 +16,7 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.google.firebase.crash.FirebaseCrash;
 
@@ -167,7 +168,12 @@ public class Utils {
         i.setAction(Intent.ACTION_VIEW);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         i.setData(Uri.parse(url));
-        ArcaneTrackerApplication.getContext().startActivity(i);
+        try {
+            ArcaneTrackerApplication.getContext().startActivity(i);
+        } catch (Exception e) {
+            Utils.reportNonFatal(e);
+            Toast.makeText(ArcaneTrackerApplication.getContext(), Utils.getString(R.string.noBrowserFound), Toast.LENGTH_LONG);
+        }
     }
 
     public static int valueOf(Integer i) {

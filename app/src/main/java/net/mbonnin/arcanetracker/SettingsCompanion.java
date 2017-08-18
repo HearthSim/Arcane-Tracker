@@ -204,12 +204,10 @@ public class SettingsCompanion {
         public void onNext(Url url) {
             ViewManager.get().removeView(settingsView);
 
-            Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setData(Uri.parse(url.url));
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            ArcaneTrackerApplication.getContext().startActivity(i);
+            Utils.openLink(url.url);
         }
     };
+
     private View.OnClickListener mImportButtonClicked = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -342,7 +340,12 @@ public class SettingsCompanion {
             Uri uri = FileProvider.getUriForFile(view.getContext(), "net.mbonnin.arcanetracker.fileprovider", FileTree.get().getFile());
             emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
 
-            ArcaneTrackerApplication.getContext().startActivity(emailIntent);
+            try {
+                ArcaneTrackerApplication.getContext().startActivity(emailIntent);
+            } catch (Exception e) {
+                Utils.reportNonFatal(e);
+                Toast.makeText(ArcaneTrackerApplication.getContext(), Utils.getString(R.string.noEmailFound), Toast.LENGTH_LONG);
+            }
         });
 
         Button resetCacheButton = (Button) view.findViewById(R.id.resetCache);
@@ -603,10 +606,7 @@ public class SettingsCompanion {
 
             ViewManager.get().removeView(settingsView);
 
-            Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setData(Uri.parse(lce.getData()));
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            ArcaneTrackerApplication.getContext().startActivity(i);
+            Utils.openLink(lce.getData());
         }
 
         updateHsReplay();
