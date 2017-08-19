@@ -172,7 +172,7 @@ public class Utils {
             ArcaneTrackerApplication.getContext().startActivity(i);
         } catch (Exception e) {
             Utils.reportNonFatal(e);
-            Toast.makeText(ArcaneTrackerApplication.getContext(), Utils.getString(R.string.noBrowserFound), Toast.LENGTH_LONG);
+            Toast.makeText(ArcaneTrackerApplication.getContext(), Utils.getString(R.string.noBrowserFound), Toast.LENGTH_LONG).show();
         }
     }
 

@@ -344,7 +344,7 @@ public class SettingsCompanion {
                 ArcaneTrackerApplication.getContext().startActivity(emailIntent);
             } catch (Exception e) {
                 Utils.reportNonFatal(e);
-                Toast.makeText(ArcaneTrackerApplication.getContext(), Utils.getString(R.string.noEmailFound), Toast.LENGTH_LONG);
+                Toast.makeText(ArcaneTrackerApplication.getContext(), Utils.getString(R.string.noEmailFound), Toast.LENGTH_LONG).show();
             }
         });
 
