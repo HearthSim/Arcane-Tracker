@@ -52,6 +52,8 @@ public class SettingsCompanion {
     private Button importButton;
     private View importExplanation;
     private ProgressBar importProgressBar;
+    private boolean firstTime;
+    private LoadableButtonCompanion mHsReplayCompanion2;
 
     private final SeekBar.OnSeekBarChangeListener mSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
         @Override
@@ -83,47 +85,6 @@ public class SettingsCompanion {
 
         @Override
         public void onNext(User user) {
-            signupProgressBar.setVisibility(GONE);
-            signupButton.setVisibility(VISIBLE);
-            signinButton.setEnabled(true);
-
-            Context context = ArcaneTrackerApplication.getContext();
-            if (user == null) {
-                Toast.makeText(context, context.getString(R.string.trackobotSignupError), Toast.LENGTH_LONG).show();
-            } else {
-                Trackobot.get().setUser(user);
-
-                FirebaseAnalytics.getInstance(context).logEvent("track_o_bot_signup", null);
-                updateTrackobot(settingsView);
-            }
-        }
-    };
-
-    private Observer<HistoryList> mSigninObserver = new Observer<HistoryList>() {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-
-        }
-
-        @Override
-        public void onNext(HistoryList historyList) {
-            signinProgressBar.setVisibility(GONE);
-            signinButton.setVisibility(VISIBLE);
-            signupButton.setEnabled(true);
-
-            if (historyList == null) {
-                Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show();
-                Trackobot.get().setUser(null);
-            } else {
-                FirebaseAnalytics.getInstance(ArcaneTrackerApplication.getContext()).logEvent("track_o_bot_signin", null);
-                updateTrackobot(settingsView);
-            }
-
         }
     };
 
@@ -145,44 +106,59 @@ public class SettingsCompanion {
 
         @Override
         public void onNext(HistoryList historyList) {
-            importProgressBar.setVisibility(GONE);
-            importButton.setVisibility(VISIBLE);
-            importButton.setEnabled(true);
-
-            if (historyList == null) {
-                Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show();
-                Trackobot.get().setUser(null);
-            } else {
-                FirebaseAnalytics.getInstance(ArcaneTrackerApplication.getContext()).logEvent("track_o_bot_signin", null);
-                updateTrackobot(settingsView);
-            }
         }
     };
 
     private View.OnClickListener mSigninButtonClicked = v -> {
-        signinButton.setVisibility(GONE);
-        signinProgressBar.setVisibility(VISIBLE);
-        signupButton.setEnabled(false);
-
         User user = new User();
         user.username = usernameEditText.getText().toString();
         user.password = passwordEditText.getText().toString();
-        Trackobot.get().setUser(user);
 
-        Trackobot.get().service().getHistoryList()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(mSigninObserver);
+        Trackobot.get().testUser(user)
+            .subscribe(lce -> {
+                if (lce.isLoading()) {
+                    signinButton.setVisibility(GONE);
+                    signinProgressBar.setVisibility(VISIBLE);
+                    signupButton.setEnabled(false);
+                } else {
+                    signinProgressBar.setVisibility(GONE);
+                    signinButton.setVisibility(VISIBLE);
+                    signupButton.setEnabled(true);
+                    if (lce.getError() != null) {
+                        Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show();
+                        Utils.reportNonFatal(lce.getError());
+                    } else {
+                        FirebaseAnalytics.getInstance(ArcaneTrackerApplication.getContext()).logEvent("track_o_bot_signin", null);
+                        updateTrackobot(settingsView);
+                    }
+                }
+            });
     };
 
     private View.OnClickListener mSignupButtonClicked = v -> {
+        Trackobot.get().createUser()
+                .subscribe(lce -> {
+                    if (lce.isLoading()) {
+                        signupButton.setVisibility(GONE);
+                        signupProgressBar.setVisibility(VISIBLE);
+                        signinButton.setEnabled(false);
+                    } else {
+                        signupProgressBar.setVisibility(GONE);
+                        signupButton.setVisibility(VISIBLE);
+                        signinButton.setEnabled(true);
 
-        signupButton.setVisibility(GONE);
-        signupProgressBar.setVisibility(VISIBLE);
-        signinButton.setEnabled(false);
+                        Context context = ArcaneTrackerApplication.getContext();
+                        if (lce.getError() != null) {
+                            Toast.makeText(context, context.getString(R.string.trackobotSignupError), Toast.LENGTH_LONG).show();
+                            Utils.reportNonFatal(lce.getError());
+                        } else {
+                            Trackobot.get().setUser(lce.getData());
 
-        Trackobot.get().service().createUser()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(mSignupObserver);
+                            FirebaseAnalytics.getInstance(context).logEvent("track_o_bot_signup", null);
+                            updateTrackobot(settingsView);
+                        }
+                    }
+                });
     };
 
     private Observer<? super Url> mOneTimeAuthObserver = new Observer<Url>() {
@@ -223,19 +199,29 @@ public class SettingsCompanion {
                 Toast.makeText(context, context.getString(R.string.couldNotOpenTrackobotFile), Toast.LENGTH_LONG).show();
                 return;
             }
-            importButton.setVisibility(GONE);
-            importProgressBar.setVisibility(VISIBLE);
-            importButton.setEnabled(false);
 
-            Trackobot.get().setUser(user);
+            Trackobot.get().testUser(user)
+            .subscribe(lce -> {
+                if (lce.isLoading()) {
+                    importButton.setVisibility(GONE);
+                    importProgressBar.setVisibility(VISIBLE);
+                    importButton.setEnabled(false);
+                } else {
+                    importProgressBar.setVisibility(GONE);
+                    importButton.setVisibility(VISIBLE);
+                    importButton.setEnabled(true);
 
-            Trackobot.get().service().getHistoryList()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(mImportObserver);
+                    if (lce.getError() == null) {
+                        Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show();
+                        Utils.reportNonFatal(lce.getError());
+                    } else {
+                        FirebaseAnalytics.getInstance(ArcaneTrackerApplication.getContext()).logEvent("track_o_bot_import", null);
+                        updateTrackobot(settingsView);
+                    }
+                }
+            });
         }
     };
-    private boolean firstTime;
-    private LoadableButtonCompanion mHsReplayCompanion2;
 
 
     private void updateTrackobot(View view) {
