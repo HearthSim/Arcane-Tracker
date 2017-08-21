@@ -1,5 +1,7 @@
 package net.mbonnin.arcanetracker.parser;
 
+import android.text.TextUtils;
+
 import com.android.internal.util.Predicate;
 
 import java.util.ArrayList;
@@ -64,5 +66,48 @@ public class Game {
 
     public boolean isStarted() {
         return player != null && opponent != null;
+    }
+
+    public void addEntity(Entity entity) {
+        entityMap.put(entity.EntityID, entity);
+    }
+
+    public Entity findEntitySafe(String IdOrBattleTag) {
+        Entity entity;
+
+        entity = entityMap.get(IdOrBattleTag);
+        if (entity != null) {
+            return entity;
+        }
+
+        if ("GameEntity".equals(IdOrBattleTag)) {
+            return gameEntity;
+        }
+
+        if (TextUtils.isEmpty(IdOrBattleTag)) {
+            return unknownEntity("empty");
+        }
+
+        // this must be a battleTag
+        entity = entityMap.get(IdOrBattleTag);
+        if (entity == null) {
+            Timber.w("Adding battleTag " + IdOrBattleTag);
+            if (battleTags.size() >= 2) {
+                Timber.e("[Inconsistent] too many battleTags");
+            }
+            battleTags.add(IdOrBattleTag);
+
+            entity = new Entity();
+            entity.EntityID = IdOrBattleTag;
+            entityMap.put(IdOrBattleTag, entity);
+        }
+        return entity;
+    }
+
+    private Entity unknownEntity(String entityId) {
+        Timber.e("unknown entity " + entityId);
+        Entity entity = new Entity();
+        entity.EntityID = entityId;
+        return entity;
     }
 }
