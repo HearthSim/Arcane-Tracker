@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Environment;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.google.gson.stream.MalformedJsonException;
 
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
@@ -12,12 +11,12 @@ import net.mbonnin.arcanetracker.Card;
 import net.mbonnin.arcanetracker.Lce;
 import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Utils;
+import net.mbonnin.arcanetracker.trackobot.model.HistoryList;
 import net.mbonnin.arcanetracker.trackobot.model.ResultData;
 
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -28,12 +27,11 @@ import okhttp3.Credentials;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.HttpException;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import rx.Observer;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -144,7 +142,7 @@ public class Trackobot {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://trackobot.com/")
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
-                .addConverterFactory(GsonConverterFactory.create(new Gson()))
+                .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
 
@@ -189,14 +187,13 @@ public class Trackobot {
         Timber.w("sendResult");
         Trackobot.get().service()
                 .postResults(resultData)
-                .observeOn(Schedulers.io())
-                .map(this::responseToLce)
+                .map(this::dataToLce)
                 .onErrorReturn(Lce::error)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::handleResponse);
     }
 
-    private void handleResponse(Lce<Object> lce) {
+    private void handleResponse(Lce<ResultData> lce) {
         if (lce.getData() != null) {
             Context context = ArcaneTrackerApplication.getContext();
             Toast.makeText(ArcaneTrackerApplication.getContext(), context.getString(R.string.trackobotSuccess), Toast.LENGTH_LONG).show();
@@ -210,6 +207,12 @@ public class Trackobot {
                 message = context.getString(R.string.trackobotTimeout);
             } else if (e instanceof ConnectException) {
                 message = context.getString(R.string.trackobotConnectError);
+            } else if (e instanceof MalformedJsonException) {
+                // this happens if credentials are wrong. We get redirected to https://trackobot.com/sessions/new
+                // and the json parser fails
+                message = context.getString(R.string.trackobotError);
+                // we reset the credentials in that case
+                Trackobot.get().setUser(null);
             } else if (e instanceof IOException) {
                 message = context.getString(R.string.trackobotNetworkError);
             } else {
@@ -221,18 +224,40 @@ public class Trackobot {
         }
     }
 
-    private Lce<Object> responseToLce(Response<ResultData> response) {
-        if (response.isSuccessful()) {
-            return Lce.data(new Object());
+    private <T> Lce<T> dataToLce(T data) {
+
+        if (data == null) {
+            return Lce.error(new Exception("null data"));
         } else {
-            try {
-                String body = new String(response.errorBody().bytes());
-                return Lce.error(new Exception(body));
-            } catch (IOException e) {
-                e.printStackTrace();
-                return Lce.error(e);
-            }
+            return Lce.data(data);
         }
+    }
+
+    public Observable<Lce<HistoryList>> testUser(User user) {
+        Trackobot.get().setUser(user);
+
+        return service().getHistoryList()
+                .map(this::dataToLce)
+                .onErrorReturn(Lce::error)
+                .toObservable()
+                .startWith(Lce.loading())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(lce -> {
+                    if (lce.getError() != null) {
+                        // if something goes wrong, rollback the user
+                        setUser(null);
+                    }
+                    return lce;
+                });
+    }
+
+    public Observable<Lce<User>> createUser() {
+        return service().createUser()
+                .map(this::dataToLce)
+                .onErrorReturn(Lce::error)
+                .toObservable()
+                .startWith(Lce.loading())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }
 

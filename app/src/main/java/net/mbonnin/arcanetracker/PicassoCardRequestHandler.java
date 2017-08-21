@@ -21,7 +21,7 @@ import okio.Sink;
 import timber.log.Timber;
 
 public class PicassoCardRequestHandler extends RequestHandler {
-    private static final int VERSION = 2; // bump here to force flushing the cache
+    private static final int VERSION = 4; // bump here to force flushing the cache
     private static final int ENTRY_COUNT = 1;
     private static PicassoCardRequestHandler sHandler;
     DiskLruCache cache;

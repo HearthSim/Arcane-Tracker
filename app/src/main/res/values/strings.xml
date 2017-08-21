@@ -3,6 +3,7 @@
     <string name="changelog_214">Fixed a bug that prevented the tracker to detect new arena runs if your hero was golden.\nIncreased the time we wait for logs to complete at the end of a game. This should fix some instances where the logs are not uploaded to hsreplay.net.\nImproved french translations.</string>
     <string name="changelog_217">Added support for the Frozen Throne extension.</string>
     <string name="changelog_219">Fixed a crash at startup for devices on kitkat and below.</string>
+    <string name="changelog_220">Fixed a crash when clicking \'new deck\'\nImproved the HSReplay.net settings.</string>
     <string name="app_name">Arcane Tracker</string>
     <string name="welcome">Welcome to Arcane Tracker !</string>
     <string name="explanation1">Arcane tracker will now start Hearthstone and monitor the cards you and your opponent play in the background.</string>
@@ -155,4 +156,14 @@
     <string name="secrets">Secrets</string>
     <string name="possibleSecrets">Possible secrets:</string>
     <string name="showWhatsNew">Show what\'s new</string>
+    <string name="hsReplayLinkedTo">Linked to HSReplay.net account %s</string>
+    <string name="hsReplayLinkError">Could not link HSReplay.net account</string>
+    <string name="hsReplayTokenError">Could not enable HSReplay.net, please try again later</string>
+    <string name="hsReplayEnable">Enable HSReplay.net</string>
+    <string name="hsReplayDisable">Disable HSReplay.net</string>
+    <string name="hsReplayUsernameError">Cannot check claim status</string>
+    <string name="hsReplayExplanationNoUserName"><![CDATA[You have enabled HSReplay.net. Your games are now uploaded to hsreplay.net. You can check them from the \'game history\' menu. By claiming them using the button below, they will also be linked to your hsreplay account.]]></string>
+    <string name="hsReplayExplanationWithUserName">You have enabled HSReplay.net game uploads. The games have been claimed by user: \'%s\'.</string>
+    <string name="noBrowserFound">No external browser found to open url. Please install chrome or any other browser.</string>
+    <string name="noEmailFound">No email application found</string>
 </resources>

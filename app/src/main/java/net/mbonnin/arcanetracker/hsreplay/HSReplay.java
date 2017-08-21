@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
 import net.mbonnin.arcanetracker.BuildConfig;
+import net.mbonnin.arcanetracker.Lce;
 import net.mbonnin.arcanetracker.MainViewCompanion;
 import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Settings;
@@ -30,7 +31,6 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
-import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -47,41 +47,6 @@ public class HSReplay {
     private String mToken;
     private ArrayList<GameSummary> mGameList;
     private Service mService;
-
-    private final Observer<Token> mTokenObserver = new Observer<Token>() {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Timber.e("createTokenError" + e);
-        }
-
-        @Override
-        public void onNext(Token token) {
-            mToken = token.key;
-            Timber.w("got token=" + mToken);
-            Settings.set(Settings.HSREPLAY_TOKEN, mToken);
-        }
-    };
-    private Observer<? super Void> mUploadObserver = new Observer<Void>() {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Timber.e(e);
-        }
-
-        @Override
-        public void onNext(Void aVoid) {
-            Timber.w("HSREplay upload success");
-        }
-    };
 
     public static HSReplay get() {
         if (sHSReplay == null) {
@@ -132,7 +97,7 @@ public class HSReplay {
     }
 
     public void uploadGame(String matchStart, Game game, String gameStr) {
-        boolean hsReplayEnabled = Settings.get(Settings.HSREPLAY, Settings.DEFAULT_HSREPLAY);
+        boolean hsReplayEnabled = HSReplay.get().token() != null;
 
         Timber.w("uploadGame [game=%s] [hsReplayEnabled=%b] [token=%s]", game, hsReplayEnabled, mToken);
         if (game == null) {
@@ -219,43 +184,62 @@ public class HSReplay {
                 //.addInterceptor(new GzipRequestInterceptor())
                 .build();
 
-        if (Settings.get(Settings.HSREPLAY, Settings.DEFAULT_HSREPLAY)) {
-            mToken = Settings.get(Settings.HSREPLAY_TOKEN, null);
-
-            Timber.w("init token=" + mToken);
-
-            if (mToken == null) {
-                generateToken();
-            }
-        }
+        mToken = Settings.get(Settings.HSREPLAY_TOKEN, null);
+        Timber.w("init token=" + mToken);
 
         //doUploadGame(Utils.ISO8601DATEFORMAT.format(new Date()), "1", null, "toto");
     }
 
-    private void generateToken() {
-        TokenRequest tokenRequest = new TokenRequest();
-        tokenRequest.test_data = Utils.isAppDebuggable() ? true : false;
-
-        service().createToken(tokenRequest)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(mTokenObserver);
+    public Service service() {
+        return mService;
     }
 
-    public String getToken() {
+    public String token() {
         return mToken;
+    }
+
+    public Observable<Lce<String>> createToken() {
+        TokenRequest tokenRequest = new TokenRequest();
+        tokenRequest.test_data = Utils.isAppDebuggable();
+        return service().createToken(tokenRequest)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(token -> {
+                    if (token.key == null) {
+                        throw new RuntimeException("null key");
+                    }
+                    mToken = token.key;
+                    Settings.set(Settings.HSREPLAY_TOKEN, token.key);
+                    return Lce.data(mToken);
+                }).onErrorReturn(Lce::error)
+                .startWith(Lce.loading());
+    }
+
+    public Observable<Lce<String>> getClaimUrl() {
+        return service().createClaim()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(claimResult -> Lce.data(claimResult.full_url))
+                .startWith(Lce.loading())
+                .onErrorReturn(Lce::error);
+    }
+
+    public Observable<Lce<Token>> getUser() {
+        return service().getToken(mToken)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(Lce::data)
+                .onErrorReturn(Lce::error)
+                .startWith(Lce.loading());
+    }
+
+    public void unlink() {
+        mToken = null;
+        Settings.set(Settings.HSREPLAY_TOKEN, null);
     }
 
     public void eraseGameSummary() {
         mGameList.clear();
-        mToken = null;
-        Settings.set(Settings.HSREPLAY_TOKEN, null);
         Paper.book().write(KEY_GAME_LIST, mGameList);
-
-        generateToken();
-    }
-
-    public Service service() {
-        return mService;
     }
 }
