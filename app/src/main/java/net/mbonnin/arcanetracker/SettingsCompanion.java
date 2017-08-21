@@ -23,7 +23,6 @@ import net.mbonnin.arcanetracker.hsreplay.HSReplay;
 import net.mbonnin.arcanetracker.trackobot.Trackobot;
 import net.mbonnin.arcanetracker.trackobot.Url;
 import net.mbonnin.arcanetracker.trackobot.User;
-import net.mbonnin.arcanetracker.trackobot.model.HistoryList;
 
 import java.io.File;
 
@@ -85,27 +84,6 @@ public class SettingsCompanion {
 
         @Override
         public void onNext(User user) {
-        }
-    };
-
-    private Observer<HistoryList> mImportObserver = new Observer<HistoryList>() {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            e.printStackTrace();
-            importProgressBar.setVisibility(GONE);
-            importButton.setVisibility(VISIBLE);
-            importButton.setEnabled(true);
-
-            Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show();
-        }
-
-        @Override
-        public void onNext(HistoryList historyList) {
         }
     };
 
@@ -211,7 +189,7 @@ public class SettingsCompanion {
                     importButton.setVisibility(VISIBLE);
                     importButton.setEnabled(true);
 
-                    if (lce.getError() == null) {
+                    if (lce.getError() != null) {
                         Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show();
                         Utils.reportNonFatal(lce.getError());
                     } else {
