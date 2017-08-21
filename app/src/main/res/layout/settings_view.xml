@@ -299,6 +299,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint="username"
+                    android:maxLines="1"
                     android:textColor="#000"
                     android:textColorHint="#aaa" />
             </LinearLayout>
@@ -319,6 +320,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint="password"
+                    android:maxLines="1"
                     android:textColor="#000"
                     android:textColorHint="#aaa" />
             </LinearLayout>
