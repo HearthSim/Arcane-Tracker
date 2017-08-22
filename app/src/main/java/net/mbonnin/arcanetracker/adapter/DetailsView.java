@@ -18,6 +18,7 @@ import net.mbonnin.arcanetracker.Typefaces;
 import net.mbonnin.arcanetracker.Utils;
 import net.mbonnin.arcanetracker.databinding.DetailsViewBinding;
 import net.mbonnin.arcanetracker.parser.Entity;
+import net.mbonnin.arcanetracker.parser.GameLogic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +57,7 @@ public class DetailsView extends LinearLayout {
             builder.append("\n");
             builder.append("\n");
             if (entity.extra.drawTurn != -1) {
-                builder.append(getContext().getString(R.string.drawnTurn, entity.extra.drawTurn));
+                builder.append(getContext().getString(R.string.drawnTurn, GameLogic.gameTurnToHumanTurn(entity.extra.drawTurn)));
                 if (entity.extra.mulliganed) {
                     builder.append(" (");
                     builder.append(getContext().getString(R.string.mulliganed));
@@ -68,11 +69,11 @@ public class DetailsView extends LinearLayout {
                 builder.append("\n");
             }
             if (entity.extra.playTurn != -1) {
-                builder.append(getContext().getString(R.string.playedTurn, entity.extra.playTurn));
+                builder.append(getContext().getString(R.string.playedTurn, GameLogic.gameTurnToHumanTurn(entity.extra.playTurn)));
                 builder.append("\n");
             }
             if (entity.extra.diedTurn != -1 && (Entity.CARDTYPE_MINION.equals(cardType) || Entity.CARDTYPE_WEAPON.equals(cardType))) {
-                builder.append(getContext().getString(R.string.diedTurn, entity.extra.diedTurn));
+                builder.append(getContext().getString(R.string.diedTurn, GameLogic.gameTurnToHumanTurn(entity.extra.diedTurn)));
                 builder.append("\n");
             }
 

@@ -5,6 +5,15 @@ package net.mbonnin.arcanetracker.parser;
  */
 
 public class Play {
+
+    public Play() {};
+
+    public Play(int turn, boolean isOpponent, String cardId) {
+        this.turn = turn;
+        this.isOpponent = isOpponent;
+        this.cardId = cardId;
+    }
+
     public int turn;
     public boolean isOpponent;
     public String cardId;

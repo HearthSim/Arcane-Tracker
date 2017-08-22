@@ -210,14 +210,14 @@ public class GameLogic {
                     entity.extra.drawTurn = 0;
                     entity.extra.mulliganed = true;
                 } else {
-                    entity.extra.drawTurn = (mCurrentTurn + 1) / 2;
+                    entity.extra.drawTurn = mCurrentTurn;
                 }
             } else if (Entity.ZONE_HAND.equals(oldValue) && Entity.ZONE_PLAY.equals(newValue)) {
-                entity.extra.playTurn = (mCurrentTurn + 1) / 2;
+                entity.extra.playTurn = mCurrentTurn;
             } else if (Entity.ZONE_HAND.equals(oldValue) && Entity.ZONE_SECRET.equals(newValue)) {
-                entity.extra.playTurn = (mCurrentTurn + 1) / 2;
+                entity.extra.playTurn = mCurrentTurn;
             } else if (Entity.ZONE_PLAY.equals(oldValue) && Entity.ZONE_GRAVEYARD.equals(newValue)) {
-                entity.extra.diedTurn = (mCurrentTurn + 1) / 2;
+                entity.extra.diedTurn = mCurrentTurn;
 //                /*
 //                 * one of the oponent minion died, remember it for the secret detector
 //                 */
@@ -530,7 +530,7 @@ public class GameLogic {
             player.heroPower = entity;
         } else {
             if (Entity.ZONE_HAND.equals(entity.tags.get(Entity.KEY_ZONE))) {
-                entity.extra.drawTurn = (mCurrentTurn + 1) / 2;
+                entity.extra.drawTurn = mCurrentTurn;
             }
 
             if (mGame.gameEntity.tags.get(Entity.KEY_STEP) == null) {
@@ -546,5 +546,9 @@ public class GameLogic {
         }
 
         notifyListeners();
+    }
+
+    public static int gameTurnToHumanTurn(int turn) {
+        return turn;
     }
 }

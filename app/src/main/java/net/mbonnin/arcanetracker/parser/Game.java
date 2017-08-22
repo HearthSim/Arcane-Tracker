@@ -5,7 +5,6 @@ import com.annimon.stream.function.Predicate;
 import net.mbonnin.arcanetracker.Utils;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 
 import timber.log.Timber;
@@ -30,10 +29,6 @@ public class Game {
     public ArrayList<Play> plays = new ArrayList<>();
     public boolean victory;
     public int bnetGameType;
-    public StringBuilder rawBuilder = new StringBuilder();
-    public String startTime = Utils.ISO8601DATEFORMAT.format(new Date());
-    public int rawGoldRewardStateCount = 0;
-
 
     public Player getPlayer() {
         return player;
