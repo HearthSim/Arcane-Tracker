@@ -5,6 +5,7 @@ import net.mbonnin.arcanetracker.parser.GameLogic;
 import net.mbonnin.arcanetracker.parser.Play;
 import net.mbonnin.arcanetracker.parser.PowerParser;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -61,9 +62,9 @@ public class TestParser {
 
         Timber.d("victory ? " + listener.game.victory);
 
-        for (Play play: listener.game.plays) {
-            Timber.d("list.add(new Play(" + play.turn + ", " + play.isOpponent + ", \"" + play.cardId + "\");");
-        }
+        /*for (Play play: listener.game.plays) {
+            Timber.d("list.add(new Play(" + play.turn + ", " + play.isOpponent + ", \"" + play.cardId + "\"));");
+        }*/
 
         List<Play> list = new ArrayList<>();
         list.add(new Play(4, true, "AT_116"));
@@ -72,7 +73,7 @@ public class TestParser {
         list.add(new Play(7, false, "CS1h_001_H1"));
         list.add(new Play(8, true, "AT_017"));
         list.add(new Play(9, false, "CS1h_001_H1"));
-        list.add(new Play(9, false, ""));
+        list.add(new Play(9, false, "AT_055"));
         list.add(new Play(10, true, "EX1_284"));
         list.add(new Play(11, false, "LOE_111"));
         list.add(new Play(11, false, "AT_055"));
@@ -94,7 +95,7 @@ public class TestParser {
         list.add(new Play(20, true, "CS1_112"));
         list.add(new Play(21, false, "KAR_204"));
         list.add(new Play(21, false, "CS1h_001_H1"));
-        list.add(new Play(22, false, "EX1_298"));
+        list.add(new Play(22, true, "EX1_298"));
         list.add(new Play(22, true, "CS1h_001"));
         list.add(new Play(23, false, "EX1_622"));
         list.add(new Play(23, false, "CS2_181"));
@@ -130,11 +131,13 @@ public class TestParser {
         list.add(new Play(38, true, "EX1_622"));
         list.add(new Play(38, true, "CS1h_001"));
         list.add(new Play(38, true, "DREAM_01"));
+        list.add(new Play(39, false, "BRM_004"));
         list.add(new Play(39, false, "CS2_004"));
-        list.add(new Play(39, false, ""));
+        list.add(new Play(39, false, "LOE_104"));
         list.add(new Play(39, false, "CS1h_001_H1"));
         list.add(new Play(40, true, "BRM_033"));
         list.add(new Play(40, true, "CS1h_001"));
+        list.add(new Play(41, false, "LOE_111"));
         list.add(new Play(41, false, "LOE_111"));
         list.add(new Play(42, true, "AT_123"));
         list.add(new Play(42, true, "CS1h_001"));
@@ -142,7 +145,7 @@ public class TestParser {
         list.add(new Play(44, true, "CS1h_001"));
         list.add(new Play(45, false, "BRM_017"));
         list.add(new Play(45, false, "CS1h_001_H1"));
-        list.add(new Play(46, false, "LOE_111"));
+        list.add(new Play(46, true, "LOE_111"));
         list.add(new Play(46, true, "CS1h_001"));
         list.add(new Play(47, false, "KAR_035"));
         list.add(new Play(47, false, "CS1h_001_H1"));
@@ -160,7 +163,7 @@ public class TestParser {
         list.add(new Play(55, false, "LOE_111"));
         list.add(new Play(56, true, "CS1h_001"));
         list.add(new Play(56, true, "BRM_004"));
-        list.add(new Play(57, true, "EX1_572"));
+        list.add(new Play(57, false, "EX1_572"));
         list.add(new Play(58, true, "LOE_104"));
         list.add(new Play(58, true, "CS1h_001"));
         list.add(new Play(59, false, "CS2_234"));
@@ -170,7 +173,7 @@ public class TestParser {
         list.add(new Play(61, false, "CS1h_001_H1"));
         list.add(new Play(62, true, "EX1_016"));
         list.add(new Play(62, true, "CS1h_001"));
-        list.add(new Play(63, true, "EX1_572"));
+        list.add(new Play(63, false, "EX1_572"));
         list.add(new Play(63, false, "DREAM_04"));
         list.add(new Play(64, true, "EX1_016"));
         list.add(new Play(64, true, "DREAM_02"));
@@ -179,5 +182,12 @@ public class TestParser {
         list.add(new Play(65, false, "CS1h_001_H1"));
         list.add(new Play(66, true, "DREAM_02"));
         list.add(new Play(66, true, "DREAM_02"));
+
+        Assert.assertEquals(list.size(), listener.game.plays.size());
+        for (int i = 0; i < list.size(); i++) {
+            Assert.assertEquals(list.get(i).cardId, listener.game.plays.get(i).cardId);
+            Assert.assertEquals(list.get(i).isOpponent, listener.game.plays.get(i).isOpponent);
+            Assert.assertEquals(list.get(i).turn, listener.game.plays.get(i).turn);
+        }
     }
 }

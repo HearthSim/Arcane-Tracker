@@ -144,6 +144,9 @@ public class PowerParser implements LogReader.LineConsumer {
 
                 setCurrentTag(null);
 
+                if (mBlockTagStack.size() > 0) {
+                    mBlockTagStack.get(mBlockTagStack.size() - 1).children.add(tag);
+                }
                 mBlockTagStack.add(tag);
                 return;
             } else if ((m = BLOCK_END_PATTERN.matcher(line)).matches()) {
