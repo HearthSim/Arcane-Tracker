@@ -3,11 +3,10 @@ package net.mbonnin.arcanetracker.parser;
 /*
  * Created by martin on 11/11/16.
  */
-import android.os.Handler;
-import android.text.TextUtils;
 
 import net.mbonnin.arcanetracker.Card;
 import net.mbonnin.arcanetracker.CardDb;
+import net.mbonnin.arcanetracker.Utils;
 import net.mbonnin.arcanetracker.parser.power.BlockTag;
 import net.mbonnin.arcanetracker.parser.power.CreateGameTag;
 import net.mbonnin.arcanetracker.parser.power.FullEntityTag;
@@ -23,17 +22,15 @@ import static net.mbonnin.arcanetracker.parser.power.BlockTag.TYPE_TRIGGER;
 
 public class GameLogic {
     private static GameLogic sGameLogic;
-    private final Handler mHandler;
 
     private ArrayList<Listener> mListenerList = new ArrayList<>();
     private Game mGame;
     private int mCurrentTurn;
 
     private GameLogic() {
-        mHandler = new Handler();
     }
 
-    void handleRootTag(Tag tag) {
+    public void handleRootTag(Tag tag) {
         if (tag instanceof CreateGameTag) {
             handleCreateGameTag((CreateGameTag) tag);
         }
@@ -48,11 +45,13 @@ public class GameLogic {
             return;
         }
 
+        handleTagRecursive2(tag);
+
         notifyListeners();
     }
 
     private void handleBlockTag(BlockTag tag) {
-        for (Tag child:tag.children) {
+        for (Tag child : tag.children) {
             if (child instanceof FullEntityTag) {
                 tryToGuessCardIdFromBlock(tag, (FullEntityTag) child);
             }
@@ -60,49 +59,45 @@ public class GameLogic {
     }
 
     private void handleBlockTag2(BlockTag tag) {
-        for (Tag child:tag.children) {
-            if (child instanceof FullEntityTag) {
-                tryToGuessCardIdFromBlock(tag, (FullEntityTag) child);
-            }
-        }
         Game game = mGame;
 
-        Entity entity = mGame.findEntitySafe(tag.Entity);
-        if (entity.CardID == null) {
-            Timber.e("no CardID for play");
-            return;
-        }
-
-        Play play = new Play();
-        play.turn = mCurrentTurn;
-        play.cardId = entity.CardID;
-        play.isOpponent = game.findController(entity).isOpponent;
-
-        Timber.i("%s played %s", play.isOpponent ? "opponent" : "I", play.cardId);
-
-        if (!play.isOpponent) {
-            /*
-             * detect if we played a minion or spell for the secret detector
-             */
-            try {
-                String opponentPlayerId = mGame.getOpponent().entity.PlayerID;
-                EntityList opponentSecretEntityList = mGame.getEntityList(e -> opponentPlayerId.equals(e.tags.get(Entity.KEY_CONTROLLER)));
-                for (Entity e2 : opponentSecretEntityList) {
-                    if (Card.TYPE_MINION.equals(entity.card.type)) {
-                        e2.extra.minionPlayed = true;
-                    } else if (Card.TYPE_SPELL.equals(entity.card.type)) {
-                        e2.extra.spellPlayed = true;
-                    } else if (Card.TYPE_HERO_POWER.equals(entity.card.type)) {
-                        e2.extra.heroPowerPlayed = true;
-                    }
-                }
-            } catch (Exception e) {
-                Timber.e(e);
+        if (BlockTag.TYPE_PLAY.equals(tag.BlockType)) {
+            Entity entity = mGame.findEntitySafe(tag.Entity);
+            if (entity.CardID == null) {
+                Timber.e("no CardID for play");
+                return;
             }
+
+            Play play = new Play();
+            play.turn = mCurrentTurn;
+            play.cardId = entity.CardID;
+            play.isOpponent = game.findController(entity).isOpponent;
+
+            Timber.i("%s played %s", play.isOpponent ? "opponent" : "I", play.cardId);
+
+            if (!play.isOpponent) {
+                /*
+                 * detect if we played a minion or spell for the secret detector
+                 */
+                try {
+                    String opponentPlayerId = mGame.getOpponent().entity.PlayerID;
+                    EntityList opponentSecretEntityList = mGame.getEntityList(e -> opponentPlayerId.equals(e.tags.get(Entity.KEY_CONTROLLER)));
+                    for (Entity e2 : opponentSecretEntityList) {
+                        if (Card.TYPE_MINION.equals(entity.card.type)) {
+                            e2.extra.minionPlayed = true;
+                        } else if (Card.TYPE_SPELL.equals(entity.card.type)) {
+                            e2.extra.spellPlayed = true;
+                        } else if (Card.TYPE_HERO_POWER.equals(entity.card.type)) {
+                            e2.extra.heroPowerPlayed = true;
+                        }
+                    }
+                } catch (Exception e) {
+                    Timber.e(e);
+                }
+            }
+
+            game.plays.add(play);
         }
-
-        game.plays.add(play);
-
     }
 
 
@@ -110,9 +105,9 @@ public class GameLogic {
         if (tag instanceof TagChangeTag) {
             handleTagChange((TagChangeTag) tag);
         } else if (tag instanceof FullEntityTag) {
-            handleFullEntityTag((FullEntityTag)tag);
+            handleFullEntityTag((FullEntityTag) tag);
         } else if (tag instanceof BlockTag) {
-            for (Tag child: ((BlockTag)tag).children) {
+            for (Tag child : ((BlockTag) tag).children) {
                 handleTagRecursive(child);
             }
             handleBlockTag((BlockTag) tag);
@@ -125,9 +120,9 @@ public class GameLogic {
         if (tag instanceof TagChangeTag) {
             handleTagChange2((TagChangeTag) tag);
         } else if (tag instanceof FullEntityTag) {
-            handleFullEntityTag2((FullEntityTag)tag);
+            handleFullEntityTag2((FullEntityTag) tag);
         } else if (tag instanceof BlockTag) {
-            for (Tag child: ((BlockTag)tag).children) {
+            for (Tag child : ((BlockTag) tag).children) {
                 handleTagRecursive2(child);
             }
             handleBlockTag2((BlockTag) tag);
@@ -139,7 +134,7 @@ public class GameLogic {
     private void handleShowEntityTag(ShowEntityTag tag) {
         Entity entity = mGame.findEntitySafe(tag.Entity);
 
-        if (!TextUtils.isEmpty(entity.CardID) && !entity.CardID.equals(tag.CardID)) {
+        if (!Utils.isEmpty(entity.CardID) && !entity.CardID.equals(tag.CardID)) {
             Timber.e("[Inconsistent] entity " + entity + " changed cardId " + entity.CardID + " -> " + tag.CardID);
         }
         entity.CardID = tag.CardID;
@@ -178,6 +173,8 @@ public class GameLogic {
 
     private void tagChanged(Entity entity, String key, String newValue) {
         String oldValue = entity.tags.get(key);
+
+        entity.tags.put(key, newValue);
 
         if (Entity.ENTITY_ID_GAME.equals(entity.EntityID)) {
             if (Entity.KEY_TURN.equals(key)) {
@@ -323,7 +320,7 @@ public class GameLogic {
         });
 
         for (Entity entity : entities) {
-            if (!TextUtils.isEmpty(entity.CardID)) {
+            if (!Utils.isEmpty(entity.CardID)) {
                 knownCardsInHand++;
             }
             totalCardsInHand++;
@@ -363,22 +360,13 @@ public class GameLogic {
         mGame.opponent = player1.isOpponent ? player1 : player2;
     }
 
-    private Runnable mListenerRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mGame != null && mGame.player != null && mGame.opponent != null)
-                for (Listener listener : mListenerList) {
-                    listener.somethingChanged();
-                }
-        }
-    };
 
     private void notifyListeners() {
-        /*
-         * we gate the notification so as not to flood the listeners
-         */
-        mHandler.removeCallbacks(mListenerRunnable);
-        mHandler.postDelayed(mListenerRunnable, 200);
+        if (mGame != null && mGame.isStarted()) {
+            for (Listener listener : mListenerList) {
+                listener.somethingChanged();
+            }
+        }
     }
 
     private void handleTagChange(TagChangeTag tag) {
@@ -395,7 +383,7 @@ public class GameLogic {
 
         String actionStartingCardId = blockEntity.CardID;
 
-        if (TextUtils.isEmpty(actionStartingCardId)) {
+        if (Utils.isEmpty(actionStartingCardId)) {
             return;
         }
 
@@ -528,7 +516,7 @@ public class GameLogic {
         }
         entity.EntityID = tag.ID;
         entity.CardID = tag.CardID;
-        if (!TextUtils.isEmpty(entity.CardID)) {
+        if (!Utils.isEmpty(entity.CardID)) {
             entity.card = CardDb.getCard(entity.CardID);
         }
         entity.tags.putAll(tag.tags);

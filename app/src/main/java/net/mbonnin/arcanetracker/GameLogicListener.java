@@ -27,6 +27,7 @@ import static android.R.attr.mode;
  */
 public class GameLogicListener implements GameLogic.Listener {
 
+    private static GameLogicListener sGameLogicListener;
     private Game mGame;
 
     private static Deck activateBestDeck(int classIndex, HashMap<String, Integer> initialCards) {
@@ -218,5 +219,20 @@ public class GameLogicListener implements GameLogic.Listener {
     @Override
     public void somethingChanged() {
 
+    }
+
+    private GameLogicListener() {
+
+    }
+    public static GameLogicListener get() {
+        if (sGameLogicListener == null) {
+            sGameLogicListener = new GameLogicListener();
+        }
+
+        return sGameLogicListener;
+    }
+
+    public Game getLastGame() {
+        return mGame;
     }
 }

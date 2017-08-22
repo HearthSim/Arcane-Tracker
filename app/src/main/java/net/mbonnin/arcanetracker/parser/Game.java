@@ -1,10 +1,11 @@
 package net.mbonnin.arcanetracker.parser;
 
-import android.text.TextUtils;
+import com.annimon.stream.function.Predicate;
 
-import com.android.internal.util.Predicate;
+import net.mbonnin.arcanetracker.Utils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import timber.log.Timber;
@@ -29,6 +30,10 @@ public class Game {
     public ArrayList<Play> plays = new ArrayList<>();
     public boolean victory;
     public int bnetGameType;
+    public StringBuilder rawBuilder = new StringBuilder();
+    public String startTime = Utils.ISO8601DATEFORMAT.format(new Date());
+    public int rawGoldRewardStateCount = 0;
+
 
     public Player getPlayer() {
         return player;
@@ -56,11 +61,10 @@ public class Game {
     public EntityList getEntityList(Predicate<Entity> predicate) {
         EntityList entityList = new EntityList();
         for (Entity entity: entityMap.values()) {
-            if (predicate.apply(entity)) {
+            if (predicate.test(entity)) {
                 entityList.add(entity);
             }
         }
-
         return entityList;
     }
 
@@ -84,7 +88,7 @@ public class Game {
             return gameEntity;
         }
 
-        if (TextUtils.isEmpty(IdOrBattleTag)) {
+        if (Utils.isEmpty(IdOrBattleTag)) {
             return unknownEntity("empty");
         }
 

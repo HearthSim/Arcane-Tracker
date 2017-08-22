@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.os.Handler;
 import android.support.multidex.MultiDexApplication;
 import android.util.DisplayMetrics;
 import android.view.ContextThemeWrapper;
@@ -95,13 +96,19 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
          */
         new LogReader("LoadingScreen.log", LoadingScreenParser.get());
 
+        GameLogic.get().addListener(GameLogicListener.get());
+        Handler handler = new Handler();
+        PowerParser powerParser = new PowerParser(tag -> {
+            handler.post(() -> GameLogic.get().handleRootTag(tag));
+        }, (gameStr, gameStart) -> {
+            HSReplay.get().uploadGame(gameStart, GameLogicListener.get().getLastGame(), gameStr);
+            return null;
+        });
         /*
          * Power.log, we just want the incremental changes
          */
-        PowerParser powerParser = new PowerParser();
         new LogReader("Power.log", powerParser, true);
 
-        GameLogic.get().addListener(new GameLogicListener());
         HSReplay.get();
 
         CardRenderer.get();

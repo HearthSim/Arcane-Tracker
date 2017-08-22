@@ -184,6 +184,18 @@ public class Utils {
         return ArcaneTrackerApplication.getContext().getString(resId, args);
     }
 
+    public static boolean isEmpty(String str) {
+        if (str == null) {
+            return true;
+        }
+
+        if ("".equals(str)) {
+            return true;
+        }
+
+        return false;
+    }
+
     public static class DummyObserver<T> extends rx.Subscriber<T> {
         @Override
         public void onCompleted() {

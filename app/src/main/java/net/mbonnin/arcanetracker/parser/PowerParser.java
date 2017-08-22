@@ -1,9 +1,8 @@
 package net.mbonnin.arcanetracker.parser;
 
-import android.os.Handler;
+import com.annimon.stream.function.Consumer;
 
 import net.mbonnin.arcanetracker.Utils;
-import net.mbonnin.arcanetracker.hsreplay.HSReplay;
 import net.mbonnin.arcanetracker.parser.power.BlockTag;
 import net.mbonnin.arcanetracker.parser.power.CreateGameTag;
 import net.mbonnin.arcanetracker.parser.power.FullEntityTag;
@@ -22,6 +21,7 @@ import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import rx.functions.Func2;
 import timber.log.Timber;
 
 /**
@@ -29,13 +29,10 @@ import timber.log.Timber;
  */
 
 public class PowerParser implements LogReader.LineConsumer {
-    private final Handler mHandler;
-    private final GameLogic mGameLogic;
+    private final Consumer<Tag> mTagConsumer;
+    private final Func2<String, String, Void> mRawGameConsumer;
     private LinkedList<Node> mNodeStack = new LinkedList<Node>();
     private Node mCurrentRoot;
-
-    private Game mCurrentGame;
-
 
     private final Pattern BLOCK_START_PATTERN = Pattern.compile("BLOCK_START BlockType=(.*) Entity=(.*) EffectCardId=(.*) EffectIndex=(.*) Target=(.*)");
     private final Pattern BLOCK_END_PATTERN = Pattern.compile("BLOCK_END");
@@ -56,24 +53,15 @@ public class PowerParser implements LogReader.LineConsumer {
     private Game mLastGame;
     private boolean mReadingPreviousData = true;
 
-    static class Block {
-
-        String blockType;
-        String entity;
-        String effectCardId;
-        String effectIndex;
-        String target;
-    }
-
     static class Node {
         String line;
         ArrayList<Node> children = new ArrayList<>();
         public int depth;
     }
 
-    public PowerParser() {
-        mHandler = new Handler();
-        mGameLogic = GameLogic.get();
+    public PowerParser(Consumer<Tag> tagConsumer, Func2<String, String, Void> rawGameConsumer) {
+        mTagConsumer = tagConsumer;
+        mRawGameConsumer = rawGameConsumer;
     }
 
 
@@ -181,24 +169,10 @@ public class PowerParser implements LogReader.LineConsumer {
                 String gameStr = rawBuilder.toString();
                 Timber.w("GOLD_REWARD_STATE finished");
 
-                long start = System.currentTimeMillis();
-                Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mCurrentGame != null) {
-                            // we are still parsing the PowerState logs, wait
-                            if (System.currentTimeMillis() - start < 30000) {
-                                mHandler.post(this);
-                            } else {
-                                Timber.e("timeout waiting for PowerState to finish");
-                            }
-                        } else {
-                            HSReplay.get().uploadGame(rawMatchStart, mLastGame, gameStr);
-                        }
-                    }
-                };
+                if (mRawGameConsumer != null) {
+                    mRawGameConsumer.call(gameStr, rawMatchStart);
+                }
 
-                mHandler.post(runnable);
                 rawBuilder = null;
             }
         }
@@ -224,11 +198,11 @@ public class PowerParser implements LogReader.LineConsumer {
 
 
     private void outputCurrentRoot(Node node) {
-        dumpNode(node);
+        //dumpNode(node);
 
         try {
             Tag tag = parseTag(node);
-            mHandler.post(() -> GameLogic.get().handleRootTag(tag));
+            mTagConsumer.accept(tag);
         } catch (Exception e) {
             Timber.e("cannot parse tag");
             Timber.e(e);
@@ -249,20 +223,20 @@ public class PowerParser implements LogReader.LineConsumer {
             return tag;
         } else if ((m = GameEntityPattern.matcher(line)).matches()) {
             GameEntityTag tag = new GameEntityTag();
-            tag.EntityID = m.group(1);
+            tag.EntityID = getEntityIdFromNameOrId(m.group(1));
             tag.tags.putAll(getTags(node));
 
             return tag;
         } else if ((m = PlayerEntityPattern.matcher(line)).matches()) {
             PlayerTag tag = new PlayerTag();
-            tag.EntityID = m.group(1);
+            tag.EntityID = getEntityIdFromNameOrId(m.group(1));
             tag.PlayerID = m.group(2);
             tag.tags.putAll(getTags(node));
 
             return tag;
         } else if ((m = FULL_ENTITY.matcher(line)).matches()) {
             FullEntityTag tag = new FullEntityTag();
-            tag.ID = m.group(1);
+            tag.ID = getEntityIdFromNameOrId(m.group(1));
             tag.CardID = m.group(2);
             tag.tags.putAll(getTags(node));
 
@@ -277,10 +251,10 @@ public class PowerParser implements LogReader.LineConsumer {
         } else if ((m = BLOCK_START_PATTERN.matcher(line)).matches()) {
             BlockTag tag = new BlockTag();
             tag.BlockType = m.group(1);
-            tag.Entity = m.group(2);
+            tag.Entity = getEntityIdFromNameOrId(m.group(2));
             tag.EffectCardId = m.group(3);
             tag.EffectIndex = m.group(4);
-            tag.Target = m.group(5);
+            tag.Target = getEntityIdFromNameOrId(m.group(5));
 
             for (Node child : node.children) {
                 tag.children.add(parseTag(child));
@@ -291,6 +265,7 @@ public class PowerParser implements LogReader.LineConsumer {
             ShowEntityTag tag = new ShowEntityTag();
             tag.Entity = getEntityIdFromNameOrId(m.group(1));
             tag.CardID = m.group(2);
+            tag.tags.putAll(getTags(node));
 
             return tag;
         } else if ((m = HIDE_ENTITY.matcher(line)).matches()) {

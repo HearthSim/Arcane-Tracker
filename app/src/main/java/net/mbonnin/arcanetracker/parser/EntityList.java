@@ -2,10 +2,10 @@ package net.mbonnin.arcanetracker.parser;
 
 import android.text.TextUtils;
 
-import com.android.internal.util.Predicate;
 import com.annimon.stream.Collector;
 import com.annimon.stream.function.BiConsumer;
 import com.annimon.stream.function.Function;
+import com.annimon.stream.function.Predicate;
 import com.annimon.stream.function.Supplier;
 
 import net.mbonnin.arcanetracker.Utils;
@@ -45,7 +45,7 @@ public class EntityList extends ArrayList<Entity> {
             mCardType = cardType;
         }
         @Override
-        public boolean apply(Entity entity) {
+        public boolean test(Entity entity) {
             return mCardType.equals(entity.tags.get(Entity.KEY_CARDTYPE));
         }
     }
@@ -57,7 +57,7 @@ public class EntityList extends ArrayList<Entity> {
             mZone = z;
         }
         @Override
-        public boolean apply(Entity entity) {
+        public boolean test(Entity entity) {
             return mZone.equals(entity.tags.get(Entity.KEY_ZONE));
         }
     }
@@ -69,8 +69,8 @@ public class EntityList extends ArrayList<Entity> {
             mPredicate = p;
         }
         @Override
-        public boolean apply(Entity entity) {
-            return !mPredicate.apply(entity);
+        public boolean test(Entity entity) {
+            return !mPredicate.test(entity);
         }
     }
 
@@ -78,7 +78,7 @@ public class EntityList extends ArrayList<Entity> {
     public EntityList filter(Predicate<Entity> predicate) {
         EntityList list = new EntityList();
         for (Entity entity : this) {
-            if (predicate.apply(entity)) {
+            if (predicate.test(entity)) {
                 list.add(entity);
             }
         }

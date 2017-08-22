@@ -1,5 +1,6 @@
 package net.mbonnin.arcanetracker.parser.power;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BlockTag extends Tag {
@@ -12,5 +13,5 @@ public class BlockTag extends Tag {
     public String EffectCardId;
     public String EffectIndex;
     public String Target;
-    public List<Tag> children;
+    public List<Tag> children = new ArrayList<>();
 }

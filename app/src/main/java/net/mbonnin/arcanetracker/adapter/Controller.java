@@ -1,6 +1,7 @@
 package net.mbonnin.arcanetracker.adapter;
 
 import android.content.Context;
+import android.os.Handler;
 import android.text.TextUtils;
 
 import com.annimon.stream.Collector;
@@ -34,6 +35,7 @@ public class Controller implements GameLogic.Listener {
 
     private final boolean mOpponent;
     private final ItemAdapter mAdapter;
+    private final Handler mHandler;
     protected Deck mDeck;
     private Game mGame;
     private String mPlayerId;
@@ -42,6 +44,7 @@ public class Controller implements GameLogic.Listener {
         mOpponent = opponent;
         mAdapter = new ItemAdapter();
         GameLogic.get().addListener(this);
+        mHandler = new Handler();
     }
 
     public ItemAdapter getAdapter() {
@@ -52,6 +55,13 @@ public class Controller implements GameLogic.Listener {
         mDeck = deck;
         update();
     }
+
+    private Runnable mUpdateRunnable = new Runnable() {
+        @Override
+        public void run() {
+            update();
+        }
+    };
 
     private ArrayList getDeck() {
         EntityList entityList = mGame.getEntityList(entity -> mPlayerId.equals(entity.extra.originalController));
@@ -413,7 +423,11 @@ public class Controller implements GameLogic.Listener {
 
     @Override
     public void somethingChanged() {
-        update();
+        /*
+         * we gate the notification so as not to flood the listeners
+         */
+        mHandler.removeCallbacks(mUpdateRunnable);
+        mHandler.postDelayed(mUpdateRunnable, 200);
     }
 
 
