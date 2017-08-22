@@ -241,13 +241,17 @@ public class GameLogicListener implements GameLogic.Listener {
     }
 
     public void uploadGame(String gameStr, String gameStart) {
+        long startTime = System.currentTimeMillis();
+        
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 if (mGameOver) {
                     HSReplay.get().uploadGame(gameStart, mGame, gameStr);
-                } else {
+                } else if (System.currentTimeMillis() - startTime < 30000){
                     mHandler.postDelayed(this, 1000);
+                } else {
+                    Timber.e("timeout waiting for PowerState to finish");
                 }
             }
         };
