@@ -112,35 +112,35 @@ public class DetailsView extends LinearLayout {
         switch (classIndex) {
             case Card.CLASS_INDEX_HUNTER:
                 addSecret(list, Card.BEAR_TRAP, entity.extra.opponentHeroWasAttacked);
-                addSecret(list, Card.CAT_TRICK, entity.extra.spellPlayed);
+                addSecret(list, Card.CAT_TRICK, entity.extra.otherPlayerCastSpell);
                 addSecret(list, Card.EXPLOSIVE_TRAP, entity.extra.opponentHeroWasAttacked);
                 addSecret(list, Card.FREEZING_TRAP, entity.extra.opponentHeroWasAttacked || entity.extra.minonWasAttacked);
                 addSecret(list, Card.SNAKE_TRAP, entity.extra.minonWasAttacked);
-                addSecret(list, Card.SNIPE, entity.extra.minionPlayed);
-                addSecret(list, Card.DART_TRAP, entity.extra.heroPowerPlayed);
-                addSecret(list, Card.HIDDEN_CACHE, entity.extra.minionPlayed);
+                addSecret(list, Card.SNIPE, entity.extra.otherPlayerPlayedMinion);
+                addSecret(list, Card.DART_TRAP, entity.extra.otherPlayerHeroPowered);
+                addSecret(list, Card.HIDDEN_CACHE, entity.extra.otherPlayerPlayedMinion);
                 addSecret(list, Card.MISDIRECTION, entity.extra.opponentHeroWasAttacked);
                 break;
             case Card.CLASS_INDEX_MAGE:
-                addSecret(list, Card.MIRROR_ENTITY, entity.extra.minionPlayed);
-                addSecret(list, Card.MANA_BIND, entity.extra.spellPlayed);
-                addSecret(list, Card.COUNTERSPELL, entity.extra.spellPlayed);
-                addSecret(list, Card.EFFIGY, entity.extra.minionPlayed);
+                addSecret(list, Card.MIRROR_ENTITY, entity.extra.otherPlayerPlayedMinion);
+                addSecret(list, Card.MANA_BIND, entity.extra.otherPlayerCastSpell);
+                addSecret(list, Card.COUNTERSPELL, entity.extra.otherPlayerCastSpell);
+                addSecret(list, Card.EFFIGY, entity.extra.otherPlayerPlayedMinion);
                 addSecret(list, Card.ICE_BARRIER, entity.extra.opponentHeroWasAttacked);
-                addSecret(list, Card.POTION_OF_POLYMORPH, entity.extra.minionPlayed);
-                addSecret(list, Card.DUPLICATE, entity.extra.opponentMinionDied);
+                addSecret(list, Card.POTION_OF_POLYMORPH, entity.extra.otherPlayerPlayedMinion);
+                addSecret(list, Card.DUPLICATE, entity.extra.selfPlayerMinionDied);
                 addSecret(list, Card.VAPORIZE, entity.extra.opponentHeroWasAttacked);
                 //addSecret(list, Card.ICE_BLOCK, entity.extra.opponentHeroWasAttacked);
                 //addSecret(list, Card.SPELL_BENDER, entity.extra.opponentHeroWasAttacked);
                 break;
             case Card.CLASS_INDEX_PALADIN:
-                //addSecret(list, Card.COMPETITIVE_SPIRIT, entity.extra.minionPlayed);
-                addSecret(list, Card.AVENGE, entity.extra.opponentMinionDied);
-                addSecret(list, Card.REDEMPTION, entity.extra.opponentMinionDied);
-                addSecret(list, Card.REPENTANCE, entity.extra.minionPlayed);
+                //addSecret(list, Card.COMPETITIVE_SPIRIT, entity.extra.otherPlayerPlayedMinion);
+                addSecret(list, Card.AVENGE, entity.extra.selfPlayerMinionDied);
+                addSecret(list, Card.REDEMPTION, entity.extra.selfPlayerMinionDied);
+                addSecret(list, Card.REPENTANCE, entity.extra.otherPlayerPlayedMinion);
                 //addSecret(list, Card.SACRED_TRIAL, entity.extra.opponentHeroWasAttacked);
                 addSecret(list, Card.NOBLE_SACRIFIC, entity.extra.opponentHeroWasAttacked || entity.extra.minonWasAttacked);
-                addSecret(list, Card.GETAWAY_KOD, entity.extra.opponentMinionDied);
+                addSecret(list, Card.GETAWAY_KOD, entity.extra.selfPlayerMinionDied);
                 addSecret(list, Card.EYE_FOR_EYE, entity.extra.opponentHeroWasAttacked);
                 break;
         }

@@ -72,24 +72,19 @@ public class GameLogic {
 
             Timber.i("%s played %s", play.isOpponent ? "opponent" : "I", play.cardId);
 
-            if (!play.isOpponent) {
-                /*
-                 * detect if we played a minion or spell for the secret detector
-                 */
-                try {
-                    String opponentPlayerId = mGame.getOpponent().entity.PlayerID;
-                    EntityList opponentSecretEntityList = mGame.getEntityList(e -> opponentPlayerId.equals(e.tags.get(Entity.KEY_CONTROLLER)));
-                    for (Entity e2 : opponentSecretEntityList) {
-                        if (Card.TYPE_MINION.equals(entity.card.type)) {
-                            e2.extra.minionPlayed = true;
-                        } else if (Card.TYPE_SPELL.equals(entity.card.type)) {
-                            e2.extra.spellPlayed = true;
-                        } else if (Card.TYPE_HERO_POWER.equals(entity.card.type)) {
-                            e2.extra.heroPowerPlayed = true;
-                        }
+            /*
+             * detect if we played a minion or spell for the secret detector
+             */
+            EntityList secretEntityList = mGame.getEntityList(e -> Entity.ZONE_SECRET.equals(e.tags.get(Entity.KEY_ZONE)));
+            for (Entity e2 : secretEntityList) {
+                if (!Utils.equalsNullSafe(e2.tags.get(Entity.KEY_CONTROLLER), entity.tags.get(Entity.KEY_CONTROLLER))) {
+                    if (Card.TYPE_MINION.equals(entity.card.type)) {
+                        e2.extra.otherPlayerPlayedMinion = true;
+                    } else if (Card.TYPE_SPELL.equals(entity.card.type)) {
+                        e2.extra.otherPlayerCastSpell = true;
+                    } else if (Card.TYPE_HERO_POWER.equals(entity.card.type)) {
+                        e2.extra.otherPlayerHeroPowered = true;
                     }
-                } catch (Exception e) {
-                    Timber.e(e);
                 }
             }
 
@@ -219,20 +214,17 @@ public class GameLogic {
                 entity.extra.playTurn = mCurrentTurn;
             } else if (Entity.ZONE_PLAY.equals(oldValue) && Entity.ZONE_GRAVEYARD.equals(newValue)) {
                 entity.extra.diedTurn = mCurrentTurn;
-//                /*
-//                 * one of the oponent minion died, remember it for the secret detector
-//                 */
-//                try {
-//                    String opponentPlayerId = mGame.getOpponent().entity.PlayerID;
-//                    EntityList opponentSecretEntityList = mGame.getEntityList(e -> opponentPlayerId.equals(e.tags.get(Entity.KEY_CONTROLLER)));
-//                    if (opponentPlayerId.equals(entity.tags.get(Entity.KEY_CONTROLLER))) {
-//                        for (Entity e2 : opponentSecretEntityList) {
-//                            e2.extra.opponentMinionDied = true;
-//                        }
-//                    }
-//                } catch (Exception e) {
-//                    Timber.e(e);
-//                }
+                /*
+                 * one of the oponent minion died, remember it for the secret detector
+                 */
+                EntityList secretEntityList = mGame.getEntityList(e -> Entity.ZONE_SECRET.equals(e.tags.get(Entity.KEY_ZONE)));
+                for (Entity e2 : secretEntityList) {
+                    if (Utils.equalsNullSafe(e2.tags.get(Entity.KEY_CONTROLLER), entity.tags.get(Entity.KEY_CONTROLLER))) {
+                        if (Card.TYPE_MINION.equals(entity.card.type)) {
+                            e2.extra.selfPlayerMinionDied = true;
+                        }
+                    }
+                }
             } else if (Entity.ZONE_HAND.equals(oldValue) && Entity.ZONE_DECK.equals(newValue)) {
                 /*
                  * card was put back in the deck (most likely from mulligan)
@@ -259,7 +251,7 @@ public class GameLogic {
             mGame.addEntity(entity);
             mGame.gameEntity = entity;
 
-            for (PlayerTag playerTag: tag.playerList) {
+            for (PlayerTag playerTag : tag.playerList) {
                 entity = new Entity();
                 entity.EntityID = playerTag.EntityID;
                 entity.PlayerID = playerTag.PlayerID;
@@ -550,6 +542,6 @@ public class GameLogic {
     }
 
     public static int gameTurnToHumanTurn(int turn) {
-        return turn;
+        return (turn + 1) / 2;
     }
 }

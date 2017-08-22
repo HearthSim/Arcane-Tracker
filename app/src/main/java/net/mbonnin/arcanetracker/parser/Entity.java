@@ -73,13 +73,13 @@ public class Entity {
         public boolean mulliganed;
         public String createdBy;
 
-        public boolean minionPlayed;
-        public boolean spellPlayed;
-        public boolean heroPowerPlayed;
+        public boolean otherPlayerPlayedMinion;
+        public boolean otherPlayerCastSpell;
+        public boolean otherPlayerHeroPowered;
         public boolean opponentHeroWasAttacked;
         public boolean minonWasAttacked;
         public boolean playerHeroWasAttacked;
-        public boolean opponentMinionDied;
+        public boolean selfPlayerMinionDied;
     }
 
     public void dump() {

@@ -242,7 +242,8 @@ public class GameLogicListener implements GameLogic.Listener {
 
     public void uploadGame(String gameStr, String gameStart) {
         long startTime = System.currentTimeMillis();
-        
+
+        Timber.d("ready to send hsreplay");
         Runnable runnable = new Runnable() {
             @Override
             public void run() {

@@ -196,21 +196,8 @@ public class Utils {
         return false;
     }
 
-    public static class DummyObserver<T> extends rx.Subscriber<T> {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-
-        }
-
-        @Override
-        public void onNext(T t) {
-
-        }
+    public static boolean equalsNullSafe(String a, String b) {
+        return a != null ? a.equals(b) : b == null;
     }
 
     public static int cardMapGet(HashMap<String, Integer> map, String key) {
