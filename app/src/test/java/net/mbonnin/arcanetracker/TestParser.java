@@ -208,5 +208,9 @@ public class TestParser {
         Game game = runParser("/gRievoUS.log");
 
         Assert.assertEquals(game.findEntitySafe("73").extra.createdBy, Card.SERVANT_OF_KALYMOS);
+        Assert.assertEquals(game.findEntitySafe("78").extra.createdBy, Card.SERVANT_OF_KALYMOS);
+        Assert.assertEquals(game.findEntitySafe("75").extra.createdBy, Card.FROZEN_CLONE);
+        Assert.assertEquals(game.findEntitySafe("76").extra.createdBy, Card.FROZEN_CLONE);
+        Assert.assertEquals(game.findEntitySafe("80").extra.createdBy, Card.MIRROR_ENTITY);
     }
 }
