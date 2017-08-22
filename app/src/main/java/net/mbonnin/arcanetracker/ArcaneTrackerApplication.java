@@ -101,7 +101,7 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
         PowerParser powerParser = new PowerParser(tag -> {
             handler.post(() -> GameLogic.get().handleRootTag(tag));
         }, (gameStr, gameStart) -> {
-            HSReplay.get().uploadGame(gameStart, GameLogicListener.get().getLastGame(), gameStr);
+            GameLogicListener.get().uploadGame(gameStr, gameStart);
             return null;
         });
         /*

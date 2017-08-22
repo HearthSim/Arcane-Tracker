@@ -1,7 +1,10 @@
 package net.mbonnin.arcanetracker;
 
+import android.os.Handler;
+
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import net.mbonnin.arcanetracker.hsreplay.HSReplay;
 import net.mbonnin.arcanetracker.parser.Entity;
 import net.mbonnin.arcanetracker.parser.EntityList;
 import net.mbonnin.arcanetracker.parser.Game;
@@ -28,7 +31,9 @@ import static android.R.attr.mode;
 public class GameLogicListener implements GameLogic.Listener {
 
     private static GameLogicListener sGameLogicListener;
+    private final Handler mHandler;
     private Game mGame;
+    private boolean mGameOver;
 
     private static Deck activateBestDeck(int classIndex, HashMap<String, Integer> initialCards) {
         Deck deck = MainViewCompanion.getPlayerCompanion().getDeck();
@@ -143,6 +148,7 @@ public class GameLogicListener implements GameLogic.Listener {
         MainViewCompanion.getOpponentCompanion().setDeck(DeckList.getOpponentDeck());
 
         mGame = game;
+        mGameOver = false;
         mGame.bnetGameType = LoadingScreenParser.get().getMode() == LoadingScreenParser.MODE_ARENA ? BnetGameType.BGT_ARENA : BnetGameType.BGT_UNKNOWN;
     }
 
@@ -197,6 +203,7 @@ public class GameLogicListener implements GameLogic.Listener {
         FileTree.get().sync();
 
         FirebaseAnalytics.getInstance(ArcaneTrackerApplication.getContext()).logEvent("game_ended", null);
+        mGameOver = true;
     }
 
     private void addKnownCardsToDeck(Game game, Deck deck) {
@@ -222,6 +229,7 @@ public class GameLogicListener implements GameLogic.Listener {
     }
 
     private GameLogicListener() {
+        mHandler = new Handler();
 
     }
     public static GameLogicListener get() {
@@ -232,7 +240,18 @@ public class GameLogicListener implements GameLogic.Listener {
         return sGameLogicListener;
     }
 
-    public Game getLastGame() {
-        return mGame;
+    public void uploadGame(String gameStr, String gameStart) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (mGameOver) {
+                    HSReplay.get().uploadGame(gameStart, mGame, gameStr);
+                } else {
+                    mHandler.postDelayed(this, 1000);
+                }
+            }
+        };
+
+        runnable.run();
     }
 }
