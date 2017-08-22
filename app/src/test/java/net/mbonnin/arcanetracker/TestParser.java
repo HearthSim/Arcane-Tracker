@@ -18,10 +18,10 @@ import timber.log.Timber;
  */
 public class TestParser {
     @Test
-    public void game0() throws Exception {
+    public void test0() throws Exception {
         Timber.plant(new TestTree());
         PowerParser powerParser = new PowerParser(tag -> GameLogic.get().handleRootTag(tag), null);
-        InputStream inputStream = getClass().getResourceAsStream("/game0.log");
+        InputStream inputStream = getClass().getResourceAsStream("/power0.log");
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
         String line;
 

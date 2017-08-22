@@ -1,7 +1,8 @@
 package net.mbonnin.arcanetracker.parser.power;
 
+import java.util.ArrayList;
+
 public class CreateGameTag extends Tag{
     public GameEntityTag gameEntity;
-    public PlayerTag player1;
-    public PlayerTag player2;
+    public ArrayList<PlayerTag> playerList = new ArrayList<>();
 }

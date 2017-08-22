@@ -10,6 +10,7 @@ import net.mbonnin.arcanetracker.Utils;
 import net.mbonnin.arcanetracker.parser.power.BlockTag;
 import net.mbonnin.arcanetracker.parser.power.CreateGameTag;
 import net.mbonnin.arcanetracker.parser.power.FullEntityTag;
+import net.mbonnin.arcanetracker.parser.power.PlayerTag;
 import net.mbonnin.arcanetracker.parser.power.ShowEntityTag;
 import net.mbonnin.arcanetracker.parser.power.Tag;
 import net.mbonnin.arcanetracker.parser.power.TagChangeTag;
@@ -31,6 +32,7 @@ public class GameLogic {
     }
 
     public void handleRootTag(Tag tag) {
+        //Timber.d("handle tag: " + tag);
         if (tag instanceof CreateGameTag) {
             handleCreateGameTag((CreateGameTag) tag);
         }
@@ -256,22 +258,17 @@ public class GameLogic {
             mGame.addEntity(entity);
             mGame.gameEntity = entity;
 
-            entity = new Entity();
-            entity.EntityID = tag.player1.EntityID;
-            entity.PlayerID = tag.player1.PlayerID;
-            entity.tags.putAll(tag.player1.tags);
-            mGame.addEntity(entity);
-            player = new Player();
-            player.entity = entity;
-            mGame.playerMap.put(entity.PlayerID, player);
+            for (PlayerTag playerTag: tag.playerList) {
+                entity = new Entity();
+                entity.EntityID = playerTag.EntityID;
+                entity.PlayerID = playerTag.PlayerID;
+                entity.tags.putAll(playerTag.tags);
+                mGame.addEntity(entity);
+                player = new Player();
+                player.entity = entity;
+                mGame.playerMap.put(entity.PlayerID, player);
 
-            entity.EntityID = tag.player2.EntityID;
-            entity.PlayerID = tag.player2.PlayerID;
-            entity.tags.putAll(tag.player2.tags);
-            mGame.addEntity(entity);
-            player = new Player();
-            player.entity = entity;
-            mGame.playerMap.put(entity.PlayerID, player);
+            }
         }
     }
 
