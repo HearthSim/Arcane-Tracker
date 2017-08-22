@@ -53,11 +53,6 @@ public class GameLogic {
     }
 
     private void handleBlockTag(BlockTag tag) {
-        for (Tag child : tag.children) {
-            if (child instanceof FullEntityTag) {
-                tryToGuessCardIdFromBlock(tag, (FullEntityTag) child);
-            }
-        }
     }
 
     private void handleBlockTag2(BlockTag tag) {
@@ -99,6 +94,12 @@ public class GameLogic {
             }
 
             game.plays.add(play);
+        }
+
+        for (Tag child : tag.children) {
+            if (child instanceof FullEntityTag) {
+                tryToGuessCardIdFromBlock(tag, (FullEntityTag) child);
+            }
         }
     }
 
@@ -378,9 +379,7 @@ public class GameLogic {
         Entity blockEntity = mGame.findEntitySafe(blockTag.Entity);
         Entity entity = mGame.findEntitySafe(fullEntityTag.ID);
 
-        String actionStartingCardId = blockEntity.CardID;
-
-        if (Utils.isEmpty(actionStartingCardId)) {
+        if (Utils.isEmpty(blockEntity.CardID)) {
             return;
         }
 
@@ -388,7 +387,7 @@ public class GameLogic {
 
         if (BlockTag.TYPE_POWER.equals(blockTag.BlockType)) {
 
-            switch (actionStartingCardId) {
+            switch (blockEntity.CardID) {
                 case Card.ID_GANG_UP:
                 case Card.ID_RECYCLE:
                 case Card.SHADOWCASTER:
@@ -472,7 +471,7 @@ public class GameLogic {
                     break;
             }
         } else if (TYPE_TRIGGER.equals(blockTag.BlockType)) {
-            switch (actionStartingCardId) {
+            switch (blockEntity.CardID) {
                 case Card.PYROS2:
                     guessedId = Card.PYROS6;
                     break;
@@ -496,8 +495,10 @@ public class GameLogic {
         if (guessedId != null) {
             entity.CardID = guessedId;
             entity.card = CardDb.getCard(guessedId);
-            entity.extra.createdBy = guessedId;
         }
+
+        // even if we don't know the guessedId, record that this was createdBy this entity
+        entity.extra.createdBy = blockEntity.CardID;
     }
 
     private void handleFullEntityTag2(FullEntityTag tag) {

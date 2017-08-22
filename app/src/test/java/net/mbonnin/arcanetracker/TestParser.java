@@ -6,9 +6,11 @@ import net.mbonnin.arcanetracker.parser.Play;
 import net.mbonnin.arcanetracker.parser.PowerParser;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ import timber.log.Timber;
  */
 public class TestParser {
 
-    static class TestListener implements GameLogic.Listener {
+    private static class TestListener implements GameLogic.Listener {
 
         public Game game;
 
@@ -43,15 +45,17 @@ public class TestParser {
         }
     }
 
-    @Test
-    public void test0() throws Exception {
+    @BeforeClass
+    public static void beforeClass() {
         Timber.plant(new TestTree());
+    }
 
+    private Game runParser(String resource) throws IOException {
         TestListener listener = new TestListener();
 
         GameLogic.get().addListener(listener);
         PowerParser powerParser = new PowerParser(tag -> GameLogic.get().handleRootTag(tag), null);
-        InputStream inputStream = getClass().getResourceAsStream("/fishstick.log");
+        InputStream inputStream = getClass().getResourceAsStream(resource);
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
         String line;
 
@@ -60,7 +64,15 @@ public class TestParser {
             powerParser.onLine(line);
         }
 
-        Timber.d("victory ? " + listener.game.victory);
+        return listener.game;
+    }
+
+    @Test
+    public void test0() throws Exception {
+
+        Game game = runParser("/fishstick.log");
+
+        Assert.assertFalse(game.victory);
 
         /*for (Play play: listener.game.plays) {
             Timber.d("list.add(new Play(" + play.turn + ", " + play.isOpponent + ", \"" + play.cardId + "\"));");
@@ -183,11 +195,18 @@ public class TestParser {
         list.add(new Play(66, true, "DREAM_02"));
         list.add(new Play(66, true, "DREAM_02"));
 
-        Assert.assertEquals(list.size(), listener.game.plays.size());
+        Assert.assertEquals(list.size(), game.plays.size());
         for (int i = 0; i < list.size(); i++) {
-            Assert.assertEquals(list.get(i).cardId, listener.game.plays.get(i).cardId);
-            Assert.assertEquals(list.get(i).isOpponent, listener.game.plays.get(i).isOpponent);
-            Assert.assertEquals(list.get(i).turn, listener.game.plays.get(i).turn);
+            Assert.assertEquals(list.get(i).cardId, game.plays.get(i).cardId);
+            Assert.assertEquals(list.get(i).isOpponent, game.plays.get(i).isOpponent);
+            Assert.assertEquals(list.get(i).turn, game.plays.get(i).turn);
         }
+    }
+
+    @Test
+    public void testCreatedBy() throws Exception {
+        Game game = runParser("/gRievoUS.log");
+
+        Assert.assertEquals(game.findEntitySafe("73").extra.createdBy, Card.SERVANT_OF_KALYMOS);
     }
 }
