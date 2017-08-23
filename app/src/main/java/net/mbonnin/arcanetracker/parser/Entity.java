@@ -85,7 +85,8 @@ public class Entity {
         public boolean selfHeroDamaged;
         public boolean selfPlayerMinionDied;
         public boolean selfMinionTargetedBySpell;
-        public boolean selfNewTurnHappened;
+        public boolean competitiveSpiritTriggerConditionHappened;
+        public boolean otherPlayerPlayedMinionWithThreeOnBoardAlready;
     }
 
     public void dump() {

@@ -131,16 +131,16 @@ public class DetailsView extends LinearLayout {
                 addSecret(list, Card.POTION_OF_POLYMORPH, entity.extra.otherPlayerPlayedMinion);
                 addSecret(list, Card.DUPLICATE, entity.extra.selfPlayerMinionDied);
                 addSecret(list, Card.VAPORIZE, entity.extra.selfHeroAttacked);
-                //addSecret(list, Card.ICE_BLOCK, entity.extra.selfHeroAttacked);
+                addSecret(list, Card.ICE_BLOCK, false);
                 addSecret(list, Card.SPELL_BENDER, entity.extra.selfMinionTargetedBySpell);
                 addSecret(list, Card.FROZEN_CLONE, entity.extra.otherPlayerPlayedMinion);
                 break;
             case Card.CLASS_INDEX_PALADIN:
-                //addSecret(list, Card.COMPETITIVE_SPIRIT, entity.extra.otherPlayerPlayedMinion);
+                addSecret(list, Card.COMPETITIVE_SPIRIT, entity.extra.competitiveSpiritTriggerConditionHappened);
                 addSecret(list, Card.AVENGE, entity.extra.selfPlayerMinionDied);
                 addSecret(list, Card.REDEMPTION, entity.extra.selfPlayerMinionDied);
                 addSecret(list, Card.REPENTANCE, entity.extra.otherPlayerPlayedMinion);
-                //addSecret(list, Card.SACRED_TRIAL, entity.extra.selfHeroAttacked);
+                addSecret(list, Card.SACRED_TRIAL, entity.extra.otherPlayerPlayedMinionWithThreeOnBoardAlready);
                 addSecret(list, Card.NOBLE_SACRIFIC, entity.extra.selfHeroAttacked || entity.extra.selfMinionWasAttacked);
                 addSecret(list, Card.GETAWAY_KOD, entity.extra.selfPlayerMinionDied);
                 addSecret(list, Card.EYE_FOR_EYE, entity.extra.selfHeroAttacked);

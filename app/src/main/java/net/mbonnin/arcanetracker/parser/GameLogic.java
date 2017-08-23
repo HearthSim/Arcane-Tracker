@@ -60,16 +60,16 @@ public class GameLogic {
         Game game = mGame;
 
         if (BlockTag.TYPE_PLAY.equals(tag.BlockType)) {
-            Entity entity = mGame.findEntitySafe(tag.Entity);
-            if (entity.CardID == null) {
+            Entity playedEntity = mGame.findEntitySafe(tag.Entity);
+            if (playedEntity.CardID == null) {
                 Timber.e("no CardID for play");
                 return;
             }
 
             Play play = new Play();
             play.turn = mCurrentTurn;
-            play.cardId = entity.CardID;
-            play.isOpponent = game.findController(entity).isOpponent;
+            play.cardId = playedEntity.CardID;
+            play.isOpponent = game.findController(playedEntity).isOpponent;
 
             Timber.i("%s played %s", play.isOpponent ? "opponent" : "I", play.cardId);
 
@@ -77,18 +77,21 @@ public class GameLogic {
              * secret detector
              */
             EntityList secretEntityList = mGame.getEntityList(e -> Entity.ZONE_SECRET.equals(e.tags.get(Entity.KEY_ZONE)));
-            for (Entity e2 : secretEntityList) {
-                if (!Utils.equalsNullSafe(e2.tags.get(Entity.KEY_CONTROLLER), entity.tags.get(Entity.KEY_CONTROLLER))) {
-                    if (Card.TYPE_MINION.equals(entity.card.type)) {
-                        e2.extra.otherPlayerPlayedMinion = true;
-                    } else if (Card.TYPE_SPELL.equals(entity.card.type)) {
-                        e2.extra.otherPlayerCastSpell = true;
+            for (Entity secretEntity : secretEntityList) {
+                if (!Utils.equalsNullSafe(secretEntity.tags.get(Entity.KEY_CONTROLLER), playedEntity.tags.get(Entity.KEY_CONTROLLER))) {
+                    if (Card.TYPE_MINION.equals(playedEntity.card.type)) {
+                        secretEntity.extra.otherPlayerPlayedMinion = true;
+                        if (getMinionsOnBoardForController(playedEntity.tags.get(Entity.KEY_CONTROLLER)).size() >= 3) {
+                            secretEntity.extra.otherPlayerPlayedMinionWithThreeOnBoardAlready = true;
+                        }
+                    } else if (Card.TYPE_SPELL.equals(playedEntity.card.type)) {
+                        secretEntity.extra.otherPlayerCastSpell = true;
                         Entity targetEntiy = mGame.findEntityUnsafe(tag.Target);
                         if (targetEntiy != null && Entity.CARDTYPE_MINION.equals(targetEntiy.tags.get(Entity.KEY_CARDTYPE))) {
-                            e2.extra.selfMinionTargetedBySpell = true;
+                            secretEntity.extra.selfMinionTargetedBySpell = true;
                         }
-                    } else if (Card.TYPE_HERO_POWER.equals(entity.card.type)) {
-                        e2.extra.otherPlayerHeroPowered = true;
+                    } else if (Card.TYPE_HERO_POWER.equals(playedEntity.card.type)) {
+                        secretEntity.extra.otherPlayerHeroPowered = true;
                     }
                 }
             }
@@ -161,7 +164,7 @@ public class GameLogic {
             try {
                 int damage = Integer.parseInt(tag.Data);
                 if (damage > 0) {
-                    for (String id: tag.Info) {
+                    for (String id : tag.Info) {
                         Entity damagedEntity = mGame.findEntitySafe(id);
                         EntityList secretEntityList = mGame.getEntityList(e -> Entity.ZONE_SECRET.equals(e.tags.get(Entity.KEY_ZONE)));
                         for (Entity e2 : secretEntityList) {
@@ -289,20 +292,41 @@ public class GameLogic {
              */
             EntityList secretEntityList = mGame.getEntityList(e -> Entity.ZONE_SECRET.equals(e.tags.get(Entity.KEY_ZONE)));
             Entity currentPlayer = null;
-            for (Player player: mGame.playerMap.values()) {
+            for (Player player : mGame.playerMap.values()) {
                 if ("1".equals(player.entity.tags.get(Entity.KEY_CURRENT_PLAYER))) {
                     currentPlayer = player.entity;
+                    Timber.d("Current player: " + currentPlayer.PlayerID + "(" + player.battleTag + ")");
                     break;
                 }
             }
-            for (Entity e2 : secretEntityList) {
-                if (currentPlayer != null && Utils.equalsNullSafe(e2.tags.get(Entity.KEY_CONTROLLER), currentPlayer.PlayerID)) {
-                    e2.extra.selfNewTurnHappened = true;
+            for (Entity secretEntity : secretEntityList) {
+                if (currentPlayer != null && Utils.equalsNullSafe(secretEntity.tags.get(Entity.KEY_CONTROLLER), currentPlayer.PlayerID)) {
+                    EntityList list = getMinionsOnBoardForController(secretEntity.tags.get(Entity.KEY_CONTROLLER));
+                    if (!list.isEmpty()) {
+                        Timber.d("Competitive condition");
+                        secretEntity.extra.competitiveSpiritTriggerConditionHappened = true;
+                    }
                 }
             }
         }
 
         notifyListeners();
+    }
+
+    private EntityList getMinionsOnBoardForController(String playerId) {
+        return mGame.getEntityList(e -> {
+            if (!Entity.ZONE_PLAY.equals(e.tags.get(Entity.KEY_ZONE))) {
+                return false;
+            }
+            if (!Entity.CARDTYPE_MINION.equals(e.tags.get(Entity.KEY_CARDTYPE))) {
+                return false;
+            }
+            if (!Utils.equalsNullSafe(playerId, e.tags.get(Entity.KEY_CONTROLLER))) {
+                return false;
+            }
+
+            return true;
+        });
     }
 
     private void handleCreateGameTag(CreateGameTag tag) {
