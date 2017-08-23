@@ -23,11 +23,6 @@ import java.util.HashMap;
 
 import timber.log.Timber;
 
-import static android.R.attr.mode;
-
-/**
- * Created by martin on 11/7/16.
- */
 public class GameLogicListener implements GameLogic.Listener {
 
     private static GameLogicListener sGameLogicListener;
@@ -154,6 +149,8 @@ public class GameLogicListener implements GameLogic.Listener {
 
     @Override
     public void gameOver() {
+        int mode = LoadingScreenParser.get().getMode();
+
         Timber.w("gameOver  %s [mode %d] [user %s]", mGame.victory ? "victory" : "lost", mode, Trackobot.get().getUser());
 
         Deck deck = MainViewCompanion.getPlayerCompanion().getDeck();
@@ -172,8 +169,6 @@ public class GameLogicListener implements GameLogic.Listener {
         } else {
             DeckList.save();
         }
-
-        int mode = LoadingScreenParser.get().getMode();
 
         if ((Utils.isAppDebuggable() || mode == LoadingScreenParser.MODE_ARENA || mode == LoadingScreenParser.MODE_PLAY)
                 && Trackobot.get().getUser() != null) {
