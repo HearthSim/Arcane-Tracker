@@ -145,6 +145,7 @@ public class Card implements Comparable<String> {
     public static final String SACRED_TRIAL = "LOE_027";
     public static final String SERVANT_OF_KALYMOS = "UNG_816";
     public static final String FROZEN_CLONE = "ICC_082";
+    public static final String VENOMSTRIKE_TRAP = "ICC_200";
 
 
     public String name;

@@ -41,6 +41,7 @@ public class Entity {
     public static final String STEP_FINAL_GAMEOVER = "FINAL_GAMEOVER";
     public static final String STEP_BEGIN_MULLIGAN = "BEGIN_MULLIGAN";
     public static final String KEY_CLASS = "CLASS";
+    public static final String KEY_CURRENT_PLAYER = "CURRENT_PLAYER";
 
     public String EntityID;
     public String CardID; // might be null if the entity is not revealed yet
@@ -73,13 +74,18 @@ public class Entity {
         public boolean mulliganed;
         public String createdBy;
 
+        /*
+         * secret detector
+         */
         public boolean otherPlayerPlayedMinion;
         public boolean otherPlayerCastSpell;
         public boolean otherPlayerHeroPowered;
-        public boolean opponentHeroWasAttacked;
-        public boolean minonWasAttacked;
-        public boolean playerHeroWasAttacked;
+        public boolean selfHeroAttacked;
+        public boolean selfMinionWasAttacked;
+        public boolean selfHeroDamaged;
         public boolean selfPlayerMinionDied;
+        public boolean selfMinionTargetedBySpell;
+        public boolean selfNewTurnHappened;
     }
 
     public void dump() {

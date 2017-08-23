@@ -23,7 +23,11 @@ def getVal(key, card):
 
 for card in cardList:
     id = ""
-    if (getVal("set", card) == "ICECROWN"
-        and not getVal("type", card) == "ENCHANTMENT"
-        and not getVal("type", card) == "HERO_POWER"):
-            sys.stdout.write(card["id"] + " ")
+    if (getVal("set", card) != "ICECROWN"):
+        continue
+
+    try:
+        if ("SECRET" in card["mechanics"]):
+            print(card["id"]  + " ")
+    except:
+        continue

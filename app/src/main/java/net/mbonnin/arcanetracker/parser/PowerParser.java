@@ -44,6 +44,7 @@ public class PowerParser implements LogReader.LineConsumer {
     private final Pattern HIDE_ENTITY = Pattern.compile("HIDE_ENTITY - Entity=(.*) tag=(.*) value=(.*)");
     private final Pattern TAG = Pattern.compile("tag=(.*) value=(.*)");
     private final Pattern META_DATA = Pattern.compile("META_DATA - Meta=(.*) Data=(.*) Info=(.*)");
+    private final Pattern INFO = Pattern.compile("Info[[0-9]*] = (.*)");
 
     private StringBuilder rawBuilder;
     private String rawMatchStart;
@@ -124,6 +125,8 @@ public class PowerParser implements LogReader.LineConsumer {
                 newTag = tag;
             } else if ((m = META_DATA.matcher(line)).matches()) {
                 MetaDataTag tag = new MetaDataTag();
+                tag.Meta = m.group(1);
+                tag.Data = m.group(2);
 
                 newTag = tag;
             }
@@ -194,6 +197,12 @@ public class PowerParser implements LogReader.LineConsumer {
                     ((ShowEntityTag) mCurrentTag).tags.put(key, value);
                 } else if (mCurrentTag instanceof FullEntityTag) {
                     ((FullEntityTag) mCurrentTag).tags.put(key, value);
+                } else {
+                    Timber.e("got tag= outside of valid tag");
+                }
+            } else if ((m = INFO.matcher(line)).matches()) {
+                if (mCurrentTag instanceof MetaDataTag) {
+                    ((MetaDataTag) mCurrentTag).Info.add(getEntityIdFromNameOrId(m.group(1)));
                 }
             }
         }

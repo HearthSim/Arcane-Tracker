@@ -10,6 +10,7 @@ import net.mbonnin.arcanetracker.Utils;
 import net.mbonnin.arcanetracker.parser.power.BlockTag;
 import net.mbonnin.arcanetracker.parser.power.CreateGameTag;
 import net.mbonnin.arcanetracker.parser.power.FullEntityTag;
+import net.mbonnin.arcanetracker.parser.power.MetaDataTag;
 import net.mbonnin.arcanetracker.parser.power.PlayerTag;
 import net.mbonnin.arcanetracker.parser.power.ShowEntityTag;
 import net.mbonnin.arcanetracker.parser.power.Tag;
@@ -73,7 +74,7 @@ public class GameLogic {
             Timber.i("%s played %s", play.isOpponent ? "opponent" : "I", play.cardId);
 
             /*
-             * detect if we played a minion or spell for the secret detector
+             * secret detector
              */
             EntityList secretEntityList = mGame.getEntityList(e -> Entity.ZONE_SECRET.equals(e.tags.get(Entity.KEY_ZONE)));
             for (Entity e2 : secretEntityList) {
@@ -82,6 +83,10 @@ public class GameLogic {
                         e2.extra.otherPlayerPlayedMinion = true;
                     } else if (Card.TYPE_SPELL.equals(entity.card.type)) {
                         e2.extra.otherPlayerCastSpell = true;
+                        Entity targetEntiy = mGame.findEntityUnsafe(tag.Target);
+                        if (targetEntiy != null && Entity.CARDTYPE_MINION.equals(targetEntiy.tags.get(Entity.KEY_CARDTYPE))) {
+                            e2.extra.selfMinionTargetedBySpell = true;
+                        }
                     } else if (Card.TYPE_HERO_POWER.equals(entity.card.type)) {
                         e2.extra.otherPlayerHeroPowered = true;
                     }
@@ -89,6 +94,23 @@ public class GameLogic {
             }
 
             game.plays.add(play);
+        } else if (BlockTag.TYPE_ATTACK.equals(tag.BlockType)) {
+            /*
+             * secret detector
+             */
+            Entity targetEntity = mGame.findEntitySafe(tag.Target);
+
+            EntityList secretEntityList = mGame.getEntityList(e -> Entity.ZONE_SECRET.equals(e.tags.get(Entity.KEY_ZONE)));
+            for (Entity e2 : secretEntityList) {
+                if (Utils.equalsNullSafe(e2.tags.get(Entity.KEY_CONTROLLER), targetEntity.tags.get(Entity.KEY_CONTROLLER))) {
+                    if (Card.TYPE_MINION.equals(targetEntity.card.type)) {
+                        e2.extra.selfMinionWasAttacked = true;
+                    } else if (Card.TYPE_HERO.equals(targetEntity.card.type)) {
+                        e2.extra.selfHeroAttacked = true;
+                    }
+                }
+            }
+
         }
 
         for (Tag child : tag.children) {
@@ -126,6 +148,34 @@ public class GameLogic {
             handleBlockTag2((BlockTag) tag);
         } else if (tag instanceof ShowEntityTag) {
             handleShowEntityTag2((ShowEntityTag) tag);
+        } else if (tag instanceof MetaDataTag) {
+            handleMetaDataTag2((MetaDataTag) tag);
+        }
+    }
+
+    private void handleMetaDataTag2(MetaDataTag tag) {
+        if (MetaDataTag.META_DAMAGE.equals(tag.Meta)) {
+            /*
+             * secret detector
+             */
+            try {
+                int damage = Integer.parseInt(tag.Data);
+                if (damage > 0) {
+                    for (String id: tag.Info) {
+                        Entity damagedEntity = mGame.findEntitySafe(id);
+                        EntityList secretEntityList = mGame.getEntityList(e -> Entity.ZONE_SECRET.equals(e.tags.get(Entity.KEY_ZONE)));
+                        for (Entity e2 : secretEntityList) {
+                            if (Utils.equalsNullSafe(e2.tags.get(Entity.KEY_CONTROLLER), damagedEntity.tags.get(Entity.KEY_CONTROLLER))) {
+                                if (Card.TYPE_HERO.equals(damagedEntity.card.type)) {
+                                    e2.extra.selfHeroDamaged = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                Timber.e(e);
+            }
         }
     }
 
@@ -215,7 +265,7 @@ public class GameLogic {
             } else if (Entity.ZONE_PLAY.equals(oldValue) && Entity.ZONE_GRAVEYARD.equals(newValue)) {
                 entity.extra.diedTurn = mCurrentTurn;
                 /*
-                 * one of the oponent minion died, remember it for the secret detector
+                 * secret detector
                  */
                 EntityList secretEntityList = mGame.getEntityList(e -> Entity.ZONE_SECRET.equals(e.tags.get(Entity.KEY_ZONE)));
                 for (Entity e2 : secretEntityList) {
@@ -230,6 +280,25 @@ public class GameLogic {
                  * card was put back in the deck (most likely from mulligan)
                  */
                 entity.extra.drawTurn = -1;
+            }
+        }
+
+        if (Entity.KEY_TURN.equals(key)) {
+            /*
+             * secret detector
+             */
+            EntityList secretEntityList = mGame.getEntityList(e -> Entity.ZONE_SECRET.equals(e.tags.get(Entity.KEY_ZONE)));
+            Entity currentPlayer = null;
+            for (Player player: mGame.playerMap.values()) {
+                if ("1".equals(player.entity.tags.get(Entity.KEY_CURRENT_PLAYER))) {
+                    currentPlayer = player.entity;
+                    break;
+                }
+            }
+            for (Entity e2 : secretEntityList) {
+                if (currentPlayer != null && Utils.equalsNullSafe(e2.tags.get(Entity.KEY_CONTROLLER), currentPlayer.PlayerID)) {
+                    e2.extra.selfNewTurnHappened = true;
+                }
             }
         }
 
@@ -260,7 +329,6 @@ public class GameLogic {
                 player = new Player();
                 player.entity = entity;
                 mGame.playerMap.put(entity.PlayerID, player);
-
             }
         }
     }

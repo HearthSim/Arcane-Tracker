@@ -109,4 +109,8 @@ public class Game {
         entity.EntityID = entityId;
         return entity;
     }
+
+    public Entity findEntityUnsafe(String entityId) {
+        return entityMap.get(entityId);
+    }
 }
