@@ -291,7 +291,7 @@ public class Controller implements GameLogic.Listener {
              * initialize stuff
              */
             EntityList allEntities = mGame.getEntityList(entity -> true);
-            Stream.of(allEntities).forEach(entity -> entity.extra.tmpIsGift = compareNullSafe(entity.tags.get(Entity.KEY_CONTROLLER), entity.extra.originalController) != 0);
+            Stream.of(allEntities).forEach(entity -> entity.extra.tmpIsGift = !Utils.isEmpty(entity.extra.createdBy));
             Stream.of(allEntities).forEach(entity -> {
                 if (entity.card != null) {
                     entity.extra.tmpCard = entity.card;
