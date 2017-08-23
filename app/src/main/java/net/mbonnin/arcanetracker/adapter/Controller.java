@@ -238,7 +238,7 @@ public class Controller implements GameLogic.Listener {
         }
     }
 
-    private EntityList getEntityList(String zone) {
+    private EntityList getEntityListInZone(String zone) {
         return mGame.getEntityList(entity -> mPlayerId.equals(entity.tags.get(Entity.KEY_CONTROLLER))
                 && zone.equals(entity.tags.get(Entity.KEY_ZONE)));
     }
@@ -255,7 +255,7 @@ public class Controller implements GameLogic.Listener {
         ArrayList<Object> list = new ArrayList<>();
         Context context = ArcaneTrackerApplication.getContext();
 
-        EntityList entities = getEntityList(Entity.ZONE_HAND);
+        EntityList entities = getEntityListInZone(Entity.ZONE_HAND);
 
         Collections.sort(entities, (a, b) -> compareNullSafe(a.tags.get(Entity.KEY_ZONE_POSITION), b.tags.get(Entity.KEY_ZONE_POSITION)));
 
@@ -322,7 +322,7 @@ public class Controller implements GameLogic.Listener {
     private Collection<?> getSecrets() {
         ArrayList<Object> list = new ArrayList<>();
 
-        EntityList entities = getEntityList(Entity.ZONE_SECRET);
+        EntityList entities = getEntityListInZone(Entity.ZONE_SECRET);
 
         Collections.sort(entities, (a, b) -> compareNullSafe(a.tags.get(Entity.KEY_ZONE_POSITION), b.tags.get(Entity.KEY_ZONE_POSITION)));
 
@@ -332,17 +332,25 @@ public class Controller implements GameLogic.Listener {
                 String clazz = entity.tags.get(Entity.KEY_CLASS);
 
                 deckEntry.card = Card.unknown();
+                deckEntry.card.type = Card.TYPE_SPELL;
+                deckEntry.card.text = Utils.getString(R.string.secretText);
                 if (clazz != null){
                     int classIndex = Card.niceNameToClassIndexNC(clazz);
                     switch (classIndex) {
                         case Card.CLASS_INDEX_HUNTER:
                             deckEntry.card.id = "secret_h";
+                            deckEntry.card.cost = 2;
+                            deckEntry.card.playerClass = Card.CLASS_HUNTER;
                             break;
                         case Card.CLASS_INDEX_MAGE:
                             deckEntry.card.id = "secret_m";
+                            deckEntry.card.cost = 3;
+                            deckEntry.card.playerClass = Card.CLASS_MAGE;
                             break;
                         case Card.CLASS_INDEX_PALADIN:
                             deckEntry.card.id = "secret_p";
+                            deckEntry.card.cost = 1;
+                            deckEntry.card.playerClass = Card.CLASS_PALADIN;
                             break;
                     }
                 }
@@ -360,7 +368,7 @@ public class Controller implements GameLogic.Listener {
     }
 
     private List<Object> getGraveyard() {
-        EntityList entityList = getEntityList(Entity.ZONE_GRAVEYARD);
+        EntityList entityList = getEntityListInZone(Entity.ZONE_GRAVEYARD);
 
         ArrayList<Object> list = new ArrayList<>();
         list.add(new HeaderItem(Utils.getString(R.string.graveyard)));
