@@ -197,6 +197,7 @@ public class Trackobot {
         if (lce.getData() != null) {
             Context context = ArcaneTrackerApplication.getContext();
             Toast.makeText(ArcaneTrackerApplication.getContext(), context.getString(R.string.trackobotSuccess), Toast.LENGTH_LONG).show();
+            Timber.d("trackobot upload success");
         } else if (lce.getError() != null) {
             Throwable e = lce.getError();
             String message;
