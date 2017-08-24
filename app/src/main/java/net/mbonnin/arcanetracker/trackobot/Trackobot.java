@@ -11,6 +11,7 @@ import net.mbonnin.arcanetracker.Card;
 import net.mbonnin.arcanetracker.Lce;
 import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Utils;
+import net.mbonnin.arcanetracker.parser.LoadingScreenParser;
 import net.mbonnin.arcanetracker.trackobot.model.HistoryList;
 import net.mbonnin.arcanetracker.trackobot.model.ResultData;
 
@@ -259,6 +260,17 @@ public class Trackobot {
                 .toObservable()
                 .startWith(Lce.loading())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public static String getMode(String mode) {
+        switch (mode) {
+            case LoadingScreenParser.MODE_TOURNAMENT:
+                return "ranked";
+            case LoadingScreenParser.MODE_DRAFT:
+                return "arena";
+            default:
+                return "?";
+        }
     }
 }
 

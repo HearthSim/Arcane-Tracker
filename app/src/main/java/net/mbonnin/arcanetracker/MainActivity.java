@@ -23,6 +23,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import net.mbonnin.arcanetracker.parser.LoadingScreenParser;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -101,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE_MEDIAPROJECTION) {
             if (resultCode == RESULT_OK) {
                 MediaProjection projection = mProjectionManager.getMediaProjection(resultCode, data);
-                mScreenCapture = new ScreenCapture(this, projection);
+                mScreenCapture = new ScreenCapture(this, projection, () -> LoadingScreenParser.get().getMode());
             } else {
                 new AlertDialog.Builder(this)
                         .setTitle(getString(R.string.hi_there))
@@ -162,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mScreenCapture == null) {
+        if (Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mScreenCapture == null) {
             mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
             startActivityForResult(mProjectionManager.createScreenCaptureIntent(), REQUEST_CODE_MEDIAPROJECTION);
             return;

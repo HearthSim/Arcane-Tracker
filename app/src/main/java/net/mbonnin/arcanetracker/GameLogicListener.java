@@ -117,7 +117,7 @@ public class GameLogicListener implements GameLogic.Listener {
 
         Deck deck = MainViewCompanion.getPlayerCompanion().getDeck();
         if (Settings.get(Settings.AUTO_SELECT_DECK, true)) {
-            if (LoadingScreenParser.get().getMode() == LoadingScreenParser.MODE_ARENA) {
+            if (LoadingScreenParser.MODE_DRAFT.equals(LoadingScreenParser.get().getGameplayMode())) {
                 deck = DeckList.getArenaDeck();
             } else {
                 int classIndex = game.getPlayer().classIndex();
@@ -144,14 +144,14 @@ public class GameLogicListener implements GameLogic.Listener {
 
         mGame = game;
         mGameOver = false;
-        mGame.bnetGameType = LoadingScreenParser.get().getMode() == LoadingScreenParser.MODE_ARENA ? BnetGameType.BGT_ARENA : BnetGameType.BGT_UNKNOWN;
+        mGame.bnetGameType = BnetGameType.from(LoadingScreenParser.get().getGameplayMode());
     }
 
     @Override
     public void gameOver() {
-        int mode = LoadingScreenParser.get().getMode();
+        String mode = LoadingScreenParser.get().getGameplayMode();
 
-        Timber.w("gameOver  %s [mode %d] [user %s]", mGame.victory ? "victory" : "lost", mode, Trackobot.get().getUser());
+        Timber.w("gameOver  %s [mode %s] [user %s]", mGame.victory ? "victory" : "lost", mode, Trackobot.get().getUser());
 
         Deck deck = MainViewCompanion.getPlayerCompanion().getDeck();
 
@@ -170,13 +170,13 @@ public class GameLogicListener implements GameLogic.Listener {
             DeckList.save();
         }
 
-        if ((Utils.isAppDebuggable() || mode == LoadingScreenParser.MODE_ARENA || mode == LoadingScreenParser.MODE_PLAY)
+        if ((Utils.isAppDebuggable() || LoadingScreenParser.MODE_DRAFT.equals(mode) || LoadingScreenParser.MODE_TOURNAMENT.equals(mode))
                 && Trackobot.get().getUser() != null) {
             ResultData resultData = new ResultData();
             resultData.result = new Result();
             resultData.result.coin = mGame.getPlayer().hasCoin;
             resultData.result.win = mGame.victory;
-            resultData.result.mode = mode == LoadingScreenParser.MODE_PLAY ? "ranked" : "arena";
+            resultData.result.mode = Trackobot.getMode(mode);
             resultData.result.hero = Trackobot.getHero(mGame.player.classIndex());
             resultData.result.opponent = Trackobot.getHero(mGame.opponent.classIndex());
             resultData.result.added = Utils.ISO8601DATEFORMAT.format(new Date());

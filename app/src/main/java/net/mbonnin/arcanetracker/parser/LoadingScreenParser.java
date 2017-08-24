@@ -12,12 +12,22 @@ import timber.log.Timber;
 public class LoadingScreenParser implements LogReader.LineConsumer {
     private static LoadingScreenParser sParser;
 
-    public static final int MODE_PLAY = 0;
-    public static final int MODE_ARENA = 1;
-    public static final int MODE_OTHER = 2;
+    public static final String MODE_TOURNAMENT = "TOURNAMENT";
+    public static final String MODE_DRAFT = "DRAFT";
+    public static final String MODE_GAMEPLAY = "GAMEPLAY";
+    public static final String MODE_COLLECTIONMANAGER = "COLLECTIONMANAGER";
+    public static final String MODE_PACKOPENING = "PACKOPENING";
+    public static final String MODE_FRIENDLY = "FRIENDLY";
+    public static final String MODE_ADVENTURE = "ADVENTURE";
+    public static final String MODE_HUB = "HUB";
+    public static final String MODE_TAVERN_BRAWL = "TAVERN_BRAWL";
+    public static final String MODE_UNKNOWN = "UNKNOWN";
+
     private boolean mReadingPreviousData = true;
-    private int mParsedMode;
-    private volatile int mMode;
+
+    private String mParsedMode;
+    private volatile String mMode = MODE_UNKNOWN;
+    private volatile String mGameplayMode;
 
     public static LoadingScreenParser get() {
         if (sParser == null) {
@@ -28,19 +38,14 @@ public class LoadingScreenParser implements LogReader.LineConsumer {
 
     private LoadingScreenParser() {}
 
-    public int getMode(){
-        return mMode;
+    /*
+     * this is called from multiple threads
+     * (main thread + screen capture thread)
+     * it should be ok to not synchronize it
+     */
+    public String getGameplayMode(){
+        return mGameplayMode;
     }
-
-    public static String friendlyMode(int mode) {
-        switch (mode) {
-            case MODE_ARENA: return "ARENA";
-            case MODE_PLAY: return "PLAY";
-            case MODE_OTHER: return "OTHER";
-            default: return "?";
-        }
-    }
-
 
     public void onLine(String line) {
         Timber.v(line);
@@ -51,24 +56,22 @@ public class LoadingScreenParser implements LogReader.LineConsumer {
             String prevMode = matcher.group(1);
             String currMode = matcher.group(2);
 
-            if (currMode.equals("GAMEPLAY")) {
-                return;
-            }
-
-            int newMode = MODE_OTHER;
-            if (currMode.equals("DRAFT")) {
-                newMode = MODE_ARENA;
-            } else if (currMode.equals("TOURNAMENT")) {
-                newMode = MODE_PLAY;
-            }
-
+            mParsedMode = currMode;
             if (!mReadingPreviousData) {
                 /*
                  * do not trigger the mode changes for previous modes, it selects the arena deck at startup always
                  */
                 mMode = mParsedMode;
+                switch (mMode) {
+                    case MODE_DRAFT:
+                    case MODE_TOURNAMENT:
+                    case MODE_ADVENTURE:
+                    case MODE_FRIENDLY:
+                    case MODE_TAVERN_BRAWL:
+                        mGameplayMode = mMode;
+                        break;
+                }
             }
-            mParsedMode = newMode;
         }
     }
 
@@ -76,5 +79,9 @@ public class LoadingScreenParser implements LogReader.LineConsumer {
     public void onPreviousDataRead() {
         mReadingPreviousData = false;
         mMode = mParsedMode;
+    }
+
+    public String getMode() {
+        return mMode;
     }
 }

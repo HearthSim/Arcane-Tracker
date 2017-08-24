@@ -1,5 +1,7 @@
 package net.mbonnin.arcanetracker;
 
+import net.mbonnin.arcanetracker.parser.LoadingScreenParser;
+
 public class BnetGameType {
     public static final int BGT_UNKNOWN = 0;
     public static final int BGT_FRIENDS = 1;
@@ -22,4 +24,13 @@ public class BnetGameType {
     public static final int BGT_FSG_BRAWL_PVP = 41;
     public static final int BGT_FSG_BRAWL_1P_VERSUS_AI = 42;
     public static final int BGT_FSG_BRAWL_2P_COOP = 43;
+
+    public static int from(String mode) {
+        switch(mode) {
+            case LoadingScreenParser.MODE_DRAFT:
+                return BnetGameType.BGT_ARENA;
+            default:
+                return BnetGameType.BGT_UNKNOWN;
+        }
+    }
 }
