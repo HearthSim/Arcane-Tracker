@@ -11,7 +11,6 @@ import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -36,11 +35,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_CODE_MEDIAPROJECTION = 42;
     public static final String HEARTHSTONE_PACKAGE_ID = "com.blizzard.wtcg.hearthstone";
     View contentView;
-    private Button button;
-    private View permissions;
     private CheckBox checkbox;
-    private Handler mHandler;
-    private AlertDialog mDialog;
     private ScreenCapture mScreenCapture;
     private MediaProjectionManager mProjectionManager;
 
@@ -60,12 +55,10 @@ public class MainActivity extends AppCompatActivity {
             Timber.e(e);
         }
 
-        mHandler = new Handler();
-
         contentView = findViewById(R.id.activity_main);
-        button = (Button) findViewById(R.id.button);
+        Button button = (Button) findViewById(R.id.button);
         checkbox = (CheckBox) findViewById(R.id.checkbox);
-        permissions = findViewById(R.id.permissions);
+        View permissions = findViewById(R.id.permissions);
 
         boolean showNextTime = Settings.get(Settings.SHOW_NEXT_TIME, true);
         checkbox.setChecked(Settings.get(Settings.SHOW_NEXT_TIME, showNextTime));
@@ -109,8 +102,16 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 MediaProjection projection = mProjectionManager.getMediaProjection(resultCode, data);
                 mScreenCapture = new ScreenCapture(this, projection);
+            } else {
+                new AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.hi_there))
+                        .setMessage(getString(R.string.noScreenCapture))
+                        .setPositiveButton(getString(R.string.ok), (dialog, which) -> {
+                            dialog.dismiss();
+                        })
+                        .show();
+                Settings.set(Settings.SCREEN_CAPTURE_ENABLED, false);
             }
-
         } else {
             if (!android.provider.Settings.canDrawOverlays(this)) {
                 Snackbar.make(contentView, getString(R.string.pleaseEnablePermissions), Snackbar.LENGTH_LONG).show();
@@ -149,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent2 = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
                     startActivityForResult(intent2, REQUEST_CODE_GET_OVERLAY_PERMISSIONS);
                 } catch (Exception e) {
-                    mDialog = new AlertDialog.Builder(context)
+                    new AlertDialog.Builder(context)
                             .setTitle(getString(R.string.hi_there))
                             .setMessage(getString(R.string.overlay_explanation))
                             .setPositiveButton(getString(R.string.ok), (dialog, which) -> {
@@ -161,13 +162,13 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (false && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mScreenCapture == null) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mScreenCapture == null) {
             mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
             startActivityForResult(mProjectionManager.createScreenCaptureIntent(), REQUEST_CODE_MEDIAPROJECTION);
             return;
         }
         if (Build.MANUFACTURER.toLowerCase().contains("xiaomi") && Settings.get(Settings.SHOW_XIAOMI_WARNING, true)) {
-            mDialog = new AlertDialog.Builder(context)
+            new AlertDialog.Builder(context)
                     .setTitle(getString(R.string.hi_there))
                     .setMessage(getString(R.string.xiaomi_explanation))
                     .setNeutralButton(getString(R.string.learn_more), (dialog, which) -> {

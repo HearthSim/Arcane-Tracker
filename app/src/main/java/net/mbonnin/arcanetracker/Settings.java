@@ -27,6 +27,7 @@ public class Settings {
     public static final String VERSION = "VERSION";
     public static final String SHOW_CHANGELOG = "SHOW_CHANGELOG";
     public static final String HSREPLAY_USERNAME = "HSREPLAY_USERNAME";
+    public static final String SCREEN_CAPTURE_ENABLED = "SCREEN_CAPTURE_ENABLED";
 
     private static SharedPreferences getPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(ArcaneTrackerApplication.getContext());

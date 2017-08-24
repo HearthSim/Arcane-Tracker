@@ -371,18 +371,8 @@ public class SettingsCompanion {
                 boolean areSame = newKey == null ? oldKey == null : newKey.equals(oldKey);
                 if (!firstTime && !areSame) {
                     Settings.set(Settings.LANGUAGE, newKey);
-                    View view2 = LayoutInflater.from(context).inflate(R.layout.please_restart, null);
-                    view2.findViewById(R.id.ok).setOnClickListener(v3 -> {
-                        ViewManager.get().removeView(view2);
-                    });
 
-                    ViewManager.Params params = new ViewManager.Params();
-                    params.w = (int) (ViewManager.get().getWidth() * 0.6f);
-                    params.h = ViewManager.get().getHeight() / 2;
-                    params.x = (ViewManager.get().getWidth() - params.w) / 2;
-                    params.y = ViewManager.get().getHeight() / 4;
-
-                    ViewManager.get().addModalView(view2, params);
+                    showRestartDialog();
                 }
                 firstTime = false;
             }
@@ -411,6 +401,13 @@ public class SettingsCompanion {
             public void onStopTrackingTouch(SeekBar seekBar) {
 
             }
+        });
+
+        CheckBox screenCapture = (CheckBox) view.findViewById(R.id.screenCaptureCheckBox);
+        screenCapture.setChecked(Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true));
+        screenCapture.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Settings.set(Settings.SCREEN_CAPTURE_ENABLED, isChecked);
+            showRestartDialog();
         });
 
         CheckBox autoQuit = (CheckBox) view.findViewById(R.id.autoQuit);
@@ -443,6 +440,21 @@ public class SettingsCompanion {
             checkUserName();
         }
         updateHsReplay();
+    }
+
+    private void showRestartDialog() {
+        View view2 = LayoutInflater.from(settingsView.getContext()).inflate(R.layout.please_restart, null);
+        view2.findViewById(R.id.ok).setOnClickListener(v3 -> {
+            ViewManager.get().removeView(view2);
+        });
+
+        ViewManager.Params params = new ViewManager.Params();
+        params.w = (int) (ViewManager.get().getWidth() * 0.6f);
+        params.h = ViewManager.get().getHeight() / 2;
+        params.x = (ViewManager.get().getWidth() - params.w) / 2;
+        params.y = ViewManager.get().getHeight() / 4;
+
+        ViewManager.get().addModalView(view2, params);
     }
 
     private void checkUserName() {

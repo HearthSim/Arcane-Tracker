@@ -149,7 +149,7 @@
     <string name="purchase_failed">Something went wrong :-(</string>
     <string name="holy_light_purchased">Thank you for the holy light. 🙏</string>
     <string name="blessing_of_kings_purchased">You\'ve blessed Arcane Tracker. Thanks ! 👑</string>
-    <string name="dinosize_purchased">Dinosize in progress... 🥚</string>
+    <string name="dinosize_purchased">Dinosize in progress… 🥚</string>
     <string name="hsreplayError">Could not upload to HSReplay.net :-(</string>
     <string name="hsreplaySuccess">Game uploaded to HSReplay.net</string>
     <string name="graveyard">Graveyard</string>
@@ -166,5 +166,8 @@
     <string name="hsReplayExplanationWithUserName">You have enabled HSReplay.net game uploads. The games have been claimed by user: \'%s\'.</string>
     <string name="noBrowserFound">No external browser found to open url. Please install chrome or any other browser.</string>
     <string name="noEmailFound">No email application found</string>
-    <string name="secretText">This is hidden until a secret action occurs... Watch out !</string>
+    <string name="secretText">This is hidden until a secret action occurs… Watch out !</string>
+    <string name="noScreenCapture">You did not allow screen capture, rank detection will not work. You can change this in the settings later.</string>
+    <string name="screenCaptureTitle">Enable Screen Capture</string>
+    <string name="screenCaptureExplanation">You need to enable screen capture for rank detection to work.</string>
 </resources>
