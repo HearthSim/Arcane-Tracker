@@ -553,6 +553,9 @@ public class GameLogic {
                 case Card.FIRE_PLUME:
                     guessedId = Card.SULFURAS;
                     break;
+                case Card.GHASTLY_CONJURER:
+                    guessedId = Card.MIRROR_IMAGE;
+                    break;
             }
         } else if (TYPE_TRIGGER.equals(blockTag.BlockType)) {
             switch (blockEntity.CardID) {
