@@ -13,8 +13,7 @@ import android.view.Display;
 import android.view.WindowManager;
 
 import net.mbonnin.arcanetracker.parser.LoadingScreenParser;
-import net.mbonnin.arcantracker.detector.AImage;
-import net.mbonnin.arcantracker.detector.APlane;
+import net.mbonnin.arcantracker.detector.ByteBufferImage;
 import net.mbonnin.arcantracker.detector.Detector;
 
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -36,14 +35,13 @@ public class ScreenCapture implements ImageReader.OnImageAvailableListener{
     public void onImageAvailable(ImageReader reader) {
         Image image = reader.acquireLatestImage();
         if (image != null) {
-            APlane planes[] = new APlane[3];
+            ByteBufferImage byteBufferImages[] = new ByteBufferImage[3];
             for (int i = 0; i < 3; i++) {
-                new APlane(image.getPlanes()[i].getBuffer(), image.getPlanes()[i].getRowStride());
+                byteBufferImages[i] = new ByteBufferImage(image.getWidth(), image.getHeight(), image.getPlanes()[i].getBuffer(), image.getPlanes()[i].getRowStride());
             }
-            AImage aImage = new AImage(image.getWidth(), image.getHeight(), planes);
 
             if ("TOURNAMENT".equals(LoadingScreenParser.get().getMode())) {
-                mDetector.detectRank(aImage);
+                mDetector.detectRank(byteBufferImages);
             }
             image.close();
         }

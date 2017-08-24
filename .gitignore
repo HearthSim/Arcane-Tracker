@@ -12,3 +12,4 @@ app/google-services.json
 /build
 /captures
 .externalNativeBuild
+/app/src/test/resources/ranks/
