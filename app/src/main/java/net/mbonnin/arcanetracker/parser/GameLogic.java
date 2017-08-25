@@ -71,6 +71,7 @@ public class GameLogic {
             play.cardId = playedEntity.CardID;
             play.isOpponent = game.findController(playedEntity).isOpponent;
 
+            mGame.lastPlayedCardId = play.cardId;
             Timber.i("%s played %s", play.isOpponent ? "opponent" : "I", play.cardId);
 
             /*
@@ -576,6 +577,9 @@ public class GameLogic {
                     break;
                 case Card.RHONIN:
                     guessedId = Card.ARCANE_MISSILE;
+                    break;
+                case Card.FROZEN_CLONE:
+                    guessedId = mGame.lastPlayedCardId;
                     break;
             }
         }

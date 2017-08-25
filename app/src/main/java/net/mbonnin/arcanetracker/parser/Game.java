@@ -29,6 +29,7 @@ public class Game {
     public ArrayList<Play> plays = new ArrayList<>();
     public boolean victory;
     public int bnetGameType;
+    public String lastPlayedCardId;
 
     public Player getPlayer() {
         return player;
