@@ -331,36 +331,18 @@ public class Controller implements GameLogic.Listener {
             if (TextUtils.isEmpty(entity.CardID)) {
                 String clazz = entity.tags.get(Entity.KEY_CLASS);
 
-                deckEntry.card = Card.unknown();
-                deckEntry.card.type = Card.TYPE_SPELL;
-                deckEntry.card.text = Utils.getString(R.string.secretText);
-                if (clazz != null){
-                    int classIndex = Card.niceNameToClassIndexNC(clazz);
-                    switch (classIndex) {
-                        case Card.CLASS_INDEX_HUNTER:
-                            deckEntry.card.id = "secret_h";
-                            deckEntry.card.cost = 2;
-                            deckEntry.card.playerClass = Card.CLASS_HUNTER;
-                            break;
-                        case Card.CLASS_INDEX_MAGE:
-                            deckEntry.card.id = "secret_m";
-                            deckEntry.card.cost = 3;
-                            deckEntry.card.playerClass = Card.CLASS_MAGE;
-                            break;
-                        case Card.CLASS_INDEX_PALADIN:
-                            deckEntry.card.id = "secret_p";
-                            deckEntry.card.cost = 1;
-                            deckEntry.card.playerClass = Card.CLASS_PALADIN;
-                            break;
-                    }
+                if (clazz != null) {
+                    deckEntry.card = Card.secret(clazz);
                 }
-                deckEntry.card.name = "";
             } else {
                 deckEntry.card = entity.card;
             }
             deckEntry.gift = entity.extra.tmpIsGift;
             deckEntry.count = 1;
-            deckEntry.entityList.add(entity);
+
+            Entity clone = entity.clone();
+            clone.card = deckEntry.card;
+            deckEntry.entityList.add(clone);
             list.add(deckEntry);
         }
 

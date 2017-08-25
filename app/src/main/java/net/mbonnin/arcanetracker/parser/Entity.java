@@ -95,4 +95,24 @@ public class Entity {
         }
     }
 
+    public Entity clone() {
+        Entity clone = new Entity();
+        clone.EntityID = EntityID;
+        clone.PlayerID = PlayerID;
+        clone.tags.putAll(tags);
+        clone.card = card;
+        clone.CardID = CardID;
+        clone.extra.otherPlayerPlayedMinion = extra.otherPlayerPlayedMinion;
+        clone.extra.otherPlayerCastSpell = extra.otherPlayerCastSpell;
+        clone.extra.otherPlayerHeroPowered = extra.otherPlayerHeroPowered;
+        clone.extra.selfHeroAttacked = extra.selfHeroAttacked;
+        clone.extra.selfMinionWasAttacked = extra.selfMinionWasAttacked;
+        clone.extra.selfHeroDamaged = extra.selfHeroDamaged;
+        clone.extra.selfPlayerMinionDied = extra.selfPlayerMinionDied;
+        clone.extra.selfMinionTargetedBySpell = extra.selfMinionTargetedBySpell;
+        clone.extra.competitiveSpiritTriggerConditionHappened = extra.competitiveSpiritTriggerConditionHappened;
+        clone.extra.otherPlayerPlayedMinionWithThreeOnBoardAlready = extra.otherPlayerPlayedMinionWithThreeOnBoardAlready;
+        return clone;
+    }
+
 }
