@@ -31,7 +31,8 @@ public class PowerParser implements LogReader.LineConsumer {
     private final Consumer<Tag> mTagConsumer;
     private final Func2<String, String, Void> mRawGameConsumer;
 
-    private final Pattern BLOCK_START_PATTERN = Pattern.compile("BLOCK_START BlockType=(.*) Entity=(.*) EffectCardId=(.*) EffectIndex=(.*) Target=(.*)");
+    private final Pattern BLOCK_START_PATTERN = Pattern.compile("BLOCK_START BlockType=(.*) Entity=(.*) EffectCardId=(.*) EffectIndex=(.*) Target=(.*) SubOption=(.*)");
+    private final Pattern BLOCK_START_CONTINUATION_PATTERN = Pattern.compile("(.*) TriggerKeyword=(.*)");
     private final Pattern BLOCK_END_PATTERN = Pattern.compile("BLOCK_END");
 
     private final Pattern GameEntityPattern = Pattern.compile("GameEntity EntityID=(.*)");
@@ -144,6 +145,11 @@ public class PowerParser implements LogReader.LineConsumer {
                 tag.EffectCardId = m.group(3);
                 tag.EffectIndex = m.group(4);
                 tag.Target = getEntityIdFromNameOrId(m.group(5));
+                tag.SubOption = m.group(6);
+                if ((m = BLOCK_START_CONTINUATION_PATTERN.matcher(m.group(6))).matches()) {
+                    tag.SubOption = m.group(1);
+                    tag.TriggerKeyword = m.group(2);
+                }
 
                 setCurrentTag(null);
 

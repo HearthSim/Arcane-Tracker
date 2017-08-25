@@ -14,4 +14,6 @@ public class BlockTag extends Tag {
     public String EffectIndex;
     public String Target;
     public List<Tag> children = new ArrayList<>();
+    public String SubOption;
+    public String TriggerKeyword;
 }
