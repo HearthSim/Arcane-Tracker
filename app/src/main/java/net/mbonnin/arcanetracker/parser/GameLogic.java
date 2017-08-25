@@ -250,7 +250,7 @@ public class GameLogic {
         }
 
         if (Entity.KEY_ZONE.equals(key)) {
-            if (Entity.ZONE_DECK.equals(oldValue) && Entity.ZONE_HAND.equals(newValue)) {
+            if (!Entity.ZONE_HAND.equals(oldValue) && Entity.ZONE_HAND.equals(newValue)) {
                 String step = mGame.gameEntity.tags.get(Entity.KEY_STEP);
                 if (step == null) {
                     // this is the original mulligan
@@ -617,15 +617,11 @@ public class GameLogic {
         } else if (Entity.CARDTYPE_HERO_POWER.equals(cardType)) {
             player.heroPower = entity;
         } else {
-            if (Entity.ZONE_HAND.equals(entity.tags.get(Entity.KEY_ZONE))) {
-                entity.extra.drawTurn = mCurrentTurn;
-            }
-
             if (mGame.gameEntity.tags.get(Entity.KEY_STEP) == null) {
                 if (Entity.ZONE_DECK.equals(entity.tags.get(Entity.KEY_ZONE))) {
                     entity.extra.originalController = entity.tags.get(Entity.KEY_CONTROLLER);
                 } else if (Entity.ZONE_HAND.equals(entity.tags.get(Entity.KEY_ZONE))) {
-                    // this mush be the coin
+                    // this must be the coin
                     entity.CardID = Card.ID_COIN;
                     entity.extra.drawTurn = 0;
                     entity.card = CardDb.getCard(Card.ID_COIN);
