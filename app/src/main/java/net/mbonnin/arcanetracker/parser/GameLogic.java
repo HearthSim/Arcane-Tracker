@@ -279,7 +279,7 @@ public class GameLogic {
                         }
                     }
                 }
-            } else if (Entity.ZONE_HAND.equals(oldValue) && Entity.ZONE_DECK.equals(newValue)) {
+            } else if (Entity.ZONE_HAND.equals(oldValue) && !Entity.ZONE_HAND.equals(newValue)) {
                 /*
                  * card was put back in the deck (most likely from mulligan)
                  */
@@ -609,6 +609,10 @@ public class GameLogic {
             entity.card = CardDb.getCard(entity.CardID);
         }
         entity.tags.putAll(tag.tags);
+
+        if (Entity.ZONE_HAND.equals(entity.tags.get(Entity.KEY_ZONE))) {
+            entity.extra.drawTurn = mCurrentTurn;
+        }
 
         String playerId = entity.tags.get(Entity.KEY_CONTROLLER);
         String cardType = entity.tags.get(Entity.KEY_CARDTYPE);
