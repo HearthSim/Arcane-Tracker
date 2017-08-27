@@ -315,6 +315,7 @@ public class Controller implements GameLogic.Listener {
                 list.addAll(getNoGame());
             }
         }
+        
         mAdapter.setList(list);
 
     }

@@ -15,13 +15,6 @@ public class CardDb {
         return "cards_" + lang + ".json";
     }
 
-    static void storeCards(String cards) {
-        ArrayList<Card> list = new Gson().fromJson(cards, new TypeToken<ArrayList<Card>>() {
-        }.getType());
-        Collections.sort(list, (a, b) -> a.id.compareTo(b.id));
-        sCardList = list;
-    }
-
     public static Card getCard(int dbfId) {
         if (sCardList == null) {
             return null;
@@ -63,9 +56,20 @@ public class CardDb {
         String jsonName = Language.getCurrentLanguage().jsonName;
 
         String cards = getStoredJson(jsonName);
-        if (cards != null) {
-            CardDb.storeCards(cards);
+        ArrayList<Card> list = new Gson().fromJson(cards, new TypeToken<ArrayList<Card>>() {}.getType());
+        if (list == null) {
+            list = new ArrayList<>();
         }
+
+        /*
+         * these are 3 fake cards needed for CardRender
+         */
+        list.add(Card.secret("PALADIN"));
+        list.add(Card.secret("HUNTER"));
+        list.add(Card.secret("MAGE"));
+        Collections.sort(list, (a, b) -> a.id.compareTo(b.id));
+
+        sCardList = list;
     }
 
     private static String getStoredJson(String lang) {
