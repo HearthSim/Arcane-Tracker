@@ -557,9 +557,6 @@ public class GameLogic {
                 case Card.GHASTLY_CONJURER:
                     guessedId = Card.MIRROR_IMAGE;
                     break;
-                case Card.BONE_BARON:
-                    guessedId = Card.SKELETON;
-                    break;
             }
         } else if (TYPE_TRIGGER.equals(blockTag.BlockType)) {
             switch (blockEntity.CardID) {
@@ -583,6 +580,12 @@ public class GameLogic {
                     break;
                 case Card.FROZEN_CLONE:
                     guessedId = mGame.lastPlayedCardId;
+                    break;
+                case Card.BONE_BARON:
+                    guessedId = Card.SKELETON;
+                    break;
+                case Card.WEASEL_TUNNELER:
+                    guessedId = Card.WEASEL_TUNNELER;
                     break;
             }
         }

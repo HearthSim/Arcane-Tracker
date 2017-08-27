@@ -150,6 +150,7 @@ public class Card implements Comparable<String> {
     public static final String MIRROR_IMAGE = "CS2_027";
     public static final String BONE_BARON = "ICC_065";
     public static final String SKELETON = "ICC_026t";
+    public static final String WEASEL_TUNNELER = "CFM_095";
 
 
     public String name;
@@ -309,4 +310,5 @@ public class Card implements Comparable<String> {
         card.name = Utils.getString(R.string.secret);
         return card;
     }
+
 }
