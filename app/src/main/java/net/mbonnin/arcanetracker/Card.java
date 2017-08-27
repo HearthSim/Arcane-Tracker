@@ -148,6 +148,8 @@ public class Card implements Comparable<String> {
     public static final String VENOMSTRIKE_TRAP = "ICC_200";
     public static final String GHASTLY_CONJURER = "ICC_069";
     public static final String MIRROR_IMAGE = "CS2_027";
+    public static final String BONE_BARON = "ICC_065";
+    public static final String SKELETON = "ICC_026t";
 
 
     public String name;
