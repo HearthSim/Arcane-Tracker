@@ -77,9 +77,14 @@ public class GameLogic {
             /*
              * secret detector
              */
-            EntityList secretEntityList = mGame.getEntityList(e -> Entity.ZONE_SECRET.equals(e.tags.get(Entity.KEY_ZONE)));
+            EntityList secretEntityList = getSecretEntityList();
             for (Entity secretEntity : secretEntityList) {
-                if (!Utils.equalsNullSafe(secretEntity.tags.get(Entity.KEY_CONTROLLER), playedEntity.tags.get(Entity.KEY_CONTROLLER))) {
+                if (!Utils.equalsNullSafe(secretEntity.tags.get(Entity.KEY_CONTROLLER), playedEntity.tags.get(Entity.KEY_CONTROLLER))
+                && !Utils.isEmpty(playedEntity.CardID)) {
+                    /*
+                     * it can happen that we don't know the id of the played entity, for an example if the player has a secret and its opponent plays one
+                     * it should be ok to ignore those since these are opponent plays
+                     */
                     if (Card.TYPE_MINION.equals(playedEntity.card.type)) {
                         secretEntity.extra.otherPlayerPlayedMinion = true;
                         if (getMinionsOnBoardForController(playedEntity.tags.get(Entity.KEY_CONTROLLER)).size() >= 3) {
@@ -104,7 +109,7 @@ public class GameLogic {
              */
             Entity targetEntity = mGame.findEntitySafe(tag.Target);
 
-            EntityList secretEntityList = mGame.getEntityList(e -> Entity.ZONE_SECRET.equals(e.tags.get(Entity.KEY_ZONE)));
+            EntityList secretEntityList = getSecretEntityList();
             for (Entity e2 : secretEntityList) {
                 if (Utils.equalsNullSafe(e2.tags.get(Entity.KEY_CONTROLLER), targetEntity.tags.get(Entity.KEY_CONTROLLER))) {
                     if (Card.TYPE_MINION.equals(targetEntity.card.type)) {
@@ -167,7 +172,7 @@ public class GameLogic {
                 if (damage > 0) {
                     for (String id : tag.Info) {
                         Entity damagedEntity = mGame.findEntitySafe(id);
-                        EntityList secretEntityList = mGame.getEntityList(e -> Entity.ZONE_SECRET.equals(e.tags.get(Entity.KEY_ZONE)));
+                        EntityList secretEntityList = getSecretEntityList();
                         for (Entity e2 : secretEntityList) {
                             if (Utils.equalsNullSafe(e2.tags.get(Entity.KEY_CONTROLLER), damagedEntity.tags.get(Entity.KEY_CONTROLLER))) {
                                 if (Card.TYPE_HERO.equals(damagedEntity.card.type)) {
@@ -291,7 +296,7 @@ public class GameLogic {
             /*
              * secret detector
              */
-            EntityList secretEntityList = mGame.getEntityList(e -> Entity.ZONE_SECRET.equals(e.tags.get(Entity.KEY_ZONE)));
+            EntityList secretEntityList = getSecretEntityList();
             Entity currentPlayer = null;
             for (Player player : mGame.playerMap.values()) {
                 if ("1".equals(player.entity.tags.get(Entity.KEY_CURRENT_PLAYER))) {
@@ -312,6 +317,14 @@ public class GameLogic {
         }
 
         notifyListeners();
+    }
+
+    private EntityList getSecretEntityList() {
+        /*
+         * don't factor in the epic secret which are all quests for now
+         */
+        return mGame.getEntityList(e -> Entity.ZONE_SECRET.equals(e.tags.get(Entity.KEY_ZONE)))
+                .filter(e -> Entity.RARITY_EPIC.equals(e.tags.get(Entity.KEY_RARITY)));
     }
 
     private EntityList getMinionsOnBoardForController(String playerId) {

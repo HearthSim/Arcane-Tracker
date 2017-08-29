@@ -213,4 +213,13 @@ public class TestParser {
         Assert.assertEquals(game.findEntitySafe("76").extra.createdBy, Card.FROZEN_CLONE);
         Assert.assertEquals(game.findEntitySafe("80").extra.createdBy, Card.MIRROR_ENTITY);
     }
+
+    @Test
+    public void testDoubleSecret() throws Exception {
+
+        Game game = runParser("/k0l0banov.log");
+
+        Assert.assertFalse(game.victory);
+
+    }
 }

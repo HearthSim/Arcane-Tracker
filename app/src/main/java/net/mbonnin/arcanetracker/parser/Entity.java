@@ -21,6 +21,9 @@ public class Entity {
     public static final String KEY_TURN = "TURN";
     public static final String KEY_ZONE_POSITION = "ZONE_POSITION";
     public static final String KEY_DEFENDING = "DEFENDING";
+    public static final String KEY_CLASS = "CLASS";
+    public static final String KEY_RARITY = "RARITY";
+    public static final String KEY_CURRENT_PLAYER = "CURRENT_PLAYER";
 
     public static final String PLAYSTATE_WON = "WON";
 
@@ -40,8 +43,7 @@ public class Entity {
 
     public static final String STEP_FINAL_GAMEOVER = "FINAL_GAMEOVER";
     public static final String STEP_BEGIN_MULLIGAN = "BEGIN_MULLIGAN";
-    public static final String KEY_CLASS = "CLASS";
-    public static final String KEY_CURRENT_PLAYER = "CURRENT_PLAYER";
+    public static final String RARITY_EPIC = "EPIC";
 
     public String EntityID;
     public String CardID; // might be null if the entity is not revealed yet
