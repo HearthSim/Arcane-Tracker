@@ -27,7 +27,7 @@ public class LoadingScreenParser implements LogReader.LineConsumer {
 
     private String mParsedMode;
     private volatile String mMode = MODE_UNKNOWN;
-    private volatile String mGameplayMode;
+    private volatile String mGameplayMode = MODE_UNKNOWN;
 
     public static LoadingScreenParser get() {
         if (sParser == null) {
