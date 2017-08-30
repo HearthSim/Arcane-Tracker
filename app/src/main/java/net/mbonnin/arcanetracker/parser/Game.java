@@ -21,7 +21,7 @@ public class Game {
     public ArrayList<String> battleTags = new ArrayList<>();
 
     HashMap<String,Player> playerMap = new HashMap<>();
-    Entity gameEntity;
+    public Entity gameEntity;
 
     public Player player;
     public Player opponent;

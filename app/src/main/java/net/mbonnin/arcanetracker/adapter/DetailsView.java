@@ -53,9 +53,6 @@ public class DetailsView extends LinearLayout {
             StringBuilder builder = new StringBuilder();
 
             String cardType = entity.tags.get(Entity.KEY_CARDTYPE);
-            builder.append(getContext().getString(R.string.card, entity.EntityID));
-            builder.append("\n");
-            builder.append("\n");
             if (entity.extra.drawTurn != -1) {
                 builder.append(getContext().getString(R.string.drawnTurn, GameLogic.gameTurnToHumanTurn(entity.extra.drawTurn)));
                 if (entity.extra.mulliganed) {
@@ -63,9 +60,6 @@ public class DetailsView extends LinearLayout {
                     builder.append(getContext().getString(R.string.mulliganed));
                     builder.append(")");
                 }
-                builder.append("\n");
-            } else {
-                builder.append(getContext().getString(R.string.inDeck));
                 builder.append("\n");
             }
             if (entity.extra.playTurn != -1) {
@@ -76,7 +70,6 @@ public class DetailsView extends LinearLayout {
                 builder.append(getContext().getString(R.string.diedTurn, GameLogic.gameTurnToHumanTurn(entity.extra.diedTurn)));
                 builder.append("\n");
             }
-
             if (!TextUtils.isEmpty(entity.extra.createdBy)) {
                 builder.append(getContext().getString(R.string.createdBy, CardDb.getCard(entity.extra.createdBy).name));
             }
@@ -98,7 +91,7 @@ public class DetailsView extends LinearLayout {
 
     }
 
-    private void appendPossibleSecrets(LinearLayout linearLayout, Entity entity) {
+    private void appendPossibleSecrets(LinearLayout verticalLayout, Entity entity) {
         String clazz = entity.tags.get(Entity.KEY_CLASS);
 
         if (clazz == null) {
@@ -147,7 +140,15 @@ public class DetailsView extends LinearLayout {
                 break;
         }
 
+        int i = 0;
+        LinearLayout horizontalLayout = null;
         for (DeckEntryItem deckEntryItem: list) {
+            if (i%2 == 0) {
+                horizontalLayout = new LinearLayout(getContext());
+                horizontalLayout.setOrientation(HORIZONTAL);
+                verticalLayout.addView(horizontalLayout, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(30)));
+            }
+
             View view = LayoutInflater.from(getContext()).inflate(R.layout.bar_card, null);
             ViewGroup barTemplate = (ViewGroup) LayoutInflater.from(getContext()).inflate(R.layout.bar_template, null);
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -156,7 +157,7 @@ public class DetailsView extends LinearLayout {
             DeckEntryHolder holder = new DeckEntryHolder(barTemplate);
             holder.bind(deckEntryItem);
 
-            linearLayout.addView(barTemplate, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(30)));
+            horizontalLayout.addView(barTemplate, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
     }
 

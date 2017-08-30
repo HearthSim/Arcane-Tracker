@@ -1,5 +1,6 @@
 package net.mbonnin.arcanetracker;
 
+import net.mbonnin.arcanetracker.parser.Entity;
 import net.mbonnin.arcanetracker.parser.Game;
 import net.mbonnin.arcanetracker.parser.GameLogic;
 import net.mbonnin.arcanetracker.parser.Play;
@@ -50,9 +51,7 @@ public class TestParser {
         Timber.plant(new TestTree());
     }
 
-    private Game runParser(String resource) throws IOException {
-        TestListener listener = new TestListener();
-
+    private void runParser(String resource, GameLogic.Listener listener) throws IOException {
         GameLogic.get().addListener(listener);
         PowerParser powerParser = new PowerParser(tag -> GameLogic.get().handleRootTag(tag), null);
         InputStream inputStream = getClass().getResourceAsStream(resource);
@@ -63,7 +62,12 @@ public class TestParser {
         while ((line = br.readLine()) != null) {
             powerParser.onLine(line);
         }
+    }
 
+    private Game runParser(String resource) throws IOException {
+        TestListener listener = new TestListener();
+
+        runParser(resource, listener);
         return listener.game;
     }
 
@@ -221,5 +225,47 @@ public class TestParser {
 
         Assert.assertFalse(game.victory);
 
+    }
+
+    static class SecretsListener implements GameLogic.Listener {
+
+        public Game mGame;
+        private int lastTurn;
+
+        @Override
+        public void gameStarted(Game game) {
+            mGame = game;
+        }
+
+        @Override
+        public void gameOver() {
+
+        }
+
+        @Override
+        public void somethingChanged() {
+            int turn = 0;
+
+            try {
+                turn = Integer.parseInt(mGame.gameEntity.tags.get(Entity.KEY_TURN));
+            } catch(Exception e) {
+                return;
+            }
+
+            if (turn != lastTurn && turn == 19) {
+                Entity secretEntity = mGame.findEntityUnsafe("84");
+                Assert.assertFalse(secretEntity.extra.competitiveSpiritTriggerConditionHappened);
+                Assert.assertTrue(secretEntity.extra.otherPlayerHeroPowered);
+                Assert.assertTrue(secretEntity.extra.otherPlayerPlayedMinion);
+                Assert.assertTrue(secretEntity.extra.selfHeroDamaged);
+                Assert.assertTrue(secretEntity.extra.selfHeroAttacked);
+            }
+
+        }
+    }
+    @Test
+    public void testSecrets() throws Exception {
+
+        runParser("/Laugeolesen.log", new SecretsListener());
     }
 }
