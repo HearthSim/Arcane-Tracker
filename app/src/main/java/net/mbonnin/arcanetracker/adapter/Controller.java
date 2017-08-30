@@ -324,7 +324,7 @@ public class Controller implements GameLogic.Listener {
         ArrayList<Object> list = new ArrayList<>();
 
         EntityList entities = getEntityListInZone(Entity.ZONE_SECRET)
-                .filter(e -> Entity.RARITY_EPIC.equals(e.tags.get(Entity.KEY_RARITY))); // remove quests
+                .filter(e -> !Entity.RARITY_EPIC.equals(e.tags.get(Entity.KEY_RARITY))); // remove quests
 
         Collections.sort(entities, (a, b) -> compareNullSafe(a.tags.get(Entity.KEY_ZONE_POSITION), b.tags.get(Entity.KEY_ZONE_POSITION)));
 
