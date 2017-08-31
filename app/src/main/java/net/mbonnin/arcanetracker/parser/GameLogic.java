@@ -324,7 +324,7 @@ public class GameLogic {
          * don't factor in the epic secret which are all quests for now
          */
         return mGame.getEntityList(e -> Entity.ZONE_SECRET.equals(e.tags.get(Entity.KEY_ZONE)))
-                .filter(e -> !Entity.RARITY_EPIC.equals(e.tags.get(Entity.KEY_RARITY)));
+                .filter(e -> !Entity.RARITY_LEGENDARY.equals(e.tags.get(Entity.KEY_RARITY)));
     }
 
     private EntityList getMinionsOnBoardForController(String playerId) {

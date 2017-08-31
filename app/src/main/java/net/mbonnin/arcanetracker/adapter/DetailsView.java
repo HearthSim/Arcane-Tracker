@@ -61,6 +61,9 @@ public class DetailsView extends LinearLayout {
                     builder.append(")");
                 }
                 builder.append("\n");
+            } else {
+                builder.append(Utils.getString(R.string.inDeck));
+                builder.append("\n");
             }
             if (entity.extra.playTurn != -1) {
                 builder.append(getContext().getString(R.string.playedTurn, GameLogic.gameTurnToHumanTurn(entity.extra.playTurn)));

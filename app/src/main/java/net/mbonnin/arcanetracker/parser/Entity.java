@@ -44,6 +44,7 @@ public class Entity {
     public static final String STEP_FINAL_GAMEOVER = "FINAL_GAMEOVER";
     public static final String STEP_BEGIN_MULLIGAN = "BEGIN_MULLIGAN";
     public static final String RARITY_EPIC = "EPIC";
+    public static final String RARITY_LEGENDARY = "LEGENDARY";
 
     public String EntityID;
     public String CardID; // might be null if the entity is not revealed yet
