@@ -45,7 +45,7 @@ public class PowerParser implements LogReader.LineConsumer {
     private final Pattern HIDE_ENTITY = Pattern.compile("HIDE_ENTITY - Entity=(.*) tag=(.*) value=(.*)");
     private final Pattern TAG = Pattern.compile("tag=(.*) value=(.*)");
     private final Pattern META_DATA = Pattern.compile("META_DATA - Meta=(.*) Data=(.*) Info=(.*)");
-    private final Pattern INFO = Pattern.compile("Info[[0-9]*] = (.*)");
+    private final Pattern INFO = Pattern.compile("Info\\[[0-9]*\\] = (.*)");
 
     private StringBuilder rawBuilder;
     private String rawMatchStart;
@@ -96,6 +96,12 @@ public class PowerParser implements LogReader.LineConsumer {
             Tag newTag = null;
 
             if (("CREATE_GAME".equals(line))) {
+                /*
+                 * reset any previous state
+                 */
+                mCurrentTag = null;
+                mBlockTagStack.clear();
+
                 newTag = new CreateGameTag();
 
             } else if ((m = FULL_ENTITY.matcher(line)).matches()) {
@@ -132,9 +138,8 @@ public class PowerParser implements LogReader.LineConsumer {
                 newTag = tag;
             }
 
-
             if (newTag != null ) {
-                setCurrentTag(newTag);
+                openNewTag(newTag);
                 return;
             }
 
@@ -151,7 +156,7 @@ public class PowerParser implements LogReader.LineConsumer {
                     tag.TriggerKeyword = m.group(2);
                 }
 
-                setCurrentTag(null);
+                openNewTag(null);
 
                 if (mBlockTagStack.size() > 0) {
                     mBlockTagStack.get(mBlockTagStack.size() - 1).children.add(tag);
@@ -159,7 +164,7 @@ public class PowerParser implements LogReader.LineConsumer {
                 mBlockTagStack.add(tag);
                 return;
             } else if ((m = BLOCK_END_PATTERN.matcher(line)).matches()) {
-                setCurrentTag(null);
+                openNewTag(null);
                 if (mBlockTagStack.size() > 0) {
                     BlockTag blockTag = mBlockTagStack.remove(mBlockTagStack.size() - 1);
                     if (mBlockTagStack.size() == 0) {
@@ -214,7 +219,7 @@ public class PowerParser implements LogReader.LineConsumer {
         }
     }
 
-    private void setCurrentTag(Tag newTag) {
+    private void openNewTag(Tag newTag) {
         if (mCurrentTag != null) {
             if (mBlockTagStack.size() > 0) {
                 mBlockTagStack.get(mBlockTagStack.size() - 1).children.add(mCurrentTag);

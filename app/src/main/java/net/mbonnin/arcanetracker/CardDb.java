@@ -52,14 +52,21 @@ public class CardDb {
         return sCardList;
     }
 
+    public static void init(ArrayList<Card> list) {
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+
+        Collections.sort(list, (a, b) -> a.id.compareTo(b.id));
+
+        sCardList = list;
+    }
+
     public static void init() {
         String jsonName = Language.getCurrentLanguage().jsonName;
 
         String cards = getStoredJson(jsonName);
         ArrayList<Card> list = new Gson().fromJson(cards, new TypeToken<ArrayList<Card>>() {}.getType());
-        if (list == null) {
-            list = new ArrayList<>();
-        }
 
         /*
          * these are 3 fake cards needed for CardRender
@@ -67,9 +74,8 @@ public class CardDb {
         list.add(Card.secret("PALADIN"));
         list.add(Card.secret("HUNTER"));
         list.add(Card.secret("MAGE"));
-        Collections.sort(list, (a, b) -> a.id.compareTo(b.id));
 
-        sCardList = list;
+        init(list);
     }
 
     private static String getStoredJson(String lang) {
