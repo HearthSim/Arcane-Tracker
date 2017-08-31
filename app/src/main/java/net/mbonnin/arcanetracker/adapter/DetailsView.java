@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import net.mbonnin.arcanetracker.Card;
 import net.mbonnin.arcanetracker.CardDb;
@@ -24,6 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DetailsView extends LinearLayout {
+    private int mTopMargin;
+    private int mCardWidth;
+
     public DetailsView(Context context) {
         super(context);
         setOrientation(HORIZONTAL);
@@ -40,15 +42,11 @@ public class DetailsView extends LinearLayout {
             addView(imageView, layoutParams);
         }
 
-        int i = 0;
-        for (Entity entity : deckEntryItem.entityList) {
-            LayoutParams layoutParams = new LayoutParams(w, ViewGroup.LayoutParams.WRAP_CONTENT);
-            int p = Utils.dpToPx(5);
-            layoutParams.leftMargin = layoutParams.rightMargin = p;
-            layoutParams.topMargin = Utils.dpToPx(30);
+        mCardWidth = w;
+        mTopMargin = 30;
 
+        for (Entity entity : deckEntryItem.entityList) {
             DetailsViewBinding b = DetailsViewBinding.inflate(LayoutInflater.from(getContext()));
-            TextView textView = b.textView;
 
             StringBuilder builder = new StringBuilder();
 
@@ -61,10 +59,8 @@ public class DetailsView extends LinearLayout {
                     builder.append(")");
                 }
                 builder.append("\n");
-            } else {
-                builder.append(Utils.getString(R.string.inDeck));
-                builder.append("\n");
             }
+
             if (entity.extra.playTurn != -1) {
                 builder.append(getContext().getString(R.string.playedTurn, GameLogic.gameTurnToHumanTurn(entity.extra.playTurn)));
                 builder.append("\n");
@@ -85,13 +81,39 @@ public class DetailsView extends LinearLayout {
 
             String s = builder.toString();
 
+            if (Utils.isEmpty(s)) {
+                builder.append(Utils.getString(R.string.inDeck));
+                builder.append("\n");
+                s = builder.toString();
+            }
+
             b.textView.setText(s);
             b.textView.setTypeface(Typefaces.franklin());
 
-            addView(b.getRoot(), layoutParams);
-            i++;
+            addView(b.getRoot());
         }
 
+        applyMargins();
+    }
+
+    void applyMargins() {
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            if (child instanceof ImageView) {
+                continue;
+            }
+            LayoutParams layoutParams = new LayoutParams(mCardWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+            int p = Utils.dpToPx(5);
+            layoutParams.leftMargin = layoutParams.rightMargin = p;
+            layoutParams.topMargin = Utils.dpToPx(mTopMargin);
+            child.setLayoutParams(layoutParams);
+        }
+        requestLayout();
+    }
+
+    public void setTopMargin(int topMargin) {
+        mTopMargin = topMargin;
+        applyMargins();
     }
 
     private void appendPossibleSecrets(LinearLayout verticalLayout, Entity entity) {
@@ -149,7 +171,7 @@ public class DetailsView extends LinearLayout {
             if (i%2 == 0) {
                 horizontalLayout = new LinearLayout(getContext());
                 horizontalLayout.setOrientation(HORIZONTAL);
-                verticalLayout.addView(horizontalLayout, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(30)));
+                //verticalLayout.addView(horizontalLayout, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(30)));
             }
 
             View view = LayoutInflater.from(getContext()).inflate(R.layout.bar_card, null);
@@ -160,7 +182,7 @@ public class DetailsView extends LinearLayout {
             DeckEntryHolder holder = new DeckEntryHolder(barTemplate);
             holder.bind(deckEntryItem);
 
-            horizontalLayout.addView(barTemplate, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            verticalLayout.addView(barTemplate, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
     }
 

@@ -105,6 +105,11 @@ public class Entity {
         clone.tags.putAll(tags);
         clone.card = card;
         clone.CardID = CardID;
+        clone.extra.drawTurn = extra.drawTurn;
+        clone.extra.playTurn = extra.playTurn;
+        clone.extra.createdBy = extra.createdBy;
+        clone.extra.mulliganed = extra.mulliganed;
+
         clone.extra.otherPlayerPlayedMinion = extra.otherPlayerPlayedMinion;
         clone.extra.otherPlayerCastSpell = extra.otherPlayerCastSpell;
         clone.extra.otherPlayerHeroPowered = extra.otherPlayerHeroPowered;

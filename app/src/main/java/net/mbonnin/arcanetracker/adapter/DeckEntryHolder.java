@@ -80,6 +80,10 @@ class DeckEntryHolder extends RecyclerView.ViewHolder implements View.OnTouchLis
                 params.y = 0;
             } else if (params.y + params.h > ViewManager.get().getHeight()) {
                 params.y = ViewManager.get().getHeight() - params.h;
+                detailsView.setTopMargin(0);
+                detailsView.measure(measureSpec, measureSpec);
+                params.w = detailsView.getMeasuredWidth();
+                params.h = detailsView.getMeasuredHeight();
             }
             ViewManager.get().addModalView(detailsView, params);
         }

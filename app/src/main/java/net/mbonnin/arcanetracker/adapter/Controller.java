@@ -323,7 +323,15 @@ public class Controller implements GameLogic.Listener {
     private Collection<?> getSecrets() {
         ArrayList<Object> list = new ArrayList<>();
 
-        EntityList entities = getEntityListInZone(Entity.ZONE_HAND)
+        if (false) {
+            Stream.of(getEntityListInZone(Entity.ZONE_HAND)).forEach(e -> {
+                e.tags.put(Entity.KEY_CLASS, Card.CLASS_MAGE);
+                e.tags.put(Entity.KEY_ZONE, Entity.ZONE_SECRET);
+                e.extra.drawTurn = 18;
+                e.extra.playTurn = 23;
+            });
+        }
+        EntityList entities = getEntityListInZone(Entity.ZONE_SECRET)
                 .filter(e -> !Entity.RARITY_LEGENDARY.equals(e.tags.get(Entity.KEY_RARITY))); // remove quests
 
         Collections.sort(entities, (a, b) -> compareNullSafe(a.tags.get(Entity.KEY_ZONE_POSITION), b.tags.get(Entity.KEY_ZONE_POSITION)));
@@ -335,6 +343,8 @@ public class Controller implements GameLogic.Listener {
 
                 if (clazz != null) {
                     deckEntry.card = Card.secret(clazz);
+                } else {
+                    deckEntry.card = Card.secret("MAGE");
                 }
             } else {
                 deckEntry.card = entity.card;
