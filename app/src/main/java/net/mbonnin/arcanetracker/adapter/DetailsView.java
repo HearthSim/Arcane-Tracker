@@ -50,6 +50,11 @@ public class DetailsView extends LinearLayout {
 
             StringBuilder builder = new StringBuilder();
 
+            if (Utils.isAppDebuggable()) {
+                builder.append(getContext().getString(R.string.card, entity.EntityID));
+                builder.append("\n");
+            }
+
             String cardType = entity.tags.get(Entity.KEY_CARDTYPE);
             if (entity.extra.drawTurn != -1) {
                 builder.append(getContext().getString(R.string.drawnTurn, GameLogic.gameTurnToHumanTurn(entity.extra.drawTurn)));

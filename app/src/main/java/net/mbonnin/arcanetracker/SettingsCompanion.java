@@ -298,7 +298,7 @@ public class SettingsCompanion {
             emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"support@arcanetracker.com"});
             emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Arcane Tracker Feedback");
-            emailIntent.putExtra(Intent.EXTRA_TEXT, view.getContext().getString(R.string.decribeYourProblem));
+            emailIntent.putExtra(Intent.EXTRA_TEXT, view.getContext().getString(R.string.decribeYourProblem) + "\n\n");
 
             FileTree.get().sync();
             Uri uri = FileProvider.getUriForFile(view.getContext(), "net.mbonnin.arcanetracker.fileprovider", FileTree.get().getFile());
