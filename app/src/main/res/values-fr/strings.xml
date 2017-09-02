@@ -60,7 +60,7 @@
     <string name="general">Général</string>
     <string name="gotIt">Compris !</string>
     <string name="graveyard">Cimetière</string>
-    <string name="hand">main</string>
+    <string name="hand">Main</string>
     <string name="helpUs">Contribuez au developement d\'Arcane Tracker</string>
     <string name="hi_there">Salut !</string>
     <string name="history">Historique des parties</string>
@@ -158,13 +158,17 @@
     <string name="turn">Tour #%d</string>
     <string name="unknown_cards">%d cartes inconnues</string>
     <string name="unlinkAccount">Déconnecter le compte</string>
-    <string name="useClipboardDeck">Voulez vous créer un nouveau deck en utilisant le presse papier ?</string>
+    <string name="useClipboardDeck">Vous pouvez copier/coller une deckstring ci-dessous pour créer un deck automatiquement. Si vous avez déja une deckstring dans votre presse papier, vous n\'avez qu\'à cliquer le bouton.</string>
     <string name="username">\"Identifiant: \"</string>
     <string name="waitingForCards">Téléchargement des cartes</string>
     <string name="welcome">Bienvenue sur Arcane Tracker !</string>
     <string name="whatsNew">Nouveautés</string>
     <string name="win">Victoire</string>
-    <string name="xiaomi_explanation">On dirait que vous jouez sur un téléphone XIaomi. Rendez vous dans les paramètres systèmes pour autoriser la superposition aux autres applis.</string>
+    <string name="xiaomi_explanation">On dirait que vous jouez sur un téléphone Xiaomi. Rendez vous dans les paramètres systèmes pour autoriser la superposition aux autres applis.</string>
     <string name="yes">Oui</string>
     <string name="yourDeck">Votre Deck</string>
+    <string name="allCards">Toutes les cartes</string>
+    <string name="enterDeckstring">Copiez votre deckstring ici</string>
+    <string name="useDeckString">Utiliser la deckstring</string>
+    <string name="useNewDeck">Créer un deck vide</string>
 </resources>

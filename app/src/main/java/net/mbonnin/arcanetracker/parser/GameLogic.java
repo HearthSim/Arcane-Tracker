@@ -5,7 +5,6 @@ package net.mbonnin.arcanetracker.parser;
  */
 
 import net.mbonnin.arcanetracker.Card;
-import net.mbonnin.arcanetracker.CardDb;
 import net.mbonnin.arcanetracker.Utils;
 import net.mbonnin.arcanetracker.parser.power.BlockTag;
 import net.mbonnin.arcanetracker.parser.power.CreateGameTag;
@@ -194,9 +193,7 @@ public class GameLogic {
         if (!Utils.isEmpty(entity.CardID) && !entity.CardID.equals(tag.CardID)) {
             Timber.e("[Inconsistent] entity " + entity + " changed cardId " + entity.CardID + " -> " + tag.CardID);
         }
-        entity.CardID = tag.CardID;
-        entity.card = CardDb.getCard(tag.CardID);
-
+        entity.setCardId(tag.CardID);
 
         for (String key : tag.tags.keySet()) {
             tagChanged(entity, key, tag.tags.get(key));
@@ -267,6 +264,11 @@ public class GameLogic {
                 } else {
                     entity.extra.drawTurn = mCurrentTurn;
                 }
+
+                if (Entity.ZONE_DECK.equals(oldValue)) {
+                    // we should not give too much information about what cards the opponent has
+                    entity.extra.hide = true;
+                }
             } else if (Entity.ZONE_HAND.equals(oldValue) && Entity.ZONE_PLAY.equals(newValue)) {
                 entity.extra.playTurn = mCurrentTurn;
             } else if (Entity.ZONE_HAND.equals(oldValue) && Entity.ZONE_SECRET.equals(newValue)) {
@@ -289,6 +291,10 @@ public class GameLogic {
                  * card was put back in the deck (most likely from mulligan)
                  */
                 entity.extra.drawTurn = -1;
+                /*
+                 * no reason to hide it anymore
+                 */
+                entity.extra.hide = false;
             }
         }
 
@@ -603,8 +609,7 @@ public class GameLogic {
             }
         }
         if (guessedId != null) {
-            entity.CardID = guessedId;
-            entity.card = CardDb.getCard(guessedId);
+            entity.setCardId(guessedId);
         }
 
         // even if we don't know the guessedId, record that this was createdBy this entity
@@ -623,9 +628,8 @@ public class GameLogic {
             mGame.entityMap.put(tag.ID, entity);
         }
         entity.EntityID = tag.ID;
-        entity.CardID = tag.CardID;
-        if (!Utils.isEmpty(entity.CardID)) {
-            entity.card = CardDb.getCard(entity.CardID);
+        if (!Utils.isEmpty(tag.CardID)) {
+            entity.setCardId(tag.CardID);
         }
         entity.tags.putAll(tag.tags);
 
@@ -649,9 +653,8 @@ public class GameLogic {
                     entity.extra.originalController = entity.tags.get(Entity.KEY_CONTROLLER);
                 } else if (Entity.ZONE_HAND.equals(entity.tags.get(Entity.KEY_ZONE))) {
                     // this must be the coin
-                    entity.CardID = Card.ID_COIN;
+                    entity.setCardId(Card.ID_COIN);
                     entity.extra.drawTurn = 0;
-                    entity.card = CardDb.getCard(Card.ID_COIN);
                 }
             }
         }

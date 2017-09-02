@@ -1,55 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                                    xmlns:tools="http://schemas.android.com/tools"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#fff"
-        android:padding="15dp">
+    <android.support.v7.widget.CardView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="@string/useClipboardDeck"
-            android:textColor="#000"
-            android:textSize="18sp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#fff"
+            android:padding="15dp">
 
-        <Button
-            android:id="@+id/cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textView"
-            android:background="@null"
-            android:text="@string/no"
-            android:textColor="@color/colorPrimary"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/ok"
-            app:layout_constraintTop_toBottomOf="@id/textView"/>
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/useClipboardDeck"
+                android:textColor="#000"
+                android:textSize="18sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
-        <Button
-            android:id="@+id/ok"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textView"
-            android:backgroundTint="@color/colorPrimary"
-            android:text="@string/yes"
-            android:textColor="#fff"
-            android:layout_marginLeft="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@+id/cancel"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textView"/>
-    </android.support.constraint.ConstraintLayout>
+            <EditText
+                android:id="@+id/editText"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/colorPrimary"
+                android:hint="@string/enterDeckstring"
+                android:singleLine="false"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textView"/>
 
-</android.support.v7.widget.CardView>
+            <Button
+                android:id="@+id/useDeckString"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="@string/useDeckString"
+                android:textColor="#fff"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editText"/>
+
+            <TextView
+                android:id="@+id/or"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/or"
+                android:textColor="#000"
+                android:textSize="18sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/useDeckString"/>
+
+            <Button
+                android:id="@+id/createNewDeck"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="@string/useNewDeck"
+                android:textColor="#fff"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/or"/>
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.CardView>
+</layout>

@@ -25,70 +25,44 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 public class Controller implements GameLogic.Listener {
-    private static Controller sPlayerController;
-    private static Controller sOpponentController;
+    private static Controller sController;
 
-    private final boolean mOpponent;
-    private final ItemAdapter mAdapter;
+    private final ItemAdapter mPlayerAdapter;
     private final Handler mHandler;
-    protected Deck mDeck;
+    private final ItemAdapter mOpponentAdapter;
+    protected HashMap<String, Integer> mPlayerCardMap;
     private Game mGame;
     private String mPlayerId;
+    private String mOpponentId;
 
-    public Controller(boolean opponent) {
-        mOpponent = opponent;
-        mAdapter = new ItemAdapter();
+    public Controller() {
+        mPlayerAdapter = new ItemAdapter();
+        mOpponentAdapter = new ItemAdapter();
         GameLogic.get().addListener(this);
         mHandler = new Handler();
     }
 
-    public ItemAdapter getAdapter() {
-        return mAdapter;
+    public ItemAdapter getPlayerAdapter() {
+        return mPlayerAdapter;
     }
 
-    public void setDeck(Deck deck) {
-        mDeck = deck;
+    public ItemAdapter getOpponentAdapter() {
+        return mOpponentAdapter;
+    }
+
+    public void setPlayerDeck(HashMap<String, Integer> cardMap) {
+        mPlayerCardMap = cardMap;
         update();
     }
 
-    private Runnable mUpdateRunnable = new Runnable() {
-        @Override
-        public void run() {
-            update();
-        }
-    };
+    private Runnable mUpdateRunnable = this::update;
 
-    private ArrayList getDeck() {
-        EntityList entityList = mGame.getEntityList(entity -> mPlayerId.equals(entity.extra.originalController));
-
-        if (mDeck != null && !mOpponent) {
-            assignCardsFromDeck();
-        }
-
-        /*
-         * Add all the gifts
-         */
-        entityList.addAll(mGame.getEntityList(entity -> {
-            return Entity.ZONE_DECK.equals(entity.tags.get(Entity.KEY_ZONE))
-                    && !mPlayerId.equals(entity.extra.originalController)
-                    && mPlayerId.equals(entity.tags.get(Entity.KEY_CONTROLLER));
-        }));
-
-        return entityListToItemList(entityList, entity -> {
-            if (mOpponent) {
-                return true;
-            } else {
-                return Entity.ZONE_DECK.equals(entity.tags.get(Entity.KEY_ZONE));
-            }
-        });
-    }
-
-    private ArrayList entityListToItemList(EntityList entityList, Function<Entity, Boolean> increasesCount) {
+    private ArrayList<Object> entityListToItemList(EntityList entityList, Function<Entity, Boolean> increasesCount) {
         /*
          * remove and count the really unknown cards
          */
@@ -202,7 +176,7 @@ public class Controller implements GameLogic.Listener {
         /*
          * build a list of all the ids in mDeck
          */
-        for (Map.Entry<String, Integer> entry : mDeck.cards.entrySet()) {
+        for (Map.Entry<String, Integer> entry : mPlayerCardMap.entrySet()) {
             for (int i = 0; i < entry.getValue(); i++) {
                 cardIdsFromDeck.add(entry.getKey());
             }
@@ -238,8 +212,8 @@ public class Controller implements GameLogic.Listener {
         }
     }
 
-    private EntityList getEntityListInZone(String zone) {
-        return mGame.getEntityList(entity -> mPlayerId.equals(entity.tags.get(Entity.KEY_CONTROLLER))
+    private EntityList getEntityListInZone(String playerId, String zone) {
+        return mGame.getEntityList(entity -> playerId.equals(entity.tags.get(Entity.KEY_CONTROLLER))
                 && zone.equals(entity.tags.get(Entity.KEY_ZONE)));
     }
 
@@ -255,14 +229,14 @@ public class Controller implements GameLogic.Listener {
         ArrayList<Object> list = new ArrayList<>();
         Context context = ArcaneTrackerApplication.getContext();
 
-        EntityList entities = getEntityListInZone(Entity.ZONE_HAND);
+        EntityList entities = getEntityListInZone(mOpponentId, Entity.ZONE_HAND);
 
         Collections.sort(entities, (a, b) -> compareNullSafe(a.tags.get(Entity.KEY_ZONE_POSITION), b.tags.get(Entity.KEY_ZONE_POSITION)));
 
         list.add(new HeaderItem(context.getString(R.string.hand) + " (" + entities.size() + ")"));
         for (Entity entity : entities) {
             DeckEntryItem deckEntry = new DeckEntryItem();
-            if (TextUtils.isEmpty(entity.CardID)) {
+            if (TextUtils.isEmpty(entity.CardID) || entity.extra.hide) {
                 deckEntry.card = Card.unknown();
                 StringBuilder builder = new StringBuilder();
                 builder.append("#").append(GameLogic.gameTurnToHumanTurn(entity.extra.drawTurn));
@@ -273,9 +247,13 @@ public class Controller implements GameLogic.Listener {
             } else {
                 deckEntry.card = entity.card;
             }
-            deckEntry.gift = entity.extra.tmpIsGift;
+            deckEntry.gift = entity.extra.hide ? false : entity.extra.tmpIsGift;
             deckEntry.count = 1;
-            deckEntry.entityList.add(entity);
+            Entity clone = entity.clone();
+            if (entity.extra.hide) {
+                clone.extra.createdBy = null;
+            }
+            deckEntry.entityList.add(clone);
             list.add(deckEntry);
         }
 
@@ -283,55 +261,91 @@ public class Controller implements GameLogic.Listener {
     }
 
 
-    protected void update() {
-        ArrayList<Object> list = new ArrayList();
-
-        if (mGame != null) {
+    private void update() {
+        if (mGame == null) {
+            mPlayerAdapter.setList(getCardMapList(mPlayerCardMap != null ? mPlayerCardMap : new HashMap<>()));
+            mOpponentAdapter.setList(getCardMapList(new HashMap<>()));
+        } else {
             /*
-             * initialize stuff
+             * all the code below uses tmpCard and tmpIsGift so that it can change them without messing up the internal game state
              */
             EntityList allEntities = mGame.getEntityList(entity -> true);
-            Stream.of(allEntities).forEach(entity -> entity.extra.tmpIsGift = !Utils.isEmpty(entity.extra.createdBy));
             Stream.of(allEntities).forEach(entity -> {
+                entity.extra.tmpIsGift = !TextUtils.isEmpty(entity.extra.createdBy);
                 if (entity.card != null) {
                     entity.extra.tmpCard = entity.card;
                 } else {
                     entity.extra.tmpCard = Card.UNKNOWN;
                 }
             });
-            if (mOpponent) {
-                Collection<?> secrets = getSecrets();
-                if (secrets.size() > 0) {
-                    list.add(new HeaderItem(Utils.getString(R.string.secrets)));
-                    list.addAll(secrets);
-                }
-                list.addAll(getHand());
-                list.add(new HeaderItem(Utils.getString(R.string.deck)));
-            }
-            list.addAll(getDeck());
-            //list.addAll(getGraveyard());
-        } else {
-            if (mDeck != null) {
-                list.addAll(getNoGame());
-            }
+
+            updatePlayer();
+            updateOpponent();
+        }
+    }
+
+    private void updateOpponent() {
+        ArrayList<Object> list = new ArrayList<>();
+
+        Collection<?> secrets = getSecrets();
+        if (secrets.size() > 0) {
+            list.add(new HeaderItem(Utils.getString(R.string.secrets)));
+            list.addAll(secrets);
+        }
+        list.addAll(getHand());
+
+        list.add(new HeaderItem(Utils.getString(R.string.allCards)));
+
+        // trying a definition that's a bit different from the player definition here
+        EntityList allEntities = mGame.getEntityList(e -> mOpponentId.equals(e.tags.get(Entity.KEY_CONTROLLER))
+                && !Entity.CARDTYPE_ENCHANTMENT.equals(e.tags.get(Entity.KEY_CARDTYPE))
+                && !Entity.CARDTYPE_HERO.equals(e.tags.get(Entity.KEY_CARDTYPE))
+                && !Entity.CARDTYPE_HERO_POWER.equals(e.tags.get(Entity.KEY_CARDTYPE))
+                && !Entity.CARDTYPE_PLAYER.equals(e.tags.get(Entity.KEY_CARDTYPE)));
+
+        list.addAll(entityListToItemList(allEntities, e -> true));
+
+        mOpponentAdapter.setList(list);
+    }
+
+    private void updatePlayer() {
+        ArrayList<Object> list = new ArrayList<>();
+
+        list.add(new HeaderItem(Utils.getString(R.string.deck)));
+
+        if (mPlayerCardMap != null) {
+            assignCardsFromDeck();
         }
 
-        mAdapter.setList(list);
+        EntityList entityList = mGame.getEntityList(entity -> mPlayerId.equals(entity.extra.originalController));
+        /*
+         * Add all the gifts
+         * XXX it's not enough to filter on !TextUtils.isEmpty(createdBy)
+         * because then we get all enchantments
+         */
+        entityList.addAll(mGame.getEntityList(entity -> {
+            return Entity.ZONE_DECK.equals(entity.tags.get(Entity.KEY_ZONE))
+                    && !mPlayerId.equals(entity.extra.originalController)
+                    && mPlayerId.equals(entity.tags.get(Entity.KEY_CONTROLLER));
+        }));
 
+        list.addAll(entityListToItemList(entityList, entity -> Entity.ZONE_DECK.equals(entity.tags.get(Entity.KEY_ZONE))));
+
+        mPlayerAdapter.setList(list);
     }
 
     private Collection<?> getSecrets() {
         ArrayList<Object> list = new ArrayList<>();
 
         if (false) {
-            Stream.of(getEntityListInZone(Entity.ZONE_HAND)).forEach(e -> {
+            Stream.of(getEntityListInZone(mOpponentId, Entity.ZONE_HAND)).forEach(e -> {
                 e.tags.put(Entity.KEY_CLASS, Card.CLASS_MAGE);
                 e.tags.put(Entity.KEY_ZONE, Entity.ZONE_SECRET);
                 e.extra.drawTurn = 18;
                 e.extra.playTurn = 23;
             });
         }
-        EntityList entities = getEntityListInZone(Entity.ZONE_SECRET)
+        EntityList entities = getEntityListInZone(mOpponentId, Entity.ZONE_SECRET)
                 .filter(e -> !Entity.RARITY_LEGENDARY.equals(e.tags.get(Entity.KEY_RARITY))); // remove quests
 
         Collections.sort(entities, (a, b) -> compareNullSafe(a.tags.get(Entity.KEY_ZONE_POSITION), b.tags.get(Entity.KEY_ZONE_POSITION)));
@@ -361,22 +375,11 @@ public class Controller implements GameLogic.Listener {
         return list;
     }
 
-    private List<Object> getGraveyard() {
-        EntityList entityList = getEntityListInZone(Entity.ZONE_GRAVEYARD);
-
+    private static ArrayList<Object> getCardMapList(HashMap<String, Integer> cardMap) {
         ArrayList<Object> list = new ArrayList<>();
-        list.add(new HeaderItem(Utils.getString(R.string.graveyard)));
-
-        list.addAll(entityListToItemList(entityList, entity -> true));
-
-        return list;
-    }
-
-    private List<Object> getNoGame() {
-        List<Object> list = new ArrayList<>();
         int unknown = Deck.MAX_CARDS;
 
-        for (Map.Entry<String, Integer> entry : mDeck.cards.entrySet()) {
+        for (Map.Entry<String, Integer> entry : cardMap.entrySet()) {
             DeckEntryItem deckEntry = new DeckEntryItem();
             deckEntry.card = CardDb.getCard(entry.getKey());
             deckEntry.count = entry.getValue();
@@ -384,7 +387,7 @@ public class Controller implements GameLogic.Listener {
             unknown -= deckEntry.count;
         }
 
-        Collections.sort(list, (a,b) -> {
+        Collections.sort(list, (a, b) -> {
             DeckEntryItem da = (DeckEntryItem) a;
             DeckEntryItem db = (DeckEntryItem) b;
 
@@ -414,7 +417,8 @@ public class Controller implements GameLogic.Listener {
     @Override
     public void gameStarted(Game game) {
         mGame = game;
-        mPlayerId = mOpponent ? mGame.opponent.entity.PlayerID : mGame.player.entity.PlayerID;
+        mPlayerId = mGame.player.entity.PlayerID;
+        mOpponentId = mGame.opponent.entity.PlayerID;
         update();
     }
 
@@ -433,24 +437,15 @@ public class Controller implements GameLogic.Listener {
     }
 
 
-    public static Controller getPlayerController() {
-        if (sPlayerController == null) {
-            sPlayerController = new Controller(false);
+    public static Controller get() {
+        if (sController == null) {
+            sController = new Controller();
         }
 
-        return sPlayerController;
-    }
-
-    public static Controller getOpponentController() {
-        if (sOpponentController == null) {
-            sOpponentController = new Controller(true);
-        }
-
-        return sOpponentController;
+        return sController;
     }
 
     public static void resetAll() {
-        getOpponentController().resetGame();
-        getPlayerController().resetGame();
+        get().resetGame();
     }
 }

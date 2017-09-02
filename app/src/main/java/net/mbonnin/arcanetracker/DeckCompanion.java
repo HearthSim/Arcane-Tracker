@@ -71,7 +71,7 @@ public class DeckCompanion {
             winLoss.setVisibility(GONE);
 
 
-            mController = Controller.getOpponentController();
+            recyclerView.setAdapter(Controller.get().getOpponentAdapter());
             setDeck(DeckList.getOpponentDeck());
         } else {
             new EditButtonCompanion(settings);
@@ -95,13 +95,12 @@ public class DeckCompanion {
                 Paper.book().write(KEY_LAST_USED_DECK_ID, deck.id);
             }
 
-            mController = Controller.getPlayerController();
+            recyclerView.setAdapter(Controller.get().getPlayerAdapter());
             setDeck(deck);
         }
 
         recyclerView.setBackgroundColor(Color.BLACK);
         recyclerView.setLayoutManager(new LinearLayoutManager(v.getContext()));
-        recyclerView.setAdapter(mController.getAdapter());
     }
 
     public void setDeck(Deck deck) {
@@ -143,15 +142,13 @@ public class DeckCompanion {
 
                 mViewManager.addCenteredView(view2);
             });
+            Controller.get().setPlayerDeck(deck.cards);
         }
-
         deck.checkClassIndex();
 
         mDeck = deck;
         background.setBackgroundDrawable(Utils.getDrawableForClassIndex(deck.classIndex));
         deckName.setText(deck.name);
-
-        mController.setDeck(deck);
     }
 
     public Deck getDeck() {

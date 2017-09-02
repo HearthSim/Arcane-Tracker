@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import net.mbonnin.arcanetracker.databinding.ImportDeckstringBinding;
+
 import java.util.ArrayList;
 
 /**
@@ -95,10 +97,10 @@ public class EditButtonCompanion {
             }
             View view2 = LayoutInflater.from(v2.getContext()).inflate(R.layout.rename_deck_view, null);
 
-            ((EditText)(view2.findViewById(R.id.editText))).setText(deck.name);
+            ((EditText) (view2.findViewById(R.id.editText))).setText(deck.name);
             view2.findViewById(R.id.renameButton).setOnClickListener(v3 -> {
                 mViewManager.removeView(view2);
-                deck.name = ((EditText)(view2.findViewById(R.id.editText))).getText().toString();
+                deck.name = ((EditText) (view2.findViewById(R.id.editText))).getText().toString();
                 MainViewCompanion.getPlayerCompanion().setDeck(deck);
                 DeckList.save();
 
@@ -124,8 +126,45 @@ public class EditButtonCompanion {
         mViewManager.addModalView(view, params);
     };
 
-    Deck detectDeckFromClipboard(Context context) {
+    private void newDeckClicked(Context context) {
+        ImportDeckstringBinding binding = ImportDeckstringBinding.inflate(LayoutInflater.from(context));
+        View view = binding.getRoot();
+
+        String pasteData = getPasteData(context);
+        if (pasteData != null && DeckString.parse(pasteData) != null) {
+            binding.editText.setText(pasteData);
+        }
+
+        binding.useDeckString.setOnClickListener(v -> {
+            Deck deck = DeckString.parse(binding.editText.getText().toString());
+            if (deck != null) {
+                mViewManager.removeView(view);
+                DeckList.addDeck(deck);
+                MainViewCompanion.getPlayerCompanion().setDeck(deck);
+            } else {
+                Toast.makeText(context, Utils.getString(R.string.cannotParseDeckstring), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        binding.createNewDeck.setOnClickListener(v -> {
+            mViewManager.removeView(view);
+            showNewDeckDialog(context);
+        });
+
+        ViewManager.Params params = new ViewManager.Params();
+        ViewManager viewManager = ViewManager.get();
+
+        params.x = viewManager.getWidth() / 4;
+        params.y = viewManager.getHeight() / 16;
+        params.w = viewManager.getWidth() / 2;
+        params.h = 7 * viewManager.getHeight() / 8;
+
+        mViewManager.addModalView(view, params);
+    }
+
+    private String getPasteData(Context context) {
         ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+
         if (!clipboard.hasPrimaryClip()) {
             return null;
         }
@@ -136,30 +175,7 @@ public class EditButtonCompanion {
             return null;
 
         }
-        String pasteData = item.getText().toString();
-        return DeckString.parse(pasteData);
-    }
-    private void newDeckClicked(Context context) {
-        Deck deck = detectDeckFromClipboard(context);
-
-        if (deck != null) {
-            View view = LayoutInflater.from(context).inflate(R.layout.import_deckstring, null);
-            view.findViewById(R.id.ok).setOnClickListener(v -> {
-                mViewManager.removeView(view);
-                DeckList.addDeck(deck);
-                MainViewCompanion.getPlayerCompanion().setDeck(deck);
-            });
-            view.findViewById(R.id.cancel).setOnClickListener(v -> {
-                mViewManager.removeView(view);
-                showNewDeckDialog(context);
-            });
-
-            mViewManager.addCenteredView(view);
-
-            return;
-        }
-
-        showNewDeckDialog(context);
+        return item.getText().toString();
     }
 
     private void showNewDeckDialog(Context context) {

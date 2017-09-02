@@ -1,6 +1,7 @@
 package net.mbonnin.arcanetracker.parser;
 
 import net.mbonnin.arcanetracker.Card;
+import net.mbonnin.arcanetracker.CardDb;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -45,6 +46,7 @@ public class Entity {
     public static final String STEP_BEGIN_MULLIGAN = "BEGIN_MULLIGAN";
     public static final String RARITY_EPIC = "EPIC";
     public static final String RARITY_LEGENDARY = "LEGENDARY";
+    public static final String CARDTYPE_PLAYER = "PLAYER";
 
     public String EntityID;
     public String CardID; // might be null if the entity is not revealed yet
@@ -63,6 +65,11 @@ public class Entity {
         return String.format(Locale.ENGLISH, "CardEntity [id=%s][CardID=%s]%s", EntityID, CardID, card != null ? "(" + card.name + ")" : "");
     }
 
+    public void setCardId(String cardID) {
+        this.CardID = cardID;
+        this.card = CardDb.getCard(cardID);
+    }
+
     public static class Extra {
         /**
          * used from Controller.java to affect a temporary id to cards we don't know yet
@@ -76,6 +83,7 @@ public class Entity {
         public int diedTurn = -1;
         public boolean mulliganed;
         public String createdBy;
+        public boolean hide;
 
         /*
          * secret detector
@@ -120,6 +128,7 @@ public class Entity {
         clone.extra.selfMinionTargetedBySpell = extra.selfMinionTargetedBySpell;
         clone.extra.competitiveSpiritTriggerConditionHappened = extra.competitiveSpiritTriggerConditionHappened;
         clone.extra.otherPlayerPlayedMinionWithThreeOnBoardAlready = extra.otherPlayerPlayedMinionWithThreeOnBoardAlready;
+        clone.extra.hide = extra.hide;
         return clone;
     }
 

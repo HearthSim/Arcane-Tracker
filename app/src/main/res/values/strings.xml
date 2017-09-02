@@ -164,13 +164,17 @@
     <string name="turn">Turn #%d</string>
     <string name="unknown_cards">%d unknown card(s)</string>
     <string name="unlinkAccount">Unlink account</string>
-    <string name="useClipboardDeck">Would you like to create a new deck with the deck in your clipboard ?</string>
+    <string name="useClipboardDeck">You can now create decks automatically with deckstrings. Paste a deckstring below to start.\nIf you already have one in your pastebin, it will be pre-filled.</string>
     <string name="username">Username:</string>
-    <string name="waitingForCards">Downloading Cards...</string>
     <string name="welcome">Welcome to Arcane Tracker !</string>
     <string name="whatsNew">What\'s new</string>
     <string name="win">WIN</string>
     <string name="xiaomi_explanation">It looks like you\'re playing on a Xiaomi device. These devices handle the overlay permissions in a non-standard way and you may need to manually enable the overlay permissions in the phone settings.</string>
     <string name="yes">Yes</string>
     <string name="yourDeck">Your Deck</string>
+    <string name="allCards">All Cards</string>
+    <string name="enterDeckstring">Paste your deckstring here</string>
+    <string name="useDeckString">Use Deckstring above</string>
+    <string name="useNewDeck">Create new empty deck</string>
+    <string name="cannotParseDeckstring">Cannot parse deckstring</string>
 </resources>

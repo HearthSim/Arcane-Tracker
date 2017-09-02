@@ -64,7 +64,7 @@ public class ArenaParser implements LogReader.LineConsumer {
         Deck deck = DeckList.getArenaDeck();
         deck.addCard(cardId, 1);
 
-        Controller.getPlayerController().setDeck(deck);
+        Controller.get().setPlayerDeck(deck.cards);
 
         DeckList.saveArena();
     }

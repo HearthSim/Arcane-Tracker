@@ -31,14 +31,6 @@ public class DeckString {
         }
         deck.name = name;
 
-        if (deck.classIndex < 0) {
-            return null;
-        }
-
-        if (deck.cards == null) {
-            return null;
-        }
-
         return deck;
     }
 
@@ -91,6 +83,14 @@ public class DeckString {
             if (card != null) {
                 deck.cards.put(card.id, c);
             }
+        }
+
+        if (deck.classIndex < 0) {
+            return null;
+        }
+
+        if (deck.cards == null) {
+            return null;
         }
 
         return deck;
