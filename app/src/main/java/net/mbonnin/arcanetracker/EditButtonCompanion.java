@@ -154,12 +154,12 @@ public class EditButtonCompanion {
         ViewManager.Params params = new ViewManager.Params();
         ViewManager viewManager = ViewManager.get();
 
-        params.x = viewManager.getWidth() / 4;
+        params.x = viewManager.getWidth() / 8;
         params.y = viewManager.getHeight() / 16;
-        params.w = viewManager.getWidth() / 2;
+        params.w = 3 * viewManager.getWidth() / 4;
         params.h = 7 * viewManager.getHeight() / 8;
 
-        mViewManager.addModalView(view, params);
+        mViewManager.addModalAndFocusableView(view, params);
     }
 
     private String getPasteData(Context context) {

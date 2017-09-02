@@ -18,34 +18,37 @@
                 android:layout_height="wrap_content"
                 android:text="@string/useClipboardDeck"
                 android:textColor="#000"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="spread"
+                app:layout_constraintBottom_toTopOf="@+id/editText"/>
 
             <EditText
                 android:id="@+id/editText"
                 android:layout_width="0dp"
-                android:layout_height="80dp"
-                android:layout_marginBottom="10dp"
+                android:layout_height="0dp"
                 android:layout_marginTop="10dp"
                 android:backgroundTint="@color/colorPrimary"
                 android:hint="@string/enterDeckstring"
                 android:singleLine="false"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textView"/>
+                app:layout_constraintTop_toBottomOf="@+id/textView"
+                app:layout_constraintBottom_toTopOf="@+id/useDeckString"/>
 
             <Button
                 android:id="@+id/useDeckString"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/colorPrimary"
                 android:text="@string/useDeckString"
                 android:textColor="#fff"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editText"/>
+                app:layout_constraintTop_toBottomOf="@+id/editText"
+                app:layout_constraintBottom_toTopOf="@+id/or"/>
 
             <TextView
                 android:id="@+id/or"
@@ -56,11 +59,12 @@
                 android:textSize="18sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/useDeckString"/>
+                app:layout_constraintTop_toBottomOf="@+id/useDeckString"
+                app:layout_constraintBottom_toTopOf="@+id/createNewDeck"/>
 
             <Button
                 android:id="@+id/createNewDeck"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView"
                 android:backgroundTint="@color/colorPrimary"
