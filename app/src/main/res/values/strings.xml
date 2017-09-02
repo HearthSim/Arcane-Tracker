@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <resources>
+    <string name="_default">Default</string>
     <string name="app_name">Arcane Tracker</string>
     <string name="appVersion">App version</string>
     <string name="arcane_tracker_running">Arcane tracker is running</string>
@@ -17,16 +19,16 @@
     <string name="cannot_find_deck">Could not find last used deck</string>
     <string name="cannot_get_latest_cards">Cannot get latest cards information</string>
     <string name="cannot_launch">Cannot launch Hearthstone. Is it installed ?</string>
-    <string name="cannotLinkTrackobot">Cannot link trackobot account :(</string>
     <string name="cannot_locate_heathstone_install">Cannot locate Hearthstone install directory</string>
+    <string name="cannotLinkTrackobot">Cannot link trackobot account :(</string>
     <string name="card">Card [%s]</string>
     <string name="cardsLanguage">Cards Language</string>
     <string name="changeDeck">Change active deck</string>
-    <string name="changelog_213" translatable="false">Support for deckstrings. You can now paste decks copied from the game. Just click \"new deck\" after copying your deck.\nMark HSReplay.net uploads as Arena when needed\nYou can now edit the win/loss counter.</string>
-    <string name="changelog_214" translatable="false">Fixed a bug that prevented the tracker to detect new arena runs if your hero was golden.\nIncreased the time we wait for logs to complete at the end of a game. This should fix some instances where the logs are not uploaded to hsreplay.net.\nImproved french translations.</string>
-    <string name="changelog_217" translatable="false">Added support for the Frozen Throne extension.</string>
-    <string name="changelog_219" translatable="false">Fixed a crash at startup for devices on kitkat and below.</string>
-    <string name="changelog_220" translatable="false">Fixed a crash when clicking \'new deck\'\nImproved the HSReplay.net settings.</string>
+    <string name="changelog_213">Support for deckstrings. You can now paste decks copied from the game. Just click \"new deck\" after copying your deck.\nMark HSReplay.net uploads as Arena when needed\nYou can now edit the win/loss counter.</string>
+    <string name="changelog_214">Fixed a bug that prevented the tracker to detect new arena runs if your hero was golden.\nIncreased the time we wait for logs to complete at the end of a game. This should fix some instances where the logs are not uploaded to hsreplay.net.\nImproved french translations.</string>
+    <string name="changelog_217">Added support for the Frozen Throne extension.</string>
+    <string name="changelog_219">Fixed a crash at startup for devices on kitkat and below.</string>
+    <string name="changelog_220">Fixed a crash when clicking \'new deck\'\nImproved the HSReplay.net settings.</string>
     <string name="clazz">Class</string>
     <string name="clickOpponent">Click here to see your opponent\'s deck.</string>
     <string name="clickPlayer">Click here to see your deck.</string>
@@ -43,16 +45,15 @@
     <string name="deck">Deck</string>
     <string name="deckName">Deck name:</string>
     <string name="decribeYourProblem">Please describe your problem here</string>
-    <string name="_default">Default</string>
+    <string name="delete">delete</string>
     <string name="deleteConfirm">Are you sure you want to delete this deck ?</string>
     <string name="deleteDeck">Delete deck</string>
-    <string name="delete">delete</string>
     <string name="diedTurn">Died turn: %d</string>
     <string name="dinosize">Dinosize Arcane Tracker !!! - %s</string>
     <string name="dinosize_purchased">Dinosize in progress… 🥚</string>
     <string name="donate">Donate</string>
-    <string name="donateExplanation2">May the light be with you !</string>
     <string name="donateExplanation">Arcane Tracker is free and without ads. It’s made by only one person (me) in his spare time (nights). If you like the app, please consider donating through the buttons below, it’ll allow me to spend more time coding new features :-).</string>
+    <string name="donateExplanation2">May the light be with you !</string>
     <string name="done">Done</string>
     <string name="drawerSize">Drawer size</string>
     <string name="drawnTurn">Drawn turn: %d</string>
@@ -66,9 +67,9 @@
     <string name="graveyard">Graveyard</string>
     <string name="hand">Hand</string>
     <string name="helpUs">Help Arcane Tracker</string>
-    <string name="historyEmpty">Your history is empty. Games will show up here after you play them.</string>
-    <string name="history">Game history</string>
     <string name="hi_there">Hi There !</string>
+    <string name="history">Game history</string>
+    <string name="historyEmpty">Your history is empty. Games will show up here after you play them.</string>
     <string name="holy_light">Holy Light - %s</string>
     <string name="holy_light_purchased">Thank you for the holy light. 🙏</string>
     <string name="hsReplayClaim">Claim your replays</string>
@@ -78,7 +79,7 @@
     <string name="hsReplayEnable">Enable HSReplay.net</string>
     <string name="hsreplayError">Could not upload to HSReplay.net :-(</string>
     <string name="hsReplayExplanation">Automatically upload your games to https://hsreplay.net</string>
-    <string name="hsReplayExplanationNoUserName"><![CDATA[You have enabled HSReplay.net. Your games are now uploaded to hsreplay.net. You can check them from the \'game history\' menu. By claiming them using the button below, they will also be linked to your hsreplay account.]]></string>
+    <string name="hsReplayExplanationNoUserName">You have enabled HSReplay.net. Your games are now uploaded to hsreplay.net. You can check them from the \'game history\' menu. By claiming them using the button below, they will also be linked to your hsreplay account.</string>
     <string name="hsReplayExplanationWithUserName">You have enabled HSReplay.net game uploads. The games have been claimed by user: \'%s\'.</string>
     <string name="hsReplayLinkedTo">Linked to HSReplay.net account %s</string>
     <string name="hsReplayLinkError">Could not link HSReplay.net account</string>
@@ -98,10 +99,10 @@
     <string name="mulliganed">M</string>
     <string name="newDeck">New deck</string>
     <string name="next">next ▶</string>
+    <string name="no">No</string>
     <string name="noBrowserFound">No external browser found to open url. Please install chrome or any other browser.</string>
     <string name="noEmailFound">No email application found</string>
     <string name="noInfoYet">In deck</string>
-    <string name="no">No</string>
     <string name="noScreenCapture">You did not allow screen capture, rank detection will not work. You can change this in the settings later.</string>
     <string name="ok">ok</string>
     <string name="oops_permission">Oops, it appears you are missing some permissions</string>
@@ -112,17 +113,17 @@
     <string name="overlayOpacity">Overlay opacity</string>
     <string name="password">Password:</string>
     <string name="permissions">Arcane Tracker needs storage and overlay permissions in order to monitor the game and display its overlay.</string>
+    <string name="play">Play !</string>
     <string name="played">Played</string>
     <string name="playedTurn">Played Turn: %d</string>
-    <string name="play">Play !</string>
-    <string name="pleaseEnablePermissions">Please enable permissions</string>
     <string name="please_enter_a_name">Please enter a name</string>
-    <string name="pleaseRestart">Please restart Arcane Tracker to take the modifications into account.</string>
     <string name="please_stop_hearthstone">One last thing.</string>
+    <string name="pleaseEnablePermissions">Please enable permissions</string>
+    <string name="pleaseRestart">Please restart Arcane Tracker to take the modifications into account.</string>
     <string name="possibleSecrets">Possible secrets:</string>
     <string name="purchase_failed">Something went wrong :-(</string>
-    <string name="quitArcaneTracker">Quit arcane tracker</string>
     <string name="quit">Quit</string>
+    <string name="quitArcaneTracker">Quit arcane tracker</string>
     <string name="race_beast">Beast</string>
     <string name="race_demon">Demon</string>
     <string name="race_dragon">Dragon</string>
@@ -130,12 +131,12 @@
     <string name="race_murloc">Murloc</string>
     <string name="race_pirate">Pirate</string>
     <string name="race_totem">Totem</string>
-    <string name="renameDeck">Rename deck</string>
     <string name="rename">rename</string>
+    <string name="renameDeck">Rename deck</string>
+    <string name="reset">reset</string>
     <string name="resetCache">Reset Cache</string>
     <string name="resetConfirm">Are you sure you want to reset the counter ?</string>
     <string name="resetCounter">Reset Win/Loss counter</string>
-    <string name="reset">reset</string>
     <string name="retrievePassword">If you don\'t know your password, check https://github.com/HearthSim/arcane_tracker/issues/2 for how to retrieve it</string>
     <string name="screenCaptureExplanation">You need to enable screen capture for rank detection to work.</string>
     <string name="screenCaptureTitle">Enable Screen Capture</string>
