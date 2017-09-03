@@ -375,6 +375,10 @@ public class GameLogic {
         }
     }
 
+    public void removeListener(Listener listener) {
+        mListenerList.remove(listener);
+    }
+
     public interface Listener {
         /**
          * when gameStarted is called, game.player and game.opponent are set

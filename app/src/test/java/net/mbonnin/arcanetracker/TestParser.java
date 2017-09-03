@@ -67,6 +67,7 @@ public class TestParser {
         while ((line = br.readLine()) != null) {
             powerParser.onLine(line);
         }
+        GameLogic.get().removeListener(listener);
     }
 
     private Game runParser(String resource) throws IOException {
