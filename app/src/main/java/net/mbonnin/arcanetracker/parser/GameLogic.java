@@ -135,10 +135,10 @@ public class GameLogic {
         } else if (tag instanceof FullEntityTag) {
             handleFullEntityTag((FullEntityTag) tag);
         } else if (tag instanceof BlockTag) {
+            handleBlockTag((BlockTag) tag);
             for (Tag child : ((BlockTag) tag).children) {
                 handleTagRecursive(child);
             }
-            handleBlockTag((BlockTag) tag);
         } else if (tag instanceof ShowEntityTag) {
             handleShowEntityTag((ShowEntityTag) tag);
         }
@@ -150,10 +150,10 @@ public class GameLogic {
         } else if (tag instanceof FullEntityTag) {
             handleFullEntityTag2((FullEntityTag) tag);
         } else if (tag instanceof BlockTag) {
+            handleBlockTag2((BlockTag) tag);
             for (Tag child : ((BlockTag) tag).children) {
                 handleTagRecursive2(child);
             }
-            handleBlockTag2((BlockTag) tag);
         } else if (tag instanceof ShowEntityTag) {
             handleShowEntityTag2((ShowEntityTag) tag);
         } else if (tag instanceof MetaDataTag) {
@@ -321,8 +321,6 @@ public class GameLogic {
                 }
             }
         }
-
-        notifyListeners();
     }
 
     private EntityList getSecretEntityList() {
@@ -662,8 +660,6 @@ public class GameLogic {
                 }
             }
         }
-
-        notifyListeners();
     }
 
     public static int gameTurnToHumanTurn(int turn) {

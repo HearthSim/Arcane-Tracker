@@ -158,6 +158,34 @@ public class TestParser {
     }
 
     @Test
+    public void testMirrorEntity() throws Exception {
+
+
+        runParser("/MightyElf.log", new GameLogic.Listener() {
+            Game mGame;
+
+            @Override
+            public void gameStarted(Game game) {
+                mGame = game;
+            }
+
+            @Override
+            public void gameOver() {
+
+            }
+
+            @Override
+            public void somethingChanged() {
+                Entity kabalCrystalRunner = mGame.findEntitySafe("84");
+                if (Entity.ZONE_PLAY.equals(kabalCrystalRunner.tags.get(Entity.KEY_ZONE))) {
+                    Entity iceBarrier = mGame.findEntitySafe("41");
+                    Assert.assertTrue(iceBarrier.extra.otherPlayerPlayedMinion);
+                }
+            }
+        });
+    }
+
+    @Test
     public void testInterrupted() throws Exception {
         InterruptedListener listener = new InterruptedListener();
         runParser("/interrupted.log", listener);
