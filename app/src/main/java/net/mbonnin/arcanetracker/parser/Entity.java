@@ -47,6 +47,7 @@ public class Entity {
     public static final String RARITY_EPIC = "EPIC";
     public static final String RARITY_LEGENDARY = "LEGENDARY";
     public static final String CARDTYPE_PLAYER = "PLAYER";
+    public static final String ZONE_SETASIDE = "SETASIDE";
 
     public String EntityID;
     public String CardID; // might be null if the entity is not revealed yet

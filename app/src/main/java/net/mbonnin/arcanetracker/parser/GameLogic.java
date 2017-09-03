@@ -606,6 +606,10 @@ public class GameLogic {
                 case Card.WEASEL_TUNNELER:
                     guessedId = Card.WEASEL_TUNNELER;
                     break;
+                case Card.GRIMESTREET_ENFORCER:
+                    guessedId = Card.SMUGGLING;
+                    entity.tags.put(Entity.KEY_CARDTYPE, Entity.CARDTYPE_ENCHANTMENT); // so that it does not appear in the opponent hand
+                    break;
             }
         }
         if (guessedId != null) {

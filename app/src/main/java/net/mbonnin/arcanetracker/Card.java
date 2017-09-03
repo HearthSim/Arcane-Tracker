@@ -151,6 +151,8 @@ public class Card implements Comparable<String> {
     public static final String BONE_BARON = "ICC_065";
     public static final String SKELETON = "ICC_026t";
     public static final String WEASEL_TUNNELER = "CFM_095";
+    public static final String GRIMESTREET_ENFORCER = "CFM_639";
+    public static final String SMUGGLING = "CFM_639e";
 
 
     public String name;

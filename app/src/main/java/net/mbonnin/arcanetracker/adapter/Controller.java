@@ -298,6 +298,7 @@ public class Controller implements GameLogic.Listener {
 
         // trying a definition that's a bit different from the player definition here
         EntityList allEntities = mGame.getEntityList(e -> mOpponentId.equals(e.tags.get(Entity.KEY_CONTROLLER))
+                && !Entity.ZONE_SETASIDE.equals(e.tags.get(Entity.KEY_ZONE))
                 && !Entity.CARDTYPE_ENCHANTMENT.equals(e.tags.get(Entity.KEY_CARDTYPE))
                 && !Entity.CARDTYPE_HERO.equals(e.tags.get(Entity.KEY_CARDTYPE))
                 && !Entity.CARDTYPE_HERO_POWER.equals(e.tags.get(Entity.KEY_CARDTYPE))
@@ -322,6 +323,7 @@ public class Controller implements GameLogic.Listener {
          * Add all the gifts
          * XXX it's not enough to filter on !TextUtils.isEmpty(createdBy)
          * because then we get all enchantments
+         * if a gift is in the graveyard, it won't be shown but I guess that's ok
          */
         entityList.addAll(mGame.getEntityList(entity -> {
             return Entity.ZONE_DECK.equals(entity.tags.get(Entity.KEY_ZONE))
