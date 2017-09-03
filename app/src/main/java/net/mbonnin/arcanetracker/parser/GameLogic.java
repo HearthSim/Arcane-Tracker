@@ -49,7 +49,26 @@ public class GameLogic {
 
         handleTagRecursive2(tag);
 
+        guessIds(tag);
+
         notifyListeners();
+    }
+
+    private void guessIds(Tag tag) {
+        ArrayList<BlockTag> stack = new ArrayList<>();
+
+        guessIdsRecursive(stack, tag);
+    }
+
+    private void guessIdsRecursive(ArrayList<BlockTag> stack, Tag tag) {
+        if (tag instanceof FullEntityTag) {
+            tryToGuessCardIdFromBlock(stack, (FullEntityTag) tag);
+        } else if (tag instanceof BlockTag) {
+            stack.add((BlockTag) tag);
+            for (Tag child : ((BlockTag) tag).children) {
+                guessIdsRecursive(stack, child);
+            }
+        }
     }
 
     private void handleBlockTag(BlockTag tag) {
@@ -79,7 +98,7 @@ public class GameLogic {
             EntityList secretEntityList = getSecretEntityList();
             for (Entity secretEntity : secretEntityList) {
                 if (!Utils.equalsNullSafe(secretEntity.tags.get(Entity.KEY_CONTROLLER), playedEntity.tags.get(Entity.KEY_CONTROLLER))
-                && !Utils.isEmpty(playedEntity.CardID)) {
+                        && !Utils.isEmpty(playedEntity.CardID)) {
                     /*
                      * it can happen that we don't know the id of the played entity, for an example if the player has a secret and its opponent plays one
                      * it should be ok to ignore those since these are opponent plays
@@ -119,12 +138,6 @@ public class GameLogic {
                 }
             }
 
-        }
-
-        for (Tag child : tag.children) {
-            if (child instanceof FullEntityTag) {
-                tryToGuessCardIdFromBlock(tag, (FullEntityTag) child);
-            }
         }
     }
 
@@ -481,7 +494,13 @@ public class GameLogic {
         tagChanged2(mGame.findEntitySafe(tag.ID), tag.tag, tag.value);
     }
 
-    private void tryToGuessCardIdFromBlock(BlockTag blockTag, FullEntityTag fullEntityTag) {
+    private void tryToGuessCardIdFromBlock(ArrayList<BlockTag> stack, FullEntityTag fullEntityTag) {
+        if (stack.isEmpty()) {
+            return;
+        }
+
+        BlockTag blockTag = stack.get(stack.size() - 1);
+
         Entity blockEntity = mGame.findEntitySafe(blockTag.Entity);
         Entity entity = mGame.findEntitySafe(fullEntityTag.ID);
 
@@ -600,7 +619,12 @@ public class GameLogic {
                     guessedId = Card.ARCANE_MISSILE;
                     break;
                 case Card.FROZEN_CLONE:
-                    guessedId = mGame.lastPlayedCardId;
+                    for(BlockTag parent: stack) {
+                        if (BlockTag.TYPE_PLAY.equals(parent.BlockType)) {
+                            guessedId = mGame.findEntitySafe(parent.Entity).CardID;
+                            break;
+                        }
+                    }
                     break;
                 case Card.BONE_BARON:
                     guessedId = Card.SKELETON;
@@ -614,7 +638,7 @@ public class GameLogic {
                     break;
             }
         }
-        if (guessedId != null) {
+        if (!Utils.isEmpty(guessedId)) {
             entity.setCardId(guessedId);
         }
 

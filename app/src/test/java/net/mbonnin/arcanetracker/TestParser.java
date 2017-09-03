@@ -27,8 +27,7 @@ import timber.log.Timber;
  */
 public class TestParser {
 
-    private static class TestListener implements GameLogic.Listener {
-
+    static class SimpleListener implements GameLogic.Listener {
         public Game game;
 
         @Override
@@ -71,7 +70,7 @@ public class TestParser {
     }
 
     private Game runParser(String resource) throws IOException {
-        TestListener listener = new TestListener();
+        SimpleListener listener = new SimpleListener();
 
         runParser(resource, listener);
         return listener.game;
@@ -97,89 +96,54 @@ public class TestParser {
 
     }
 
-    static class SecretsListener implements GameLogic.Listener {
-
-        public Game mGame;
-        private int lastTurn;
-
-        @Override
-        public void gameStarted(Game game) {
-            mGame = game;
-        }
-
-        @Override
-        public void gameOver() {
-
-        }
-
-        @Override
-        public void somethingChanged() {
-            int turn = 0;
-
-            try {
-                turn = Integer.parseInt(mGame.gameEntity.tags.get(Entity.KEY_TURN));
-            } catch(Exception e) {
-                return;
-            }
-
-            if (turn != lastTurn && turn == 19) {
-                Entity secretEntity = mGame.findEntityUnsafe("84");
-                Assert.assertFalse(secretEntity.extra.competitiveSpiritTriggerConditionHappened);
-                Assert.assertTrue(secretEntity.extra.otherPlayerHeroPowered);
-                Assert.assertTrue(secretEntity.extra.otherPlayerPlayedMinion);
-                Assert.assertTrue(secretEntity.extra.selfHeroDamaged);
-                Assert.assertTrue(secretEntity.extra.selfHeroAttacked);
-            }
-
-        }
-    }
     @Test
     public void testSecrets() throws Exception {
 
-        runParser("/Laugeolesen.log", new SecretsListener());
-    }
+        runParser("/Laugeolesen.log", new SimpleListener() {
+            @Override
+            public void somethingChanged() {
+                int turn = 0;
 
-    static class InterruptedListener implements  GameLogic.Listener {
-        public int gameOverCount;
+                try {
+                    turn = Integer.parseInt(game.gameEntity.tags.get(Entity.KEY_TURN));
+                } catch(Exception e) {
+                    return;
+                }
 
-        @Override
-        public void gameStarted(Game game) {
-
-        }
-
-        @Override
-        public void gameOver() {
-            gameOverCount++;
-        }
-
-        @Override
-        public void somethingChanged() {
-
-        }
+                if (turn == 19) {
+                    Entity secretEntity = game.findEntityUnsafe("84");
+                    Assert.assertFalse(secretEntity.extra.competitiveSpiritTriggerConditionHappened);
+                    Assert.assertTrue(secretEntity.extra.otherPlayerHeroPowered);
+                    Assert.assertTrue(secretEntity.extra.otherPlayerPlayedMinion);
+                    Assert.assertTrue(secretEntity.extra.selfHeroDamaged);
+                    Assert.assertTrue(secretEntity.extra.selfHeroAttacked);
+                }
+            }
+        });
     }
 
     @Test
     public void testMirrorEntity() throws Exception {
-
-
-        runParser("/MightyElf.log", new GameLogic.Listener() {
-            Game mGame;
-
-            @Override
-            public void gameStarted(Game game) {
-                mGame = game;
-            }
-
-            @Override
-            public void gameOver() {
-
-            }
-
+        runParser("/MightyElf.log", new SimpleListener() {
             @Override
             public void somethingChanged() {
-                Entity kabalCrystalRunner = mGame.findEntitySafe("84");
+                Entity kabalCrystalRunner = game.findEntitySafe("84");
                 if (Entity.ZONE_PLAY.equals(kabalCrystalRunner.tags.get(Entity.KEY_ZONE))) {
-                    Entity iceBarrier = mGame.findEntitySafe("41");
+                    Entity iceBarrier = game.findEntitySafe("41");
+                    Assert.assertTrue(iceBarrier.extra.otherPlayerPlayedMinion);
+                }
+            }
+        });
+    }
+
+    @Test
+    public void testFrozenClone() throws Exception {
+        runParser("/MightyElf.log", new SimpleListener() {
+            @Override
+            public void somethingChanged() {
+                Entity kabalCrystalRunner = game.findEntitySafe("84");
+                if (Entity.ZONE_PLAY.equals(kabalCrystalRunner.tags.get(Entity.KEY_ZONE))) {
+                    Entity iceBarrier = game.findEntitySafe("41");
                     Assert.assertTrue(iceBarrier.extra.otherPlayerPlayedMinion);
                 }
             }
@@ -188,6 +152,25 @@ public class TestParser {
 
     @Test
     public void testInterrupted() throws Exception {
+        class InterruptedListener implements  GameLogic.Listener {
+            public int gameOverCount;
+
+            @Override
+            public void gameStarted(Game game) {
+
+            }
+
+            @Override
+            public void gameOver() {
+                gameOverCount++;
+            }
+
+            @Override
+            public void somethingChanged() {
+
+            }
+        }
+
         InterruptedListener listener = new InterruptedListener();
         runParser("/interrupted.log", listener);
 
