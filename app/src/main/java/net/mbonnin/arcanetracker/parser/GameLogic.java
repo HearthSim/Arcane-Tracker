@@ -560,9 +560,6 @@ public class GameLogic {
                 case Card.RAZORPETAL_LASHER:
                     guessedId = Card.RAZORPETAL;
                     break;
-                case Card.BURGLY_BULLY:
-                    guessedId = Card.ID_COIN;
-                    break;
                 case Card.MUKLA_TYRANT:
                 case Card.KING_MUKLA:
                     guessedId = Card.BANANA;
@@ -611,6 +608,9 @@ public class GameLogic {
                     break;
                 case Card.DEADLY_FORK:
                     guessedId = Card.SHARP_FORK;
+                    break;
+                case Card.BURGLY_BULLY:
+                    guessedId = Card.ID_COIN;
                     break;
                 case Card.IGNEOUS_ELEMENTAL:
                     guessedId = Card.FLAME_ELEMENTAL;
