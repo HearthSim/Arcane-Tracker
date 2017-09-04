@@ -151,6 +151,19 @@ public class TestParser {
     }
 
     @Test
+    public void testExploreUngoro() throws Exception {
+        runParser("/exploreUngoro.log", new SimpleListener() {
+            @Override
+            public void somethingChanged() {
+                Entity e = game.findEntityUnsafe("99");
+                if (e != null) {
+                    Assert.assertTrue(e.CardID.equals(Card.CHOOSE_YOUR_PATH));
+                }
+            }
+        });
+    }
+
+    @Test
     public void testInterrupted() throws Exception {
         class InterruptedListener implements  GameLogic.Listener {
             public int gameOverCount;

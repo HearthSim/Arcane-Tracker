@@ -594,6 +594,9 @@ public class GameLogic {
                 case Card.GHASTLY_CONJURER:
                     guessedId = Card.MIRROR_IMAGE;
                     break;
+                case Card.EXPLORE_UNGORO:
+                    guessedId = Card.CHOOSE_YOUR_PATH;
+                    break;
             }
         } else if (TYPE_TRIGGER.equals(blockTag.BlockType)) {
             switch (blockEntity.CardID) {
