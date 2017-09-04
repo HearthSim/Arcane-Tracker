@@ -124,7 +124,7 @@ public class ViewManager {
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams(
                 params.w,
                 params.h,
-                WindowManager.LayoutParams.TYPE_PHONE,
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY : WindowManager.LayoutParams.TYPE_PHONE,
                 flags,
                 PixelFormat.TRANSLUCENT);
         layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
