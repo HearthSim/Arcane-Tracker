@@ -113,7 +113,7 @@ public class TestParser {
             }
         });
     }
-    
+
     @Test
     public void testMirrorEntity() throws Exception {
         runParser("/MightyElf.log", new SimpleListener() {

@@ -601,6 +601,9 @@ public class GameLogic {
                 case Card.EXPLORE_UNGORO:
                     guessedId = Card.CHOOSE_YOUR_PATH;
                     break;
+                case Card.ELISE_THE_TRAILBLAZER:
+                    guessedId = Card.UNGORO_PACK;
+                    break;
             }
         } else if (TYPE_TRIGGER.equals(blockTag.BlockType)) {
             switch (blockEntity.CardID) {

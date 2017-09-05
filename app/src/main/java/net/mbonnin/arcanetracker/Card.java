@@ -71,6 +71,8 @@ public class Card implements Comparable<String> {
     public static final String ANCIENT_CURSE = "LOE_110t";
     public static final String EXCAVATED_EVIL = "LOE_111";
     public static final String ELISE = "LOE_079";
+    public static final String ELISE_THE_TRAILBLAZER = "UNG_851";
+    public static final String UNGORO_PACK = "UNG_851t1";
     public static final String MAP_TO_THE_GOLDEN_MONKEY = "LOE_019t";
     public static final String GOLDEN_MONKEY = "LOE_019t2";
     public static final String DOOMCALLER = "OG_255";
