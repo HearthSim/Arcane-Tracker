@@ -5,12 +5,10 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.widget.Toast;
-
-import java.io.File;
 
 /**
  * Created by martin on 10/14/16.
@@ -29,7 +27,12 @@ public class MainService extends Service {
         Context context = ArcaneTrackerApplication.getContext();
         Intent serviceIntent = new Intent();
         serviceIntent.setClass(context, MainService.class);
-        context.startService(serviceIntent);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(serviceIntent);
+        } else {
+            context.startService(serviceIntent);
+        }
     }
 
     @Nullable
@@ -50,7 +53,7 @@ public class MainService extends Service {
         Intent intent2 = new Intent(ArcaneTrackerApplication.getContext(), SettingsActivity.class);
         PendingIntent settingsPendingIntent = PendingIntent.getActivity(this, 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Notification notification = new NotificationCompat.Builder(this)
+        Notification notification = new NotificationCompat.Builder(this, ArcaneTrackerApplication.NOTIFICATION_CHANNEL_ID)
                 .setContentText(getString(R.string.arcane_tracker_running))
                 .addAction(R.drawable.ic_close_black_24dp, "QUIT", stopPendingIntent)
                 .addAction(R.drawable.ic_settings_black_24dp, "Settings", settingsPendingIntent)

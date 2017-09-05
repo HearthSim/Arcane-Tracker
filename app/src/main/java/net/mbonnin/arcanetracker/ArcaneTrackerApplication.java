@@ -1,9 +1,12 @@
 package net.mbonnin.arcanetracker;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Handler;
 import android.support.multidex.MultiDexApplication;
 import android.util.DisplayMetrics;
@@ -30,6 +33,7 @@ import timber.log.Timber;
  */
 
 public class ArcaneTrackerApplication extends MultiDexApplication {
+    public static final String NOTIFICATION_CHANNEL_ID = "channel_id";
     private static Context sContext;
 
     @Override
@@ -40,7 +44,7 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
             @Override
             public void startActivity(Intent intent) {
                 if ((intent.getFlags() & Intent.FLAG_ACTIVITY_NEW_TASK) == 0) {
-                    /**
+                    /*
                      * XXX: this is a hack to be able to click textview links
                      */
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -48,6 +52,17 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
                 super.startActivity(intent);
             }
         };
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager mNotificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            CharSequence name = getString(R.string.app_name);
+            NotificationChannel mChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, name, NotificationManager.IMPORTANCE_LOW);
+            mChannel.enableLights(false);
+            mChannel.enableVibration(false);
+            mChannel.setShowBadge(false);
+            mNotificationManager.createNotificationChannel(mChannel);
+        }
 
         Timber.plant(FileTree.get());
 
