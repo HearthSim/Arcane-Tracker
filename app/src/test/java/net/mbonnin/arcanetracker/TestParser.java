@@ -102,15 +102,7 @@ public class TestParser {
         runParser("/Laugeolesen.log", new SimpleListener() {
             @Override
             public void somethingChanged() {
-                int turn = 0;
-
-                try {
-                    turn = Integer.parseInt(game.gameEntity.tags.get(Entity.KEY_TURN));
-                } catch(Exception e) {
-                    return;
-                }
-
-                if (turn == 19) {
+                if ("19".equals(game.gameEntity.tags.get(Entity.KEY_TURN))) {
                     Entity secretEntity = game.findEntityUnsafe("84");
                     Assert.assertFalse(secretEntity.extra.competitiveSpiritTriggerConditionHappened);
                     Assert.assertTrue(secretEntity.extra.otherPlayerHeroPowered);
@@ -121,7 +113,7 @@ public class TestParser {
             }
         });
     }
-
+    
     @Test
     public void testMirrorEntity() throws Exception {
         runParser("/MightyElf.log", new SimpleListener() {

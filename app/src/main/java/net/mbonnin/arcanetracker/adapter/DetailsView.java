@@ -55,6 +55,7 @@ public class DetailsView extends LinearLayout {
                 builder.append("\n");
             }
 
+
             String cardType = entity.tags.get(Entity.KEY_CARDTYPE);
             if (entity.extra.drawTurn != -1) {
                 builder.append(getContext().getString(R.string.drawnTurn, GameLogic.gameTurnToHumanTurn(entity.extra.drawTurn)));
@@ -149,11 +150,11 @@ public class DetailsView extends LinearLayout {
                 addSecret(list, Card.MIRROR_ENTITY, entity.extra.otherPlayerPlayedMinion);
                 addSecret(list, Card.MANA_BIND, entity.extra.otherPlayerCastSpell);
                 addSecret(list, Card.COUNTERSPELL, entity.extra.otherPlayerCastSpell);
-                addSecret(list, Card.EFFIGY, entity.extra.otherPlayerPlayedMinion);
+                addSecret(list, Card.EFFIGY, entity.extra.selfPlayerMinionDied);
                 addSecret(list, Card.ICE_BARRIER, entity.extra.selfHeroAttacked);
                 addSecret(list, Card.POTION_OF_POLYMORPH, entity.extra.otherPlayerPlayedMinion);
                 addSecret(list, Card.DUPLICATE, entity.extra.selfPlayerMinionDied);
-                addSecret(list, Card.VAPORIZE, entity.extra.selfHeroAttacked);
+                addSecret(list, Card.VAPORIZE, entity.extra.selfHeroAttackedByMinion);
                 addSecret(list, Card.ICE_BLOCK, false);
                 addSecret(list, Card.SPELL_BENDER, entity.extra.selfMinionTargetedBySpell);
                 addSecret(list, Card.FROZEN_CLONE, entity.extra.otherPlayerPlayedMinion);

@@ -134,6 +134,10 @@ public class GameLogic {
                         e2.extra.selfMinionWasAttacked = true;
                     } else if (Card.TYPE_HERO.equals(targetEntity.card.type)) {
                         e2.extra.selfHeroAttacked = true;
+                        Entity attackerEntity = mGame.findEntitySafe(tag.Entity);
+                        if (Entity.CARDTYPE_MINION.equals(attackerEntity.tags.get(Entity.CARDTYPE_MINION))) {
+                            e2.extra.selfHeroAttackedByMinion = true;
+                        }
                     }
                 }
             }

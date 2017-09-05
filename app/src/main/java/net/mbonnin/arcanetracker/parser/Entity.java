@@ -99,6 +99,7 @@ public class Entity {
         public boolean selfMinionTargetedBySpell;
         public boolean competitiveSpiritTriggerConditionHappened;
         public boolean otherPlayerPlayedMinionWithThreeOnBoardAlready;
+        public boolean selfHeroAttackedByMinion;
     }
 
     public void dump() {
@@ -129,6 +130,7 @@ public class Entity {
         clone.extra.selfMinionTargetedBySpell = extra.selfMinionTargetedBySpell;
         clone.extra.competitiveSpiritTriggerConditionHappened = extra.competitiveSpiritTriggerConditionHappened;
         clone.extra.otherPlayerPlayedMinionWithThreeOnBoardAlready = extra.otherPlayerPlayedMinionWithThreeOnBoardAlready;
+        clone.extra.selfHeroAttackedByMinion = extra.selfHeroAttackedByMinion;
         clone.extra.hide = extra.hide;
         return clone;
     }
