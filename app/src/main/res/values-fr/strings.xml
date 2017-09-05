@@ -64,7 +64,7 @@
     <string name="helpUs">Contribuez au developement d\'Arcane Tracker</string>
     <string name="hi_there">Salut !</string>
     <string name="history">Historique des parties</string>
-    <string name="historyEmpty">\"Vous n\'avez pas encore de parties. \"</string>
+    <string name="historyEmpty">Vous n\'avez pas encore de parties.</string>
     <string name="holy_light">Lumière sacrée - %s</string>
     <string name="holy_light_purchased">La lumière nous honore. 🙏</string>
     <string name="hsReplayClaim">Liez vos replays</string>
@@ -106,7 +106,7 @@
     <string name="or">ou</string>
     <string name="overlay_explanation">Pour autoriser Arcane Tracker à se superposer a Hearthstone, allez dans les réglages de votre appareil.</string>
     <string name="overlayOpacity">Opacité de l\'overlay</string>
-    <string name="password">\"Mot de passe: \"</string>
+    <string name="password">Mot de passe: </string>
     <string name="permissions">Arcane Tracker a besoin des permissions de stockage et overlay pour fonctionner correctement.</string>
     <string name="play">Jouer !</string>
     <string name="played">Jouées</string>
@@ -132,10 +132,10 @@
     <string name="resetCache">Effacer le cache</string>
     <string name="resetConfirm">Etes vous sûr de vouloir remettre à zéro le compteur ?</string>
     <string name="resetCounter">Remettre à zéro le compteur de victoires</string>
-    <string name="retrievePassword">\"Si vous ne connaissez pas votre mot de passe, vous pouvez le récupérer en suivant la procédure décrite ici: https://github.com/HearthSim/arcane_tracker/issues/2 \"</string>
+    <string name="retrievePassword">Si vous ne connaissez pas votre mot de passe, vous pouvez le récupérer en suivant la procédure décrite ici: https://github.com/HearthSim/arcane_tracker/issues/2</string>
     <string name="screenCaptureExplanation">L\'enregistrement d\'écran est nécessaire pour la détection de votre rang</string>
     <string name="screenCaptureTitle">Autoriser l\'enregistrement de l\'écran</string>
-    <string name="search">\"Rechercher: \"</string>
+    <string name="search">Rechercher:</string>
     <string name="secret">Secret</string>
     <string name="secrets">Secrets</string>
     <string name="secretText">Ceci est caché jusqu\'à ce qu\'une action secrète se produise ... Attention!</string>
@@ -159,7 +159,7 @@
     <string name="unknown_cards">%d cartes inconnues</string>
     <string name="unlinkAccount">Déconnecter le compte</string>
     <string name="useClipboardDeck">Vous pouvez copier/coller une deckstring ci-dessous pour créer un deck automatiquement. Si vous avez déja une deckstring dans votre presse papier, vous n\'avez qu\'à cliquer le bouton.</string>
-    <string name="username">\"Identifiant: \"</string>
+    <string name="username">Identifiant:</string>
     <string name="waitingForCards">Téléchargement des cartes</string>
     <string name="welcome">Bienvenue sur Arcane Tracker !</string>
     <string name="whatsNew">Nouveautés</string>
