@@ -646,6 +646,12 @@ public class GameLogic {
                     guessedId = Card.SMUGGLING;
                     entity.tags.put(Entity.KEY_CARDTYPE, Entity.CARDTYPE_ENCHANTMENT); // so that it does not appear in the opponent hand
                     break;
+                case Card.RAPTOR_HATCHLING:
+                    guessedId = Card.RAPTOR_PATRIARCH;
+                    break;
+                case Card.DIREHORN_HATCHLING:
+                    guessedId = Card.DIREHORN_MATRIARCH;
+                    break;
             }
         }
         if (!Utils.isEmpty(guessedId)) {

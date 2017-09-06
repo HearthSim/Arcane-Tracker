@@ -157,6 +157,10 @@ public class Card implements Comparable<String> {
     public static final String SMUGGLING = "CFM_639e";
     public static final String EXPLORE_UNGORO = "UNG_922";
     public static final String CHOOSE_YOUR_PATH = "UNG_922t1";
+    public static final String RAPTOR_HATCHLING = "UNG_914";
+    public static final String RAPTOR_PATRIARCH = "UNG_914t1";
+    public static final String DIREHORN_HATCHLING = "UNG_957";
+    public static final String DIREHORN_MATRIARCH = "UNG_957t1";
 
 
     public String name;
