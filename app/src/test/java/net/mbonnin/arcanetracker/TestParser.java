@@ -157,27 +157,34 @@ public class TestParser {
 
     @Test
     public void testInterrupted() throws Exception {
-        class InterruptedListener implements  GameLogic.Listener {
+        class InterruptedListener extends SimpleListener{
             public int gameOverCount;
-
-            @Override
-            public void gameStarted(Game game) {
-
-            }
 
             @Override
             public void gameOver() {
                 gameOverCount++;
             }
-
-            @Override
-            public void somethingChanged() {
-
-            }
         }
 
         InterruptedListener listener = new InterruptedListener();
         runParser("/interrupted.log", listener);
+
+        Assert.assertTrue(listener.gameOverCount == 1);
+    }
+
+    @Test
+    public void testEndedInAttack() throws Exception {
+        class InterruptedListener extends SimpleListener{
+            public int gameOverCount;
+
+            @Override
+            public void gameOver() {
+                gameOverCount++;
+            }
+        }
+
+        InterruptedListener listener = new InterruptedListener();
+        runParser("/endedInAttack.log", listener);
 
         Assert.assertTrue(listener.gameOverCount == 1);
     }

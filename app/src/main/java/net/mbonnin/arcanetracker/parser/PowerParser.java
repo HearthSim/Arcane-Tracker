@@ -95,9 +95,25 @@ public class PowerParser implements LogReader.LineConsumer {
             Matcher m;
             Tag newTag = null;
 
+            if ("TAG_CHANGE Entity=GameEntity tag=STEP value=FINAL_GAMEOVER".equals(line)) {
+                /*
+                 *  it could happen that the game is stopped in the middle of a block
+                 */
+                if (mBlockTagStack.size() > 0) {
+                    Timber.d("Ended in the middle of a block");
+                    if (mCurrentTag != null) {
+                        mBlockTagStack.get(mBlockTagStack.size() - 1).children.add(mCurrentTag);
+                    }
+                    mTagConsumer.accept(mBlockTagStack.get(0));
+                    mBlockTagStack.clear();
+                    mCurrentTag = null;
+                }
+
+            }
+
             if (("CREATE_GAME".equals(line))) {
                 /*
-                 * reset any previous state
+                 * reset any previous state in case there are 2 CREATE_GAME in a row
                  */
                 mCurrentTag = null;
                 mBlockTagStack.clear();
