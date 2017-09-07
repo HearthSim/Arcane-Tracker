@@ -15,6 +15,7 @@ import android.text.Html;
 import android.text.Layout;
 import android.text.TextPaint;
 import android.text.TextUtils;
+import android.util.LruCache;
 import android.widget.TextView;
 
 import java.io.File;
@@ -22,7 +23,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,7 +34,8 @@ public class CardRenderer {
      */
     private static final float STROKE_RATIO = 0.1f;
     private static CardRenderer sRenderer;
-    HashMap<String, Bitmap> assets;
+    private final LruCache<String, Bitmap> mMemoryCache;
+
     Typeface belwe;
     Typeface franklin;
 
@@ -55,42 +56,37 @@ public class CardRenderer {
     TextView view;
     private int parallelRenders;
 
-    private void initAsync() {
-        String [] list;
-
-        Context context = ArcaneTrackerApplication.getContext();
-
-        assets = new HashMap<>();
-
-        try {
-            String p = "renderer";
-            list = context.getAssets().list(p);
-            if (list.length > 0) {
-                // This is a folder
-                for (String file : list) {
-                    int i = file.lastIndexOf('.');
-                    if (i >= 0) {
-                        String name = file.substring(0, i);
-                        Bitmap b = Utils.getAssetBitmap(p + "/" + file);
-                        assets.put(name, b);
-                    }
-                }
-            } else {
-            }
-        } catch (IOException e) {
-        }
-
-        synchronized (this) {
-            ready = true;
-            this.notifyAll();
-        }
-    }
 
     public CardRenderer() {
         belwe = Typefaces.belwe();
         franklin = Typefaces.franklin();
 
-        new Thread(() -> initAsync()).start();
+        // Get max available VM memory, exceeding this amount will throw an
+        // OutOfMemory exception. Stored in kilobytes as LruCache takes an
+        // int in its constructor.
+        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+
+        final int cacheSize = maxMemory / 2;
+
+        mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
+            @Override
+            protected int sizeOf(String key, Bitmap bitmap) {
+                // The cache size will be measured in kilobytes rather than
+                // number of items.
+                return bitmap.getByteCount() / 1024;
+            }
+        };
+    }
+
+    private synchronized Bitmap getAsset(String name) {
+        Bitmap bitmap = mMemoryCache.get(name);
+        if (bitmap == null) {
+            bitmap = Utils.getAssetBitmap(String.format("renderer/%s.webp", name));
+            if (bitmap != null) {
+                mMemoryCache.put(name, bitmap);
+            }
+        }
+        return bitmap;
     }
 
     private void drawAssetBitmap(Canvas canvas, Bitmap b, int dx, int dy) {
@@ -105,30 +101,19 @@ public class CardRenderer {
         drawAssetIfExists(canvas, name, dx, dy, null);
     }
     private void drawAssetIfExists(Canvas canvas, String name, int dx, int dy, Paint paint) {
-        Bitmap b = assets.get(name);
+        Bitmap b = getAsset(name);
         if (b != null) {
             drawAssetBitmap(canvas, b, dx, dy, paint);
         }
     }
 
     public void renderCard(String id, OutputStream outputStream) {
-        synchronized (this) {
-            while (!ready) {
-                try {
-                    this.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
         Timber.d("start render " + id + " (" + parallelRenders + " parallel)");
         parallelRenders++;
         Bitmap bitmap = Bitmap.createBitmap(TOTAL_WIDTH/2, TOTAL_HEIGHT/2, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         canvas.scale(0.5f, 0.5f);
         Card card = CardDb.getCard(id);
-        Bitmap b;
         int dx, dy;
         String s;
 
@@ -276,7 +261,7 @@ public class CardRenderer {
     }
 
     private void drawRace(Canvas canvas, Card card) {
-        Bitmap b = assets.get("race-banner");
+        Bitmap b = getAsset("race-banner");
 
         if (b == null) {
             return;
@@ -390,7 +375,7 @@ public class CardRenderer {
     private void drawName(Canvas canvas, Card card) {
         Path path = new Path();
         String s = "name-banner-" + card.type.toLowerCase();
-        Bitmap b = assets.get(s);
+        Bitmap b = getAsset(s);
         int x, y;
 
         if (b == null) {
