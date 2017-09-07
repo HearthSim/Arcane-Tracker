@@ -27,6 +27,7 @@ public class GameLogic {
     private ArrayList<Listener> mListenerList = new ArrayList<>();
     private Game mGame;
     private int mCurrentTurn;
+    private boolean mLastTag;
 
     private GameLogic() {
     }
@@ -52,6 +53,15 @@ public class GameLogic {
         guessIds(tag);
 
         notifyListeners();
+
+        if (mLastTag) {
+            for (Listener listener : mListenerList) {
+                listener.gameOver();
+            }
+
+            mGame = null;
+            mLastTag = false;
+        }
     }
 
     private void guessIds(Tag tag) {
@@ -232,11 +242,9 @@ public class GameLogic {
                 if (Entity.STEP_FINAL_GAMEOVER.equals(newValue)) {
                     mGame.victory = Entity.PLAYSTATE_WON.equals(mGame.player.entity.tags.get(Entity.KEY_PLAYSTATE));
 
-                    for (Listener listener : mListenerList) {
-                        listener.gameOver();
-                    }
-
-                    mGame = null;
+                    // do not set mGame = null here, we might be part of a block where other tag handlers
+                    // require access to mGame
+                    mLastTag = true;
                 }
             }
         }
@@ -365,6 +373,8 @@ public class GameLogic {
     }
 
     private void handleCreateGameTag(CreateGameTag tag) {
+        mLastTag = false;
+
         if (mGame != null) {
             Timber.w("CREATE_GAME during an existing one, resuming");
         } else {
