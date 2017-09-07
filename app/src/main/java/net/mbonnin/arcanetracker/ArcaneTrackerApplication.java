@@ -13,6 +13,7 @@ import android.util.DisplayMetrics;
 import android.view.ContextThemeWrapper;
 
 import com.jakewharton.picasso.OkHttp3Downloader;
+import com.squareup.picasso.LruCache;
 import com.squareup.picasso.Picasso;
 
 import net.mbonnin.arcanetracker.hsreplay.HSReplay;
@@ -35,11 +36,14 @@ import timber.log.Timber;
 public class ArcaneTrackerApplication extends MultiDexApplication {
     public static final String NOTIFICATION_CHANNEL_ID = "channel_id";
     private static Context sContext;
+    private static ArcaneTrackerApplication sArcaneTrackerApplication;
+    private LruCache mLruCache;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
+        sArcaneTrackerApplication = this;
         sContext = new ContextThemeWrapper(this, R.style.AppThemeLight) {
             @Override
             public void startActivity(Intent intent) {
@@ -83,7 +87,10 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
 
         Paper.init(this);
 
+        mLruCache = new LruCache(this);
+
         Picasso picasso = new Picasso.Builder(this)
+                .memoryCache(mLruCache)
                 .downloader(new OkHttp3Downloader(new OkHttpClient()))
                 .addRequestHandler(PicassoCardRequestHandler.get())
                 .addRequestHandler(new PicassoBarRequestHandler())
@@ -133,6 +140,13 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+    }
+
+    public LruCache getImageCache() {
+        return mLruCache;
+    }
+    public static ArcaneTrackerApplication get() {
+        return sArcaneTrackerApplication;
     }
 
     public static Context getContext() {

@@ -15,8 +15,9 @@ import android.text.Html;
 import android.text.Layout;
 import android.text.TextPaint;
 import android.text.TextUtils;
-import android.util.LruCache;
 import android.widget.TextView;
+
+import com.squareup.picasso.LruCache;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,15 +35,14 @@ public class CardRenderer {
      */
     private static final float STROKE_RATIO = 0.1f;
     private static CardRenderer sRenderer;
-    private final LruCache<String, Bitmap> mMemoryCache;
 
     Typeface belwe;
     Typeface franklin;
 
     /**
      * should match
-     *          -> 5 |4(point,points)
-     *          -> (5) |4(point,points)
+     * -> 5 |4(point,points)
+     * -> (5) |4(point,points)
      */
     private final Pattern PLURAL_PATTERN = Pattern.compile("\\(?(\\d+)\\)?([^\\|]*)\\|4\\((.+?),(.+?)\\)");
 
@@ -60,30 +60,15 @@ public class CardRenderer {
     public CardRenderer() {
         belwe = Typefaces.belwe();
         franklin = Typefaces.franklin();
-
-        // Get max available VM memory, exceeding this amount will throw an
-        // OutOfMemory exception. Stored in kilobytes as LruCache takes an
-        // int in its constructor.
-        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
-
-        final int cacheSize = maxMemory / 2;
-
-        mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
-            @Override
-            protected int sizeOf(String key, Bitmap bitmap) {
-                // The cache size will be measured in kilobytes rather than
-                // number of items.
-                return bitmap.getByteCount() / 1024;
-            }
-        };
     }
 
     private synchronized Bitmap getAsset(String name) {
-        Bitmap bitmap = mMemoryCache.get(name);
+        LruCache lruCache = ArcaneTrackerApplication.get().getImageCache();
+        Bitmap bitmap = lruCache.get(name);
         if (bitmap == null) {
             bitmap = Utils.getAssetBitmap(String.format("renderer/%s.webp", name));
             if (bitmap != null) {
-                mMemoryCache.put(name, bitmap);
+                lruCache.set(name, bitmap);
             }
         }
         return bitmap;
@@ -92,14 +77,17 @@ public class CardRenderer {
     private void drawAssetBitmap(Canvas canvas, Bitmap b, int dx, int dy) {
         drawAssetBitmap(canvas, b, dx, dy, null);
     }
+
     private void drawAssetBitmap(Canvas canvas, Bitmap b, int dx, int dy, Paint paint) {
-        RectF rect = new RectF(dx, dy, dx +  2 * b.getWidth(), dy + 2 * b.getHeight());
+        RectF rect = new RectF(dx, dy, dx + 2 * b.getWidth(), dy + 2 * b.getHeight());
         canvas.drawBitmap(b, null, rect, paint);
 
     }
+
     private void drawAssetIfExists(Canvas canvas, String name, int dx, int dy) {
         drawAssetIfExists(canvas, name, dx, dy, null);
     }
+
     private void drawAssetIfExists(Canvas canvas, String name, int dx, int dy, Paint paint) {
         Bitmap b = getAsset(name);
         if (b != null) {
@@ -110,7 +98,7 @@ public class CardRenderer {
     public void renderCard(String id, OutputStream outputStream) {
         Timber.d("start render " + id + " (" + parallelRenders + " parallel)");
         parallelRenders++;
-        Bitmap bitmap = Bitmap.createBitmap(TOTAL_WIDTH/2, TOTAL_HEIGHT/2, Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(TOTAL_WIDTH / 2, TOTAL_HEIGHT / 2, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         canvas.scale(0.5f, 0.5f);
         Card card = CardDb.getCard(id);
@@ -185,7 +173,7 @@ public class CardRenderer {
 
         drawBodyText(canvas, card);
 
-        bitmap.compress(Bitmap.CompressFormat.WEBP, 90,  outputStream);
+        bitmap.compress(Bitmap.CompressFormat.WEBP, 90, outputStream);
 
         if (false && Utils.isAppDebuggable()) {
             File debugFile = new File("/sdcard/" + card.id + ".png");
@@ -245,7 +233,7 @@ public class CardRenderer {
         text = builder.toString();
 
         TextPaint textPaint = new TextPaint();
-        textPaint.setColor(Card.TYPE_WEAPON.equals(card.type) ? Color.WHITE: Color.BLACK);
+        textPaint.setColor(Card.TYPE_WEAPON.equals(card.type) ? Color.WHITE : Color.BLACK);
         textPaint.setStyle(Paint.Style.FILL);
         textPaint.setAntiAlias(true);
         textPaint.setTypeface(franklin);
@@ -254,7 +242,7 @@ public class CardRenderer {
         DynamicLayout layout = new DynamicLayout(Html.fromHtml(text), textPaint, 442, Layout.Alignment.ALIGN_CENTER, 1.0f, 0.0f, true);
 
         canvas.save();
-        canvas.translate(TOTAL_WIDTH/2 - layout.getWidth()/2, 860 - layout.getHeight()/2);
+        canvas.translate(TOTAL_WIDTH / 2 - layout.getWidth() / 2, 860 - layout.getHeight() / 2);
         layout.draw(canvas);
         canvas.restore();
 
@@ -270,7 +258,7 @@ public class CardRenderer {
         String s = null;
         Context context = ArcaneTrackerApplication.getContext();
 
-        switch(card.race) {
+        switch (card.race) {
             case Card.RACE_MECHANICAL:
                 s = context.getString(R.string.race_mechanical);
                 break;
@@ -310,15 +298,15 @@ public class CardRenderer {
 
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(textSize*STROKE_RATIO);
+        paint.setStrokeWidth(textSize * STROKE_RATIO);
 
         int y = 1015;
-        canvas.drawText(s, TOTAL_WIDTH/2, y, paint);
+        canvas.drawText(s, TOTAL_WIDTH / 2, y, paint);
 
         paint.setColor(Color.WHITE);
         paint.setStyle(Paint.Style.FILL);
 
-        canvas.drawText(s, TOTAL_WIDTH/2, y, paint);
+        canvas.drawText(s, TOTAL_WIDTH / 2, y, paint);
     }
 
     private void drawStats(Canvas canvas, Card card) {
@@ -410,15 +398,15 @@ public class CardRenderer {
                 y = 546;
 
                 path.moveTo(20.854373f, 124.74981f);
-                path.cubicTo(113.21275f, 144.704f, 203.93683f, 101.6693f, 307.99815f,91.580244f);
+                path.cubicTo(113.21275f, 144.704f, 203.93683f, 101.6693f, 307.99815f, 91.580244f);
                 path.cubicTo(411.44719f, 81.55055f, 487.45236f, 71.558015f, 578.30781f, 115.12471f);
 
                 break;
             case Card.TYPE_SPELL:
                 x = 66;
                 y = 530;
-                path.moveTo(55.440299f,131.50746f);
-                path.rCubicTo(165.651711f,-48.547726f, 319.389151f,-69.712531f, 530.298511f,0);
+                path.moveTo(55.440299f, 131.50746f);
+                path.rCubicTo(165.651711f, -48.547726f, 319.389151f, -69.712531f, 530.298511f, 0);
                 break;
             case Card.TYPE_WEAPON:
                 x = 56;
@@ -438,7 +426,7 @@ public class CardRenderer {
 
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(textSize*STROKE_RATIO);
+        paint.setStrokeWidth(textSize * STROKE_RATIO);
         canvas.drawTextOnPath(card.name, path, 0, voffset, paint);
 
         paint.setColor(Color.WHITE);
