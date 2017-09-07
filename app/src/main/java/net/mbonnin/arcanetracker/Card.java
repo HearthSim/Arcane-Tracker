@@ -161,6 +161,8 @@ public class Card implements Comparable<String> {
     public static final String RAPTOR_PATRIARCH = "UNG_914t1";
     public static final String DIREHORN_HATCHLING = "UNG_957";
     public static final String DIREHORN_MATRIARCH = "UNG_957t1";
+    public static final String ANTONIDAS = "EX1_559";
+    public static final String FIREBALL = "CS2_029";
 
 
     public String name;

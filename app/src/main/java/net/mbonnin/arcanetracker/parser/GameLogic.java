@@ -652,6 +652,18 @@ public class GameLogic {
                 case Card.DIREHORN_HATCHLING:
                     guessedId = Card.DIREHORN_MATRIARCH;
                     break;
+                case Card.MANA_BIND:
+                    for(BlockTag parent: stack) {
+                        if (BlockTag.TYPE_PLAY.equals(parent.BlockType)) {
+                            guessedId = mGame.findEntitySafe(parent.Entity).CardID;
+                            break;
+                        }
+                    }
+                    break;
+                case Card.ANTONIDAS:
+                    guessedId = Card.FIREBALL;
+                    break;
+
             }
         }
         if (!Utils.isEmpty(guessedId)) {
