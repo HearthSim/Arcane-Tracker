@@ -73,7 +73,6 @@
   <string name="trackobotNetworkError">Error de conexión mientras se intentaba conectar con Track-o-bot</string>
   <string name="trackobotError">No se han podido registrar las estadísticas en Track-o-bot :(</string>
   <string name="trackobotSuccess">Partida registrada en Track-o-bot</string>
-  <string name="waitingForCards">Descargando cartas...</string>
   <string name="importFromStorage">Importar cuenta desde almacenamiento interno</string>
   <string name="importExplanation">Pon el archivo .track-o-bot en la carpeta raíz del almacenamiento de tu teléfono para que Arcane Tracker lo pueda reconocer</string>
   <string name="couldNotGetProfile">No ha sido posible generar el enlace a tu perfil, por favor vuelve a intentarlo</string>

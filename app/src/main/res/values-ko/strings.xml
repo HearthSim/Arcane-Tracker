@@ -72,5 +72,4 @@
   <string name="trackobotNetworkError">Track-o-bot에 업로딩 중 네트워크 에러가 발생했습니다.</string>
   <string name="trackobotError">Track-o-bot에 업로드할 수 없습니다 ㅠㅠ</string>
   <string name="trackobotSuccess">게임이 Track-o-bot에 업로드 됨</string>
-  <string name="waitingForCards">카드 다운로드 중...</string>
 </resources>

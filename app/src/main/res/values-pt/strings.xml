@@ -72,5 +72,4 @@
   <string name="trackobotNetworkError">Erro de rede enquanto upando ao Track-o-bot</string>
   <string name="trackobotError">Nao conseuge upar ao Track-o-bot :-(</string>
   <string name="trackobotSuccess">Jogo upado ao Track-o-bot</string>
-  <string name="waitingForCards">Baixando cartas...</string>
 </resources>
