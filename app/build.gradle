@@ -89,7 +89,7 @@ android {
 
 ext {
     supportLibVersion = '26.0.2'
-    playServicesVersion = '11.0.4'
+    playServicesVersion = '11.2.2'
 }
 
 repositories {
@@ -113,29 +113,28 @@ dependencies {
 
     compile 'com.google.code.gson:gson:2.8.1'
     compile 'io.paperdb:paperdb:1.5'
-    compile 'com.squareup.okhttp3:okhttp:3.7.0'
+    compile 'com.squareup.okhttp3:okhttp:3.8.1'
 
     compile 'com.jakewharton.timber:timber:4.5.1'
-    compile 'com.annimon:stream:1.1.5'
+    compile 'com.annimon:stream:1.1.7'
 
     compile 'io.reactivex:rxjava:1.3.0'
     compile 'io.reactivex:rxandroid:1.2.1'
-    compile 'com.squareup.retrofit2:retrofit:2.1.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
 
     compile "com.google.android.gms:play-services-auth:$playServicesVersion"
     compile "com.google.firebase:firebase-core:$playServicesVersion"
     compile "com.google.firebase:firebase-crash:$playServicesVersion"
+    compile "com.google.firebase:firebase-messaging:$playServicesVersion"
 
-    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.android.support:multidex:1.0.2'
     compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
 
-    compile "com.google.firebase:firebase-messaging:$playServicesVersion"
-
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.android.support:multidex:1.0.2'
     compile project(":detector")
 }
 
