@@ -8,10 +8,12 @@ buildscript {
         classpath 'com.android.tools.build:gradle:2.3.3'
         classpath 'com.google.gms:google-services:3.0.0'
         classpath 'me.tatarka:gradle-retrolambda:3.6.1'
+        classpath 'com.google.gms:oss-licenses:0.9.0'
     }
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.oss.licenses.plugin'
 apply plugin: 'me.tatarka.retrolambda'
 
 android {
@@ -128,6 +130,7 @@ dependencies {
     compile "com.google.firebase:firebase-core:$playServicesVersion"
     compile "com.google.firebase:firebase-crash:$playServicesVersion"
     compile "com.google.firebase:firebase-messaging:$playServicesVersion"
+    compile "com.google.android.gms:play-services-oss-licenses:$playServicesVersion"
 
     compile 'com.android.support:multidex:1.0.2'
     compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'

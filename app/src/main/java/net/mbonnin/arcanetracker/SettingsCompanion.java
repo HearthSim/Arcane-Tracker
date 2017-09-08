@@ -17,7 +17,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.oss.licenses.OssLicensesActivity;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 
 import net.mbonnin.arcanetracker.hsreplay.HSReplay;
 import net.mbonnin.arcanetracker.trackobot.Trackobot;
@@ -289,7 +291,7 @@ public class SettingsCompanion {
         TextView appVersion = (TextView) view.findViewById(R.id.appVersion);
         appVersion.setText(view.getContext().getString(R.string.thisIsArcaneTracker, BuildConfig.VERSION_NAME, Utils.isAppDebuggable() ? " (debug)" : ""));
 
-        Button feedbackButton = (Button) view.findViewById(R.id.feedBackButton);
+        Button feedbackButton = view.findViewById(R.id.feedBackButton);
         feedbackButton.setOnClickListener(v -> {
             ViewManager.get().removeView(settingsView);
 
@@ -312,18 +314,24 @@ public class SettingsCompanion {
             }
         });
 
-        Button resetCacheButton = (Button) view.findViewById(R.id.resetCache);
+        Button ossButton = view.findViewById(R.id.oss);
+        ossButton.setOnClickListener(v -> {
+            ViewManager.get().removeView(settingsView);
+            context.startActivity(new Intent(context, OssLicensesMenuActivity.class));
+        });
+
+        Button resetCacheButton = view.findViewById(R.id.resetCache);
         resetCacheButton.setOnClickListener(v -> {
             PicassoCardRequestHandler.get().resetCache();
         });
 
-        SeekBar seekBar = (SeekBar) view.findViewById(R.id.seekBar);
+        SeekBar seekBar = view.findViewById(R.id.seekBar);
         seekBar.setMax(100);
         seekBar.setProgress(MainViewCompanion.get().getAlphaSetting());
         seekBar.setOnSeekBarChangeListener(mSeekBarChangeListener);
 
         MainViewCompanion c = MainViewCompanion.get();
-        seekBar = (SeekBar) view.findViewById(R.id.drawerSizeBar);
+        seekBar = view.findViewById(R.id.drawerSizeBar);
         seekBar.setMax(MainViewCompanion.get().getMaxDrawerWidth() - MainViewCompanion.get().getMinDrawerWidth());
         seekBar.setProgress(MainViewCompanion.get().getDrawerWidth() - MainViewCompanion.get().getMinDrawerWidth());
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

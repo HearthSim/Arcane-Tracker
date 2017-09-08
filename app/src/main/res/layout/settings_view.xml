@@ -54,6 +54,15 @@
                 android:textColor="#fff" />
 
             <Button
+                android:id="@+id/oss"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="@string/ossLicences"
+                android:textColor="#fff" />
+
+            <Button
                 android:id="@+id/resetCache"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

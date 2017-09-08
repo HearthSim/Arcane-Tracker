@@ -178,4 +178,5 @@
     <string name="useDeckString">Use Deckstring above</string>
     <string name="useNewDeck">Create new empty deck</string>
     <string name="cannotParseDeckstring">Cannot parse deckstring</string>
+    <string name="ossLicences">Open Source Licenses</string>
 </resources>
