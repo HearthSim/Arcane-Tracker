@@ -306,7 +306,7 @@ public class GameLogic {
                 EntityList secretEntityList = mGame.getEntityList(e -> Entity.ZONE_SECRET.equals(e.tags.get(Entity.KEY_ZONE)));
                 for (Entity e2 : secretEntityList) {
                     if (Utils.equalsNullSafe(e2.tags.get(Entity.KEY_CONTROLLER), entity.tags.get(Entity.KEY_CONTROLLER))) {
-                        if (Card.TYPE_MINION.equals(entity.card.type)) {
+                        if (entity.card != null && Card.TYPE_MINION.equals(entity.card.type)) {
                             e2.extra.selfPlayerMinionDied = true;
                         }
                     }
