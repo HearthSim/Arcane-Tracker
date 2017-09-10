@@ -31,6 +31,7 @@
     <string name="changelog_220">Fixed a crash when clicking \'new deck\'\nImproved the HSReplay.net settings.</string>
     <string name="changelog_221">Secret tracker: long press a secret in your opponent deck to determine which secrets are/are not possible.\nShow the creator of gift cards when possible.\nAdd support for Android Oreo.\nAllow to paste custom deckstrings.</string>
     <string name="changelog_222">Secret tracker: fix sometimes Vaporize or Effigy badly detected.\nAdded Elise the trailblazer gift card support.\nDisplay the notification again in Android O.</string>
+    <string name="changelog_223">Fixed a couple of crashes, improved memory usage.</string>
     <string name="clazz">Class</string>
     <string name="clickOpponent">Click here to see your opponent\'s deck.</string>
     <string name="clickPlayer">Click here to see your deck.</string>
