@@ -72,7 +72,6 @@
   <string name="trackobotNetworkError">於 Track-o-bot 更新時網路發生錯誤</string>
   <string name="trackobotError">Track-o-bot 無法更新 :-(</string>
   <string name="trackobotSuccess">結果已於 Track-o-bot 更新</string>
-  <string name="waitingForCards">下載卡牌中...</string>
   <string name="importFromStorage">在儲存空間中匯入帳號</string>
   <string name="importExplanation">將你的 .Track-o-bot 帳號置於手機根目錄以讓 Arcane Tracker 辨識</string>
   <string name="couldNotGetProfile">無法獲取個人資料連結，請再試一次</string>
