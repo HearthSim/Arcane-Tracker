@@ -61,7 +61,7 @@ public class GameLogicListener implements GameLogic.Listener {
         }
 
         if (bestDeck == null) {
-            /**
+            /*
              * No good candidate, create a new deck
              */
             bestDeck = DeckList.createDeck(classIndex);
@@ -119,6 +119,7 @@ public class GameLogicListener implements GameLogic.Listener {
         if (Settings.get(Settings.AUTO_SELECT_DECK, true)) {
             if (LoadingScreenParser.MODE_DRAFT.equals(LoadingScreenParser.get().getGameplayMode())) {
                 deck = DeckList.getArenaDeck();
+                Timber.w("useArena deck");
             } else {
                 int classIndex = game.getPlayer().classIndex();
 
