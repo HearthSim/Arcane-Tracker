@@ -21,6 +21,7 @@ import android.widget.TextView;
 import net.mbonnin.arcanetracker.adapter.EditableItemAdapter;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by martin on 10/21/16.
@@ -104,8 +105,14 @@ public class DeckEditorView extends RelativeLayout {
     public void setDeck(Deck deck) {
         mDeck = deck;
 
+        int classIndex = mDeck.classIndex;
+        if (classIndex <0) {
+            // XXX: this happens... not sure why
+            classIndex = Card.CLASS_INDEX_NEUTRAL;
+        }
+
         String names[] = new String[2];
-        names[0] = Card.classNameList[mDeck.classIndex];
+        names[0] = Card.classNameList[classIndex];
         names[1] = "Neutral";
 
         mCardsAdapter = new CardsAdapter();
@@ -122,12 +129,12 @@ public class DeckEditorView extends RelativeLayout {
         deckRecyclerView.setAdapter(mDeckAdapter);
 
 
-        mClass = Card.classIndexToPlayerClass(mDeck.classIndex);
+        mClass = Card.classIndexToPlayerClass(classIndex);
 
         mCardsAdapter.setListener(mCardsAdapterListener);
         mCardsAdapter.setClass(mClass);
 
-        classImageView.setBackgroundDrawable(Utils.getDrawableForName(String.format("hero_%02d_round", mDeck.classIndex + 1)));
+        classImageView.setBackgroundDrawable(Utils.getDrawableForName(String.format(Locale.ENGLISH, "hero_%02d_round", classIndex + 1)));
         classImageViewDisabled.setVisibility(GONE);
         neutralImageView.setBackgroundResource(R.drawable.hero_10_round);
 
