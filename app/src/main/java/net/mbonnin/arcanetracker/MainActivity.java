@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (false && Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mScreenCapture == null) {
+        if (Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mScreenCapture == null) {
             mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
             startActivityForResult(mProjectionManager.createScreenCaptureIntent(), REQUEST_CODE_MEDIAPROJECTION);
             return;

@@ -35,3 +35,8 @@ compileTestKotlin {
         jvmTarget = "1.6"
     }
 }
+
+test {
+    dependsOn cleanTest
+    testLogging.showStandardStreams = true
+}

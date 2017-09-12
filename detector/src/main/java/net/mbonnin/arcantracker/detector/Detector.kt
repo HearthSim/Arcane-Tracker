@@ -2,69 +2,87 @@ package net.mbonnin.arcantracker.detector
 
 import org.jtransforms.dct.DoubleDCT_2D
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
-class ByteBufferImage(val w: Int, val h: Int, val buffer: ByteBuffer, val stride: Int) {
-    fun getPixel(x: Int, y: Int): Byte {
-        return buffer.get(x + y * stride);
-    }
-}
+class ByteBufferImage(val w: Int, val h: Int, val buffer: ByteBuffer, val stride: Int) {}
 
-class DoubleArrayImage(val w: Int, val h: Int, val buffer: DoubleArray) {
+class RRect(val l: Double, val t: Double, val w: Double, val h: Double) {}
+
+class ATImage(val w: Int, val h: Int, val buffer: DoubleArray) {
     fun getPixel(x: Int, y: Int): Double {
         return buffer.get(x + y * w);
     }
 }
 
 
-class Detector {
-    val SCALED_SIZE = 32
+class Detector(val debugCallback: (ATImages: Array<ATImage>) -> Unit) {
 
-    fun detectRank(byteBufferImages: Array<ByteBufferImage>) {
-        val vector = getRankVectorDCT(byteBufferImages)
+    fun detectRank(byteBufferImage: ByteBufferImage, rRect: RRect) {
+        val vector = getRankVectorDCT(byteBufferImage, rRect)
         val minDistance = Double.MAX_VALUE
     }
 
-    fun getRankVectorDCT(byteBufferImages: Array<ByteBufferImage>): DoubleArray {
+    fun getRankVectorDCT(byteBufferImage: ByteBufferImage, rRect: RRect): DoubleArray {
         val vector = DoubleArray(16 * 3)
-        var index = 0;
+        var index = 0
 
-        for (i in 0..2) {
-            val image = scaleImage(byteBufferImages.get(i), SCALED_SIZE, SCALED_SIZE)
+        val images = scaleImage(byteBufferImage, rRect, SCALED_SIZE, SCALED_SIZE)
+        debugCallback(images)
 
+        for (image in images) {
             val dct = DoubleDCT_2D(SCALED_SIZE.toLong(), SCALED_SIZE.toLong())
             dct.forward(image.buffer, true)
 
-            for (x in 0..3) {
-                for (y in 0..3) {
+            for (x in 0 until 4) {
+                for (y in 0 until 4) {
                     vector.set(index++, image.getPixel(x, y))
                 }
             }
         }
 
-        return vector;
+        return vector
     }
 
-    fun scaleImage(inImage: ByteBufferImage, outW: Int, outH: Int): DoubleArrayImage {
-        val outImage = DoubleArrayImage(outW, outH, kotlin.DoubleArray(outW * outH));
-        val scaleX = (inImage.w as Double) / outW;
-        val scaleY = (inImage.h as Double) / outH;
+    fun scaleImage(inImage: ByteBufferImage, rRect: RRect, outW: Int, outH: Int): Array<ATImage> {
+        val scaleX = (inImage.w * rRect.w) / outW
+        val scaleY = (inImage.h * rRect.h) / outH
+        val images = Array(3) {
+            ATImage(outW, outH, kotlin.DoubleArray(outW * outH))
+        }
+        inImage.buffer.order(ByteOrder.LITTLE_ENDIAN);
 
-        for (outX in 0..outW - 1) {
-            for (outY in 0..outH - 1) {
-                val inX = scaleX * outX;
-                val inY = scaleY * outY;
+        for (outX in 0 until outW) {
+            for (outY in 0 until outH) {
+                val inX = scaleX * outX + rRect.l * inImage.w
+                val inY = scaleY * outY + rRect.t * inImage.h
 
-                /*
-                 * bilinear filtering
-                 */
-                val v1 = (inX - inX.toInt()) * inImage.getPixel(inX.toInt(), inY.toInt()) + (inX.toInt() + 1 - inX) * inImage.getPixel(inX.toInt() + 1, inY.toInt());
-                val v2 = (inX - inX.toInt()) * inImage.getPixel(inX.toInt(), inY.toInt() + 1) + (inX.toInt() + 1 - inX) * inImage.getPixel(inX.toInt() + 1, inY.toInt() + 1);
+                val X0 = inX.toInt()
+                val Y0 = inY.toInt()
+                val X1 = inX.toInt() + 1
+                val Y1 = inY.toInt() + 1
 
-                outImage.buffer.set(outY * outW + outX, (inY - inY.toInt()) * v1 + (inY.toInt() + 1 - inY) * v2);
+                val X0Y0 = inImage.buffer.getInt(X0 + Y0 * inImage.stride)
+                val X1Y0 = inImage.buffer.getInt(X1 + Y0 * inImage.stride)
+                val X0Y1 = inImage.buffer.getInt(X0 + Y1 * inImage.stride)
+                val X1Y1 = inImage.buffer.getInt(X1 + Y1 * inImage.stride)
+
+                for (i in 0 until 2) {
+                    val shift = 8 * i
+                    /*
+                     * bilinear filtering
+                     */
+                    val v0 = (inX - X0) * X0Y0.shr(shift).and(0xff) + (X1 - inX) * X1Y0.shr(shift).and(0xff)
+                    val v1 = (inX - X0) * X0Y1.shr(shift).and(0xff) + (X1 - inX) * X1Y1.shr(shift).and(0xff)
+                    images[i].buffer.set(outY * outW + outX, (inY - Y0) * v0 + (Y1 - inY) * v1)
+                }
             }
         }
 
-        return outImage;
+        return images
+    }
+
+    companion object {
+        const val SCALED_SIZE = 32
     }
 }
 
