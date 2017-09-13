@@ -188,4 +188,24 @@ public class TestParser {
 
         Assert.assertTrue(listener.gameOverCount == 1);
     }
+
+    @Test
+    public void testSpectator() throws Exception {
+        class InterruptedListener extends SimpleListener{
+            public int gameOverCount;
+
+            @Override
+            public void gameOver() {
+                gameOverCount++;
+            }
+        }
+
+        InterruptedListener listener = new InterruptedListener();
+        runParser("/Keith.log", listener);
+
+        /*
+         * the first game is a continuation game and should not be detected
+         */
+        Assert.assertTrue(listener.gameOverCount == 1);
+    }
 }

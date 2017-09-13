@@ -38,29 +38,27 @@ public class GameLogic {
             handleCreateGameTag((CreateGameTag) tag);
         }
 
-        if (mGame == null) {
-            return;
-        }
+        if (mGame != null) {
+            handleTagRecursive(tag);
+            if (mGame.isStarted()) {
+                handleTagRecursive2(tag);
 
-        handleTagRecursive(tag);
+                guessIds(tag);
 
-        if (!mGame.isStarted()) {
-            return;
-        }
-
-        handleTagRecursive2(tag);
-
-        guessIds(tag);
-
-        notifyListeners();
-
-        if (mLastTag) {
-            for (Listener listener : mListenerList) {
-                listener.gameOver();
+                notifyListeners();
             }
 
-            mGame = null;
-            mLastTag = false;
+            if (mLastTag) {
+                if (mGame.isStarted()) {
+                    mGame.victory = Entity.PLAYSTATE_WON.equals(mGame.player.entity.tags.get(Entity.KEY_PLAYSTATE));
+                    for (Listener listener : mListenerList) {
+                        listener.gameOver();
+                    }
+                }
+
+                mGame = null;
+                mLastTag = false;
+            }
         }
     }
 
@@ -237,17 +235,6 @@ public class GameLogic {
     }
 
     private void tagChanged2(Entity entity, String key, String newValue) {
-        if (Entity.ENTITY_ID_GAME.equals(entity.EntityID)) {
-            if (Entity.KEY_STEP.equals(key) && mGame.isStarted()) {
-                if (Entity.STEP_FINAL_GAMEOVER.equals(newValue)) {
-                    mGame.victory = Entity.PLAYSTATE_WON.equals(mGame.player.entity.tags.get(Entity.KEY_PLAYSTATE));
-
-                    // do not set mGame = null here, we might be part of a block where other tag handlers
-                    // require access to mGame
-                    mLastTag = true;
-                }
-            }
-        }
     }
 
     private void tagChanged(Entity entity, String key, String newValue) {
@@ -264,8 +251,7 @@ public class GameLogic {
                     Timber.e(e);
                 }
 
-            }
-            if (Entity.KEY_STEP.equals(key)) {
+            } else if (Entity.KEY_STEP.equals(key)) {
                 if (Entity.STEP_BEGIN_MULLIGAN.equals(newValue)) {
                     gameStepBeginMulligan();
                     if (mGame.isStarted()) {
@@ -273,6 +259,10 @@ public class GameLogic {
                             listener.gameStarted(mGame);
                         }
                     }
+                } else if (Entity.STEP_FINAL_GAMEOVER.equals(newValue)) {
+                    // do not set mGame = null here, we might be part of a block where other tag handlers
+                    // require access to mGame
+                    mLastTag = true;
                 }
             }
         }
@@ -639,7 +629,7 @@ public class GameLogic {
                     guessedId = Card.ARCANE_MISSILE;
                     break;
                 case Card.FROZEN_CLONE:
-                    for(BlockTag parent: stack) {
+                    for (BlockTag parent : stack) {
                         if (BlockTag.TYPE_PLAY.equals(parent.BlockType)) {
                             guessedId = mGame.findEntitySafe(parent.Entity).CardID;
                             break;
@@ -663,7 +653,7 @@ public class GameLogic {
                     guessedId = Card.DIREHORN_MATRIARCH;
                     break;
                 case Card.MANA_BIND:
-                    for(BlockTag parent: stack) {
+                    for (BlockTag parent : stack) {
                         if (BlockTag.TYPE_PLAY.equals(parent.BlockType)) {
                             guessedId = mGame.findEntitySafe(parent.Entity).CardID;
                             break;
