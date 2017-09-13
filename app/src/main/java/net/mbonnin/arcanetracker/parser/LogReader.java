@@ -176,7 +176,7 @@ public class LogReader implements Runnable {
     public static LogLine parseLine(String line) {
         LogLine logLine = new LogLine();
 
-        //D 19:48:03.8108410 GameState.DebugPrintPower() -     Player EntityID=3 PlayerID=2 GameAccountId=[hi=144115198130930503 lo=19268725]
+        //D 19:48:03.8108410 GameState.DebugPrintPower() -     Player EntityID=3 PlayerID=2 GameAccountId=redacted
         String[] s = line.split(" ");
         if (s.length < 3) {
             Timber.e("invalid line: %s", line);
