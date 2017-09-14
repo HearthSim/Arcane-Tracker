@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import net.mbonnin.arcanetracker.parser.LoadingScreenParser;
 import net.mbonnin.arcanetracker.detector.ATImage;
 import net.mbonnin.arcanetracker.detector.Detector;
+import net.mbonnin.arcanetracker.detector.ByteBufferImage;
 
 import timber.log.Timber;
 
@@ -45,7 +46,8 @@ public class ScreenCapture implements ImageReader.OnImageAvailableListener{
             }
 
             if ("TOURNAMENT".equals(LoadingScreenParser.get().getMode())) {
-                //mDetector.detectRank(new ByteBufferImage(image.getWidth(), image.getHeight(), image.getPlanes()[0].getBuffer(), image.getPlanes()[0].getRowStride()));
+                ByteBufferImage bbImage = new ByteBufferImage(image.getWidth(), image.getHeight(), image.getPlanes()[0].getBuffer(), image.getPlanes()[0].getRowStride());
+                mDetector.detectRank(bbImage);
             }
             image.close();
         }

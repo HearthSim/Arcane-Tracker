@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 MediaProjection projection = mProjectionManager.getMediaProjection(resultCode, data);
                 mScreenCapture = new ScreenCapture(this, projection);
+                tryToLaunchGame();
             } else {
                 new AlertDialog.Builder(this)
                         .setTitle(getString(R.string.hi_there))
@@ -162,11 +163,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (false && Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mScreenCapture == null) {
+        if (Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mScreenCapture == null) {
             mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
             startActivityForResult(mProjectionManager.createScreenCaptureIntent(), REQUEST_CODE_MEDIAPROJECTION);
             return;
         }
+
         if (Build.MANUFACTURER.toLowerCase().contains("xiaomi") && Settings.get(Settings.SHOW_XIAOMI_WARNING, true)) {
             new AlertDialog.Builder(context)
                     .setTitle(getString(R.string.hi_there))
