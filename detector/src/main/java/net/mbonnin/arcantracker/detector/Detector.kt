@@ -73,7 +73,11 @@ class Detector(val debugCallback: (ATImages: Array<ATImage>) -> Unit) {
                      */
                     val v0 = (inX - X0) * X0Y0.shr(shift).and(0xff) + (X1 - inX) * X1Y0.shr(shift).and(0xff)
                     val v1 = (inX - X0) * X0Y1.shr(shift).and(0xff) + (X1 - inX) * X1Y1.shr(shift).and(0xff)
-                    images[i].buffer.set(outY * outW + outX, (inY - Y0) * v0 + (Y1 - inY) * v1)
+                    val v = ((inY - Y0) * v0 + (Y1 - inY) * v1) / 255.0
+
+                    images[i].buffer.set(outY * outW + outX, v)
+
+                    //images[i].buffer.set(outY * outW + outX, outX.toDouble() / outW)
                 }
             }
         }

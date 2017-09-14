@@ -1,0 +1,8 @@
+//
+// Created by martin on 9/14/17.
+//
+
+#ifndef ARCANE_TRACKER_DETECTOR_JNI_H
+#define ARCANE_TRACKER_DETECTOR_JNI_H
+
+#endif //ARCANE_TRACKER_DETECTOR_JNI_H
