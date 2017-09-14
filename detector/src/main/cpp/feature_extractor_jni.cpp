@@ -17,6 +17,7 @@ Java_net_mbonnin_arcanetracker_detector_FeatureExtractor_getFeatures(JNIEnv *env
         return NULL; /* out of memory error thrown */
     }
 
+    env->SetDoubleArrayRegion()
     return result;
 }
 
