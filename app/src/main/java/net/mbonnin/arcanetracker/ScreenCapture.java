@@ -45,7 +45,7 @@ public class ScreenCapture implements ImageReader.OnImageAvailableListener{
                 return;
             }
 
-            if ("TOURNAMENT".equals(LoadingScreenParser.get().getMode())) {
+            if (true || "TOURNAMENT".equals(LoadingScreenParser.get().getMode())) {
                 ByteBufferImage bbImage = new ByteBufferImage(image.getWidth(), image.getHeight(), image.getPlanes()[0].getBuffer(), image.getPlanes()[0].getRowStride());
                 mDetector.detectRank(bbImage);
             }

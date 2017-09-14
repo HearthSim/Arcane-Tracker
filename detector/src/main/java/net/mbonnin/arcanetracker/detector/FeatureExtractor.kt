@@ -7,5 +7,8 @@ class FeatureExtractor {
         System.loadLibrary("feature_extractor")
     }
 
-    external fun getFeatures(byteBuffer: ByteBuffer, w: Int, h: Int, stride: Int): DoubleArray;
+    /*
+     * x, y, w, h represent the input rect where to compute the features
+     */
+    external fun getFeatures(byteBuffer: ByteBuffer, x: Double, y: Double, w: Double, h: Double, stride: Int): DoubleArray;
 }
