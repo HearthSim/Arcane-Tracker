@@ -1,1 +1,1 @@
-include ':app', ':detector', ':assets'
+include ':app', ':detector'

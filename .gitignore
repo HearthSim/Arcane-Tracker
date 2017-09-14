@@ -13,3 +13,5 @@ app/google-services.json
 /captures
 .externalNativeBuild
 /app/src/test/resources/ranks/
+/app/src/main/assets/cards
+/app/src/main/assets/bars
