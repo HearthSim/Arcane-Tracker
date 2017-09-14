@@ -2,22 +2,31 @@ buildscript {
     ext.kotlin_version = '1.1.4-2'
     repositories {
         google()
+        jcenter()
         mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin'
 
 repositories {
     mavenCentral()
 }
 
 android {
+    compileSdkVersion 26
+    buildToolsVersion '26.0.1'
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 26
+        versionCode 1
+        versionName "0.01"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
     // Encapsulates your external native build configurations.
     externalNativeBuild {
 
@@ -38,21 +47,3 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
-
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = "1.6"
-    }
-}
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = "1.6"
-    }
-}
-
-test {
-    dependsOn cleanTest
-    testLogging.showStandardStreams = true
-}

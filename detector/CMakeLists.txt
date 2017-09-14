@@ -17,4 +17,4 @@ add_library( # Specifies the name of the library.
              SHARED
 
              # Provides a relative path to your source file(s).
-             src/main/cpp/feature_extractor.cpp )
+             src/main/cpp/feature_extractor_jni.cpp )

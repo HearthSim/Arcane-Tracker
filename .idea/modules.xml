@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/arcane_tracker.iml" filepath="$PROJECT_DIR$/arcane_tracker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/assets/assets.iml" filepath="$PROJECT_DIR$/assets/assets.iml" />
       <module fileurl="file://$PROJECT_DIR$/detector/detector.iml" filepath="$PROJECT_DIR$/detector/detector.iml" />
     </modules>
   </component>
