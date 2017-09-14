@@ -1,4 +1,4 @@
-package net.mbonnin.arcantracker.detector
+package net.mbonnin.arcanetracker.detector
 
 import org.jtransforms.dct.DoubleDCT_2D
 import java.nio.ByteBuffer

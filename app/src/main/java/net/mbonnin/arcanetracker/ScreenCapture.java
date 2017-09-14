@@ -13,8 +13,8 @@ import android.view.Display;
 import android.view.WindowManager;
 
 import net.mbonnin.arcanetracker.parser.LoadingScreenParser;
-import net.mbonnin.arcantracker.detector.ATImage;
-import net.mbonnin.arcantracker.detector.Detector;
+import net.mbonnin.arcanetracker.detector.ATImage;
+import net.mbonnin.arcanetracker.detector.Detector;
 
 import timber.log.Timber;
 

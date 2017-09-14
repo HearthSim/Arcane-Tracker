@@ -1,4 +1,4 @@
-package net.mbonnin.arcantracker.detector
+package net.mbonnin.arcanetracker.detector
 
 import ar.com.hjg.pngj.ImageInfo
 import ar.com.hjg.pngj.ImageLineInt

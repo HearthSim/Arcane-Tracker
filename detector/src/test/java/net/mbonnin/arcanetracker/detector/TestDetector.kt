@@ -1,4 +1,4 @@
-package net.mbonnin.arcantracker.detector
+package net.mbonnin.arcanetracker.detector
 
 import org.junit.Test
 

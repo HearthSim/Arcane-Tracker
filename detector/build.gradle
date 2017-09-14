@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.1.4-2'
+    ext.kotlin_version = '1.1.4-3'
     repositories {
         google()
         jcenter()
@@ -7,10 +7,12 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
 repositories {
     mavenCentral()
@@ -44,6 +46,6 @@ dependencies {
     compile 'com.github.wendykierp:JTransforms:3.1'
     testCompile 'ar.com.hjg:pngj:2.1.0'
     testCompile 'junit:junit:4.12'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 
