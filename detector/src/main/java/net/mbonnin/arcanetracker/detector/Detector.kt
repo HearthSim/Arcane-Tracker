@@ -18,7 +18,7 @@ class ATImage(val w: Int, val h: Int, val buffer: DoubleArray) {
 class Detector(val debugCallback: (ATImages: Array<ATImage>) -> Unit) {
 
     fun detectRank(byteBufferImage: ByteBufferImage) {
-        FeatureExtractor().sayHello()
+        FeatureExtractor().getFeatures(byteBufferImage.buffer, byteBufferImage.w, byteBufferImage.h, byteBufferImage.stride)
     }
 
     fun getRankVectorDCT(byteBufferImage: ByteBufferImage, rRect: RRect): DoubleArray {
