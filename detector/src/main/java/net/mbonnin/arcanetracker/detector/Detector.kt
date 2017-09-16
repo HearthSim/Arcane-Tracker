@@ -1,5 +1,6 @@
 package net.mbonnin.arcanetracker.detector
 
+import android.util.Log
 import org.jtransforms.dct.DoubleDCT_2D
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -22,8 +23,26 @@ class Detector(val debugCallback: (ATImages: Array<ATImage>) -> Unit) {
         val in_x = byteBufferImage.w * (820.0 / 1920.0)
         val in_y = byteBufferImage.h * (424.0 / 1080.0)
         val in_w = byteBufferImage.w * (230.0 / 1920.0)
-        val in_h = byteBufferImage.w * (102.0 / 1080.0)
-        featureDetector.getFeatures(byteBufferImage.buffer, in_x, in_y, in_w, in_h, byteBufferImage.stride);
+        val in_h = byteBufferImage.h * (102.0 / 1080.0)
+        val features = featureDetector.getFeatures(byteBufferImage.buffer, in_x, in_y, in_w, in_h, byteBufferImage.stride);
+
+        var rank = 0
+        var minDist = Double.MAX_VALUE
+        var bestRank = -1;
+        for (rankFeatures in RANKS) {
+            var dist = 0.0;
+            for (i in 0 until features.size) {
+                dist += (features[i] - rankFeatures[i]) * (features[i] - rankFeatures[i])
+            }
+            Log.d("Detector", String.format("%d: %f", rank, dist))
+            if (dist < minDist) {
+                minDist = dist
+                bestRank = rank
+            }
+            rank++
+        }
+
+        Log.d("Detector", "best rank: " + bestRank + "(" + minDist +  ")")
     }
 
     fun getRankVectorDCT(byteBufferImage: ByteBufferImage, rRect: RRect): DoubleArray {

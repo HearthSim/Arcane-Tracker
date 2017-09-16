@@ -12,7 +12,7 @@ import java.nio.ByteBuffer
 fun pngToByteBufferImage(inputStream: InputStream): ByteBufferImage {
     val reader = PngReader(inputStream)
     val size = reader.imgInfo.rows * reader.imgInfo.cols * 4;
-    val byteBuffer = ByteBuffer.allocate(size);
+    val byteBuffer = ByteBuffer.allocateDirect(size);
 
     val channels = reader.imgInfo.channels;
 
