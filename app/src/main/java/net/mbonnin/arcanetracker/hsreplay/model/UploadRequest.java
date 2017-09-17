@@ -9,4 +9,6 @@ public class UploadRequest {
     public String friendly_player_id;
     public int build;
     public int game_type;
+    public HSPlayer player1 = new HSPlayer();
+    public HSPlayer player2 = new HSPlayer();
 }

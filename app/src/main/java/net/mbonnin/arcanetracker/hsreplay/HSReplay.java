@@ -60,7 +60,7 @@ public class HSReplay {
         return mGameList;
     }
 
-    public void doUploadGame(String matchStart, String friendlyPlayerId, GameSummary summary, String gameStr) {
+    public void doUploadGame(String matchStart, String friendlyPlayerId, Game game, GameSummary summary, String gameStr) {
         Timber.w("doUploadGame");
 
         UploadRequest uploadRequest = new UploadRequest();
@@ -68,6 +68,13 @@ public class HSReplay {
         uploadRequest.build = 20022;
         uploadRequest.friendly_player_id = friendlyPlayerId;
         uploadRequest.game_type = summary.bnetGameType;
+        if (game.rank > 0) {
+            if (friendlyPlayerId.equals("1")) {
+                uploadRequest.player1.rank = game.rank;
+            } else {
+                uploadRequest.player2.rank = game.rank;
+            }
+        }
 
         service().createUpload("https://upload.hsreplay.net/api/v1/replay/upload/request", uploadRequest)
                 .subscribeOn(Schedulers.io())
@@ -121,7 +128,7 @@ public class HSReplay {
         }
 
         if (hsReplayEnabled) {
-            doUploadGame(matchStart, game.player.entity.PlayerID, summary, gameStr);
+            doUploadGame(matchStart, game.player.entity.PlayerID, game, summary, gameStr);
         }
     }
 
