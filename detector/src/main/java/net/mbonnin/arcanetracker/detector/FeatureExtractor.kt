@@ -21,8 +21,8 @@ class FeatureExtractor {
         vector = allocateVector()
     }
 
-    fun getFeatures(byteBuffer: ByteBuffer, stride: Int, x: Double, y: Double, w: Double, h: Double): DoubleArray {
-        getFeatures(byteBuffer, stride, x, y, w, h, vector)
+    fun getFeatures(byteBuffer: ByteBuffer, stride: Int, rrect: RRect): DoubleArray {
+        getFeatures(byteBuffer, stride, rrect.x, rrect.y, rrect.w, rrect.h, vector)
         return vector
     }
 }

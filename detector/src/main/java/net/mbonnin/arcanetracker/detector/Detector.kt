@@ -4,18 +4,14 @@ import java.nio.ByteBuffer
 
 class ByteBufferImage(val w: Int, val h: Int, val buffer: ByteBuffer, val stride: Int) {}
 
-class RRect(val l: Double, val t: Double, val w: Double, val h: Double) {}
+class RRect(var x: Double, var y: Double, var w: Double, var h: Double) {}
 
 class MatchResult {
     var bestIndex = 0
     var distance = 0.0
 }
 
-class ATImage(val w: Int, val h: Int, val buffer: DoubleArray) {
-    fun getPixel(x: Int, y: Int): Double {
-        return buffer.get(x + y * w);
-    }
-}
+class ATImage(val w: Int, val h: Int, val buffer: DoubleArray)
 
 const val INDEX_UNKNOWN = -1
 const val RANK_UNKNOWN = INDEX_UNKNOWN
@@ -28,28 +24,22 @@ const val MODE_UNKNOWN = INDEX_UNKNOWN
 const val MODE_CASUAL = 0
 const val MODE_RANKED = 1
 
-const val FORMAT_IN_XP = 1754.0
-const val FORMAT_IN_YP = 32.0
-const val FORMAT_IN_WP = 138.0
-const val FORMAT_IN_HP = 98.0
-
-const val MODE_IN_XP = 1270.0
-const val MODE_IN_YP = 256.0
-const val MODE_IN_WP = 140.0
-const val MODE_IN_HP = 32.0
+val FORMAT_RRECT = RRect(1754.0, 32.0, 138.0, 98.0)
+val RANK_RRECT = RRect(820.0, 424.0, 230.0, 102.0)
+val MODE_RRECT = RRect(1270.0, 256.0, 140.0, 32.0)
 
 class Detector {
     val featureDetector = FeatureExtractor()
     val matchResult = MatchResult()
 
-    fun matchImage(byteBufferImage: ByteBufferImage, in_xp: Double, in_yp: Double, in_wp: Double, in_hp: Double, candidates: Array<DoubleArray>):MatchResult {
+    fun matchImage(byteBufferImage: ByteBufferImage,  rrect: RRect, candidates: Array<DoubleArray>):MatchResult {
 
-        val in_x = byteBufferImage.w * (in_xp / 1920.0)
-        val in_y = byteBufferImage.h * (in_yp / 1080.0)
-        val in_w = byteBufferImage.w * (in_wp / 1920.0)
-        val in_h = byteBufferImage.h * (in_hp / 1080.0)
+        rrect.x = byteBufferImage.w * (rrect.x / 1920.0)
+        rrect.y = byteBufferImage.h * (rrect.y / 1080.0)
+        rrect.w = byteBufferImage.w * (rrect.w / 1920.0)
+        rrect.h = byteBufferImage.h * (rrect.h / 1080.0)
 
-        val vector = featureDetector.getFeatures(byteBufferImage.buffer, byteBufferImage.stride, in_x, in_y, in_w, in_h);
+        val vector = featureDetector.getFeatures(byteBufferImage.buffer, byteBufferImage.stride, rrect);
 
         var index = 0
         matchResult.bestIndex = INDEX_UNKNOWN
@@ -71,7 +61,7 @@ class Detector {
     }
 
     fun detectRank(byteBufferImage: ByteBufferImage):Int {
-        val matchResult = matchImage(byteBufferImage, 820.0, 424.0, 230.0, 102.0, RANKS)
+        val matchResult = matchImage(byteBufferImage, RANK_RRECT, RANKS)
 
         if (matchResult.distance > 400) {
             matchResult.bestIndex = INDEX_UNKNOWN
@@ -84,7 +74,7 @@ class Detector {
 
     fun detectFormat(byteBufferImage: ByteBufferImage):Int {
 
-        val matchResult = matchImage(byteBufferImage, FORMAT_IN_XP, FORMAT_IN_YP, FORMAT_IN_WP, FORMAT_IN_HP, FORMATS)
+        val matchResult = matchImage(byteBufferImage, FORMAT_RRECT, FORMATS)
         if (matchResult.distance > 400) {
             matchResult.bestIndex = INDEX_UNKNOWN
         }
@@ -96,7 +86,7 @@ class Detector {
 
     fun detectMode(byteBufferImage: ByteBufferImage):Int {
 
-        val matchResult = matchImage(byteBufferImage, MODE_IN_XP, MODE_IN_YP, MODE_IN_WP, MODE_IN_HP, MODES)
+        val matchResult = matchImage(byteBufferImage, MODE_RRECT, MODES)
         if (matchResult.distance > 400) {
             matchResult.bestIndex = INDEX_UNKNOWN
         }
