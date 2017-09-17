@@ -78,7 +78,7 @@ public class TestParser {
 
     @Test
     public void testCreatedBy() throws Exception {
-        Game game = runParser("/gRievoUS.log");
+        Game game = runParser("/created_by.log");
 
         Assert.assertEquals(game.findEntitySafe("73").extra.createdBy, Card.SERVANT_OF_KALYMOS);
         Assert.assertEquals(game.findEntitySafe("78").extra.createdBy, Card.SERVANT_OF_KALYMOS);
@@ -90,7 +90,7 @@ public class TestParser {
     @Test
     public void testDoubleSecret() throws Exception {
 
-        Game game = runParser("/k0l0banov.log");
+        Game game = runParser("/double_secret.log");
 
         Assert.assertFalse(game.victory);
 
@@ -99,7 +99,7 @@ public class TestParser {
     @Test
     public void testSecrets() throws Exception {
 
-        runParser("/Laugeolesen.log", new SimpleListener() {
+        runParser("/secrets.log", new SimpleListener() {
             @Override
             public void somethingChanged() {
                 if ("19".equals(game.gameEntity.tags.get(Entity.KEY_TURN))) {
@@ -116,7 +116,7 @@ public class TestParser {
 
     @Test
     public void testMirrorEntity() throws Exception {
-        runParser("/MightyElf.log", new SimpleListener() {
+        runParser("/mirror_entity.log", new SimpleListener() {
             @Override
             public void somethingChanged() {
                 Entity kabalCrystalRunner = game.findEntitySafe("84");
@@ -130,7 +130,7 @@ public class TestParser {
 
     @Test
     public void testFrozenClone() throws Exception {
-        runParser("/MightyElf.log", new SimpleListener() {
+        runParser("/mirror_entity.log", new SimpleListener() {
             @Override
             public void somethingChanged() {
                 Entity kabalCrystalRunner = game.findEntitySafe("84");
@@ -201,7 +201,7 @@ public class TestParser {
         }
 
         InterruptedListener listener = new InterruptedListener();
-        runParser("/Keith.log", listener);
+        runParser("/spectator.log", listener);
 
         /*
          * the first game is a continuation game and should not be detected
