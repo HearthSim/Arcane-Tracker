@@ -20,7 +20,7 @@ class GenerateData {
         appendData(sb, "RANKS", range.map {String.format("/ranks/Medal_Ranked_%d.png", it)}, featureExtractor, MEDAL_RRECT)
         appendData(sb, "FORMATS", listOf("wild", "standard").map {String.format("/screenshots/%s.png", it)}, featureExtractor, FORMAT_RRECT)
         appendData(sb, "MODES", listOf("casual", "ranked").map {String.format("/screenshots/%s.png", it)}, featureExtractor, MODE_RRECT)
-        appendData(sb, "MODES_TABLET", listOf("casual_tablet", "ranked_tablet").map {String.format("/screenshots/%s.png", it)}, featureExtractor, MODE_RRECT)
+        appendData(sb, "MODES_TABLET", listOf("casual_tablet", "ranked_tablet").map {String.format("/screenshots/%s.png", it)}, featureExtractor, MODE_RRECT_TABLET)
 
         // lol, that's the simplest way I found to send the generated file to the outside world without requiring write permissions !
         val emailIntent = Intent(Intent.ACTION_SEND)

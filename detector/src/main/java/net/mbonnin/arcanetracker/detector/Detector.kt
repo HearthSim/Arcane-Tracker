@@ -1,6 +1,5 @@
 package net.mbonnin.arcanetracker.detector
 
-import android.util.Log
 import java.nio.ByteBuffer
 
 class ByteBufferImage(val w: Int, val h: Int, val buffer: ByteBuffer, val stride: Int) {}
@@ -82,7 +81,7 @@ class Detector(var isTablet: Boolean) {
             matchResult.bestIndex = INDEX_UNKNOWN
         }
 
-        Log.d("Detector", "format: " + matchResult.bestIndex + "(" + matchResult.distance +  ")")
+        //Log.d("Detector", "format: " + matchResult.bestIndex + "(" + matchResult.distance +  ")")
 
         return matchResult.bestIndex;
     }
@@ -94,7 +93,7 @@ class Detector(var isTablet: Boolean) {
             matchResult.bestIndex = INDEX_UNKNOWN
         }
 
-        Log.d("Detector", "mode: " + matchResult.bestIndex + "(" + matchResult.distance +  ")")
+        //Log.d("Detector", "mode: " + matchResult.bestIndex + "(" + matchResult.distance +  ")")
 
         return matchResult.bestIndex;
     }
