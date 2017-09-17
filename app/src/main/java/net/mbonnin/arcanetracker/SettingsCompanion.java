@@ -3,6 +3,7 @@ package net.mbonnin.arcanetracker;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +26,10 @@ import net.mbonnin.arcanetracker.trackobot.Url;
 import net.mbonnin.arcanetracker.trackobot.User;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
+import rx.Completable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
@@ -93,24 +97,24 @@ public class SettingsCompanion {
         user.password = passwordEditText.getText().toString();
 
         Trackobot.get().testUser(user)
-            .subscribe(lce -> {
-                if (lce.isLoading()) {
-                    signinButton.setVisibility(GONE);
-                    signinProgressBar.setVisibility(VISIBLE);
-                    signupButton.setEnabled(false);
-                } else {
-                    signinProgressBar.setVisibility(GONE);
-                    signinButton.setVisibility(VISIBLE);
-                    signupButton.setEnabled(true);
-                    if (lce.getError() != null) {
-                        Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show();
-                        Utils.reportNonFatal(lce.getError());
+                .subscribe(lce -> {
+                    if (lce.isLoading()) {
+                        signinButton.setVisibility(GONE);
+                        signinProgressBar.setVisibility(VISIBLE);
+                        signupButton.setEnabled(false);
                     } else {
-                        FirebaseAnalytics.getInstance(ArcaneTrackerApplication.getContext()).logEvent("track_o_bot_signin", null);
-                        updateTrackobot(settingsView);
+                        signinProgressBar.setVisibility(GONE);
+                        signinButton.setVisibility(VISIBLE);
+                        signupButton.setEnabled(true);
+                        if (lce.getError() != null) {
+                            Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show();
+                            Utils.reportNonFatal(lce.getError());
+                        } else {
+                            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.getContext()).logEvent("track_o_bot_signin", null);
+                            updateTrackobot(settingsView);
+                        }
                     }
-                }
-            });
+                });
     };
 
     private View.OnClickListener mSignupButtonClicked = v -> {
@@ -179,25 +183,25 @@ public class SettingsCompanion {
             }
 
             Trackobot.get().testUser(user)
-            .subscribe(lce -> {
-                if (lce.isLoading()) {
-                    importButton.setVisibility(GONE);
-                    importProgressBar.setVisibility(VISIBLE);
-                    importButton.setEnabled(false);
-                } else {
-                    importProgressBar.setVisibility(GONE);
-                    importButton.setVisibility(VISIBLE);
-                    importButton.setEnabled(true);
+                    .subscribe(lce -> {
+                        if (lce.isLoading()) {
+                            importButton.setVisibility(GONE);
+                            importProgressBar.setVisibility(VISIBLE);
+                            importButton.setEnabled(false);
+                        } else {
+                            importProgressBar.setVisibility(GONE);
+                            importButton.setVisibility(VISIBLE);
+                            importButton.setEnabled(true);
 
-                    if (lce.getError() != null) {
-                        Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show();
-                        Utils.reportNonFatal(lce.getError());
-                    } else {
-                        FirebaseAnalytics.getInstance(ArcaneTrackerApplication.getContext()).logEvent("track_o_bot_import", null);
-                        updateTrackobot(settingsView);
-                    }
-                }
-            });
+                            if (lce.getError() != null) {
+                                Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show();
+                                Utils.reportNonFatal(lce.getError());
+                            } else {
+                                FirebaseAnalytics.getInstance(ArcaneTrackerApplication.getContext()).logEvent("track_o_bot_import", null);
+                                updateTrackobot(settingsView);
+                            }
+                        }
+                    });
         }
     };
 
@@ -286,38 +290,59 @@ public class SettingsCompanion {
 
         updateTrackobot(view);
 
-        TextView appVersion = (TextView) view.findViewById(R.id.appVersion);
+        TextView appVersion = view.findViewById(R.id.appVersion);
         appVersion.setText(view.getContext().getString(R.string.thisIsArcaneTracker, BuildConfig.VERSION_NAME, Utils.isAppDebuggable() ? " (debug)" : ""));
 
-        Button feedbackButton = (Button) view.findViewById(R.id.feedBackButton);
+        Button feedbackButton = view.findViewById(R.id.feedBackButton);
         feedbackButton.setOnClickListener(v -> {
             ViewManager.get().removeView(settingsView);
 
-            Intent emailIntent = new Intent(Intent.ACTION_SEND);
-            emailIntent.setType("text/plain");
-            emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"support@arcanetracker.com"});
-            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Arcane Tracker Feedback");
-            emailIntent.putExtra(Intent.EXTRA_TEXT, view.getContext().getString(R.string.decribeYourProblem) + "\n\n");
 
+            ArrayList<Uri> arrayUri = new ArrayList<>();
             FileTree.get().sync();
-            Uri uri = FileProvider.getUriForFile(view.getContext(), "net.mbonnin.arcanetracker.fileprovider", FileTree.get().getFile());
-            emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+            arrayUri.add(FileProvider.getUriForFile(view.getContext(), "net.mbonnin.arcanetracker.fileprovider", FileTree.get().getFile()));
 
-            try {
-                ArcaneTrackerApplication.getContext().startActivity(emailIntent);
-            } catch (Exception e) {
-                Utils.reportNonFatal(e);
-                Toast.makeText(ArcaneTrackerApplication.getContext(), Utils.getString(R.string.noEmailFound), Toast.LENGTH_LONG).show();
+            Completable completable;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                    && ScreenCapture.get() != null) {
+                /* 1s is hopefully enough for the settings view to disappear */
+                Toast.makeText(view.getContext(), Utils.getString(R.string.preparingEmail), Toast.LENGTH_SHORT).show();
+
+                completable = Completable.timer(1, TimeUnit.SECONDS)
+                        .andThen(ScreenCapture.get().screenShotSingle())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .map(file -> arrayUri.add(FileProvider.getUriForFile(view.getContext(), "net.mbonnin.arcanetracker.fileprovider", file)))
+                        .toCompletable();
+            } else {
+                completable = Completable.complete();
             }
+
+            completable.observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(() -> {
+                        Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+                        emailIntent.setType("text/plain");
+                        emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"support@arcanetracker.com"});
+                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Arcane Tracker Feedback");
+                        emailIntent.putExtra(Intent.EXTRA_TEXT, view.getContext().getString(R.string.decribeYourProblem) + "\n\n");
+                        emailIntent.putExtra(Intent.EXTRA_STREAM, arrayUri);
+
+                        try {
+                            ArcaneTrackerApplication.getContext().startActivity(emailIntent);
+                        } catch (Exception e) {
+                            Utils.reportNonFatal(e);
+                            Toast.makeText(ArcaneTrackerApplication.getContext(), Utils.getString(R.string.noEmailFound), Toast.LENGTH_LONG).show();
+                        }
+
+                    });
         });
 
-        Button resetCacheButton = (Button) view.findViewById(R.id.resetCache);
+        Button resetCacheButton = view.findViewById(R.id.resetCache);
         resetCacheButton.setOnClickListener(v -> {
             PicassoCardRequestHandler.get().resetCache();
         });
 
-        SeekBar seekBar = (SeekBar) view.findViewById(R.id.seekBar);
+        SeekBar seekBar = view.findViewById(R.id.seekBar);
         seekBar.setMax(100);
         seekBar.setProgress(MainViewCompanion.get().getAlphaSetting());
         seekBar.setOnSeekBarChangeListener(mSeekBarChangeListener);

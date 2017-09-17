@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String HEARTHSTONE_PACKAGE_ID = "com.blizzard.wtcg.hearthstone";
     View contentView;
     private CheckBox checkbox;
-    private ScreenCapture mScreenCapture;
     private MediaProjectionManager mProjectionManager;
 
 
@@ -101,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE_MEDIAPROJECTION) {
             if (resultCode == RESULT_OK) {
                 MediaProjection projection = mProjectionManager.getMediaProjection(resultCode, data);
-                mScreenCapture = new ScreenCapture(this, projection);
+                ScreenCapture.create(projection);
                 tryToLaunchGame();
             } else {
                 new AlertDialog.Builder(this)
@@ -163,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mScreenCapture == null) {
+        if (Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && ScreenCapture.get() == null) {
             mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
             startActivityForResult(mProjectionManager.createScreenCaptureIntent(), REQUEST_CODE_MEDIAPROJECTION);
             return;

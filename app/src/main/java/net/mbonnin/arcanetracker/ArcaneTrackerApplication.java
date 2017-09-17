@@ -82,13 +82,16 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
         display.getRealSize(point);
 
         double sizeInInches = Math.sqrt((point.x * point.x) / (metrics.xdpi * metrics.xdpi) + (point.y * point.y) / (metrics.ydpi * metrics.ydpi));
+        Timber.d("Build.MODEL=" + Build.MODEL);
+        Timber.d("Build.MANUFACTURER=" + Build.MANUFACTURER);
+        Timber.d("screen size=" + point.x + "x" + point.y);
         Timber.d("sizeInInches=" + sizeInInches);
         mHasTabletLayout = sizeInInches >= 8;
 
         String langKey = Settings.get(Settings.LANGUAGE, null);
         Timber.d("langKey=" + langKey);
         if (false) {
-            /**
+            /*
              * XXX: this somehow does not work sometimes
              */
             Resources res = sContext.getResources();

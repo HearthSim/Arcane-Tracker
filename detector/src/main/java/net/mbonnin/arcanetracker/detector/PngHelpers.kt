@@ -4,8 +4,10 @@ import ar.com.hjg.pngj.ImageInfo
 import ar.com.hjg.pngj.ImageLineInt
 import ar.com.hjg.pngj.PngReader
 import ar.com.hjg.pngj.PngWriter
+import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+import java.io.OutputStream
 import java.nio.ByteBuffer
 
 
@@ -36,9 +38,15 @@ fun pngToByteBufferImage(inputStream: InputStream): ByteBufferImage {
     return ByteBufferImage(reader.imgInfo.cols, reader.imgInfo.rows, byteBuffer, reader.imgInfo.cols * 4)
 }
 
-fun byteBufferImageToPng(byteBufferImage: ByteBufferImage, path: String) {
+fun byteBufferImageToPng(byteBufferImage: ByteBufferImage, file: File) {
+    byteBufferImageToPng(byteBufferImage, FileOutputStream(file))
+}
 
-    val outputStream = FileOutputStream(path)
+fun byteBufferImageToPng(byteBufferImage: ByteBufferImage, path: String) {
+    byteBufferImageToPng(byteBufferImage, FileOutputStream(path))
+}
+
+fun byteBufferImageToPng(byteBufferImage: ByteBufferImage, outputStream: OutputStream) {
     val imgInfo = ImageInfo(byteBufferImage.w, byteBufferImage.h, 8, false)
     val writer = PngWriter(outputStream, imgInfo)
     val imageLine = ImageLineInt(imgInfo)
