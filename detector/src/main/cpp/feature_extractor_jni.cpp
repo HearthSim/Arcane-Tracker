@@ -4,8 +4,6 @@
 #include "jni.h"
 #include <malloc.h>
 
-#include <android/log.h>
-
 extern "C" {
 
 void computeHaar(double *pDouble, double *pDouble1);
@@ -17,36 +15,42 @@ double *scaledIntegralImage(uint8_t *in, int pixel_stride, int stride, jdouble i
 #define SCALED_SIZE 32
 
 JNIEXPORT jdoubleArray JNICALL
-Java_net_mbonnin_arcanetracker_detector_FeatureExtractor_getFeatures(JNIEnv *env, jobject obj,
-                                                                     jobject byteBuffer, jdouble x,
-                                                                     jdouble y, jdouble w,
-                                                                     jdouble h,
-                                                                     jint stride) {
+Java_net_mbonnin_arcanetracker_detector_FeatureExtractor_allocateVector(JNIEnv *env, jobject obj) {
     jdoubleArray result;
     result = env->NewDoubleArray(3 * FEATURES_PER_CHANNEL);
     if (result == NULL) {
-        return NULL; /* out of memory error thrown */
+        return NULL;  /* out of memory error thrown */
     }
+
+    return result;
+}
+
+JNIEXPORT void JNICALL
+Java_net_mbonnin_arcanetracker_detector_FeatureExtractor_getFeatures(JNIEnv *env, jobject obj,
+                                                                     jobject byteBuffer,
+                                                                     jint stride, jdouble x,
+                                                                     jdouble y, jdouble w,
+                                                                     jdouble h,
+                                                                     jdoubleArray vector) {
 
     uint8_t *buf = (uint8_t *) env->GetDirectBufferAddress(byteBuffer);
 
-    double *vector = (double *) malloc(3 * FEATURES_PER_CHANNEL * sizeof(double));
+    double *v = (double *) malloc(3 * FEATURES_PER_CHANNEL * sizeof(double));
     for (int i = 0; i < 3; i++) {
         double *integralImage = scaledIntegralImage(buf + i, 4, stride, x, y, w, h, SCALED_SIZE,
                                                     SCALED_SIZE);
 
-        computeHaar(integralImage, vector + i * FEATURES_PER_CHANNEL);
+        computeHaar(integralImage, v + i * FEATURES_PER_CHANNEL);
         free(integralImage);
     }
 
     for (int i = 0; i < 3 * FEATURES_PER_CHANNEL; i++) {
-        vector[i] = vector[i] / (SCALED_SIZE * SCALED_SIZE);
+        v[i] = v[i] / (SCALED_SIZE * SCALED_SIZE);
     }
 
-    env->SetDoubleArrayRegion(result, 0, 3 * FEATURES_PER_CHANNEL, vector);
+    env->SetDoubleArrayRegion(vector, 0, 3 * FEATURES_PER_CHANNEL, v);
 
-    free(vector);
-    return result;
+    free(v);
 }
 
 

@@ -18,23 +18,25 @@ class ATImage(val w: Int, val h: Int, val buffer: DoubleArray) {
 
 class Detector(val debugCallback: (ATImages: Array<ATImage>) -> Unit) {
     val featureDetector = FeatureExtractor();
+    val vector = featureDetector.allocateVector();
 
     fun detectRank(byteBufferImage: ByteBufferImage) {
         val in_x = byteBufferImage.w * (820.0 / 1920.0)
         val in_y = byteBufferImage.h * (424.0 / 1080.0)
         val in_w = byteBufferImage.w * (230.0 / 1920.0)
         val in_h = byteBufferImage.h * (102.0 / 1080.0)
-        val features = featureDetector.getFeatures(byteBufferImage.buffer, in_x, in_y, in_w, in_h, byteBufferImage.stride);
+
+        featureDetector.getFeatures(byteBufferImage.buffer, byteBufferImage.stride, in_x, in_y, in_w, in_h, vector);
 
         var rank = 0
         var minDist = Double.MAX_VALUE
         var bestRank = -1;
-        for (rankFeatures in RANKS) {
+        for (rankVector in RANKS) {
             var dist = 0.0;
-            for (i in 0 until features.size) {
-                dist += (features[i] - rankFeatures[i]) * (features[i] - rankFeatures[i])
+            for (i in 0 until vector.size) {
+                dist += (vector[i] - rankVector[i]) * (vector[i] - rankVector[i])
             }
-            Log.d("Detector", String.format("%d: %f", rank, dist))
+            //Log.d("Detector", String.format("%d: %f", rank, dist))
             if (dist < minDist) {
                 minDist = dist
                 bestRank = rank

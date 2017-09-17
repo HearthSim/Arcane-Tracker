@@ -10,5 +10,7 @@ class FeatureExtractor {
     /*
      * x, y, w, h represent the input rect where to compute the features
      */
-    external fun getFeatures(byteBuffer: ByteBuffer, x: Double, y: Double, w: Double, h: Double, stride: Int): DoubleArray;
+    external fun getFeatures(byteBuffer: ByteBuffer, stride: Int, x: Double, y: Double, w: Double, h: Double, features: DoubleArray)
+
+    external fun allocateVector(): DoubleArray
 }
