@@ -71,14 +71,16 @@ public class ScreenCapture implements ImageReader.OnImageAvailableListener{
         this.mediaProjection = mediaProjection;
         mediaProjection.registerCallback(mCallback, null);
 
-        mDetector = new Detector();
+        mDetector = new Detector(ArcaneTrackerApplication.get().hasTabletLayout());
 
         WindowManager wm = (android.view.WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         Point point = new Point();
         display.getRealSize(point);
-        mWidth = point.x;
-        mHeight = point.y;
+
+        // if we start in landscape, we might have the wrong orientation
+        mWidth = point.x > point.y ? point.x : point.y;
+        mHeight = point.y < point.x ? point.y : point.x;
 
         mImageReader = ImageReader.newInstance(mWidth, mHeight, PixelFormat.RGBA_8888, 3);
 

@@ -1,5 +1,6 @@
 package net.mbonnin.arcanetracker.detector
 
+import android.util.Log
 import java.nio.ByteBuffer
 
 class ByteBufferImage(val w: Int, val h: Int, val buffer: ByteBuffer, val stride: Int) {}
@@ -29,10 +30,13 @@ const val MODE_CASUAL = 0
 const val MODE_RANKED = 1
 
 val FORMAT_RRECT = RRect(1754.0, 32.0, 138.0, 98.0).scale(1/1920.0, 1/1080.0)
+val FORMAT_RRECT_TABLET = RRect(1609.0, 39.0, 96.0, 73.0).scale(1/2048.0, 1/1536.0)
 val RANK_RRECT = RRect(820.0, 424.0, 230.0, 102.0).scale(1/1920.0, 1/1080.0)
+val RANK_RRECT_TABLET = RRect(1730.0, 201.0, 110.0, 46.0).scale(1/2048.0, 1/1536.0)
 val MODE_RRECT = RRect(1270.0, 256.0, 140.0, 32.0).scale(1/1920.0, 1/1080.0)
+val MODE_RRECT_TABLET = RRect(1432.0, 400.0, 160.0, 34.0).scale(1/2048.0, 1/1536.0)
 
-class Detector {
+class Detector(var isTablet: Boolean) {
     val featureDetector = FeatureExtractor()
     val matchResult = MatchResult()
 
@@ -60,7 +64,7 @@ class Detector {
     }
 
     fun detectRank(byteBufferImage: ByteBufferImage):Int {
-        val matchResult = matchImage(byteBufferImage, RANK_RRECT, RANKS)
+        val matchResult = matchImage(byteBufferImage, if (isTablet) RANK_RRECT_TABLET else RANK_RRECT , RANKS)
 
         if (matchResult.distance > 400) {
             matchResult.bestIndex = INDEX_UNKNOWN
@@ -73,24 +77,24 @@ class Detector {
 
     fun detectFormat(byteBufferImage: ByteBufferImage):Int {
 
-        val matchResult = matchImage(byteBufferImage, FORMAT_RRECT, FORMATS)
+        val matchResult = matchImage(byteBufferImage, if (isTablet) FORMAT_RRECT_TABLET else FORMAT_RRECT, FORMATS)
         if (matchResult.distance > 400) {
             matchResult.bestIndex = INDEX_UNKNOWN
         }
 
-        //Log.d("Detector", "format: " + matchResult.bestIndex + "(" + matchResult.distance +  ")")
+        Log.d("Detector", "format: " + matchResult.bestIndex + "(" + matchResult.distance +  ")")
 
         return matchResult.bestIndex;
     }
 
     fun detectMode(byteBufferImage: ByteBufferImage):Int {
 
-        val matchResult = matchImage(byteBufferImage, MODE_RRECT, MODES)
+        val matchResult = matchImage(byteBufferImage, if (isTablet) MODE_RRECT_TABLET else MODE_RRECT, if (isTablet) MODES_TABLET else MODES)
         if (matchResult.distance > 400) {
             matchResult.bestIndex = INDEX_UNKNOWN
         }
 
-        //Log.d("Detector", "format: " + matchResult.bestIndex + "(" + matchResult.distance +  ")")
+        Log.d("Detector", "mode: " + matchResult.bestIndex + "(" + matchResult.distance +  ")")
 
         return matchResult.bestIndex;
     }
