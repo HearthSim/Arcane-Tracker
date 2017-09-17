@@ -11,7 +11,7 @@ class GenerateModes {
 
         val featureDetector = FeatureExtractor()
 
-        for(i in arrayOf("casual", "standard")) {
+        for(i in arrayOf("casual", "ranked")) {
             val pngPath = String.format("/screenshots/%s.png", i)
 
             val byteBufferImage = pngToByteBufferImage(javaClass.getResourceAsStream(pngPath))

@@ -1,8 +1,12 @@
 package net.mbonnin.arcanetracker.parser;
 
+import net.mbonnin.arcanetracker.ScreenCaptureResult;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import rx.Completable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 /**
@@ -71,6 +75,11 @@ public class LoadingScreenParser implements LogReader.LineConsumer {
                     case MODE_TAVERN_BRAWL:
                         mGameplayMode = mMode;
                         break;
+                }
+                if (mMode.equals(MODE_TOURNAMENT)) {
+                    Completable.fromAction(() -> ScreenCaptureResult.reset())
+                            .subscribeOn(AndroidSchedulers.mainThread())
+                            .subscribe();
                 }
             }
         }

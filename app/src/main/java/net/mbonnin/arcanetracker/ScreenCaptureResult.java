@@ -9,8 +9,12 @@ import java.util.Locale;
 import rx.Completable;
 import rx.android.schedulers.AndroidSchedulers;
 
-class ScreenCaptureResult {
-    private static volatile int rank = DetectorKt.RANK_UNKNOWN;
+import static net.mbonnin.arcanetracker.detector.DetectorKt.FORMAT_UNKNOWN;
+import static net.mbonnin.arcanetracker.detector.DetectorKt.MODE_UNKNOWN;
+import static net.mbonnin.arcanetracker.detector.DetectorKt.RANK_UNKNOWN;
+
+public class ScreenCaptureResult {
+    private static volatile int rank = RANK_UNKNOWN;
     private static volatile int format = DetectorKt.FORMAT_UNKNOWN;
     private static volatile int mode = DetectorKt.MODE_UNKNOWN;
 
@@ -54,5 +58,11 @@ class ScreenCaptureResult {
 
     public static int getFormat() {
         return format;
+    }
+
+    public static void reset() {
+        rank = RANK_UNKNOWN;
+        mode = MODE_UNKNOWN;
+        format = FORMAT_UNKNOWN;
     }
 }

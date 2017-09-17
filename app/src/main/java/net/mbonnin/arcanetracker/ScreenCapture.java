@@ -57,7 +57,9 @@ public class ScreenCapture implements ImageReader.OnImageAvailableListener{
                     ScreenCaptureResult.setMode(mode);
                     if (mode == DetectorKt.MODE_RANKED) {
                         int rank = mDetector.detectRank(bbImage);
-                        ScreenCaptureResult.setRank(rank);
+                        if (rank != DetectorKt.RANK_UNKNOWN) {
+                            ScreenCaptureResult.setRank(rank);
+                        }
                     }
                 }
             }
