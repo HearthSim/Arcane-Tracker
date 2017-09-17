@@ -208,4 +208,17 @@ public class TestParser {
          */
         Assert.assertTrue(listener.gameOverCount == 1);
     }
+
+    @Test
+    public void testEffigy() throws Exception {
+        runParser("/effigy.log", new SimpleListener() {
+            @Override
+            public void somethingChanged() {
+                if ("11".equals(game.gameEntity.tags.get(Entity.KEY_TURN))) {
+                    Entity secretEntity = game.findEntityUnsafe("18");
+                    Assert.assertFalse(secretEntity.extra.selfPlayerMinionDied);
+                }
+            }
+        });
+    }
 }

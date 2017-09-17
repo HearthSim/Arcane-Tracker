@@ -43,6 +43,16 @@ public class Game {
         return findPlayer(entity.tags.get(Entity.KEY_CONTROLLER));
     }
 
+    public Entity findControllerEntity(Entity entity) {
+        String playerId = entity.tags.get(Entity.KEY_CONTROLLER);
+        for (Entity e: entityMap.values()) {
+            if (Utils.equalsNullSafe(e.PlayerID, playerId)) {
+                return e;
+            }
+        }
+        return null;
+    }
+
     public Player findPlayer(String playerId) {
         Player player = playerMap.get(playerId);
         if (player == null) {

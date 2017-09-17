@@ -197,7 +197,7 @@ public class Utils {
     }
 
     public static boolean equalsNullSafe(String a, String b) {
-        return a != null ? a.equals(b) : b == null;
+        return a != null && a.equals(b);
     }
 
     public static int cardMapGet(HashMap<String, Integer> map, String key) {

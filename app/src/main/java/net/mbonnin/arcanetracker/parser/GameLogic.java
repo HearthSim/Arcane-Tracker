@@ -294,11 +294,13 @@ public class GameLogic {
                  * secret detector
                  */
                 EntityList secretEntityList = mGame.getEntityList(e -> Entity.ZONE_SECRET.equals(e.tags.get(Entity.KEY_ZONE)));
-                for (Entity e2 : secretEntityList) {
-                    if (Utils.equalsNullSafe(e2.tags.get(Entity.KEY_CONTROLLER), entity.tags.get(Entity.KEY_CONTROLLER))) {
-                        if (Card.TYPE_MINION.equals(entity.tags.get(Entity.KEY_CARDTYPE))) {
-                            e2.extra.selfPlayerMinionDied = true;
-                        }
+                for (Entity secretEntity : secretEntityList) {
+                    if (Utils.equalsNullSafe(secretEntity.tags.get(Entity.KEY_CONTROLLER), entity.tags.get(Entity.KEY_CONTROLLER))
+                            && Card.TYPE_MINION.equals(entity.tags.get(Entity.KEY_CARDTYPE))) {
+                            Entity controllerEntity = mGame.findControllerEntity(entity);
+                            if (controllerEntity != null && "0".equals(controllerEntity.tags.get(Entity.KEY_CURRENT_PLAYER))) {
+                                secretEntity.extra.selfPlayerMinionDied = true;
+                            }
                     }
                 }
             } else if (Entity.ZONE_HAND.equals(oldValue) && !Entity.ZONE_HAND.equals(newValue)) {
@@ -365,7 +367,7 @@ public class GameLogic {
     private void handleCreateGameTag(CreateGameTag tag) {
         mLastTag = false;
 
-        if (mGame != null) {
+        if (mGame != null && tag.gameEntity.tags.get(Entity.KEY_TURN) != null) {
             Timber.w("CREATE_GAME during an existing one, resuming");
         } else {
             mGame = new Game();
