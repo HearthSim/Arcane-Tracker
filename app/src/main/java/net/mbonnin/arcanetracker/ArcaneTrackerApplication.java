@@ -6,11 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.Handler;
 import android.support.multidex.MultiDexApplication;
 import android.util.DisplayMetrics;
 import android.view.ContextThemeWrapper;
+import android.view.Display;
+import android.view.WindowManager;
 
 import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.LruCache;
@@ -38,6 +41,7 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
     private static Context sContext;
     private static ArcaneTrackerApplication sArcaneTrackerApplication;
     private LruCache mLruCache;
+    private boolean mHasTabletLayout;
 
     @Override
     public void onCreate() {
@@ -57,6 +61,8 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
             }
         };
 
+        Timber.plant(FileTree.get());
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager mNotificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -68,7 +74,16 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
             mNotificationManager.createNotificationChannel(mChannel);
         }
 
-        Timber.plant(FileTree.get());
+        WindowManager wm = (android.view.WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        DisplayMetrics metrics = new DisplayMetrics();
+        display.getRealMetrics(metrics);
+        Point point = new Point();
+        display.getRealSize(point);
+
+        double sizeInInches = Math.sqrt((point.x * point.x) / (metrics.xdpi * metrics.xdpi) + (point.y * point.y) / (metrics.ydpi * metrics.ydpi));
+        Timber.d("sizeInInches=" + sizeInInches);
+        mHasTabletLayout = sizeInInches >= 8;
 
         String langKey = Settings.get(Settings.LANGUAGE, null);
         Timber.d("langKey=" + langKey);
@@ -142,9 +157,14 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
         super.onConfigurationChanged(newConfig);
     }
 
+    public boolean hasTabletLayout() {
+        return mHasTabletLayout;
+    }
+
     public LruCache getImageCache() {
         return mLruCache;
     }
+
     public static ArcaneTrackerApplication get() {
         return sArcaneTrackerApplication;
     }
