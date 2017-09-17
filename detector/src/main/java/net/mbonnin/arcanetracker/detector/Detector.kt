@@ -1,13 +1,16 @@
 package net.mbonnin.arcanetracker.detector
 
 import android.util.Log
-import org.jtransforms.dct.DoubleDCT_2D
 import java.nio.ByteBuffer
-import java.nio.ByteOrder
 
 class ByteBufferImage(val w: Int, val h: Int, val buffer: ByteBuffer, val stride: Int) {}
 
 class RRect(val l: Double, val t: Double, val w: Double, val h: Double) {}
+
+class MatchResult {
+    var bestIndex = 0
+    var distance = 0.0
+}
 
 class ATImage(val w: Int, val h: Int, val buffer: DoubleArray) {
     fun getPixel(x: Int, y: Int): Double {
@@ -15,103 +18,72 @@ class ATImage(val w: Int, val h: Int, val buffer: DoubleArray) {
     }
 }
 
+const val INDEX_UNKNOWN = -1
+const val RANK_UNKNOWN = INDEX_UNKNOWN
 
-class Detector(val debugCallback: (ATImages: Array<ATImage>) -> Unit) {
-    val featureDetector = FeatureExtractor();
-    val vector = featureDetector.allocateVector();
+const val FORMAT_UNKNOWN = INDEX_UNKNOWN
+const val FORMAT_WILD = 0
+const val FORMAT_STANDARD =1
 
-    fun detectRank(byteBufferImage: ByteBufferImage) {
-        val in_x = byteBufferImage.w * (820.0 / 1920.0)
-        val in_y = byteBufferImage.h * (424.0 / 1080.0)
-        val in_w = byteBufferImage.w * (230.0 / 1920.0)
-        val in_h = byteBufferImage.h * (102.0 / 1080.0)
+const val FORMAT_IN_XP = 1746.0
+const val FORMAT_IN_YP = 0.0
+const val FORMAT_IN_WP = 174.0
+const val FORMAT_IN_HP = 132.0
 
-        featureDetector.getFeatures(byteBufferImage.buffer, byteBufferImage.stride, in_x, in_y, in_w, in_h, vector);
+class Detector {
+    val featureDetector = FeatureExtractor()
+    val matchResult = MatchResult()
 
-        var rank = 0
-        var minDist = Double.MAX_VALUE
-        var bestRank = -1;
-        for (rankVector in RANKS) {
-            var dist = 0.0;
+    fun matchImage(byteBufferImage: ByteBufferImage, in_xp: Double, in_yp: Double, in_wp: Double, in_hp: Double, candidates: Array<DoubleArray>):MatchResult {
+
+        val in_x = byteBufferImage.w * (in_xp / 1920.0)
+        val in_y = byteBufferImage.h * (in_yp / 1080.0)
+        val in_w = byteBufferImage.w * (in_wp / 1920.0)
+        val in_h = byteBufferImage.h * (in_hp / 1080.0)
+
+        val vector = featureDetector.getFeatures(byteBufferImage.buffer, byteBufferImage.stride, in_x, in_y, in_w, in_h);
+
+        var index = 0
+        matchResult.bestIndex = INDEX_UNKNOWN
+        matchResult.distance = Double.MAX_VALUE
+
+        for (rankVector in candidates) {
+            var dist = 0.0
             for (i in 0 until vector.size) {
                 dist += (vector[i] - rankVector[i]) * (vector[i] - rankVector[i])
             }
             //Log.d("Detector", String.format("%d: %f", rank, dist))
-            if (dist < minDist) {
-                minDist = dist
-                bestRank = rank
+            if (dist < matchResult.distance) {
+                matchResult.distance = dist
+                matchResult.bestIndex = index
             }
-            rank++
+            index++
         }
-
-        Log.d("Detector", "best rank: " + bestRank + "(" + minDist +  ")")
+        return matchResult
     }
 
-    fun getRankVectorDCT(byteBufferImage: ByteBufferImage, rRect: RRect): DoubleArray {
-        val vector = DoubleArray(16 * 3)
-        var index = 0
+    fun detectRank(byteBufferImage: ByteBufferImage):Int {
+        val matchResult = matchImage(byteBufferImage, 820.0, 424.0, 230.0, 102.0, RANKS)
 
-        val images = scaleImage(byteBufferImage, rRect, SCALED_SIZE, SCALED_SIZE)
-        debugCallback(images)
-
-        for (image in images) {
-            val dct = DoubleDCT_2D(SCALED_SIZE.toLong(), SCALED_SIZE.toLong())
-            dct.forward(image.buffer, true)
-
-            for (x in 0 until 4) {
-                for (y in 0 until 4) {
-                    vector.set(index++, image.getPixel(x, y))
-                }
-            }
+        if (matchResult.distance > 400) {
+            matchResult.bestIndex = INDEX_UNKNOWN
         }
 
-        return vector
+        Log.d("Detector", "rank: " + matchResult.bestIndex + "(" + matchResult.distance +  ")")
+
+        return matchResult.bestIndex;
     }
 
-    fun scaleImage(inImage: ByteBufferImage, rRect: RRect, outW: Int, outH: Int): Array<ATImage> {
-        val scaleX = (inImage.w * rRect.w) / outW
-        val scaleY = (inImage.h * rRect.h) / outH
-        val images = Array(3) {
-            ATImage(outW, outH, kotlin.DoubleArray(outW * outH))
-        }
-        inImage.buffer.order(ByteOrder.LITTLE_ENDIAN);
+    fun detectWildStandard(byteBufferImage: ByteBufferImage):Int {
 
-        for (outX in 0 until outW) {
-            for (outY in 0 until outH) {
-                val inX = scaleX * outX + rRect.l * inImage.w
-                val inY = scaleY * outY + rRect.t * inImage.h
-
-                val X0 = inX.toInt()
-                val Y0 = inY.toInt()
-                val X1 = inX.toInt() + 1
-                val Y1 = inY.toInt() + 1
-
-                val X0Y0 = inImage.buffer.getInt(X0 + Y0 * inImage.stride)
-                val X1Y0 = inImage.buffer.getInt(X1 + Y0 * inImage.stride)
-                val X0Y1 = inImage.buffer.getInt(X0 + Y1 * inImage.stride)
-                val X1Y1 = inImage.buffer.getInt(X1 + Y1 * inImage.stride)
-
-                for (i in 0 until 2) {
-                    val shift = 8 * i
-                    /*
-                     * bilinear filtering
-                     */
-                    val v0 = (inX - X0) * X0Y0.shr(shift).and(0xff) + (X1 - inX) * X1Y0.shr(shift).and(0xff)
-                    val v1 = (inX - X0) * X0Y1.shr(shift).and(0xff) + (X1 - inX) * X1Y1.shr(shift).and(0xff)
-                    val v = ((inY - Y0) * v0 + (Y1 - inY) * v1) / 255.0
-
-                    images[i].buffer.set(outY * outW + outX, v)
-
-                    //images[i].buffer.set(outY * outW + outX, outX.toDouble() / outW)
-                }
-            }
+        val matchResult = matchImage(byteBufferImage, FORMAT_IN_XP, FORMAT_IN_YP, FORMAT_IN_WP, FORMAT_IN_HP, FORMATS)
+        if (matchResult.distance > 400) {
+            matchResult.bestIndex = INDEX_UNKNOWN
         }
 
-        return images
-    }
+        Log.d("Detector", "format: " + matchResult.bestIndex + "(" + matchResult.distance +  ")")
 
-    companion object {
-        const val SCALED_SIZE = 32
+        return matchResult.bestIndex;
     }
 }
 

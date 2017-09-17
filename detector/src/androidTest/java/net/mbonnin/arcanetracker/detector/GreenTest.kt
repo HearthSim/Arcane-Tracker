@@ -10,8 +10,8 @@ class GreenTest {
 
         val byteBufferImage = pngToByteBufferImage(inputStream)
 
-        val features = FeatureExtractor().getFeatures(byteBufferImage.buffer, byteBufferImage.w.toDouble()/2, 0.toDouble(), byteBufferImage.w.toDouble()/2, byteBufferImage.h.toDouble(), byteBufferImage.stride)
+        val vector = FeatureExtractor().getFeatures(byteBufferImage.buffer, byteBufferImage.stride, byteBufferImage.w.toDouble()/2, 0.toDouble(), byteBufferImage.w.toDouble()/2, byteBufferImage.h.toDouble())
 
-        System.out.print(features[0])
+        System.out.print(vector[0])
     }
 }
