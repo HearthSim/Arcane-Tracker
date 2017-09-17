@@ -4,7 +4,11 @@ import java.nio.ByteBuffer
 
 class ByteBufferImage(val w: Int, val h: Int, val buffer: ByteBuffer, val stride: Int) {}
 
-class RRect(var x: Double, var y: Double, var w: Double, var h: Double) {}
+open class RRect(val x: Double, val y: Double, val w: Double, val h: Double) {
+    fun scale(sx: Double, sy: Double): RRect {
+        return RRect(sx * x, sy * y, sx * w, sy * h)
+    }
+}
 
 class MatchResult {
     var bestIndex = 0
@@ -24,9 +28,9 @@ const val MODE_UNKNOWN = INDEX_UNKNOWN
 const val MODE_CASUAL = 0
 const val MODE_RANKED = 1
 
-val FORMAT_RRECT = RRect(1754.0, 32.0, 138.0, 98.0)
-val RANK_RRECT = RRect(820.0, 424.0, 230.0, 102.0)
-val MODE_RRECT = RRect(1270.0, 256.0, 140.0, 32.0)
+val FORMAT_RRECT = RRect(1754.0, 32.0, 138.0, 98.0).scale(1/1920.0, 1/1080.0)
+val RANK_RRECT = RRect(820.0, 424.0, 230.0, 102.0).scale(1/1920.0, 1/1080.0)
+val MODE_RRECT = RRect(1270.0, 256.0, 140.0, 32.0).scale(1/1920.0, 1/1080.0)
 
 class Detector {
     val featureDetector = FeatureExtractor()
@@ -34,12 +38,7 @@ class Detector {
 
     fun matchImage(byteBufferImage: ByteBufferImage,  rrect: RRect, candidates: Array<DoubleArray>):MatchResult {
 
-        rrect.x = byteBufferImage.w * (rrect.x / 1920.0)
-        rrect.y = byteBufferImage.h * (rrect.y / 1080.0)
-        rrect.w = byteBufferImage.w * (rrect.w / 1920.0)
-        rrect.h = byteBufferImage.h * (rrect.h / 1080.0)
-
-        val vector = featureDetector.getFeatures(byteBufferImage.buffer, byteBufferImage.stride, rrect);
+        val vector = featureDetector.getFeatures(byteBufferImage.buffer, byteBufferImage.stride, rrect.scale(byteBufferImage.w.toDouble(), byteBufferImage.h.toDouble()));
 
         var index = 0
         matchResult.bestIndex = INDEX_UNKNOWN

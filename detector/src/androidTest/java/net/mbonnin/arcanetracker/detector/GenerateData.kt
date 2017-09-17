@@ -5,7 +5,7 @@ import net.mbonnin.arcanetracker.detector.*
 import org.junit.Test
 import java.util.*
 
-val MEDAL_RRECT = RRect(24.0, 82.0, 209.0, 92.0)
+val MEDAL_RRECT = RRect(24.0, 82.0, 209.0, 92.0).scale(1/256.0, 1/256.0)
 
 class GenerateData {
     @Test
@@ -40,7 +40,7 @@ class GenerateData {
 
             val byteBufferImage = pngToByteBufferImage(javaClass.getResourceAsStream(file))
 
-            val vector = featureDetector.getFeatures(byteBufferImage.buffer, byteBufferImage.stride, rrect);
+            val vector = featureDetector.getFeatures(byteBufferImage.buffer, byteBufferImage.stride, rrect.scale(byteBufferImage.w.toDouble(), byteBufferImage.h.toDouble()));
 
             l.add("doubleArrayOf(" + vector.joinToString(", ") + ")")
         }
