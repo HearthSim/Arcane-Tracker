@@ -7,11 +7,11 @@ import android.widget.Toast;
 import com.google.gson.stream.MalformedJsonException;
 
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
+import net.mbonnin.arcanetracker.BnetGameType;
 import net.mbonnin.arcanetracker.Card;
 import net.mbonnin.arcanetracker.Lce;
 import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Utils;
-import net.mbonnin.arcanetracker.parser.LoadingScreenParser;
 import net.mbonnin.arcanetracker.trackobot.model.HistoryList;
 import net.mbonnin.arcanetracker.trackobot.model.ResultData;
 
@@ -262,12 +262,18 @@ public class Trackobot {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public static String getMode(String mode) {
-        switch (mode) {
-            case LoadingScreenParser.MODE_TOURNAMENT:
-                return "ranked";
-            case LoadingScreenParser.MODE_DRAFT:
+    public static String getMode(int bnetGameType) {
+        switch (bnetGameType) {
+            case BnetGameType.BGT_ARENA:
                 return "arena";
+            case BnetGameType.BGT_CASUAL_STANDARD_NORMAL:
+            case BnetGameType.BGT_CASUAL_WILD:
+                return "ranked";
+            case BnetGameType.BGT_RANKED_STANDARD:
+            case BnetGameType.BGT_RANKED_WILD:
+                return "ranked";
+            case BnetGameType.BGT_VS_AI:
+                return "solo";
             default:
                 return "?";
         }

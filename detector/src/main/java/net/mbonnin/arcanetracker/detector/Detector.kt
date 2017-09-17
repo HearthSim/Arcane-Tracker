@@ -1,6 +1,5 @@
 package net.mbonnin.arcanetracker.detector
 
-import android.util.Log
 import java.nio.ByteBuffer
 
 class ByteBufferImage(val w: Int, val h: Int, val buffer: ByteBuffer, val stride: Int) {}
@@ -25,10 +24,19 @@ const val FORMAT_UNKNOWN = INDEX_UNKNOWN
 const val FORMAT_WILD = 0
 const val FORMAT_STANDARD =1
 
-const val FORMAT_IN_XP = 1746.0
-const val FORMAT_IN_YP = 0.0
-const val FORMAT_IN_WP = 174.0
-const val FORMAT_IN_HP = 132.0
+const val MODE_UNKNOWN = INDEX_UNKNOWN
+const val MODE_CASUAL = 0
+const val MODE_RANKED = 1
+
+const val FORMAT_IN_XP = 1754.0
+const val FORMAT_IN_YP = 32.0
+const val FORMAT_IN_WP = 138.0
+const val FORMAT_IN_HP = 98.0
+
+const val MODE_IN_XP = 1270.0
+const val MODE_IN_YP = 256.0
+const val MODE_IN_WP = 140.0
+const val MODE_IN_HP = 32.0
 
 class Detector {
     val featureDetector = FeatureExtractor()
@@ -69,19 +77,31 @@ class Detector {
             matchResult.bestIndex = INDEX_UNKNOWN
         }
 
-        Log.d("Detector", "rank: " + matchResult.bestIndex + "(" + matchResult.distance +  ")")
+        //Log.d("Detector", "rank: " + matchResult.bestIndex + "(" + matchResult.distance +  ")")
 
         return matchResult.bestIndex;
     }
 
-    fun detectWildStandard(byteBufferImage: ByteBufferImage):Int {
+    fun detectFormat(byteBufferImage: ByteBufferImage):Int {
 
         val matchResult = matchImage(byteBufferImage, FORMAT_IN_XP, FORMAT_IN_YP, FORMAT_IN_WP, FORMAT_IN_HP, FORMATS)
         if (matchResult.distance > 400) {
             matchResult.bestIndex = INDEX_UNKNOWN
         }
 
-        Log.d("Detector", "format: " + matchResult.bestIndex + "(" + matchResult.distance +  ")")
+        //Log.d("Detector", "format: " + matchResult.bestIndex + "(" + matchResult.distance +  ")")
+
+        return matchResult.bestIndex;
+    }
+
+    fun detectMode(byteBufferImage: ByteBufferImage):Int {
+
+        val matchResult = matchImage(byteBufferImage, MODE_IN_XP, MODE_IN_YP, MODE_IN_WP, MODE_IN_HP, MODES)
+        if (matchResult.distance > 400) {
+            matchResult.bestIndex = INDEX_UNKNOWN
+        }
+
+        //Log.d("Detector", "format: " + matchResult.bestIndex + "(" + matchResult.distance +  ")")
 
         return matchResult.bestIndex;
     }

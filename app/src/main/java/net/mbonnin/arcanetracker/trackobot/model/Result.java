@@ -13,5 +13,6 @@ public class Result {
     public boolean coin;
     public boolean win;
     public String added;
+    public Integer rank;
     public ArrayList<CardPlay> card_history;
 }

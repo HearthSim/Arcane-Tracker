@@ -4,6 +4,7 @@ import android.os.Handler;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import net.mbonnin.arcanetracker.detector.DetectorKt;
 import net.mbonnin.arcanetracker.hsreplay.HSReplay;
 import net.mbonnin.arcanetracker.parser.Entity;
 import net.mbonnin.arcanetracker.parser.EntityList;
@@ -145,7 +146,30 @@ public class GameLogicListener implements GameLogic.Listener {
 
         mGame = game;
         mGameOver = false;
-        mGame.bnetGameType = BnetGameType.from(LoadingScreenParser.get().getGameplayMode());
+
+        if (LoadingScreenParser.get().getGameplayMode().equals(LoadingScreenParser.MODE_DRAFT)) {
+            mGame.bnetGameType = BnetGameType.BGT_ARENA;
+        } else if (LoadingScreenParser.get().getGameplayMode().equals(LoadingScreenParser.MODE_TAVERN_BRAWL)) {
+            mGame.bnetGameType = BnetGameType.BGT_TAVERNBRAWL_1P_VERSUS_AI;
+        } else if (LoadingScreenParser.get().getGameplayMode().equals(LoadingScreenParser.MODE_ADVENTURE)) {
+            mGame.bnetGameType = BnetGameType.BGT_VS_AI;
+        } else if (ScreenCaptureResult.getMode() == DetectorKt.MODE_RANKED
+                && ScreenCaptureResult.getFormat() == DetectorKt.FORMAT_STANDARD) {
+            mGame.bnetGameType = BnetGameType.BGT_RANKED_STANDARD;
+            mGame.rank = ScreenCaptureResult.getRank();
+        } else if (ScreenCaptureResult.getMode() == DetectorKt.MODE_RANKED
+                && ScreenCaptureResult.getFormat() == DetectorKt.FORMAT_WILD) {
+            mGame.bnetGameType = BnetGameType.BGT_RANKED_WILD;
+            mGame.rank = ScreenCaptureResult.getRank();
+        } else if (ScreenCaptureResult.getMode() == DetectorKt.MODE_CASUAL
+                && ScreenCaptureResult.getFormat() == DetectorKt.FORMAT_STANDARD) {
+            mGame.bnetGameType = BnetGameType.BGT_CASUAL_STANDARD_NORMAL;
+        } else if (ScreenCaptureResult.getMode() == DetectorKt.MODE_CASUAL
+                && ScreenCaptureResult.getFormat() == DetectorKt.FORMAT_WILD) {
+            mGame.bnetGameType = BnetGameType.BGT_CASUAL_WILD;
+        } else {
+            mGame.bnetGameType = BnetGameType.BGT_UNKNOWN;
+        }
     }
 
     @Override
@@ -177,7 +201,10 @@ public class GameLogicListener implements GameLogic.Listener {
             resultData.result = new Result();
             resultData.result.coin = mGame.getPlayer().hasCoin;
             resultData.result.win = mGame.victory;
-            resultData.result.mode = Trackobot.getMode(mode);
+            resultData.result.mode = Trackobot.getMode(mGame.bnetGameType);
+            if (mGame.rank >= 0) {
+                resultData.result.rank = mGame.rank;
+            }
             resultData.result.hero = Trackobot.getHero(mGame.player.classIndex());
             resultData.result.opponent = Trackobot.getHero(mGame.opponent.classIndex());
             resultData.result.added = Utils.ISO8601DATEFORMAT.format(new Date());
@@ -228,6 +255,7 @@ public class GameLogicListener implements GameLogic.Listener {
         mHandler = new Handler();
 
     }
+
     public static GameLogicListener get() {
         if (sGameLogicListener == null) {
             sGameLogicListener = new GameLogicListener();
@@ -245,7 +273,7 @@ public class GameLogicListener implements GameLogic.Listener {
             public void run() {
                 if (mGameOver) {
                     HSReplay.get().uploadGame(gameStart, mGame, gameStr);
-                } else if (System.currentTimeMillis() - startTime < 30000){
+                } else if (System.currentTimeMillis() - startTime < 30000) {
                     mHandler.postDelayed(this, 1000);
                 } else {
                     Timber.e("timeout waiting for PowerState to finish");

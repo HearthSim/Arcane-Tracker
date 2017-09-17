@@ -30,6 +30,7 @@ public class Game {
     public boolean victory;
     public int bnetGameType;
     public String lastPlayedCardId;
+    public int rank = -1;
 
     public Player getPlayer() {
         return player;
