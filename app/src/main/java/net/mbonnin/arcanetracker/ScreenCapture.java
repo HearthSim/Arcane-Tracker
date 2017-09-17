@@ -69,7 +69,6 @@ public class ScreenCapture implements ImageReader.OnImageAvailableListener{
 
             if (subscriber != null) {
                 File file = new File(ArcaneTrackerApplication.get().getExternalFilesDir(null), "screenshot.jpg");
-                Timber.d("screen capture1");
                 Bitmap bitmap = Bitmap.createBitmap(bbImage.getW(), bbImage.getH(), Bitmap.Config.ARGB_8888);
                 ByteBuffer buffer = bbImage.getBuffer();
                 int stride = bbImage.getStride();
@@ -84,7 +83,6 @@ public class ScreenCapture implements ImageReader.OnImageAvailableListener{
                     e.printStackTrace();
                 }
 
-                Timber.d("screen capture2");
                 subscriber.onSuccess(file);
             }
 
