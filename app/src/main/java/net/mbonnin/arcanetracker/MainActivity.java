@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.ContextThemeWrapper;
@@ -113,12 +114,31 @@ public class MainActivity extends AppCompatActivity {
                 Settings.set(Settings.SCREEN_CAPTURE_ENABLED, false);
             }
         } else {
-            if (!android.provider.Settings.canDrawOverlays(this)) {
+            if (!canReallyDrawOverlays()) {
                 Snackbar.make(contentView, getString(R.string.pleaseEnablePermissions), Snackbar.LENGTH_LONG).show();
             } else {
                 tryToLaunchGame();
             }
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private boolean canReallyDrawOverlays() {
+        boolean canDraw = android.provider.Settings.canDrawOverlays(this);
+        if (canDraw) {
+            return true;
+        }
+
+        // workaround google: https://issuetracker.google.com/issues/37077274#c7
+        View view = new View(this);
+        try {
+            ViewManager.get().addCenteredView(view);
+        } catch (Exception e) {
+            return false;
+        }
+        Timber.d("canDrawOverlays lied");
+        ViewManager.get().removeView(view);
+        return true;
     }
 
     @TargetApi(Build.VERSION_CODES.M)
