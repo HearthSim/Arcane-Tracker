@@ -2,12 +2,13 @@ package net.mbonnin.arcanetracker.detector
 
 import java.nio.ByteBuffer
 
-class ByteBufferImage(val w: Int, val h: Int, val buffer: ByteBuffer, val stride: Int) {}
+class ByteBufferImage(val w: Int,
+                      val h: Int,
+                      val buffer: ByteBuffer /* RGBA buffer */,
+                      val stride: Int/* in bytes */)
 
 open class RRect(val x: Double, val y: Double, val w: Double, val h: Double) {
-    fun scale(sx: Double, sy: Double): RRect {
-        return RRect(sx * x, sy * y, sx * w, sy * h)
-    }
+    fun scale(sx: Double, sy: Double): RRect = RRect(sx * x, sy * y, sx * w, sy * h)
 }
 
 class MatchResult {
@@ -36,6 +37,8 @@ val RANK_RRECT = RRect(820.0, 424.0, 230.0, 102.0).scale(1/1920.0, 1/1080.0)
 val RANK_RRECT_TABLET = RRect(1730.0, 201.0, 110.0, 46.0).scale(1/2048.0, 1/1536.0)
 val MODE_RRECT = RRect(1270.0, 256.0, 140.0, 32.0).scale(1/1920.0, 1/1080.0)
 val MODE_RRECT_TABLET = RRect(1432.0, 400.0, 160.0, 34.0).scale(1/2048.0, 1/1536.0)
+
+val ARENA_2_RECT = RRect(1350.0, 279.0, 250.0, 165.0)
 
 class Detector(var isTablet: Boolean) {
     val featureDetector = FeatureExtractor()

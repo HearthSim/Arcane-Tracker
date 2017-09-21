@@ -12,3 +12,10 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
+
+allprojects {
+    ext.dep = [
+            gson: 'com.google.code.gson:gson:2.8.1',
+            okhttp: 'com.squareup.okhttp3:okhttp:3.9.0',
+    ]
+}

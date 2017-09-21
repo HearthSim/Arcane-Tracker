@@ -18,9 +18,9 @@ fun pngToByteBufferImage(inputStream: InputStream): ByteBufferImage {
 
     val channels = reader.imgInfo.channels;
 
-    System.out.println("size: " + reader.imgInfo.cols + "x" + reader.imgInfo.rows)
-    System.out.println("channels: " + channels)
-    System.out.println("bitdepth: " + reader.imgInfo.bitDepth)
+    //System.out.println("size: " + reader.imgInfo.cols + "x" + reader.imgInfo.rows)
+    //System.out.println("channels: " + channels)
+    //System.out.println("bitdepth: " + reader.imgInfo.bitDepth)
 
     byteBuffer.position(0)
     for (row in 0 until reader.imgInfo.rows) {
