@@ -153,18 +153,18 @@ public class GameLogicListener implements GameLogic.Listener {
             mGame.bnetGameType = BnetGameType.BGT_TAVERNBRAWL_1P_VERSUS_AI;
         } else if (LoadingScreenParser.get().getGameplayMode().equals(LoadingScreenParser.MODE_ADVENTURE)) {
             mGame.bnetGameType = BnetGameType.BGT_VS_AI;
-        } else if (ScreenCaptureResult.getMode() == DetectorKt.MODE_RANKED
+        } else if (ScreenCaptureResult.getMode() == ScreenCaptureResult.MODE_RANKED
                 && ScreenCaptureResult.getFormat() == DetectorKt.FORMAT_STANDARD) {
             mGame.bnetGameType = BnetGameType.BGT_RANKED_STANDARD;
             mGame.rank = ScreenCaptureResult.getRank();
-        } else if (ScreenCaptureResult.getMode() == DetectorKt.MODE_RANKED
+        } else if (ScreenCaptureResult.getMode() == ScreenCaptureResult.MODE_RANKED
                 && ScreenCaptureResult.getFormat() == DetectorKt.FORMAT_WILD) {
             mGame.bnetGameType = BnetGameType.BGT_RANKED_WILD;
             mGame.rank = ScreenCaptureResult.getRank();
-        } else if (ScreenCaptureResult.getMode() == DetectorKt.MODE_CASUAL
+        } else if (ScreenCaptureResult.getMode() == ScreenCaptureResult.MODE_CASUAL
                 && ScreenCaptureResult.getFormat() == DetectorKt.FORMAT_STANDARD) {
             mGame.bnetGameType = BnetGameType.BGT_CASUAL_STANDARD_NORMAL;
-        } else if (ScreenCaptureResult.getMode() == DetectorKt.MODE_CASUAL
+        } else if (ScreenCaptureResult.getMode() == ScreenCaptureResult.MODE_CASUAL
                 && ScreenCaptureResult.getFormat() == DetectorKt.FORMAT_WILD) {
             mGame.bnetGameType = BnetGameType.BGT_CASUAL_WILD;
         } else {

@@ -30,8 +30,11 @@ import rx.Single;
 import rx.SingleSubscriber;
 import timber.log.Timber;
 
+import static net.mbonnin.arcanetracker.detector.DetectorKt.MODE_RANKED_STANDARD;
+import static net.mbonnin.arcanetracker.detector.DetectorKt.MODE_RANKED_WILD;
+
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-public class ScreenCapture implements ImageReader.OnImageAvailableListener{
+public class ScreenCapture implements ImageReader.OnImageAvailableListener {
     private static ScreenCapture sScreenCapture;
     private final Detector mDetector;
 
@@ -93,12 +96,18 @@ public class ScreenCapture implements ImageReader.OnImageAvailableListener{
                 }
                 int mode = mDetector.detectMode(bbImage);
                 if (mode != DetectorKt.MODE_UNKNOWN) {
-                    ScreenCaptureResult.setMode(mode);
-                    if (mode == DetectorKt.MODE_RANKED) {
-                        int rank = mDetector.detectRank(bbImage);
-                        if (rank != DetectorKt.RANK_UNKNOWN) {
-                            ScreenCaptureResult.setRank(rank);
-                        }
+                    switch (mode) {
+                        case MODE_RANKED_STANDARD:
+                        case MODE_RANKED_WILD:
+                            ScreenCaptureResult.setMode(ScreenCaptureResult.MODE_RANKED);
+                            int rank = mDetector.detectRank(bbImage);
+                            if (rank != DetectorKt.RANK_UNKNOWN) {
+                                ScreenCaptureResult.setRank(rank);
+                            }
+                            break;
+                        default:
+                            ScreenCaptureResult.setMode(ScreenCaptureResult.MODE_CASUAL);
+                            break;
                     }
                 }
             }
@@ -106,13 +115,13 @@ public class ScreenCapture implements ImageReader.OnImageAvailableListener{
         }
     }
 
-    private ScreenCapture( MediaProjection mediaProjection) {
+    private ScreenCapture(MediaProjection mediaProjection) {
         this.mediaProjection = mediaProjection;
         mediaProjection.registerCallback(mCallback, null);
 
         mDetector = new Detector(ArcaneTrackerApplication.get().hasTabletLayout());
 
-        WindowManager wm = (android.view.WindowManager)ArcaneTrackerApplication.get().getSystemService(Context.WINDOW_SERVICE);
+        WindowManager wm = (android.view.WindowManager) ArcaneTrackerApplication.get().getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         Point point = new Point();
         display.getRealSize(point);
@@ -157,6 +166,7 @@ public class ScreenCapture implements ImageReader.OnImageAvailableListener{
         public ScreenCaptureWorker() {
             super("ScreenCaptureWorker");
         }
+
         public Handler waitUntilReady() {
             return new Handler(getLooper());
         }

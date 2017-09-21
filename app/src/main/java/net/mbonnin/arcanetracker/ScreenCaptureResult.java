@@ -14,6 +14,8 @@ import static net.mbonnin.arcanetracker.detector.DetectorKt.MODE_UNKNOWN;
 import static net.mbonnin.arcanetracker.detector.DetectorKt.RANK_UNKNOWN;
 
 public class ScreenCaptureResult {
+    public static final int MODE_CASUAL = 0;
+    public static final int MODE_RANKED = 1;
     private static volatile int rank = RANK_UNKNOWN;
     private static volatile int format = DetectorKt.FORMAT_UNKNOWN;
     private static volatile int mode = DetectorKt.MODE_UNKNOWN;
@@ -44,7 +46,7 @@ public class ScreenCaptureResult {
     public static void setMode(int mode) {
         if (mode != ScreenCaptureResult.mode) {
             ScreenCaptureResult.mode = mode;
-            displayToast(String.format(Locale.ENGLISH, "mode: %s", mode == DetectorKt.MODE_RANKED ? "ranked": "casual"));
+            displayToast(String.format(Locale.ENGLISH, "mode: %s", mode == ScreenCaptureResult.MODE_RANKED ? "ranked": "casual"));
         }
     }
 

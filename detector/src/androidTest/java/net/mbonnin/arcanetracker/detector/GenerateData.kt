@@ -1,11 +1,10 @@
-
 import android.content.Intent
 import android.support.test.InstrumentationRegistry
 import net.mbonnin.arcanetracker.detector.*
 import org.junit.Test
 import java.util.*
 
-val MEDAL_RRECT = RRect(24.0, 82.0, 209.0, 92.0).scale(1/256.0, 1/256.0)
+val MEDAL_RRECT = RRect(24.0, 82.0, 209.0, 92.0).scale(1 / 256.0, 1 / 256.0)
 
 class GenerateData {
     @Test
@@ -17,10 +16,24 @@ class GenerateData {
         sb.append("package net.mbonnin.arcanetracker.detector\n");
 
         val range = 0..25
-        appendData(sb, "RANKS", range.map {String.format("/ranks/Medal_Ranked_%d.png", it)}, featureExtractor, MEDAL_RRECT)
-        appendData(sb, "FORMATS", listOf("wild", "standard").map {String.format("/screenshots/%s.png", it)}, featureExtractor, FORMAT_RRECT)
-        appendData(sb, "MODES", listOf("casual", "ranked").map {String.format("/screenshots/%s.png", it)}, featureExtractor, MODE_RRECT)
-        appendData(sb, "MODES_TABLET", listOf("casual_tablet", "ranked_tablet").map {String.format("/screenshots/%s.png", it)}, featureExtractor, MODE_RRECT_TABLET)
+        appendData(sb, "RANKS", range.map { String.format("/medals/Medal_Ranked_%d.png", it) }, featureExtractor, MEDAL_RRECT)
+        appendData(sb, "FORMATS", listOf("wild", "standard").map { String.format("/formats/%s.png", it) }, featureExtractor, FORMAT_RRECT)
+        appendData(sb, "MODES", listOf(
+                "casual_standard",
+                "casual_wild",
+                "ranked_standard",
+                "ranked_wild")
+                .map {
+                    String.format("/modes/%s.png", it)
+                }, featureExtractor, MODE_RRECT)
+        appendData(sb, "MODES_TABLET", listOf(
+                "casual_standard_tablet",
+                "casual_wild_tablet",
+                "ranked_standard_tablet",
+                "ranked_wild_tablet")
+                .map {
+                    String.format("/modes/%s.png", it)
+                }, featureExtractor, MODE_RRECT_TABLET)
 
         // lol, that's the simplest way I found to send the generated file to the outside world without requiring write permissions !
         val emailIntent = Intent(Intent.ACTION_SEND)
@@ -37,9 +50,9 @@ class GenerateData {
         sb.append(String.format(Locale.ENGLISH, "val %s = arrayOf(\n", s))
 
         val l = ArrayList<String>()
-        for(file in fileList) {
+        for (fileName in fileList) {
 
-            val byteBufferImage = pngToByteBufferImage(javaClass.getResourceAsStream(file))
+            val byteBufferImage = pngToByteBufferImage(javaClass.getResourceAsStream("/models" + fileName))
 
             val vector = featureDetector.getFeatures(byteBufferImage.buffer, byteBufferImage.stride, rrect.scale(byteBufferImage.w.toDouble(), byteBufferImage.h.toDouble()));
 
