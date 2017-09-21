@@ -136,15 +136,15 @@ public class GameLogic {
             Entity targetEntity = mGame.findEntitySafe(tag.Target);
 
             EntityList secretEntityList = getSecretEntityList();
-            for (Entity e2 : secretEntityList) {
-                if (Utils.equalsNullSafe(e2.tags.get(Entity.KEY_CONTROLLER), targetEntity.tags.get(Entity.KEY_CONTROLLER))) {
+            for (Entity secretEntity : secretEntityList) {
+                if (Utils.equalsNullSafe(secretEntity.tags.get(Entity.KEY_CONTROLLER), targetEntity.tags.get(Entity.KEY_CONTROLLER))) {
                     if (Card.TYPE_MINION.equals(targetEntity.tags.get(Entity.KEY_CARDTYPE))) {
-                        e2.extra.selfMinionWasAttacked = true;
+                        secretEntity.extra.selfMinionWasAttacked = true;
                     } else if (Card.TYPE_HERO.equals(targetEntity.tags.get(Entity.KEY_CARDTYPE))) {
-                        e2.extra.selfHeroAttacked = true;
+                        secretEntity.extra.selfHeroAttacked = true;
                         Entity attackerEntity = mGame.findEntitySafe(tag.Entity);
-                        if (Entity.CARDTYPE_MINION.equals(attackerEntity.tags.get(Entity.CARDTYPE_MINION))) {
-                            e2.extra.selfHeroAttackedByMinion = true;
+                        if (Entity.CARDTYPE_MINION.equals(attackerEntity.tags.get(Entity.KEY_CARDTYPE))) {
+                            secretEntity.extra.selfHeroAttackedByMinion = true;
                         }
                     }
                 }
