@@ -5,7 +5,7 @@ import com.google.gson.Gson
 import java.io.InputStreamReader
 
 class TierScore(val Hero: String?, val Score: Int?)
-class TierCard(val CardId: String?, val Hero: String?, val Scores: List<TierScore>)
+class TierCard(val CardId: String, val Hero: String?, val Scores: List<TierScore>)
 class TierCards(val Cards: List<TierCard>)
 
 class Tierlist(val context: Context) {

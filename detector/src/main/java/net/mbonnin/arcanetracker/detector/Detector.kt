@@ -38,11 +38,17 @@ val RANK_RRECT_TABLET = RRect(1730.0, 201.0, 110.0, 46.0).scale(1/2048.0, 1/1536
 val MODE_RRECT = RRect(1270.0, 256.0, 140.0, 32.0).scale(1/1920.0, 1/1080.0)
 val MODE_RRECT_TABLET = RRect(1432.0, 400.0, 160.0, 34.0).scale(1/2048.0, 1/1536.0)
 
-val ARENA_2_RECT = RRect(1350.0, 279.0, 250.0, 165.0)
+// beware Y coordinates in inkscape are from the lower left corner
+val ARENA_RECTS = arrayOf(
+        RRect(344.138, 1080.0 - 642.198 - 187.951, 185.956, 187.951),
+        RRect(854.205, 1080.0 - 642.198 - 187.951, 185.956, 187.951),
+        RRect(1379.876, 1080.0 - 642.198 - 187.951, 185.956, 187.951)
+)
 
 class Detector(var isTablet: Boolean) {
     val featureDetector = FeatureExtractor()
     val matchResult = MatchResult()
+    val arenaResult = Array<String>(3, {""})
 
     fun matchImage(byteBufferImage: ByteBufferImage,  rrect: RRect, candidates: Array<DoubleArray>):MatchResult {
 
@@ -101,6 +107,20 @@ class Detector(var isTablet: Boolean) {
         //Log.d("Detector", "mode: " + matchResult.bestIndex + "(" + matchResult.distance +  ")")
 
         return matchResult.bestIndex;
+    }
+
+    fun detectArena(byteBufferImage: ByteBufferImage):Array<String> {
+
+
+        for (i in 0 until arenaResult.size) {
+            val matchResult = matchImage(byteBufferImage, ARENA_RECTS[i], TIERLIST_VECTORS)
+            arenaResult[i] = TIERLIST_IDS[matchResult.bestIndex]
+
+        }
+
+        //Log.d("Detector", "mode: " + matchResult.bestIndex + "(" + matchResult.distance +  ")")
+
+        return arenaResult;
     }
 }
 
