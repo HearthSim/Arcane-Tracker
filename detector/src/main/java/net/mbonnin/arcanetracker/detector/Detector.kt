@@ -1,6 +1,7 @@
 package net.mbonnin.arcanetracker.detector
 
 import android.content.Context
+import android.util.Log
 import com.google.gson.Gson
 import java.io.InputStreamReader
 import java.nio.ByteBuffer
@@ -43,9 +44,9 @@ val MODE_RRECT_TABLET = RRect(1432.0, 400.0, 160.0, 34.0).scale(1/2048.0, 1/1536
 
 // beware Y coordinates in inkscape are from the lower left corner
 val ARENA_RECTS = arrayOf(
-        RRect(344.138, 1080.0 - 642.198 - 187.951, 185.956, 187.951),
-        RRect(854.205, 1080.0 - 642.198 - 187.951, 185.956, 187.951),
-        RRect(1379.876, 1080.0 - 642.198 - 187.951, 185.956, 187.951)
+        RRect(344.138, 1080.0 - 642.198 - 187.951, 185.956, 187.951).scale(1/1920.0, 1/1080.0),
+        RRect(854.205, 1080.0 - 642.198 - 187.951, 185.956, 187.951).scale(1/1920.0, 1/1080.0),
+        RRect(1379.876, 1080.0 - 642.198 - 187.951, 185.956, 187.951).scale(1/1920.0, 1/1080.0)
 )
 
 class Detector(var context: Context, var isTablet: Boolean) {
@@ -114,15 +115,13 @@ class Detector(var context: Context, var isTablet: Boolean) {
     }
 
     fun detectArena(byteBufferImage: ByteBufferImage):Array<String> {
-
-
         for (i in 0 until arenaResult.size) {
-            //val matchResult = matchImage(byteBufferImage, ARENA_RECTS[i], TIERLIST_VECTORS)
-            //arenaResult[i] = TIERLIST_IDS[matchResult.bestIndex]
+            val matchResult = matchImage(byteBufferImage, ARENA_RECTS[i], generatedData.TIERLIST)
+            arenaResult[i] = generatedData.TIERLIST_IDS[matchResult.bestIndex]
 
         }
 
-        //Log.d("Detector", "mode: " + matchResult.bestIndex + "(" + matchResult.distance +  ")")
+        Log.d("Detector", String.format("[%s][%s][%s]", arenaResult[0], arenaResult[1], arenaResult[2]))
 
         return arenaResult;
     }

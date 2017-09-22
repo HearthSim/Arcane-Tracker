@@ -1,6 +1,5 @@
-import android.graphics.Bitmap
+
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.support.test.InstrumentationRegistry
 import android.util.Log
 import com.google.gson.Gson
@@ -9,7 +8,6 @@ import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.junit.Test
-import java.nio.ByteBuffer
 import java.util.*
 
 
@@ -110,28 +108,15 @@ class GenerateData {
                 "HERO_08b",
                 "HERO_09",
                 "HERO_09a",
-                "AKARA_00_03H"
+                "KARA_00_03H"
         )
 
-        vectors.addAll(getVectorArray(heroes.map { "/heroes/" + it + ".png" }, featureExtractor, HERO_RECT))
+        vectors.addAll(getVectorArray(heroes.map { "/heroes/A" + it + ".png" }, featureExtractor, HERO_RECT))
         ids.addAll(heroes)
 
         return Array(ids.size, { ids.get(it) }) to Array(vectors.size, { vectors.get(it) })
     }
 
-    private fun bitmapToByteBufferImage(bm: Bitmap): ByteBufferImage {
-        val buffer = ByteBuffer.allocateDirect(bm.width * bm.height * 4)
-        for (j in 0 until bm.height) {
-            for (i in 0 until bm.width) {
-                val pixel = bm.getPixel(i, j)
-                buffer.put(Color.red(pixel).toByte())
-                buffer.put(Color.green(pixel).toByte())
-                buffer.put(Color.blue(pixel).toByte())
-                buffer.put(0xff.toByte())
-            }
-        }
-        return ByteBufferImage(bm.width, bm.height, buffer, bm.width * 4)
-    }
 
     private fun getVectorArray(fileList: List<String>, featureExtractor: FeatureExtractor, rrect: RRect): Array<DoubleArray> {
         val vectors = arrayListOf<DoubleArray>()
