@@ -1,5 +1,8 @@
 package net.mbonnin.arcanetracker.detector
 
+import android.content.Context
+import com.google.gson.Gson
+import java.io.InputStreamReader
 import java.nio.ByteBuffer
 
 class ByteBufferImage(val w: Int,
@@ -45,10 +48,11 @@ val ARENA_RECTS = arrayOf(
         RRect(1379.876, 1080.0 - 642.198 - 187.951, 185.956, 187.951)
 )
 
-class Detector(var isTablet: Boolean) {
+class Detector(var context: Context, var isTablet: Boolean) {
     val featureDetector = FeatureExtractor()
     val matchResult = MatchResult()
     val arenaResult = Array<String>(3, {""})
+    val generatedData = Gson().fromJson(InputStreamReader(context.resources.openRawResource(R.raw.generated_data)), GeneratedData::class.java)
 
     fun matchImage(byteBufferImage: ByteBufferImage,  rrect: RRect, candidates: Array<DoubleArray>):MatchResult {
 
@@ -74,7 +78,7 @@ class Detector(var isTablet: Boolean) {
     }
 
     fun detectRank(byteBufferImage: ByteBufferImage):Int {
-        val matchResult = matchImage(byteBufferImage, if (isTablet) RANK_RRECT_TABLET else RANK_RRECT , RANKS)
+        val matchResult = matchImage(byteBufferImage, if (isTablet) RANK_RRECT_TABLET else RANK_RRECT , generatedData.RANKS)
 
         if (matchResult.distance > 400) {
             matchResult.bestIndex = INDEX_UNKNOWN
@@ -87,7 +91,7 @@ class Detector(var isTablet: Boolean) {
 
     fun detectFormat(byteBufferImage: ByteBufferImage):Int {
 
-        val matchResult = matchImage(byteBufferImage, if (isTablet) FORMAT_RRECT_TABLET else FORMAT_RRECT, FORMATS)
+        val matchResult = matchImage(byteBufferImage, if (isTablet) FORMAT_RRECT_TABLET else FORMAT_RRECT, generatedData.FORMATS)
         if (matchResult.distance > 400) {
             matchResult.bestIndex = INDEX_UNKNOWN
         }
@@ -99,7 +103,7 @@ class Detector(var isTablet: Boolean) {
 
     fun detectMode(byteBufferImage: ByteBufferImage):Int {
 
-        val matchResult = matchImage(byteBufferImage, if (isTablet) MODE_RRECT_TABLET else MODE_RRECT, if (isTablet) MODES_TABLET else MODES)
+        val matchResult = matchImage(byteBufferImage, if (isTablet) MODE_RRECT_TABLET else MODE_RRECT, if (isTablet) generatedData.MODES_TABLET else generatedData.MODES)
         if (matchResult.distance > 400) {
             matchResult.bestIndex = INDEX_UNKNOWN
         }
@@ -113,8 +117,8 @@ class Detector(var isTablet: Boolean) {
 
 
         for (i in 0 until arenaResult.size) {
-            val matchResult = matchImage(byteBufferImage, ARENA_RECTS[i], TIERLIST_VECTORS)
-            arenaResult[i] = TIERLIST_IDS[matchResult.bestIndex]
+            //val matchResult = matchImage(byteBufferImage, ARENA_RECTS[i], TIERLIST_VECTORS)
+            //arenaResult[i] = TIERLIST_IDS[matchResult.bestIndex]
 
         }
 

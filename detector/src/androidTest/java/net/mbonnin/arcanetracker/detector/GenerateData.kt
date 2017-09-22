@@ -3,6 +3,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.support.test.InstrumentationRegistry
 import android.util.Log
+import com.google.gson.Gson
 import net.mbonnin.arcanetracker.detector.*
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
@@ -19,27 +20,24 @@ val CARD_RECT = RRect(
         x = 4906.075 - 4766.787, // change 4906 here
         y = 718.251 + 512.00 - 890.654, // inkscape y coordinates starts in the bottom left corner
         w = 224.216,
-        h = 226.622)
+        h = 226.622).scale(1 / 512.0, 1 / 512.0)
 
 val HERO_RECT = RRect(
         x = 2354.645 - 2283.807, // change 4906 here
         y = 2370.551 + 345.000 - 2625.288, // inkscape y coordinates starts in the bottom left corner
         w = 83.117,
-        h = 84.009)
+        h = 84.009).scale(1 / 250.0, 1 / 345.0)
 
 class GenerateData {
     @Test
     fun generateData() {
         val featureExtractor = FeatureExtractor()
 
-        val sb = StringBuilder()
-
-        sb.append("package net.mbonnin.arcanetracker.detector\n");
-
         val range = 0..25
-        appendData(sb, "RANKS", range.map { String.format("/medals/Medal_Ranked_%d.png", it) }, featureExtractor, MEDAL_RRECT)
-        appendData(sb, "FORMATS", listOf("wild", "standard").map { String.format("/formats/%s.png", it) }, featureExtractor, FORMAT_RRECT)
-        appendData(sb, "MODES", listOf(
+
+        val ranks = getVectorArray(range.map { String.format("/medals/Medal_Ranked_%d.png", it) }, featureExtractor, MEDAL_RRECT)
+        val formats = getVectorArray(listOf("wild", "standard").map { String.format("/formats/%s.png", it) }, featureExtractor, FORMAT_RRECT)
+        val modes = getVectorArray(listOf(
                 "casual_standard",
                 "casual_wild",
                 "ranked_standard",
@@ -47,7 +45,7 @@ class GenerateData {
                 .map {
                     String.format("/modes/%s.png", it)
                 }, featureExtractor, MODE_RRECT)
-        appendData(sb, "MODES_TABLET", listOf(
+        val modes_tablet = getVectorArray(listOf(
                 "casual_standard_tablet",
                 "casual_wild_tablet",
                 "ranked_standard_tablet",
@@ -56,7 +54,9 @@ class GenerateData {
                     String.format("/modes/%s.png", it)
                 }, featureExtractor, MODE_RRECT_TABLET)
 
-        appendArena(sb, featureExtractor);
+        val arena = appendArena(featureExtractor);
+
+        val generatedData = GeneratedData(ranks, formats, modes, modes_tablet, arena.second, arena.first)
 
         // lol, that's the simplest way I found to send the generated file to the outside world without requiring write permissions !
         val okhttpClient = OkHttpClient()
@@ -65,7 +65,7 @@ class GenerateData {
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("api_dev_key", "b8c2369b8462bde94ccf17bd950d9555")
                 .addFormDataPart("api_option", "paste")
-                .addFormDataPart("api_paste_code", sb.toString())
+                .addFormDataPart("api_paste_code", Gson().toJson(generatedData))
                 .build()
 
         val request = Request.Builder()
@@ -77,32 +77,22 @@ class GenerateData {
         Log.d("TAG", "data is at: " + response.body()?.string())
     }
 
-    private fun appendArena(sb: StringBuilder, featureExtractor: FeatureExtractor) {
+    private fun appendArena(featureExtractor: FeatureExtractor): Pair<Array<String>, Array<DoubleArray>> {
 
 
         val list = Tierlist.get(InstrumentationRegistry.getTargetContext()).list
 
-        var i = 0;
         val ids = ArrayList<String>()
-        val vectors = ArrayList<String>()
-        for (tierCard in list) {
-            Log.d("TAG", i++.toString() + "/" + list.size + ":" + tierCard.CardId)
-            try {
-                val inputStream = javaClass.getResourceAsStream("/cards/" + tierCard.CardId + ".png")
-                val bm = BitmapFactory.decodeStream(inputStream)
-                val byteBufferImage = bitmapToByteBufferImage(bm!!)
+        val vectors = ArrayList<DoubleArray>()
 
-                val vector = featureExtractor.getFeatures(byteBufferImage.buffer, byteBufferImage.stride, CARD_RECT);
+        ids.addAll(list
+                .map { it.CardId }
+                .subList(0, 10)
+                )
+        ids.add("UNG_083")
+        vectors.addAll(getVectorArray(ids.map { "/cards/" + it + ".jpg" }, featureExtractor, CARD_RECT))
 
-                ids.add(tierCard.CardId)
-                vectors.add("doubleArrayOf(" + vector.joinToString(", ") + ")")
-
-            } catch (e: Exception) {
-                Log.e("TAG", "error", e)
-            }
-        }
-
-        val heroes = arrayOf(
+        val heroes = listOf(
                 "HERO_01",
                 "HERO_01a",
                 "HERO_02",
@@ -121,37 +111,18 @@ class GenerateData {
                 "HERO_09",
                 "HERO_09a",
                 "AKARA_00_03H"
-                )
+        )
 
-        for (hero in heroes) {
-            Log.d("TAG", i++.toString() + "/" + list.size + ":" + hero)
-            try {
-                val inputStream = javaClass.getResourceAsStream("/heroes/" + hero + ".png")
-                val bm = BitmapFactory.decodeStream(inputStream)
-                val byteBufferImage = bitmapToByteBufferImage(bm!!)
+        vectors.addAll(getVectorArray(heroes.map { "/heroes/" + it + ".png" }, featureExtractor, HERO_RECT))
+        ids.addAll(heroes)
 
-                val vector = featureExtractor.getFeatures(byteBufferImage.buffer, byteBufferImage.stride, HERO_RECT);
-
-                ids.add(hero)
-                vectors.add("doubleArrayOf(" + vector.joinToString(", ") + ")")
-
-            } catch (e: Exception) {
-                Log.e("TAG", "error", e)
-            }
-        }
-
-        sb.append("val TIERLIST_VECTORS = mapOf(\n")
-        sb.append(vectors.joinToString(",\n"))
-        sb.append("\n)\n")
-        sb.append("val TIERLIST_IDS = arrayOf(\n")
-        sb.append(ids.joinToString(",\n"))
-        sb.append("\n)\n")
+        return Array(ids.size, { ids.get(it) }) to Array(vectors.size, { vectors.get(it) })
     }
 
     private fun bitmapToByteBufferImage(bm: Bitmap): ByteBufferImage {
         val buffer = ByteBuffer.allocateDirect(bm.width * bm.height * 4)
-        for (i in 0 until bm.width) {
-            for (j in 0 until bm.height) {
+        for (j in 0 until bm.height) {
+            for (i in 0 until bm.width) {
                 val pixel = bm.getPixel(i, j)
                 buffer.put(Color.red(pixel).toByte())
                 buffer.put(Color.green(pixel).toByte())
@@ -162,20 +133,27 @@ class GenerateData {
         return ByteBufferImage(bm.width, bm.height, buffer, bm.width * 4)
     }
 
-    private fun appendData(sb: StringBuilder, s: String, fileList: List<String>, featureExtractor: FeatureExtractor, rrect: RRect) {
-        sb.append(String.format(Locale.ENGLISH, "val %s = arrayOf(\n", s))
+    private fun getVectorArray(fileList: List<String>, featureExtractor: FeatureExtractor, rrect: RRect): Array<DoubleArray> {
+        val vectors = arrayListOf<DoubleArray>()
 
-        val l = ArrayList<String>()
+        var i = 0
         for (fileName in fileList) {
+            Log.d("TAG", i++.toString() + "/" + fileList.size + ":" + fileName)
 
-            val byteBufferImage = pngToByteBufferImage(javaClass.getResourceAsStream("/models" + fileName))
+            try {
+                val inputStream = javaClass.getResourceAsStream("/models" + fileName)
+                val bm = BitmapFactory.decodeStream(inputStream)
+                val byteBufferImage = bitmapToByteBufferImage(bm!!)
 
-            val vector = featureExtractor.getFeatures(byteBufferImage.buffer, byteBufferImage.stride, rrect.scale(byteBufferImage.w.toDouble(), byteBufferImage.h.toDouble()));
+                val vector = featureExtractor.getFeatures(byteBufferImage.buffer, byteBufferImage.stride,
+                        rrect.scale(byteBufferImage.w.toDouble(), byteBufferImage.h.toDouble()));
 
-            l.add("doubleArrayOf(" + vector.joinToString(", ") + ")")
+                vectors.add(vector.copyOf())
+            } catch (e: Exception) {
+                Log.e("TAG", "oops", e)
+            }
         }
-        sb.append(l.joinToString(",\n"))
-        sb.append("\n)\n")
 
+        return Array<DoubleArray>(vectors.size, { vectors.get(it) })
     }
 }

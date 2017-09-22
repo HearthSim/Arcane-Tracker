@@ -119,7 +119,7 @@ public class ScreenCapture implements ImageReader.OnImageAvailableListener {
         this.mediaProjection = mediaProjection;
         mediaProjection.registerCallback(mCallback, null);
 
-        mDetector = new Detector(ArcaneTrackerApplication.get().hasTabletLayout());
+        mDetector = new Detector(ArcaneTrackerApplication.get(), ArcaneTrackerApplication.get().hasTabletLayout());
 
         WindowManager wm = (android.view.WindowManager) ArcaneTrackerApplication.get().getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
