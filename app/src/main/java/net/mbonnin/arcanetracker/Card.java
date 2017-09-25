@@ -3,7 +3,6 @@ package net.mbonnin.arcanetracker;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import timber.log.Timber;
 
 /**
  * Created by martin on 10/17/16.
@@ -220,7 +219,6 @@ public class Card implements Comparable<String> {
                 }
 
             } catch (Exception e) {
-                Timber.e("wrong heroId" + heroId);
             }
         }
 

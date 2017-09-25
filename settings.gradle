@@ -1,1 +1,1 @@
-include ':app', ':detector'
+include ':app', ':detector', ':cardids'
