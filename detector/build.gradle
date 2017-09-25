@@ -7,11 +7,11 @@ repositories {
 }
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '26.0.1'
+    compileSdkVersion atConfig.compileSdkVersion
+    buildToolsVersion atConfig.buildToolsVersion
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 26
+        minSdkVersion atConfig.minSdkVersion
+        targetSdkVersion atConfig.targetSdkVersion
         versionCode 1
         versionName "0.01"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -31,6 +31,7 @@ dependencies {
     compile dep.gson
 
     androidTestCompile 'com.android.support.test:runner:1.0.1'
+    androidTestCompile dep.espresso
     androidTestCompile dep.okhttp
 }
 

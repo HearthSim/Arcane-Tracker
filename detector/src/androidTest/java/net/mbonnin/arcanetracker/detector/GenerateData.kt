@@ -1,13 +1,19 @@
 
+import android.Manifest
 import android.graphics.BitmapFactory
 import android.support.test.InstrumentationRegistry
+import android.support.test.rule.GrantPermissionRule
 import android.util.Log
 import com.google.gson.Gson
 import net.mbonnin.arcanetracker.detector.*
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.junit.Rule
 import org.junit.Test
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.util.*
 
 
@@ -16,17 +22,20 @@ val MEDAL_RRECT = RRect(24.0, 82.0, 209.0, 92.0).scale(1 / 256.0, 1 / 256.0)
 // see superposition.svg for CARD and HERO rects
 val CARD_RECT = RRect(
         x = 4906.075 - 4766.787, // change 4906 here
-        y = 718.251 + 512.00 - 890.654, // inkscape y coordinates starts in the bottom left corner
+        y = 718.251 + 512.00 - 890.654 - 226.622, // inkscape y coordinates starts in the bottom left corner
         w = 224.216,
         h = 226.622).scale(1 / 512.0, 1 / 512.0)
 
 val HERO_RECT = RRect(
         x = 2354.645 - 2283.807, // change 4906 here
-        y = 2370.551 + 345.000 - 2625.288, // inkscape y coordinates starts in the bottom left corner
+        y = 2370.551 + 345.000 - 2625.288 - 84.009, // inkscape y coordinates starts in the bottom left corner
         w = 83.117,
         h = 84.009).scale(1 / 250.0, 1 / 345.0)
 
 class GenerateData {
+    @Rule @JvmField
+    val permissionsRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+
     @Test
     fun generateData() {
         val featureExtractor = FeatureExtractor()
@@ -73,6 +82,8 @@ class GenerateData {
         val response = okhttpClient.newCall(request).execute()
 
         Log.d("TAG", "data is at: " + response.body()?.string())
+
+        FileOutputStream(File("/sdcard/generated_data.json")).write(Gson().toJson(generatedData).toByteArray())
     }
 
     private fun appendArena(featureExtractor: FeatureExtractor): Pair<Array<String>, Array<DoubleArray>> {
@@ -85,9 +96,7 @@ class GenerateData {
 
         ids.addAll(list
                 .map { it.CardId }
-                .subList(0, 10)
                 )
-        ids.add("UNG_083")
         vectors.addAll(getVectorArray(ids.map { "/cards/" + it + ".jpg" }, featureExtractor, CARD_RECT))
 
         val heroes = listOf(
@@ -126,7 +135,7 @@ class GenerateData {
             Log.d("TAG", i++.toString() + "/" + fileList.size + ":" + fileName)
 
             try {
-                val inputStream = javaClass.getResourceAsStream("/models" + fileName)
+                val inputStream = FileInputStream(File("/sdcard/models" + fileName))
                 val bm = BitmapFactory.decodeStream(inputStream)
                 val byteBufferImage = bitmapToByteBufferImage(bm!!)
 

@@ -5,8 +5,9 @@ apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '26.0.1'
+    compileSdkVersion atConfig.compileSdkVersion
+    buildToolsVersion atConfig.buildToolsVersion
+
     defaultConfig {
         applicationId "net.mbonnin.arcanetracker"
         minSdkVersion 19

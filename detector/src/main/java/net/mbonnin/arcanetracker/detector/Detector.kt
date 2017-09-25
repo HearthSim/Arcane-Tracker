@@ -115,13 +115,15 @@ class Detector(var context: Context, var isTablet: Boolean) {
     }
 
     fun detectArena(byteBufferImage: ByteBufferImage):Array<String> {
+        val sb = StringBuilder()
         for (i in 0 until arenaResult.size) {
             val matchResult = matchImage(byteBufferImage, ARENA_RECTS[i], generatedData.TIERLIST)
             arenaResult[i] = generatedData.TIERLIST_IDS[matchResult.bestIndex]
 
+            sb.append("[" + arenaResult[i] + "(" + matchResult.distance + ")]")
         }
 
-        Log.d("Detector", String.format("[%s][%s][%s]", arenaResult[0], arenaResult[1], arenaResult[2]))
+        Log.d("Detector", sb.toString())
 
         return arenaResult;
     }

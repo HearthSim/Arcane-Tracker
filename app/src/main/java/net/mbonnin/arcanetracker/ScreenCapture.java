@@ -89,7 +89,7 @@ public class ScreenCapture implements ImageReader.OnImageAvailableListener {
                 subscriber.onSuccess(file);
             }
 
-            if ("TOURNAMENT".equals(LoadingScreenParser.get().getMode())) {
+            if (LoadingScreenParser.MODE_TOURNAMENT.equals(LoadingScreenParser.get().getMode())) {
                 int format = mDetector.detectFormat(bbImage);
                 if (format != DetectorKt.FORMAT_UNKNOWN) {
                     ScreenCaptureResult.setFormat(format);
@@ -110,6 +110,8 @@ public class ScreenCapture implements ImageReader.OnImageAvailableListener {
                             break;
                     }
                 }
+            } else if (LoadingScreenParser.MODE_DRAFT.equals(LoadingScreenParser.get().getMode())) {
+                arenaResult = mDetector.detectArena(bbImage);
             }
             image.close();
         }
