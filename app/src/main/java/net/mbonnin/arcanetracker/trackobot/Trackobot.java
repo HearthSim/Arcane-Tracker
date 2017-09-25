@@ -8,7 +8,7 @@ import com.google.gson.stream.MalformedJsonException;
 
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
 import net.mbonnin.arcanetracker.BnetGameType;
-import net.mbonnin.arcanetracker.Card;
+import net.mbonnin.arcanetracker.cardids.Card;
 import net.mbonnin.arcanetracker.Lce;
 import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Utils;

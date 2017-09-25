@@ -1,16 +1,12 @@
-package net.mbonnin.arcanetracker;
+package net.mbonnin.arcanetracker.cardids;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-/**
- * Created by martin on 10/17/16.
- */
 public class Card implements Comparable<String> {
     public static final String classNameList[] = {"Warrior", "Shaman", "Rogue", "Paladin", "Hunter", "Druid", "Warlock", "Mage", "Priest", "Neutral"};
 
-    public static final Card UNKNOWN = unknown();
     public static final int UNKNOWN_COST = -1;
 
     public static final String RARITY_LEGENDARY = "LEGENDARY";
@@ -186,20 +182,6 @@ public class Card implements Comparable<String> {
         return id.compareTo(o);
     }
 
-    public static Card unknown() {
-        Card card = new Card();
-        card.name = "?";
-        card.playerClass = "?";
-        card.cost = UNKNOWN_COST;
-        card.id = "?";
-        card.rarity = "?";
-        card.type = TYPE_UNKNOWN;
-        card.text = "?";
-        card.race = "?";
-        card.collectible = false;
-        return card;
-    }
-
     @Override
     public String toString() {
         return name + "(" + id + ")";
@@ -281,44 +263,6 @@ public class Card implements Comparable<String> {
         }
 
         return -1;
-    }
-
-    public static boolean isCollectible(String cardId) {
-        Card card = CardDb.getCard(cardId);
-        if (card.collectible == null || !card.collectible) {
-            return false;
-        }
-
-        if (Card.ID_COINe.equals(cardId) || Card.ID_COIN.equals(cardId)) {
-            return false;
-        }
-        return true;
-    }
-
-    public static Card secret(String clazz) {
-        Card card = unknown();
-        card.type = Card.TYPE_SPELL;
-        card.text = Utils.getString(R.string.secretText);
-        int classIndex = Card.niceNameToClassIndexNC(clazz);
-        switch (classIndex) {
-            case Card.CLASS_INDEX_HUNTER:
-                card.id = "secret_h";
-                card.cost = 2;
-                card.playerClass = Card.CLASS_HUNTER;
-                break;
-            case Card.CLASS_INDEX_MAGE:
-                card.id = "secret_m";
-                card.cost = 3;
-                card.playerClass = Card.CLASS_MAGE;
-                break;
-            case Card.CLASS_INDEX_PALADIN:
-                card.id = "secret_p";
-                card.cost = 1;
-                card.playerClass = Card.CLASS_PALADIN;
-                break;
-        }
-        card.name = Utils.getString(R.string.secret);
-        return card;
     }
 
 }

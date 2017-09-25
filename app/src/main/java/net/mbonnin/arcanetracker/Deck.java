@@ -1,5 +1,7 @@
 package net.mbonnin.arcanetracker;
 
+import net.mbonnin.arcanetracker.cardids.Card;
+
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 

@@ -19,6 +19,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.LruCache;
 
+import net.mbonnin.arcanetracker.cardids.Card;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

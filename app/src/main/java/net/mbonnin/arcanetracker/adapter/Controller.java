@@ -11,8 +11,9 @@ import com.annimon.stream.function.Function;
 import com.annimon.stream.function.Supplier;
 
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
-import net.mbonnin.arcanetracker.Card;
+import net.mbonnin.arcanetracker.cardids.Card;
 import net.mbonnin.arcanetracker.CardDb;
+import net.mbonnin.arcanetracker.CardUtil;
 import net.mbonnin.arcanetracker.Deck;
 import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Utils;
@@ -71,7 +72,7 @@ public class Controller implements GameLogic.Listener {
         while (it.hasNext()) {
             Entity entity = it.next();
             if (!entity.extra.tmpIsGift
-                    && entity.extra.tmpCard == Card.UNKNOWN) {
+                    && entity.extra.tmpCard == CardUtil.UNKNOWN) {
                 it.remove();
                 unknownCards++;
             }
@@ -237,7 +238,7 @@ public class Controller implements GameLogic.Listener {
         for (Entity entity : entities) {
             DeckEntryItem deckEntry = new DeckEntryItem();
             if (TextUtils.isEmpty(entity.CardID) || entity.extra.hide) {
-                deckEntry.card = Card.unknown();
+                deckEntry.card = CardUtil.unknown();
                 StringBuilder builder = new StringBuilder();
                 builder.append("#").append(GameLogic.gameTurnToHumanTurn(entity.extra.drawTurn));
                 if (entity.extra.mulliganed) {
@@ -275,7 +276,7 @@ public class Controller implements GameLogic.Listener {
                 if (entity.card != null) {
                     entity.extra.tmpCard = entity.card;
                 } else {
-                    entity.extra.tmpCard = Card.UNKNOWN;
+                    entity.extra.tmpCard = CardUtil.UNKNOWN;
                 }
             });
 
@@ -358,9 +359,9 @@ public class Controller implements GameLogic.Listener {
                 String clazz = entity.tags.get(Entity.KEY_CLASS);
 
                 if (clazz != null) {
-                    deckEntry.card = Card.secret(clazz);
+                    deckEntry.card = CardUtil.secret(clazz);
                 } else {
-                    deckEntry.card = Card.secret("MAGE");
+                    deckEntry.card = CardUtil.secret("MAGE");
                 }
             } else {
                 deckEntry.card = entity.card;

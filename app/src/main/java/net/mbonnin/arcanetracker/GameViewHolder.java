@@ -1,13 +1,12 @@
 package net.mbonnin.arcanetracker;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import net.mbonnin.arcanetracker.cardids.Card;
 import net.mbonnin.arcanetracker.model.GameSummary;
 
 public class GameViewHolder extends RecyclerView.ViewHolder {

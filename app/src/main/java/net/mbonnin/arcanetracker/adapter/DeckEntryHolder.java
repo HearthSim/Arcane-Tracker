@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import net.mbonnin.arcanetracker.Card;
+import net.mbonnin.arcanetracker.cardids.Card;
 import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Utils;
 import net.mbonnin.arcanetracker.ViewManager;

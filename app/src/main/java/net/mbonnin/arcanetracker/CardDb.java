@@ -3,6 +3,8 @@ package net.mbonnin.arcanetracker;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import net.mbonnin.arcanetracker.cardids.Card;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -35,11 +37,11 @@ public class CardDb {
              * can happen  the very first launch
              * or maybe even later in some cases, the calling code does not check for null so we need to be robust to that
              */
-            return Card.UNKNOWN;
+            return CardUtil.UNKNOWN;
         }
         int index = Collections.binarySearch(sCardList, key);
         if (index < 0) {
-            return Card.UNKNOWN;
+            return CardUtil.UNKNOWN;
         } else {
             return sCardList.get(index);
         }
@@ -71,9 +73,9 @@ public class CardDb {
         /*
          * these are 3 fake cards needed for CardRender
          */
-        list.add(Card.secret("PALADIN"));
-        list.add(Card.secret("HUNTER"));
-        list.add(Card.secret("MAGE"));
+        list.add(CardUtil.secret("PALADIN"));
+        list.add(CardUtil.secret("HUNTER"));
+        list.add(CardUtil.secret("MAGE"));
 
         init(list);
     }

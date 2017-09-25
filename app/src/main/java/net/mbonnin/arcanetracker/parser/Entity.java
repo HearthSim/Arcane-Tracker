@@ -1,6 +1,6 @@
 package net.mbonnin.arcanetracker.parser;
 
-import net.mbonnin.arcanetracker.Card;
+import net.mbonnin.arcanetracker.cardids.Card;
 import net.mbonnin.arcanetracker.CardDb;
 
 import java.util.HashMap;

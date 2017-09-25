@@ -1,12 +1,7 @@
 package net.mbonnin.arcanetracker.parser;
 
-import net.mbonnin.arcanetracker.Card;
+import net.mbonnin.arcanetracker.cardids.Card;
 import net.mbonnin.arcanetracker.CardDb;
-
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * Created by martin on 11/7/16.

@@ -14,6 +14,8 @@ import android.widget.TextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import net.mbonnin.arcanetracker.cardids.Card;
+
 import java.util.ArrayList;
 import java.util.Collections;
 

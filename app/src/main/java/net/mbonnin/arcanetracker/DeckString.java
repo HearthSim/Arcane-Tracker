@@ -2,6 +2,8 @@ package net.mbonnin.arcanetracker;
 
 import android.util.Base64;
 
+import net.mbonnin.arcanetracker.cardids.Card;
+
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.UUID;

@@ -1,7 +1,15 @@
 apply plugin: 'java-library'
 
+repositories {
+    google()
+    jcenter()
+    mavenCentral()
+}
+
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.google.code.gson:gson:2.8.1'
+    testCompile 'junit:junit:4.12'
 }
 
 sourceCompatibility = "1.7"

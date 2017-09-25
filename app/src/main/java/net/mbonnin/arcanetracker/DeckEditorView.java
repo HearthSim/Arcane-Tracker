@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import net.mbonnin.arcanetracker.adapter.EditableItemAdapter;
+import net.mbonnin.arcanetracker.cardids.Card;
 
 import java.util.ArrayList;
 import java.util.Locale;

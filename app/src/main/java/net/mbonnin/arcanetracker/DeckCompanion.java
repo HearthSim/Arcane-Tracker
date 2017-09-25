@@ -10,6 +10,7 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import net.mbonnin.arcanetracker.adapter.Controller;
+import net.mbonnin.arcanetracker.cardids.Card;
 
 import io.paperdb.Paper;
 import timber.log.Timber;

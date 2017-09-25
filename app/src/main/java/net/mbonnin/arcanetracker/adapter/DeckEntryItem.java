@@ -1,6 +1,6 @@
 package net.mbonnin.arcanetracker.adapter;
 
-import net.mbonnin.arcanetracker.Card;
+import net.mbonnin.arcanetracker.cardids.Card;
 import net.mbonnin.arcanetracker.parser.EntityList;
 
 import java.util.Comparator;

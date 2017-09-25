@@ -3,6 +3,7 @@ package net.mbonnin.arcanetracker;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import net.mbonnin.arcanetracker.cardids.Card;
 import net.mbonnin.arcanetracker.parser.Entity;
 import net.mbonnin.arcanetracker.parser.Game;
 import net.mbonnin.arcanetracker.parser.GameLogic;
