@@ -4,7 +4,7 @@ package net.mbonnin.arcanetracker;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import net.mbonnin.arcanetracker.cardids.Card;
+import net.mbonnin.arcanetracker.hsmodel.Card;
 
 import org.junit.Test;
 

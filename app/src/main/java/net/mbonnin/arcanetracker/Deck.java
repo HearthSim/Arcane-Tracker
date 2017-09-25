@@ -1,6 +1,6 @@
 package net.mbonnin.arcanetracker;
 
-import net.mbonnin.arcanetracker.cardids.Card;
+import net.mbonnin.arcanetracker.hsmodel.Card;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;

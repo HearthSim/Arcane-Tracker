@@ -1,4 +1,4 @@
-package net.mbonnin.arcanetracker.cardids;
+package net.mbonnin.arcanetracker.hsmodel;
 
 public final class CardIds {
     public static final String AARON_GUTIERREZ = "CRED_79";

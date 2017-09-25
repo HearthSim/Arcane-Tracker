@@ -1,4 +1,4 @@
-package net.mbonnin.arcanetracker.cardids;
+package net.mbonnin.arcanetracker.hsmodel;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

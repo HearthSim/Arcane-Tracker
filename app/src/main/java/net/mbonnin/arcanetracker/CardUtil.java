@@ -1,6 +1,6 @@
 package net.mbonnin.arcanetracker;
 
-import net.mbonnin.arcanetracker.cardids.Card;
+import net.mbonnin.arcanetracker.hsmodel.Card;
 
 /**
  * Created by martin on 9/25/17.

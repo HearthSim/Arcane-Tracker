@@ -2,7 +2,7 @@ package net.mbonnin.arcanetracker.parser;
 
 import android.os.Handler;
 
-import net.mbonnin.arcanetracker.cardids.Card;
+import net.mbonnin.arcanetracker.hsmodel.Card;
 import net.mbonnin.arcanetracker.Deck;
 import net.mbonnin.arcanetracker.DeckList;
 import net.mbonnin.arcanetracker.MainViewCompanion;

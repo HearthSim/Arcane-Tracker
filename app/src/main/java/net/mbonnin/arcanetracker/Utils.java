@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 import com.google.firebase.crash.FirebaseCrash;
 
-import net.mbonnin.arcanetracker.cardids.Card;
+import net.mbonnin.arcanetracker.hsmodel.Card;
 
 import java.io.IOException;
 import java.io.InputStream;
