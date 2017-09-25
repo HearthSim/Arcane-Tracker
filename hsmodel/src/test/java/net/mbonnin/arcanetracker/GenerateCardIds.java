@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import net.mbonnin.arcanetracker.hsmodel.Card;
+import net.mbonnin.arcanetracker.hsmodel.CardJson;
 
 import org.junit.Test;
 
@@ -12,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -20,9 +22,7 @@ import java.util.TreeSet;
 public class GenerateCardIds {
     @Test
     public void generate() throws Exception {
-        InputStream inputStream = GenerateCardIds.class.getResourceAsStream("/cards_enUS.json");
-        InputStreamReader reader = new InputStreamReader(inputStream);
-        ArrayList<Card> list = new Gson().fromJson(reader, new TypeToken<ArrayList<Card>>() {}.getType());
+        List<Card> list = CardJson.get().allCards();
 
         TreeMap<String, ArrayList<String>> map = new TreeMap<>();
         for (Card card: list) {

@@ -15,9 +15,11 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import net.mbonnin.arcanetracker.hsmodel.Card;
+import net.mbonnin.arcanetracker.hsmodel.CardJson;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by martin on 10/21/16.
@@ -108,7 +110,7 @@ public class CardsAdapter extends RecyclerView.Adapter {
 
     private void filter() {
         mCardList.clear();
-        ArrayList<Card> allCards = CardDb.getCards();
+        List<Card> allCards = CardJson.allCards();
 
         for (Card card : allCards) {
             if (card.collectible == null || !card.collectible) {

@@ -10,8 +10,8 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/cardids" />
             <option value="$PROJECT_DIR$/detector" />
+            <option value="$PROJECT_DIR$/hsmodel" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

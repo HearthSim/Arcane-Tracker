@@ -35,6 +35,6 @@ dependencies {
     androidTestCompile dep.okhttp
     androidTestCompile 'com.squareup:kotlinpoet:0.5.0'
 
-    compile project(":cardids")
+    compile project(":hsmodel")
 }
 
