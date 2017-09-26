@@ -131,10 +131,10 @@ public class ViewManager {
         layoutParams.x = params.x;
         layoutParams.y = params.y;
 
-        mViews.add(view);
         mWindowManager.addView(view, layoutParams);
-
+        mViews.add(view);
     }
+
     public void addView(View view, Params params) {
         addViewInternal(view, params, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
     }
