@@ -2,7 +2,6 @@ plugins {
     id 'com.github.ben-manes.versions' version '0.15.0'
 }
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion atConfig.compileSdkVersion
@@ -63,9 +62,10 @@ android {
             }
         }
     }
+
     compileOptions {
-        targetCompatibility 1.8
-        sourceCompatibility 1.8
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     lintOptions {

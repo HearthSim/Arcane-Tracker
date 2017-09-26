@@ -51,10 +51,7 @@ public class TestParser {
     @BeforeClass
     public static void beforeClass() {
         Timber.plant(new TestTree());
-        InputStream inputStream = TestParser.class.getResourceAsStream("/cards_enUS.json");
-        InputStreamReader reader = new InputStreamReader(inputStream);
-        ArrayList<Card> list = new Gson().fromJson(reader, new TypeToken<ArrayList<Card>>() {}.getType());
-        CardDb.init(list);
+        CardJson.init("enUS", new ArrayList<>());
     }
 
     private void runParser(String resource, GameLogic.Listener listener) throws IOException {

@@ -1,14 +1,8 @@
 apply plugin: 'java-library'
 
-repositories {
-    google()
-    jcenter()
-    mavenCentral()
-}
-
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.google.code.gson:gson:2.8.1'
+    compile dep.gson
     testCompile 'junit:junit:4.12'
 }
 

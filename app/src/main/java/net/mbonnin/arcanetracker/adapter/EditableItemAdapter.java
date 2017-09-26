@@ -5,8 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 
+import net.mbonnin.arcanetracker.CardUtil;
 import net.mbonnin.arcanetracker.hsmodel.Card;
-import net.mbonnin.arcanetracker.CardDb;
 import net.mbonnin.arcanetracker.Deck;
 import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Utils;
@@ -36,7 +36,7 @@ public class EditableItemAdapter extends ItemAdapter {
         ArrayList<Object> list = new ArrayList<>();
         for (Map.Entry<String, Integer> entry: mDeck.cards.entrySet()) {
             DeckEntryItem item = new DeckEntryItem();
-            item.card = CardDb.getCard(entry.getKey());
+            item.card = CardUtil.getCard(entry.getKey());
             item.count = entry.getValue();
             list.add(item);
         }

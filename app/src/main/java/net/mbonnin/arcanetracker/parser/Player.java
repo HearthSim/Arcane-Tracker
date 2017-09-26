@@ -1,7 +1,7 @@
 package net.mbonnin.arcanetracker.parser;
 
+import net.mbonnin.arcanetracker.CardUtil;
 import net.mbonnin.arcanetracker.hsmodel.Card;
-import net.mbonnin.arcanetracker.CardDb;
 
 /**
  * Created by martin on 11/7/16.
@@ -16,7 +16,7 @@ public class Player {
     public Entity heroPower;
 
     public int classIndex() {
-        Card card = CardDb.getCard(hero.CardID);
+        Card card = CardUtil.getCard(hero.CardID);
         return Card.playerClassToClassIndex(card.playerClass);
     }
 }

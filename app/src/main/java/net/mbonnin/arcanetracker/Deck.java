@@ -29,7 +29,7 @@ public class Deck {
 
     public void checkClassIndex() {
         for (String cardId: cards.keySet()) {
-            Card card = CardDb.getCard(cardId);
+            Card card = CardUtil.getCard(cardId);
             int ci = Card.playerClassToClassIndex(card.playerClass);
             if (ci >= 0 && ci < Card.CLASS_INDEX_NEUTRAL) {
                 if (classIndex != ci) {

@@ -1,7 +1,7 @@
 package net.mbonnin.arcanetracker.parser;
 
+import net.mbonnin.arcanetracker.CardUtil;
 import net.mbonnin.arcanetracker.hsmodel.Card;
-import net.mbonnin.arcanetracker.CardDb;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -68,7 +68,7 @@ public class Entity {
 
     public void setCardId(String cardID) {
         this.CardID = cardID;
-        this.card = CardDb.getCard(cardID);
+        this.card = CardUtil.getCard(cardID);
     }
 
     public static class Extra {

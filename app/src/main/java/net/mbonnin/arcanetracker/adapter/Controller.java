@@ -12,7 +12,6 @@ import com.annimon.stream.function.Supplier;
 
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
 import net.mbonnin.arcanetracker.hsmodel.Card;
-import net.mbonnin.arcanetracker.CardDb;
 import net.mbonnin.arcanetracker.CardUtil;
 import net.mbonnin.arcanetracker.Deck;
 import net.mbonnin.arcanetracker.R;
@@ -206,7 +205,7 @@ public class Controller implements GameLogic.Listener {
         for (Entity entity : originalDeckEntityList) {
             if (entity.card == null) {
                 if (i < cardIdsFromDeck.size()) {
-                    entity.extra.tmpCard = CardDb.getCard(cardIdsFromDeck.get(i));
+                    entity.extra.tmpCard = CardUtil.getCard(cardIdsFromDeck.get(i));
                     i++;
                 }
             }
@@ -384,7 +383,7 @@ public class Controller implements GameLogic.Listener {
 
         for (Map.Entry<String, Integer> entry : cardMap.entrySet()) {
             DeckEntryItem deckEntry = new DeckEntryItem();
-            deckEntry.card = CardDb.getCard(entry.getKey());
+            deckEntry.card = CardUtil.getCard(entry.getKey());
             deckEntry.count = entry.getValue();
             list.add(deckEntry);
             unknown -= deckEntry.count;

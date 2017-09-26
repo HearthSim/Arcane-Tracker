@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import net.mbonnin.arcanetracker.CardUtil;
 import net.mbonnin.arcanetracker.hsmodel.Card;
-import net.mbonnin.arcanetracker.CardDb;
 import net.mbonnin.arcanetracker.CardRenderer;
 import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Typefaces;
@@ -76,7 +76,7 @@ public class DetailsView extends LinearLayout {
                 builder.append("\n");
             }
             if (!TextUtils.isEmpty(entity.extra.createdBy)) {
-                builder.append(getContext().getString(R.string.createdBy, CardDb.getCard(entity.extra.createdBy).name));
+                builder.append(getContext().getString(R.string.createdBy, CardUtil.getCard(entity.extra.createdBy).name));
             }
 
             if (Entity.ZONE_SECRET.equals(entity.tags.get(Entity.KEY_ZONE))
@@ -194,7 +194,7 @@ public class DetailsView extends LinearLayout {
 
     private void addSecret(List<DeckEntryItem> list, String cardId, boolean condition) {
         DeckEntryItem deckEntryItem = new DeckEntryItem();
-        deckEntryItem.card = CardDb.getCard(cardId);
+        deckEntryItem.card = CardUtil.getCard(cardId);
         deckEntryItem.count = condition ? 0 : 1;
         list.add(deckEntryItem);
     }

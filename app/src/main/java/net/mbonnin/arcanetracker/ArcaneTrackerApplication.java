@@ -19,6 +19,8 @@ import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.LruCache;
 import com.squareup.picasso.Picasso;
 
+import net.mbonnin.arcanetracker.hsmodel.Card;
+import net.mbonnin.arcanetracker.hsmodel.CardJson;
 import net.mbonnin.arcanetracker.hsreplay.HSReplay;
 import net.mbonnin.arcanetracker.parser.ArenaParser;
 import net.mbonnin.arcanetracker.parser.GameLogic;
@@ -26,6 +28,7 @@ import net.mbonnin.arcanetracker.parser.LoadingScreenParser;
 import net.mbonnin.arcanetracker.parser.LogReader;
 import net.mbonnin.arcanetracker.parser.PowerParser;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import io.paperdb.Paper;
@@ -121,7 +124,7 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
 
         StopServiceBroadcastReceiver.init();
 
-        CardDb.init();
+        initCardJson();
 
         /*
          * for Arena, we read the whole file again each time because the file is not that big and it allows us to
@@ -153,6 +156,21 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
 
         CardRenderer.get();
 
+    }
+
+    private void initCardJson() {
+        String jsonName = Language.getCurrentLanguage().jsonName;
+
+        ArrayList<Card> injectedCards = new ArrayList<>();
+
+        /*
+         * these are 3 fake cards needed for CardRender
+         */
+        injectedCards.add(CardUtil.secret("PALADIN"));
+        injectedCards.add(CardUtil.secret("HUNTER"));
+        injectedCards.add(CardUtil.secret("MAGE"));
+
+        CardJson.init(jsonName, injectedCards);
     }
 
     @Override
