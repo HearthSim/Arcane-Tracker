@@ -111,7 +111,7 @@ public class ScreenCapture implements ImageReader.OnImageAvailableListener {
                     }
                 }
             } else if (LoadingScreenParser.MODE_DRAFT.equals(LoadingScreenParser.get().getMode())) {
-                arenaResult = mDetector.detectArena(bbImage);
+                //arenaResult = mDetector.detectArena(bbImage);
             }
             image.close();
         }
