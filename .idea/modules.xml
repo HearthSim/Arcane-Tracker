@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/arcane_tracker.iml" filepath="$PROJECT_DIR$/arcane_tracker.iml" />
-      <module fileurl="file://$PROJECT_DIR$/cardids/cardids.iml" filepath="$PROJECT_DIR$/cardids/cardids.iml" />
       <module fileurl="file://$PROJECT_DIR$/detector/detector.iml" filepath="$PROJECT_DIR$/detector/detector.iml" />
       <module fileurl="file://$PROJECT_DIR$/hsmodel/hsmodel.iml" filepath="$PROJECT_DIR$/hsmodel/hsmodel.iml" />
     </modules>
