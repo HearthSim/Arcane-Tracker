@@ -44,7 +44,7 @@ public class ArenaParser implements LogReader.LineConsumer {
                 return;
             }
 
-            /**
+            /*
              * a card is chosen
              */
             matcher = Client_chooses.matcher(line);
