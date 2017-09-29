@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.LruCache;
 
-import net.mbonnin.arcanetracker.hsmodel.Card;
+import net.mbonnin.hsmodel.Card;
 
 import java.io.File;
 import java.io.FileNotFoundException;

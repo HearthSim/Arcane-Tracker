@@ -1,14 +1,11 @@
 package net.mbonnin.arcanetracker;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import net.mbonnin.arcanetracker.hsmodel.Card;
-import net.mbonnin.arcanetracker.hsmodel.CardJson;
 import net.mbonnin.arcanetracker.parser.Entity;
 import net.mbonnin.arcanetracker.parser.Game;
 import net.mbonnin.arcanetracker.parser.GameLogic;
 import net.mbonnin.arcanetracker.parser.PowerParser;
+import net.mbonnin.hsmodel.Card;
+import net.mbonnin.hsmodel.CardJson;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -51,7 +48,7 @@ public class TestParser {
     @BeforeClass
     public static void beforeClass() {
         Timber.plant(new TestTree());
-        CardJson.init("enUS", new ArrayList<>());
+        CardJson.INSTANCE.init("enUS", new ArrayList<>());
     }
 
     private void runParser(String resource, GameLogic.Listener listener) throws IOException {

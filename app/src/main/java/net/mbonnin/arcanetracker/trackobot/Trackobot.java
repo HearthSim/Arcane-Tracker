@@ -11,7 +11,7 @@ import net.mbonnin.arcanetracker.BnetGameType;
 import net.mbonnin.arcanetracker.Lce;
 import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Utils;
-import net.mbonnin.arcanetracker.hsmodel.Card;
+import net.mbonnin.hsmodel.Card;
 import net.mbonnin.arcanetracker.trackobot.model.HistoryList;
 import net.mbonnin.arcanetracker.trackobot.model.ResultData;
 

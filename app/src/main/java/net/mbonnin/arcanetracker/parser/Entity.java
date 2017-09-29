@@ -1,7 +1,7 @@
 package net.mbonnin.arcanetracker.parser;
 
 import net.mbonnin.arcanetracker.CardUtil;
-import net.mbonnin.arcanetracker.hsmodel.Card;
+import net.mbonnin.hsmodel.Card;
 
 import java.util.HashMap;
 import java.util.Locale;

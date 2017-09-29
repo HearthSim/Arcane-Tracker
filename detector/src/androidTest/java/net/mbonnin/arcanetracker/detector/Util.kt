@@ -22,15 +22,5 @@ fun bitmapToByteBufferImage(bm: Bitmap): ByteBufferImage {
 
 fun inputStreamToByteBufferImage(inputStream: InputStream): ByteBufferImage {
     val bm = BitmapFactory.decodeStream(inputStream)
-    val buffer = ByteBuffer.allocateDirect(bm.width * bm.height * 4)
-    for (j in 0 until bm.height) {
-        for (i in 0 until bm.width) {
-            val pixel = bm.getPixel(i, j)
-            buffer.put(Color.red(pixel).toByte())
-            buffer.put(Color.green(pixel).toByte())
-            buffer.put(Color.blue(pixel).toByte())
-            buffer.put(0xff.toByte())
-        }
-    }
-    return ByteBufferImage(bm.width, bm.height, buffer, bm.width * 4)
+    return bitmapToByteBufferImage(bm)
 }

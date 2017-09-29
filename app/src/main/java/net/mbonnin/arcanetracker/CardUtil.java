@@ -1,13 +1,10 @@
 package net.mbonnin.arcanetracker;
 
-import net.mbonnin.arcanetracker.hsmodel.Card;
-import net.mbonnin.arcanetracker.hsmodel.CardJson;
+
+import net.mbonnin.hsmodel.Card;
+import net.mbonnin.hsmodel.CardJson;
 
 import java.util.Collections;
-
-/**
- * Created by martin on 9/25/17.
- */
 
 public class CardUtil {
     public static final Card UNKNOWN = unknown();
@@ -30,7 +27,7 @@ public class CardUtil {
         Card card = unknown();
         card.type = Card.TYPE_SPELL;
         card.text = Utils.getString(R.string.secretText);
-        int classIndex = Card.niceNameToClassIndexNC(clazz);
+        int classIndex = Card.Companion.niceNameToClassIndexNC(clazz);
         switch (classIndex) {
             case Card.CLASS_INDEX_HUNTER:
                 card.id = "secret_h";
@@ -53,11 +50,8 @@ public class CardUtil {
     }
 
     public static Card getCard(int dbfId) {
-        if (CardJson.allCards() == null) {
-            return null;
-        }
 
-        for (Card card: CardJson.allCards()) {
+        for (Card card: CardJson.INSTANCE.allCards()) {
             if (card.dbfId == dbfId) {
                 return card;
             }
@@ -67,18 +61,11 @@ public class CardUtil {
     }
 
     public static Card getCard(String key) {
-        if (CardJson.allCards() == null) {
-            /*
-             * can happen  the very first launch
-             * or maybe even later in some cases, the calling code does not check for null so we need to be robust to that
-             */
-            return UNKNOWN;
-        }
-        int index = Collections.binarySearch(CardJson.allCards(), key);
+        int index = Collections.binarySearch(CardJson.INSTANCE.allCards(), key);
         if (index < 0) {
             return UNKNOWN;
         } else {
-            return CardJson.allCards().get(index);
+            return CardJson.INSTANCE.allCards().get(index);
         }
     }
 }

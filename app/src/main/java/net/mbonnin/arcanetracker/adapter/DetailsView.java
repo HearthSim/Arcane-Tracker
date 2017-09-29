@@ -9,15 +9,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import net.mbonnin.arcanetracker.CardUtil;
-import net.mbonnin.arcanetracker.hsmodel.Card;
 import net.mbonnin.arcanetracker.CardRenderer;
+import net.mbonnin.arcanetracker.CardUtil;
 import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Typefaces;
 import net.mbonnin.arcanetracker.Utils;
 import net.mbonnin.arcanetracker.databinding.DetailsViewBinding;
 import net.mbonnin.arcanetracker.parser.Entity;
 import net.mbonnin.arcanetracker.parser.GameLogic;
+import net.mbonnin.hsmodel.Card;
+import net.mbonnin.hsmodel.cardid.CardIdsKt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,39 +136,39 @@ public class DetailsView extends LinearLayout {
 
         switch (classIndex) {
             case Card.CLASS_INDEX_HUNTER:
-                addSecret(list, Card.BEAR_TRAP, entity.extra.selfHeroAttacked);
-                addSecret(list, Card.CAT_TRICK, entity.extra.otherPlayerCastSpell);
-                addSecret(list, Card.EXPLOSIVE_TRAP, entity.extra.selfHeroAttacked);
-                addSecret(list, Card.FREEZING_TRAP, entity.extra.selfHeroAttacked || entity.extra.selfMinionWasAttacked);
-                addSecret(list, Card.SNAKE_TRAP, entity.extra.selfMinionWasAttacked);
-                addSecret(list, Card.SNIPE, entity.extra.otherPlayerPlayedMinion);
-                addSecret(list, Card.DART_TRAP, entity.extra.otherPlayerHeroPowered);
-                addSecret(list, Card.HIDDEN_CACHE, entity.extra.otherPlayerPlayedMinion);
-                addSecret(list, Card.MISDIRECTION, entity.extra.selfHeroAttacked);
-                addSecret(list, Card.VENOMSTRIKE_TRAP, entity.extra.selfMinionWasAttacked);
+                addSecret(list, CardIdsKt.BEAR_TRAP, entity.extra.selfHeroAttacked);
+                addSecret(list, CardIdsKt.CAT_TRICK, entity.extra.otherPlayerCastSpell);
+                addSecret(list, CardIdsKt.EXPLOSIVE_TRAP, entity.extra.selfHeroAttacked);
+                addSecret(list, CardIdsKt.FREEZING_TRAP, entity.extra.selfHeroAttacked || entity.extra.selfMinionWasAttacked);
+                addSecret(list, CardIdsKt.SNAKE_TRAP, entity.extra.selfMinionWasAttacked);
+                addSecret(list, CardIdsKt.SNIPE, entity.extra.otherPlayerPlayedMinion);
+                addSecret(list, CardIdsKt.DART_TRAP, entity.extra.otherPlayerHeroPowered);
+                addSecret(list, CardIdsKt.HIDDEN_CACHE, entity.extra.otherPlayerPlayedMinion);
+                addSecret(list, CardIdsKt.MISDIRECTION, entity.extra.selfHeroAttacked);
+                addSecret(list, CardIdsKt.VENOMSTRIKE_TRAP, entity.extra.selfMinionWasAttacked);
                 break;
             case Card.CLASS_INDEX_MAGE:
-                addSecret(list, Card.MIRROR_ENTITY, entity.extra.otherPlayerPlayedMinion);
-                addSecret(list, Card.MANA_BIND, entity.extra.otherPlayerCastSpell);
-                addSecret(list, Card.COUNTERSPELL, entity.extra.otherPlayerCastSpell);
-                addSecret(list, Card.EFFIGY, entity.extra.selfPlayerMinionDied);
-                addSecret(list, Card.ICE_BARRIER, entity.extra.selfHeroAttacked);
-                addSecret(list, Card.POTION_OF_POLYMORPH, entity.extra.otherPlayerPlayedMinion);
-                addSecret(list, Card.DUPLICATE, entity.extra.selfPlayerMinionDied);
-                addSecret(list, Card.VAPORIZE, entity.extra.selfHeroAttackedByMinion);
-                addSecret(list, Card.ICE_BLOCK, false);
-                addSecret(list, Card.SPELL_BENDER, entity.extra.selfMinionTargetedBySpell);
-                addSecret(list, Card.FROZEN_CLONE, entity.extra.otherPlayerPlayedMinion);
+                addSecret(list, CardIdsKt.MIRROR_ENTITY, entity.extra.otherPlayerPlayedMinion);
+                addSecret(list, CardIdsKt.MANA_BIND, entity.extra.otherPlayerCastSpell);
+                addSecret(list, CardIdsKt.COUNTERSPELL, entity.extra.otherPlayerCastSpell);
+                addSecret(list, CardIdsKt.EFFIGY, entity.extra.selfPlayerMinionDied);
+                addSecret(list, CardIdsKt.ICE_BARRIER, entity.extra.selfHeroAttacked);
+                addSecret(list, CardIdsKt.POTION_OF_POLYMORPH, entity.extra.otherPlayerPlayedMinion);
+                addSecret(list, CardIdsKt.DUPLICATE, entity.extra.selfPlayerMinionDied);
+                addSecret(list, CardIdsKt.VAPORIZE, entity.extra.selfHeroAttackedByMinion);
+                addSecret(list, CardIdsKt.ICE_BLOCK, false);
+                addSecret(list, CardIdsKt.SPELLBENDER, entity.extra.selfMinionTargetedBySpell);
+                addSecret(list, CardIdsKt.FROZEN_CLONE, entity.extra.otherPlayerPlayedMinion);
                 break;
             case Card.CLASS_INDEX_PALADIN:
-                addSecret(list, Card.COMPETITIVE_SPIRIT, entity.extra.competitiveSpiritTriggerConditionHappened);
-                addSecret(list, Card.AVENGE, entity.extra.selfPlayerMinionDied);
-                addSecret(list, Card.REDEMPTION, entity.extra.selfPlayerMinionDied);
-                addSecret(list, Card.REPENTANCE, entity.extra.otherPlayerPlayedMinion);
-                addSecret(list, Card.SACRED_TRIAL, entity.extra.otherPlayerPlayedMinionWithThreeOnBoardAlready);
-                addSecret(list, Card.NOBLE_SACRIFIC, entity.extra.selfHeroAttacked || entity.extra.selfMinionWasAttacked);
-                addSecret(list, Card.GETAWAY_KOD, entity.extra.selfPlayerMinionDied);
-                addSecret(list, Card.EYE_FOR_EYE, entity.extra.selfHeroAttacked);
+                addSecret(list, CardIdsKt.COMPETITIVE_SPIRIT, entity.extra.competitiveSpiritTriggerConditionHappened);
+                addSecret(list, CardIdsKt.AVENGE, entity.extra.selfPlayerMinionDied);
+                addSecret(list, CardIdsKt.REDEMPTION, entity.extra.selfPlayerMinionDied);
+                addSecret(list, CardIdsKt.REPENTANCE, entity.extra.otherPlayerPlayedMinion);
+                addSecret(list, CardIdsKt.SACRED_TRIAL, entity.extra.otherPlayerPlayedMinionWithThreeOnBoardAlready);
+                addSecret(list, CardIdsKt.NOBLE_SACRIFICE, entity.extra.selfHeroAttacked || entity.extra.selfMinionWasAttacked);
+                addSecret(list, CardIdsKt.GETAWAY_KODO, entity.extra.selfPlayerMinionDied);
+                addSecret(list, CardIdsKt.EYE_FOR_AN_EYE, entity.extra.selfHeroAttacked);
                 break;
         }
 

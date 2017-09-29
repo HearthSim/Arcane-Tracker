@@ -14,8 +14,8 @@ import android.widget.TextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import net.mbonnin.arcanetracker.hsmodel.Card;
-import net.mbonnin.arcanetracker.hsmodel.CardJson;
+import net.mbonnin.hsmodel.Card;
+import net.mbonnin.hsmodel.CardJson;
 
 import java.util.ArrayList;
 import java.util.Collections;

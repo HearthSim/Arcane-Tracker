@@ -30,10 +30,10 @@ dependencies {
     compile 'ar.com.hjg:pngj:2.1.0'
     compile dep.gson
 
+    compile "net.mbonnin.hsmodel:hsmodel:0.2.6"
+
     androidTestCompile 'com.android.support.test:runner:1.0.1'
     androidTestCompile dep.espresso
     androidTestCompile dep.okhttp
-
-    compile project(":hsmodel")
 }
 

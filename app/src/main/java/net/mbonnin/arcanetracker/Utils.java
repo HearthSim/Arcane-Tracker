@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 import com.google.firebase.crash.FirebaseCrash;
 
-import net.mbonnin.arcanetracker.hsmodel.Card;
+import net.mbonnin.hsmodel.Card;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -80,7 +80,7 @@ public class Utils {
     }
 
     public static Drawable getDrawableForClassIndex(int classIndex) {
-        return getDrawableForName(Card.classIndexToHeroId(classIndex));
+        return getDrawableForName(Card.Companion.classIndexToHeroId(classIndex));
     }
 
     public static boolean isAppDebuggable() {

@@ -2,7 +2,7 @@ package net.mbonnin.arcanetracker;
 
 import android.util.Base64;
 
-import net.mbonnin.arcanetracker.hsmodel.Card;
+import net.mbonnin.hsmodel.Card;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;

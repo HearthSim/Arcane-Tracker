@@ -7,7 +7,7 @@ class FeatureExtractor {
         System.loadLibrary("feature_extractor")
     }
 
-    private lateinit var vector: DoubleArray
+    private var vector: DoubleArray
 
     /*
      * x, y, w, h represent the input rect where to compute the features

@@ -19,14 +19,14 @@ import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.LruCache;
 import com.squareup.picasso.Picasso;
 
-import net.mbonnin.arcanetracker.hsmodel.Card;
-import net.mbonnin.arcanetracker.hsmodel.CardJson;
 import net.mbonnin.arcanetracker.hsreplay.HSReplay;
 import net.mbonnin.arcanetracker.parser.ArenaParser;
 import net.mbonnin.arcanetracker.parser.GameLogic;
 import net.mbonnin.arcanetracker.parser.LoadingScreenParser;
 import net.mbonnin.arcanetracker.parser.LogReader;
 import net.mbonnin.arcanetracker.parser.PowerParser;
+import net.mbonnin.hsmodel.Card;
+import net.mbonnin.hsmodel.CardJson;
 
 import java.util.ArrayList;
 import java.util.Locale;

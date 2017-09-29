@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.mbonnin.arcanetracker.hsmodel.Card;
+import net.mbonnin.hsmodel.Card;
 import net.mbonnin.arcanetracker.model.GameSummary;
 
 public class GameViewHolder extends RecyclerView.ViewHolder {

@@ -8,7 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.mbonnin.arcanetracker.hsmodel.Card;
+import net.mbonnin.arcanetracker.detector.Test;
+import net.mbonnin.hsmodel.Card;
 
 /**
  * Created by martin on 10/20/16.
@@ -43,6 +44,7 @@ public class ClassAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
+
         return Card.classNameList.length;
     }
     

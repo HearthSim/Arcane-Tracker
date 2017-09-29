@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import net.mbonnin.arcanetracker.hsmodel.Card;
+import net.mbonnin.hsmodel.Card;
 import net.mbonnin.arcanetracker.databinding.ImportDeckstringBinding;
 
 import java.util.ArrayList;

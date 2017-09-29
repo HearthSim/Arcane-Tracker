@@ -1,6 +1,6 @@
 package net.mbonnin.arcanetracker;
 
-import net.mbonnin.arcanetracker.hsmodel.Card;
+import net.mbonnin.hsmodel.Card;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -30,10 +30,10 @@ public class Deck {
     public void checkClassIndex() {
         for (String cardId: cards.keySet()) {
             Card card = CardUtil.getCard(cardId);
-            int ci = Card.playerClassToClassIndex(card.playerClass);
+            int ci = Card.Companion.playerClassToClassIndex(card.playerClass);
             if (ci >= 0 && ci < Card.CLASS_INDEX_NEUTRAL) {
                 if (classIndex != ci) {
-                    Timber.e("inconsistent class index, force to" + Card.classIndexToPlayerClass(ci));
+                    Timber.e("inconsistent class index, force to" + Card.Companion.classIndexToPlayerClass(ci));
                     classIndex = ci;
                 }
                 return;

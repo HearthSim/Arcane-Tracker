@@ -11,7 +11,7 @@ import com.annimon.stream.function.Function;
 import com.annimon.stream.function.Supplier;
 
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
-import net.mbonnin.arcanetracker.hsmodel.Card;
+import net.mbonnin.hsmodel.Card;
 import net.mbonnin.arcanetracker.CardUtil;
 import net.mbonnin.arcanetracker.Deck;
 import net.mbonnin.arcanetracker.R;
