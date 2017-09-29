@@ -81,8 +81,8 @@ public class Trackobot {
     public static File findTrackobotFile() {
         File dir = Environment.getExternalStorageDirectory();
         File files[] = dir.listFiles();
-        for (File f: files) {
-            if (f.isFile() &&f.getName().contains(".track-o-bot")) {
+        for (File f : files) {
+            if (f.isFile() && f.getName().contains(".track-o-bot")) {
                 return f;
             }
         }
@@ -96,14 +96,14 @@ public class Trackobot {
             StringBuilder builder = new StringBuilder();
             DataInputStream stream = new DataInputStream(new FileInputStream(f));
             int usernameLen = stream.readInt();
-            for (int i = 0; i < usernameLen/2; i++) {
-                builder.append((char)stream.readShort());
+            for (int i = 0; i < usernameLen / 2; i++) {
+                builder.append((char) stream.readShort());
             }
             user.username = builder.toString();
             builder.setLength(0);
             int passwordLen = stream.readInt();
-            for (int i = 0; i < passwordLen/2; i++) {
-                builder.append((char)stream.readShort());
+            for (int i = 0; i < passwordLen / 2; i++) {
+                builder.append((char) stream.readShort());
             }
             user.password = builder.toString();
             return user;
@@ -194,7 +194,9 @@ public class Trackobot {
             } else if ("?".equals(pendingData.result.mode)) {
                 pendingData.result.mode = "ranked";
             }
+
             sendResultInternal(pendingData);
+
             Paper.book().write(KEY_PENDING_RESULT_DATA, pendingResultData);
         }
 
@@ -203,6 +205,25 @@ public class Trackobot {
 
     public void sendResultInternal(ResultData resultData) {
         Timber.w("sendResult");
+        if (resultData.result.mode == null) {
+            resultData.result.mode = "ranked";
+        }
+
+        // sanity check
+        switch (resultData.result.mode) {
+            case "ranked":
+            case "arena":
+            case "friendly":
+                break;
+            case "solo":
+                resultData.result.mode = "practice";
+                break;
+            case "?":
+                resultData.result.mode = "ranked";
+                break;
+        }
+
+
         Trackobot.get().service()
                 .postResults(resultData)
                 .map(this::dataToLce)
