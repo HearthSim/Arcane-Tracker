@@ -8,10 +8,10 @@ import com.google.gson.stream.MalformedJsonException;
 
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
 import net.mbonnin.arcanetracker.BnetGameType;
-import net.mbonnin.arcanetracker.hsmodel.Card;
 import net.mbonnin.arcanetracker.Lce;
 import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Utils;
+import net.mbonnin.arcanetracker.hsmodel.Card;
 import net.mbonnin.arcanetracker.trackobot.model.HistoryList;
 import net.mbonnin.arcanetracker.trackobot.model.ResultData;
 
@@ -21,7 +21,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import io.paperdb.Paper;
 import okhttp3.Credentials;
@@ -45,7 +53,7 @@ public class Trackobot {
     private static final java.lang.String KEY_USER = "USER";
     private static final java.lang.String KEY_PENDING_RESULT_DATA = "PENDING_RESULT_DATA";
     private static Trackobot sTrackobot;
-    private final Service mService;
+    private Service mService;
     private User mUser;
     private ArrayList<ResultData> pendingResultData;
 
@@ -120,6 +128,15 @@ public class Trackobot {
         if (pendingResultData == null) {
             pendingResultData = new ArrayList<>();
         }
+
+        mService = createService(mUser.username, mUser.password);
+    }
+
+    public Service service() {
+        return mService;
+    }
+
+    public static Service createService(String username, String password) {
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(chain -> {
                     Request request = chain.request();
@@ -130,8 +147,8 @@ public class Trackobot {
                     if (path.startsWith("users")) {
 
                     } else {
-                        urlBuilder.addQueryParameter("username", mUser.username);
-                        requestBuilder.addHeader("Authorization", Credentials.basic(mUser.username, mUser.password));
+                        urlBuilder.addQueryParameter("username", username);
+                        requestBuilder.addHeader("Authorization", Credentials.basic(username, password));
                     }
 
                     requestBuilder.url(urlBuilder.build());
@@ -147,13 +164,8 @@ public class Trackobot {
                 .client(client)
                 .build();
 
-        mService = retrofit.create(Service.class);
+        return retrofit.create(Service.class);
     }
-
-    public Service service() {
-        return mService;
-    }
-
 
     public static String getHero(int classIndex) {
         if (classIndex < 0 || classIndex >= Card.classNameList.length) {
@@ -177,6 +189,11 @@ public class Trackobot {
 
         while (!pendingResultData.isEmpty()) {
             ResultData pendingData = pendingResultData.remove(0);
+            if ("solo".equals(pendingData.result.mode)) {
+                pendingData.result.mode = "practice";
+            } else if ("?".equals(pendingData.result.mode)) {
+                pendingData.result.mode = "ranked";
+            }
             sendResultInternal(pendingData);
             Paper.book().write(KEY_PENDING_RESULT_DATA, pendingResultData);
         }
@@ -273,9 +290,9 @@ public class Trackobot {
             case BnetGameType.BGT_RANKED_WILD:
                 return "ranked";
             case BnetGameType.BGT_VS_AI:
-                return "solo";
+                return "practice";
             default:
-                return "?";
+                return "ranked";
         }
     }
 }
