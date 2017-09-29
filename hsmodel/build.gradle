@@ -1,0 +1,89 @@
+import net.mbonnin.hsmodel.GenerateConstantsPlugin
+
+plugins {
+    id "com.jfrog.bintray" version "1.7.3"
+}
+
+apply plugin: 'java'
+apply plugin: "java-library"
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: "kotlin"
+apply plugin: GenerateConstantsPlugin
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    implementation "com.google.code.gson:gson:2.8.1"
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+def libraryVersion = '0.2.6'
+def libraryGroup = 'net.mbonnin.hsmodel'
+
+group = libraryGroup
+version = libraryVersion
+
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+sourcesJar.dependsOn(generateCardIds)
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar, javadocJar
+}
+
+
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            from components.java
+            groupId libraryGroup
+            artifactId 'hsmodel'
+            version libraryVersion
+
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    publications = ['MyPublication']
+    pkg {
+        repo = 'default'
+        name = 'hsmodel'
+        userOrg = user
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/mbonnin/hsmodel'
+        labels = ['java', 'data', 'hearthstone']
+        publicDownloadNumbers = true
+        publish = true
+        version {
+            name = libraryVersion
+            desc = 'Hearthstone Model Data'
+        }
+    }
+}

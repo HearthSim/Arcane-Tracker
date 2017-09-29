@@ -8,10 +8,10 @@ import com.google.gson.stream.MalformedJsonException;
 
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
 import net.mbonnin.arcanetracker.BnetGameType;
+import net.mbonnin.arcanetracker.HeroUtilKt;
 import net.mbonnin.arcanetracker.Lce;
 import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Utils;
-import net.mbonnin.hsmodel.Card;
 import net.mbonnin.arcanetracker.trackobot.model.HistoryList;
 import net.mbonnin.arcanetracker.trackobot.model.ResultData;
 
@@ -21,15 +21,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
-import java.security.cert.CertificateException;
 import java.util.ArrayList;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 import io.paperdb.Paper;
 import okhttp3.Credentials;
@@ -168,10 +160,7 @@ public class Trackobot {
     }
 
     public static String getHero(int classIndex) {
-        if (classIndex < 0 || classIndex >= Card.classNameList.length) {
-            return "?";
-        }
-        return Card.classNameList[classIndex];
+        return HeroUtilKt.getPlayerClass(classIndex).toLowerCase();
     }
 
     public void sendResult(ResultData resultData) {

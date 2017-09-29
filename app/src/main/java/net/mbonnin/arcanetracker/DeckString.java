@@ -55,7 +55,7 @@ public class DeckString {
         for (int i = 0; i < heroCount; i++) {
             Card card = CardUtil.getCard(VarInt.getVarInt(byteBuffer));
             if (card != null) {
-                deck.classIndex = Card.playerClassToClassIndex(card.playerClass);
+                deck.classIndex = HeroUtilKt.getClassIndex(card.playerClass);
             }
         }
 

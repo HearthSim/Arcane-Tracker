@@ -8,13 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.mbonnin.arcanetracker.detector.Test;
-import net.mbonnin.hsmodel.Card;
-
-/**
- * Created by martin on 10/20/16.
- */
-
 public class ClassAdapter extends RecyclerView.Adapter {
     private int mSelectedPosition;
 
@@ -28,7 +21,7 @@ public class ClassAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         View view = holder.itemView;
         ((ImageView)view.findViewById(R.id.imageView)).setImageDrawable(Utils.getDrawableForName(String.format("hero_%02d_round", position + 1)));
-        ((TextView)view.findViewById(R.id.className)).setText(Card.classNameList[position]);
+        ((TextView)view.findViewById(R.id.className)).setText(HeroUtilKt.getDisplayName(position));
 
         view.setOnClickListener(v -> {
             mSelectedPosition = holder.getAdapterPosition();
@@ -44,8 +37,7 @@ public class ClassAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-
-        return Card.classNameList.length;
+        return HeroUtilKt.allHeroes().length;
     }
     
     public int getSelectedClassIndex() {

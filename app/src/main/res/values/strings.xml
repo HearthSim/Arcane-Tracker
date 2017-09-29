@@ -180,4 +180,15 @@
     <string name="useNewDeck">Create new empty deck</string>
     <string name="cannotParseDeckstring">Cannot parse deckstring</string>
     <string name="preparingEmail">Preparing email…This might take a bit.</string>
+    <string name="race_elemental">Elemental</string>
+    <string name="warrior">Warrior</string>
+    <string name="shaman">Shaman</string>
+    <string name="rogue">Rogue</string>
+    <string name="paladin">Paladin</string>
+    <string name="hunter">Hunter</string>
+    <string name="druid">Druid</string>
+    <string name="warlock">Warlock</string>
+    <string name="mage">Mage</string>
+    <string name="priest">Priest</string>
+    <string name="neutral">Neutral</string>
 </resources>

@@ -1,6 +1,7 @@
 package net.mbonnin.arcanetracker.parser;
 
 import net.mbonnin.arcanetracker.CardUtil;
+import net.mbonnin.arcanetracker.HeroUtilKt;
 import net.mbonnin.hsmodel.Card;
 
 /**
@@ -17,6 +18,6 @@ public class Player {
 
     public int classIndex() {
         Card card = CardUtil.getCard(hero.CardID);
-        return Card.Companion.playerClassToClassIndex(card.playerClass);
+        return HeroUtilKt.getClassIndex(card.playerClass);
     }
 }

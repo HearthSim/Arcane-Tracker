@@ -20,8 +20,6 @@ import android.widget.Toast;
 
 import com.google.firebase.crash.FirebaseCrash;
 
-import net.mbonnin.hsmodel.Card;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -80,7 +78,7 @@ public class Utils {
     }
 
     public static Drawable getDrawableForClassIndex(int classIndex) {
-        return getDrawableForName(Card.Companion.classIndexToHeroId(classIndex));
+        return getDrawableForName(HeroUtilKt.getHeroId(classIndex));
     }
 
     public static boolean isAppDebuggable() {

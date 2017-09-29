@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import net.mbonnin.arcanetracker.adapter.EditableItemAdapter;
 import net.mbonnin.hsmodel.Card;
+import net.mbonnin.hsmodel.playerclass.PlayerClassKt;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -83,13 +84,13 @@ public class DeckEditorView extends RelativeLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        cardsRecyclerView = (RecyclerView) findViewById(R.id.cardsRecyclerView);
-        deckRecyclerView = (RecyclerView) findViewById(R.id.deckRecyclerView);
-        manaSelectionView = (ManaSelectionView) findViewById(R.id.manaSelectionView);
-        editText = (EditText) findViewById(R.id.editText);
-        cardCount = (TextView)findViewById(R.id.cardCount);
-        button = (Button)findViewById(R.id.button);
-        close = (ImageButton)findViewById(R.id.close);
+        cardsRecyclerView = findViewById(R.id.cardsRecyclerView);
+        deckRecyclerView = findViewById(R.id.deckRecyclerView);
+        manaSelectionView = findViewById(R.id.manaSelectionView);
+        editText = findViewById(R.id.editText);
+        cardCount = findViewById(R.id.cardCount);
+        button = findViewById(R.id.button);
+        close = findViewById(R.id.close);
         classImageView = findViewById(R.id.classImageView);
         neutralImageView = findViewById(R.id.neutralImageView);
         classImageViewDisabled = findViewById(R.id.classImageViewDisabled);
@@ -106,14 +107,9 @@ public class DeckEditorView extends RelativeLayout {
     public void setDeck(Deck deck) {
         mDeck = deck;
 
-        int classIndex = mDeck.classIndex;
-        if (classIndex <0) {
-            // XXX: this happens... not sure why
-            classIndex = Card.CLASS_INDEX_NEUTRAL;
-        }
-
         String names[] = new String[2];
-        names[0] = Card.classNameList[classIndex];
+        String playerClass = HeroUtilKt.getPlayerClass(mDeck.classIndex);
+        names[0] = playerClass.substring(0, 1) + playerClass.substring(1).toLowerCase();
         names[1] = "Neutral";
 
         mCardsAdapter = new CardsAdapter();
@@ -130,12 +126,12 @@ public class DeckEditorView extends RelativeLayout {
         deckRecyclerView.setAdapter(mDeckAdapter);
 
 
-        mClass = Card.classIndexToPlayerClass(classIndex);
+        mClass = playerClass;
 
         mCardsAdapter.setListener(mCardsAdapterListener);
         mCardsAdapter.setClass(mClass);
 
-        classImageView.setBackgroundDrawable(Utils.getDrawableForName(String.format(Locale.ENGLISH, "hero_%02d_round", classIndex + 1)));
+        classImageView.setBackgroundDrawable(Utils.getDrawableForName(String.format(Locale.ENGLISH, "hero_%02d_round", mDeck.classIndex + 1)));
         classImageViewDisabled.setVisibility(GONE);
         neutralImageView.setBackgroundResource(R.drawable.hero_10_round);
 
@@ -148,7 +144,7 @@ public class DeckEditorView extends RelativeLayout {
         });
 
         neutralImageView.setOnClickListener(v -> {
-            mCardsAdapter.setClass(Card.CLASS_NEUTRAL);
+            mCardsAdapter.setClass(PlayerClassKt.NEUTRAL);
             cardsRecyclerView.scrollToPosition(0);
             classImageViewDisabled.setVisibility(VISIBLE);
             neutralImageViewDisabled.setVisibility(GONE);

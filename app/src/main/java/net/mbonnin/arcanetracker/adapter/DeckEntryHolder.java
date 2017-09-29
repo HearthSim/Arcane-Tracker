@@ -15,10 +15,11 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import net.mbonnin.hsmodel.Card;
 import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Utils;
 import net.mbonnin.arcanetracker.ViewManager;
+import net.mbonnin.hsmodel.Card;
+import net.mbonnin.hsmodel.rarity.RarityKt;
 
 import timber.log.Timber;
 
@@ -133,7 +134,7 @@ class DeckEntryHolder extends RecyclerView.ViewHolder implements View.OnTouchLis
 
             if (entry.gift) {
                 gift.setVisibility(View.VISIBLE);
-            } else if (Card.RARITY_LEGENDARY.equals(card.rarity)) {
+            } else if (RarityKt.LEGENDARY.equals(card.rarity)) {
                 count.setVisibility(View.VISIBLE);
                 count.setText("\u2605");
             } else if (c > 1){

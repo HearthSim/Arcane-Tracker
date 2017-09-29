@@ -4,7 +4,6 @@ package net.mbonnin.arcanetracker.parser;
  * Created by martin on 11/11/16.
  */
 
-import net.mbonnin.hsmodel.Card;
 import net.mbonnin.arcanetracker.Utils;
 import net.mbonnin.arcanetracker.parser.power.BlockTag;
 import net.mbonnin.arcanetracker.parser.power.CreateGameTag;
@@ -14,7 +13,9 @@ import net.mbonnin.arcanetracker.parser.power.PlayerTag;
 import net.mbonnin.arcanetracker.parser.power.ShowEntityTag;
 import net.mbonnin.arcanetracker.parser.power.Tag;
 import net.mbonnin.arcanetracker.parser.power.TagChangeTag;
-import net.mbonnin.hsmodel.cardid.CardIdsKt;
+import net.mbonnin.hsmodel.cardid.CardIdKt;
+import net.mbonnin.hsmodel.rarity.RarityKt;
+import net.mbonnin.hsmodel.type.TypeKt;
 
 import java.util.ArrayList;
 
@@ -112,18 +113,18 @@ public class GameLogic {
                      * it can happen that we don't know the id of the played entity, for an example if the player has a secret and its opponent plays one
                      * it should be ok to ignore those since these are opponent plays
                      */
-                    if (Card.TYPE_MINION.equals(playedEntity.tags.get(Entity.KEY_CARDTYPE))) {
+                    if (TypeKt.MINION.equals(playedEntity.tags.get(Entity.KEY_CARDTYPE))) {
                         secretEntity.extra.otherPlayerPlayedMinion = true;
                         if (getMinionsOnBoardForController(playedEntity.tags.get(Entity.KEY_CONTROLLER)).size() >= 3) {
                             secretEntity.extra.otherPlayerPlayedMinionWithThreeOnBoardAlready = true;
                         }
-                    } else if (Card.TYPE_SPELL.equals(playedEntity.tags.get(Entity.KEY_CARDTYPE))) {
+                    } else if (TypeKt.SPELL.equals(playedEntity.tags.get(Entity.KEY_CARDTYPE))) {
                         secretEntity.extra.otherPlayerCastSpell = true;
                         Entity targetEntiy = mGame.findEntityUnsafe(tag.Target);
-                        if (targetEntiy != null && Entity.CARDTYPE_MINION.equals(targetEntiy.tags.get(Entity.KEY_CARDTYPE))) {
+                        if (targetEntiy != null && TypeKt.MINION.equals(targetEntiy.tags.get(Entity.KEY_CARDTYPE))) {
                             secretEntity.extra.selfMinionTargetedBySpell = true;
                         }
-                    } else if (Card.TYPE_HERO_POWER.equals(playedEntity.tags.get(Entity.KEY_CARDTYPE))) {
+                    } else if (TypeKt.HERO_POWER.equals(playedEntity.tags.get(Entity.KEY_CARDTYPE))) {
                         secretEntity.extra.otherPlayerHeroPowered = true;
                     }
                 }
@@ -139,12 +140,12 @@ public class GameLogic {
             EntityList secretEntityList = getSecretEntityList();
             for (Entity secretEntity : secretEntityList) {
                 if (Utils.equalsNullSafe(secretEntity.tags.get(Entity.KEY_CONTROLLER), targetEntity.tags.get(Entity.KEY_CONTROLLER))) {
-                    if (Card.TYPE_MINION.equals(targetEntity.tags.get(Entity.KEY_CARDTYPE))) {
+                    if (TypeKt.MINION.equals(targetEntity.tags.get(Entity.KEY_CARDTYPE))) {
                         secretEntity.extra.selfMinionWasAttacked = true;
-                    } else if (Card.TYPE_HERO.equals(targetEntity.tags.get(Entity.KEY_CARDTYPE))) {
+                    } else if (TypeKt.HERO.equals(targetEntity.tags.get(Entity.KEY_CARDTYPE))) {
                         secretEntity.extra.selfHeroAttacked = true;
                         Entity attackerEntity = mGame.findEntitySafe(tag.Entity);
-                        if (Entity.CARDTYPE_MINION.equals(attackerEntity.tags.get(Entity.KEY_CARDTYPE))) {
+                        if (TypeKt.MINION.equals(attackerEntity.tags.get(Entity.KEY_CARDTYPE))) {
                             secretEntity.extra.selfHeroAttackedByMinion = true;
                         }
                     }
@@ -200,7 +201,7 @@ public class GameLogic {
                         EntityList secretEntityList = getSecretEntityList();
                         for (Entity e2 : secretEntityList) {
                             if (Utils.equalsNullSafe(e2.tags.get(Entity.KEY_CONTROLLER), damagedEntity.tags.get(Entity.KEY_CONTROLLER))) {
-                                if (Card.TYPE_HERO.equals(damagedEntity.tags.get(Entity.KEY_CARDTYPE))) {
+                                if (TypeKt.HERO.equals(damagedEntity.tags.get(Entity.KEY_CARDTYPE))) {
                                     e2.extra.selfHeroDamaged = true;
                                 }
                             }
@@ -297,7 +298,7 @@ public class GameLogic {
                 EntityList secretEntityList = mGame.getEntityList(e -> Entity.ZONE_SECRET.equals(e.tags.get(Entity.KEY_ZONE)));
                 for (Entity secretEntity : secretEntityList) {
                     if (Utils.equalsNullSafe(secretEntity.tags.get(Entity.KEY_CONTROLLER), entity.tags.get(Entity.KEY_CONTROLLER))
-                            && Card.TYPE_MINION.equals(entity.tags.get(Entity.KEY_CARDTYPE))) {
+                            && TypeKt.MINION.equals(entity.tags.get(Entity.KEY_CARDTYPE))) {
                             Entity controllerEntity = mGame.findControllerEntity(entity);
                             if (controllerEntity != null && "0".equals(controllerEntity.tags.get(Entity.KEY_CURRENT_PLAYER))) {
                                 secretEntity.extra.selfPlayerMinionDied = true;
@@ -346,7 +347,7 @@ public class GameLogic {
          * don't factor in the epic secret which are all quests for now
          */
         return mGame.getEntityList(e -> Entity.ZONE_SECRET.equals(e.tags.get(Entity.KEY_ZONE)))
-                .filter(e -> !Entity.RARITY_LEGENDARY.equals(e.tags.get(Entity.KEY_RARITY)));
+                .filter(e -> !RarityKt.LEGENDARY.equals(e.tags.get(Entity.KEY_RARITY)));
     }
 
     private EntityList getMinionsOnBoardForController(String playerId) {
@@ -354,7 +355,7 @@ public class GameLogic {
             if (!Entity.ZONE_PLAY.equals(e.tags.get(Entity.KEY_ZONE))) {
                 return false;
             }
-            if (!Entity.CARDTYPE_MINION.equals(e.tags.get(Entity.KEY_CARDTYPE))) {
+            if (!TypeKt.MINION.equals(e.tags.get(Entity.KEY_CARDTYPE))) {
                 return false;
             }
             if (!Utils.equalsNullSafe(playerId, e.tags.get(Entity.KEY_CONTROLLER))) {
@@ -520,118 +521,118 @@ public class GameLogic {
         if (BlockTag.TYPE_POWER.equals(blockTag.BlockType)) {
 
             switch (blockEntity.CardID) {
-                case CardIdsKt.GANG_UP:
-                case CardIdsKt.RECYCLE:
-                case CardIdsKt.SHADOWCASTER:
-                case CardIdsKt.MANIC_SOULCASTER:
+                case CardIdKt.GANG_UP:
+                case CardIdKt.RECYCLE:
+                case CardIdKt.SHADOWCASTER:
+                case CardIdKt.MANIC_SOULCASTER:
                     guessedId = mGame.findEntitySafe(blockTag.Target).CardID;
                     break;
-                case CardIdsKt.BENEATH_THE_GROUNDS:
-                    guessedId = CardIdsKt.AMBUSH;
+                case CardIdKt.BENEATH_THE_GROUNDS:
+                    guessedId = CardIdKt.AMBUSH;
                     break;
-                case CardIdsKt.IRON_JUGGERNAUT:
-                    guessedId = CardIdsKt.BURROWING_MINE;
+                case CardIdKt.IRON_JUGGERNAUT:
+                    guessedId = CardIdKt.BURROWING_MINE;
                     break;
-                case CardIdsKt.FORGOTTEN_TORCH:
-                    guessedId = CardIdsKt.ROARING_TORCH;
+                case CardIdKt.FORGOTTEN_TORCH:
+                    guessedId = CardIdKt.ROARING_TORCH;
                     break;
-                case CardIdsKt.CURSE_OF_RAFAAM:
-                    guessedId = CardIdsKt.CURSED;
+                case CardIdKt.CURSE_OF_RAFAAM:
+                    guessedId = CardIdKt.CURSED;
                     break;
-                case CardIdsKt.ANCIENT_SHADE:
-                    guessedId = CardIdsKt.ANCIENT_CURSE;
+                case CardIdKt.ANCIENT_SHADE:
+                    guessedId = CardIdKt.ANCIENT_CURSE;
                     break;
-                case CardIdsKt.EXCAVATED_EVIL:
-                    guessedId = CardIdsKt.EXCAVATED_EVIL;
+                case CardIdKt.EXCAVATED_EVIL:
+                    guessedId = CardIdKt.EXCAVATED_EVIL;
                     break;
-                case CardIdsKt.ELISE_STARSEEKER:
-                    guessedId = CardIdsKt.MAP_TO_THE_GOLDEN_MONKEY;
+                case CardIdKt.ELISE_STARSEEKER:
+                    guessedId = CardIdKt.MAP_TO_THE_GOLDEN_MONKEY;
                     break;
-                case CardIdsKt.MAP_TO_THE_GOLDEN_MONKEY:
-                    guessedId = CardIdsKt.GOLDEN_MONKEY;
+                case CardIdKt.MAP_TO_THE_GOLDEN_MONKEY:
+                    guessedId = CardIdKt.GOLDEN_MONKEY;
                     break;
-                case CardIdsKt.DOOMCALLER:
-                    guessedId = CardIdsKt.CTHUN;
+                case CardIdKt.DOOMCALLER:
+                    guessedId = CardIdKt.CTHUN;
                     break;
-                case CardIdsKt.JADE_IDOL:
-                    guessedId = CardIdsKt.JADE_IDOL;
+                case CardIdKt.JADE_IDOL:
+                    guessedId = CardIdKt.JADE_IDOL;
                     break;
-                case CardIdsKt.FLAME_GEYSER:
-                case CardIdsKt.FIRE_FLY:
-                    guessedId = CardIdsKt.FLAME_ELEMENTAL;
+                case CardIdKt.FLAME_GEYSER:
+                case CardIdKt.FIRE_FLY:
+                    guessedId = CardIdKt.FLAME_ELEMENTAL;
                     break;
-                case CardIdsKt.STEAM_SURGER:
-                    guessedId = CardIdsKt.FLAME_GEYSER;
+                case CardIdKt.STEAM_SURGER:
+                    guessedId = CardIdKt.FLAME_GEYSER;
                     break;
-                case CardIdsKt.RAZORPETAL_VOLLEY:
-                case CardIdsKt.RAZORPETAL_LASHER:
-                    guessedId = CardIdsKt.RAZORPETAL;
+                case CardIdKt.RAZORPETAL_VOLLEY:
+                case CardIdKt.RAZORPETAL_LASHER:
+                    guessedId = CardIdKt.RAZORPETAL;
                     break;
-                case CardIdsKt.MUKLA_TYRANT_OF_THE_VALE:
-                case CardIdsKt.KING_MUKLA:
-                    guessedId = CardIdsKt.BANANAS;
+                case CardIdKt.MUKLA_TYRANT_OF_THE_VALE:
+                case CardIdKt.KING_MUKLA:
+                    guessedId = CardIdKt.BANANAS;
                     break;
-                case CardIdsKt.JUNGLE_GIANTS:
-                    guessedId = CardIdsKt.BARNABUS_THE_STOMPER;
+                case CardIdKt.JUNGLE_GIANTS:
+                    guessedId = CardIdKt.BARNABUS_THE_STOMPER;
                     break;
-                case CardIdsKt.THE_MARSH_QUEEN:
-                    guessedId = Card.QUEEN_CARNASSA;
+                case CardIdKt.THE_MARSH_QUEEN:
+                    guessedId = CardIdKt.QUEEN_CARNASSA;
                     break;
-                case CardIdsKt.OPEN_THE_WAYGATE:
-                    guessedId = CardIdsKt.TIME_WARP;
+                case CardIdKt.OPEN_THE_WAYGATE:
+                    guessedId = CardIdKt.TIME_WARP;
                     break;
-                case CardIdsKt.THE_LAST_KALEIDOSAUR:
-                    guessedId = CardIdsKt.GALVADON;
+                case CardIdKt.THE_LAST_KALEIDOSAUR:
+                    guessedId = CardIdKt.GALVADON;
                     break;
-                case CardIdsKt.AWAKEN_THE_MAKERS:
-                    guessedId = CardIdsKt.AMARA_WARDEN_OF_HOPE;
+                case CardIdKt.AWAKEN_THE_MAKERS:
+                    guessedId = CardIdKt.AMARA_WARDEN_OF_HOPE;
                     break;
-                case CardIdsKt.THE_CAVERNS_BELOW:
-                    guessedId = CardIdsKt.CRYSTAL_CORE;
+                case CardIdKt.THE_CAVERNS_BELOW:
+                    guessedId = CardIdKt.CRYSTAL_CORE;
                     break;
-                case CardIdsKt.UNITE_THE_MURLOCS:
-                    guessedId = CardIdsKt.MEGAFIN;
+                case CardIdKt.UNITE_THE_MURLOCS:
+                    guessedId = CardIdKt.MEGAFIN;
                     break;
-                case CardIdsKt.LAKKARI_SACRIFICE:
-                    guessedId = CardIdsKt.NETHER_PORTAL;
+                case CardIdKt.LAKKARI_SACRIFICE:
+                    guessedId = CardIdKt.NETHER_PORTAL;
                     break;
-                case CardIdsKt.FIRE_PLUMES_HEART:
-                    guessedId = CardIdsKt.SULFURAS;
+                case CardIdKt.FIRE_PLUMES_HEART:
+                    guessedId = CardIdKt.SULFURAS;
                     break;
-                case CardIdsKt.GHASTLY_CONJURER:
-                    guessedId = CardIdsKt.MIRROR_IMAGE;
+                case CardIdKt.GHASTLY_CONJURER:
+                    guessedId = CardIdKt.MIRROR_IMAGE;
                     break;
-                case CardIdsKt.EXPLORE_UNGORO:
-                    guessedId = CardIdsKt.CHOOSE_YOUR_PATH;
+                case CardIdKt.EXPLORE_UNGORO:
+                    guessedId = CardIdKt.CHOOSE_YOUR_PATH;
                     break;
-                case CardIdsKt.ELISE_THE_TRAILBLAZER:
-                    guessedId = CardIdsKt.UNGORO_PACK;
+                case CardIdKt.ELISE_THE_TRAILBLAZER:
+                    guessedId = CardIdKt.UNGORO_PACK;
                     break;
             }
         } else if (TYPE_TRIGGER.equals(blockTag.BlockType)) {
             switch (blockEntity.CardID) {
-                case CardIdsKt.PYROS:
-                    guessedId = CardIdsKt.PYROS1;
+                case CardIdKt.PYROS:
+                    guessedId = CardIdKt.PYROS1;
                     break;
-                case Card.PYROS6:
-                    guessedId = CardIdsKt.PYROS2;
+                case CardIdKt.PYROS1:
+                    guessedId = CardIdKt.PYROS2;
                     break;
-                case CardIdsKt.WHITE_EYES:
-                    guessedId = CardIdsKt.THE_STORM_GUARDIAN;
+                case CardIdKt.WHITE_EYES:
+                    guessedId = CardIdKt.THE_STORM_GUARDIAN;
                     break;
-                case CardIdsKt.DEADLY_FORK:
-                    guessedId = CardIdsKt.SHARP_FORK;
+                case CardIdKt.DEADLY_FORK:
+                    guessedId = CardIdKt.SHARP_FORK;
                     break;
-                case CardIdsKt.BURGLY_BULLY:
-                    guessedId = CardIdsKt.THE_COIN;
+                case CardIdKt.BURGLY_BULLY:
+                    guessedId = CardIdKt.THE_COIN;
                     break;
-                case CardIdsKt.IGNEOUS_ELEMENTAL:
-                    guessedId = CardIdsKt.FLAME_ELEMENTAL;
+                case CardIdKt.IGNEOUS_ELEMENTAL:
+                    guessedId = CardIdKt.FLAME_ELEMENTAL;
                     break;
-                case CardIdsKt.RHONIN:
-                    guessedId = CardIdsKt.ARCANE_MISSILES;
+                case CardIdKt.RHONIN:
+                    guessedId = CardIdKt.ARCANE_MISSILES;
                     break;
-                case CardIdsKt.FROZEN_CLONE:
+                case CardIdKt.FROZEN_CLONE:
                     for (BlockTag parent : stack) {
                         if (BlockTag.TYPE_PLAY.equals(parent.BlockType)) {
                             guessedId = mGame.findEntitySafe(parent.Entity).CardID;
@@ -639,23 +640,23 @@ public class GameLogic {
                         }
                     }
                     break;
-                case CardIdsKt.BONE_BARON:
-                    guessedId = CardIdsKt.SKELETON;
+                case CardIdKt.BONE_BARON:
+                    guessedId = CardIdKt.SKELETON;
                     break;
-                case CardIdsKt.WEASEL_TUNNELER:
-                    guessedId = CardIdsKt.WEASEL_TUNNELER;
+                case CardIdKt.WEASEL_TUNNELER:
+                    guessedId = CardIdKt.WEASEL_TUNNELER;
                     break;
-                case CardIdsKt.GRIMESTREET_ENFORCER:
-                    guessedId = CardIdsKt.SMUGGLING;
-                    entity.tags.put(Entity.KEY_CARDTYPE, Entity.CARDTYPE_ENCHANTMENT); // so that it does not appear in the opponent hand
+                case CardIdKt.GRIMESTREET_ENFORCER:
+                    guessedId = CardIdKt.SMUGGLING;
+                    entity.tags.put(Entity.KEY_CARDTYPE, TypeKt.ENCHANTMENT); // so that it does not appear in the opponent hand
                     break;
-                case CardIdsKt.RAPTOR_HATCHLING:
-                    guessedId = CardIdsKt.RAPTOR_PATRIARCH;
+                case CardIdKt.RAPTOR_HATCHLING:
+                    guessedId = CardIdKt.RAPTOR_PATRIARCH;
                     break;
-                case CardIdsKt.DIREHORN_HATCHLING:
-                    guessedId = CardIdsKt.DIREHORN_MATRIARCH;
+                case CardIdKt.DIREHORN_HATCHLING:
+                    guessedId = CardIdKt.DIREHORN_MATRIARCH;
                     break;
-                case CardIdsKt.MANA_BIND:
+                case CardIdKt.MANA_BIND:
                     for (BlockTag parent : stack) {
                         if (BlockTag.TYPE_PLAY.equals(parent.BlockType)) {
                             guessedId = mGame.findEntitySafe(parent.Entity).CardID;
@@ -663,8 +664,8 @@ public class GameLogic {
                         }
                     }
                     break;
-                case CardIdsKt.ARCHMAGE_ANTONIDAS:
-                    guessedId = CardIdsKt.FIREBALL;
+                case CardIdKt.ARCHMAGE_ANTONIDAS:
+                    guessedId = CardIdKt.FIREBALL;
                     break;
 
             }
@@ -704,9 +705,9 @@ public class GameLogic {
 
         Timber.i("entity created %s controller=%s zone=%s ", entity.EntityID, playerId, entity.tags.get(Entity.KEY_ZONE));
 
-        if (Entity.CARDTYPE_HERO.equals(cardType)) {
+        if (TypeKt.HERO.equals(cardType)) {
             player.hero = entity;
-        } else if (Entity.CARDTYPE_HERO_POWER.equals(cardType)) {
+        } else if (TypeKt.HERO_POWER.equals(cardType)) {
             player.heroPower = entity;
         } else {
             if (mGame.gameEntity.tags.get(Entity.KEY_STEP) == null) {
@@ -714,7 +715,7 @@ public class GameLogic {
                     entity.extra.originalController = entity.tags.get(Entity.KEY_CONTROLLER);
                 } else if (Entity.ZONE_HAND.equals(entity.tags.get(Entity.KEY_ZONE))) {
                     // this must be the coin
-                    entity.setCardId(Card.ID_COIN);
+                    entity.setCardId(CardIdKt.THE_COIN);
                     entity.extra.drawTurn = 0;
                 }
             }

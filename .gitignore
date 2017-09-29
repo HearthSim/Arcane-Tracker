@@ -15,3 +15,5 @@ app/google-services.json
 /app/src/test/resources/ranks/
 /app/src/main/assets/cards
 /app/src/main/assets/bars
+/buildSrc/build
+/hsmodel/build

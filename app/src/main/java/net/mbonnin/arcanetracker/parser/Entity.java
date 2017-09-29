@@ -8,10 +8,6 @@ import java.util.Locale;
 
 import timber.log.Timber;
 
-/**
- * Created by martin on 11/8/16.
- */
-
 public class Entity {
     public static final String KEY_ZONE = "ZONE";
     public static final String KEY_CONTROLLER = "CONTROLLER";
@@ -33,21 +29,13 @@ public class Entity {
     public static final String ZONE_PLAY = "PLAY";
     public static final String ZONE_GRAVEYARD = "GRAVEYARD";
     public static final String ZONE_SECRET = "SECRET";
-
-    public static final String CARDTYPE_HERO = Card.TYPE_HERO;
-    public static final String CARDTYPE_HERO_POWER = Card.TYPE_HERO_POWER;
-    public static final String CARDTYPE_ENCHANTMENT = Card.TYPE_ENCHANTMENT;
-    public static final String CARDTYPE_WEAPON = Card.TYPE_WEAPON;
-    public static final String CARDTYPE_MINION = Card.TYPE_MINION;
+    public static final String ZONE_SETASIDE = "SETASIDE";
 
     public static final String ENTITY_ID_GAME = "1";
 
     public static final String STEP_FINAL_GAMEOVER = "FINAL_GAMEOVER";
     public static final String STEP_BEGIN_MULLIGAN = "BEGIN_MULLIGAN";
-    public static final String RARITY_EPIC = "EPIC";
-    public static final String RARITY_LEGENDARY = "LEGENDARY";
-    public static final String CARDTYPE_PLAYER = "PLAYER";
-    public static final String ZONE_SETASIDE = "SETASIDE";
+
 
     public String EntityID;
     public String CardID; // might be null if the entity is not revealed yet

@@ -30,10 +30,10 @@ public class Deck {
     public void checkClassIndex() {
         for (String cardId: cards.keySet()) {
             Card card = CardUtil.getCard(cardId);
-            int ci = Card.Companion.playerClassToClassIndex(card.playerClass);
+            int ci = HeroUtilKt.getClassIndex(card.playerClass);
             if (ci >= 0 && ci < Card.CLASS_INDEX_NEUTRAL) {
                 if (classIndex != ci) {
-                    Timber.e("inconsistent class index, force to" + Card.Companion.classIndexToPlayerClass(ci));
+                    Timber.e("inconsistent class index, force to" + HeroUtilKt.getPlayerClass(ci));
                     classIndex = ci;
                 }
                 return;

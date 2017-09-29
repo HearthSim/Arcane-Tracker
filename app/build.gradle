@@ -2,6 +2,7 @@ plugins {
     id 'com.github.ben-manes.versions' version '0.15.0'
 }
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion atConfig.compileSdkVersion

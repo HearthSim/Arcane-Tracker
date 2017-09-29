@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.mbonnin.hsmodel.Card;
 import net.mbonnin.arcanetracker.model.GameSummary;
 
 public class GameViewHolder extends RecyclerView.ViewHolder {
@@ -34,7 +33,7 @@ public class GameViewHolder extends RecyclerView.ViewHolder {
         deckName.setText(summary.deckName);
         winLoss.setText(summary.win ? context.getString(R.string.win):context.getString(R.string.loss));
         coin.setVisibility(summary.coin ? View.VISIBLE:View.INVISIBLE);
-        opponentName.setText(Card.classIndexToNiceName(summary.opponentHero));
+        opponentName.setText(HeroUtilKt.getDisplayName(summary.opponentHero));
     }
 
 

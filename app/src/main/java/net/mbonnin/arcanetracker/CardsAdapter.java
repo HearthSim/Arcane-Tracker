@@ -110,7 +110,7 @@ public class CardsAdapter extends RecyclerView.Adapter {
 
     private void filter() {
         mCardList.clear();
-        List<Card> allCards = CardJson.allCards();
+        List<Card> allCards = CardJson.INSTANCE.allCards();
 
         for (Card card : allCards) {
             if (card.collectible == null || !card.collectible) {

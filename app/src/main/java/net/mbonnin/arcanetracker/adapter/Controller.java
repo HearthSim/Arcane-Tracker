@@ -11,7 +11,6 @@ import com.annimon.stream.function.Function;
 import com.annimon.stream.function.Supplier;
 
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
-import net.mbonnin.hsmodel.Card;
 import net.mbonnin.arcanetracker.CardUtil;
 import net.mbonnin.arcanetracker.Deck;
 import net.mbonnin.arcanetracker.R;
@@ -20,6 +19,9 @@ import net.mbonnin.arcanetracker.parser.Entity;
 import net.mbonnin.arcanetracker.parser.EntityList;
 import net.mbonnin.arcanetracker.parser.Game;
 import net.mbonnin.arcanetracker.parser.GameLogic;
+import net.mbonnin.hsmodel.playerclass.PlayerClassKt;
+import net.mbonnin.hsmodel.rarity.RarityKt;
+import net.mbonnin.hsmodel.type.TypeKt;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -299,10 +301,9 @@ public class Controller implements GameLogic.Listener {
         // trying a definition that's a bit different from the player definition here
         EntityList allEntities = mGame.getEntityList(e -> mOpponentId.equals(e.tags.get(Entity.KEY_CONTROLLER))
                 && !Entity.ZONE_SETASIDE.equals(e.tags.get(Entity.KEY_ZONE))
-                && !Entity.CARDTYPE_ENCHANTMENT.equals(e.tags.get(Entity.KEY_CARDTYPE))
-                && !Entity.CARDTYPE_HERO.equals(e.tags.get(Entity.KEY_CARDTYPE))
-                && !Entity.CARDTYPE_HERO_POWER.equals(e.tags.get(Entity.KEY_CARDTYPE))
-                && !Entity.CARDTYPE_PLAYER.equals(e.tags.get(Entity.KEY_CARDTYPE)));
+                && !TypeKt.ENCHANTMENT.equals(e.tags.get(Entity.KEY_CARDTYPE))
+                && !TypeKt.HERO.equals(e.tags.get(Entity.KEY_CARDTYPE))
+                && !TypeKt.HERO_POWER.equals(e.tags.get(Entity.KEY_CARDTYPE)));
 
         list.addAll(entityListToItemList(allEntities, e -> true));
 
@@ -341,14 +342,14 @@ public class Controller implements GameLogic.Listener {
 
         if (false) {
             Stream.of(getEntityListInZone(mOpponentId, Entity.ZONE_HAND)).forEach(e -> {
-                e.tags.put(Entity.KEY_CLASS, Card.CLASS_MAGE);
+                e.tags.put(Entity.KEY_CLASS, PlayerClassKt.MAGE);
                 e.tags.put(Entity.KEY_ZONE, Entity.ZONE_SECRET);
                 e.extra.drawTurn = 18;
                 e.extra.playTurn = 23;
             });
         }
         EntityList entities = getEntityListInZone(mOpponentId, Entity.ZONE_SECRET)
-                .filter(e -> !Entity.RARITY_LEGENDARY.equals(e.tags.get(Entity.KEY_RARITY))); // remove quests
+                .filter(e -> !RarityKt.LEGENDARY.equals(e.tags.get(Entity.KEY_RARITY))); // remove quests
 
         Collections.sort(entities, (a, b) -> compareNullSafe(a.tags.get(Entity.KEY_ZONE_POSITION), b.tags.get(Entity.KEY_ZONE_POSITION)));
 

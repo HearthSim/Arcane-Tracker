@@ -1,15 +1,16 @@
 package net.mbonnin.arcanetracker.adapter;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 
 import net.mbonnin.arcanetracker.CardUtil;
-import net.mbonnin.hsmodel.Card;
 import net.mbonnin.arcanetracker.Deck;
 import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Utils;
+import net.mbonnin.hsmodel.rarity.RarityKt;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,6 +47,7 @@ public class EditableItemAdapter extends ItemAdapter {
         setList(list);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder holder = super.onCreateViewHolder(parent, viewType);
@@ -79,7 +81,7 @@ public class EditableItemAdapter extends ItemAdapter {
                 DeckEntryItem deckEntryItem = (DeckEntryItem)o;
                 if (deckEntryItem.count == 2) {
                     list.add(deckEntryItem.card.id);
-                } else if (deckEntryItem.count == 1 && Card.RARITY_LEGENDARY.equals(deckEntryItem.card.rarity)) {
+                } else if (deckEntryItem.count == 1 && RarityKt.LEGENDARY.equals(deckEntryItem.card.rarity)) {
                     list.add(deckEntryItem.card.id);
                 }
             }

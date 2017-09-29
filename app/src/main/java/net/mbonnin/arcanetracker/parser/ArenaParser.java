@@ -2,9 +2,9 @@ package net.mbonnin.arcanetracker.parser;
 
 import android.os.Handler;
 
-import net.mbonnin.hsmodel.Card;
 import net.mbonnin.arcanetracker.Deck;
 import net.mbonnin.arcanetracker.DeckList;
+import net.mbonnin.arcanetracker.HeroUtilKt;
 import net.mbonnin.arcanetracker.MainViewCompanion;
 import net.mbonnin.arcanetracker.adapter.Controller;
 
@@ -37,7 +37,7 @@ public class ArenaParser implements LogReader.LineConsumer {
              */
             matcher = DraftManager$OnChosen.matcher(line);
             if (matcher.matches()) {
-                int classIndex = Card.heroIdToClassIndex(matcher.group(1));
+                int classIndex = HeroUtilKt.heroIdToClassIndex(matcher.group(1));
                 Timber.d("new hero: %d", classIndex);
 
                 mHandler.post(() -> newArenaRun(classIndex));

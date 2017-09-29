@@ -3,6 +3,8 @@ package net.mbonnin.arcanetracker;
 
 import net.mbonnin.hsmodel.Card;
 import net.mbonnin.hsmodel.CardJson;
+import net.mbonnin.hsmodel.playerclass.PlayerClassKt;
+import net.mbonnin.hsmodel.type.TypeKt;
 
 import java.util.Collections;
 
@@ -16,33 +18,32 @@ public class CardUtil {
         card.cost = Card.UNKNOWN_COST;
         card.id = "?";
         card.rarity = "?";
-        card.type = Card.TYPE_UNKNOWN;
+        card.type = Card.UNKNOWN_TYPE;
         card.text = "?";
         card.race = "?";
         card.collectible = false;
         return card;
     }
 
-    public static Card secret(String clazz) {
+    public static Card secret(String playerClass) {
         Card card = unknown();
-        card.type = Card.TYPE_SPELL;
+        card.type = TypeKt.SPELL;
         card.text = Utils.getString(R.string.secretText);
-        int classIndex = Card.Companion.niceNameToClassIndexNC(clazz);
-        switch (classIndex) {
-            case Card.CLASS_INDEX_HUNTER:
-                card.id = "secret_h";
-                card.cost = 2;
-                card.playerClass = Card.CLASS_HUNTER;
-                break;
-            case Card.CLASS_INDEX_MAGE:
-                card.id = "secret_m";
-                card.cost = 3;
-                card.playerClass = Card.CLASS_MAGE;
-                break;
-            case Card.CLASS_INDEX_PALADIN:
+        switch (playerClass) {
+            case PlayerClassKt.PALADIN:
                 card.id = "secret_p";
                 card.cost = 1;
-                card.playerClass = Card.CLASS_PALADIN;
+                card.playerClass = PlayerClassKt.PALADIN;
+                break;
+            case PlayerClassKt.HUNTER:
+                card.id = "secret_h";
+                card.cost = 2;
+                card.playerClass = PlayerClassKt.HUNTER;
+                break;
+            case PlayerClassKt.MAGE:
+                card.id = "secret_m";
+                card.cost = 3;
+                card.playerClass = PlayerClassKt.MAGE;
                 break;
         }
         card.name = Utils.getString(R.string.secret);
