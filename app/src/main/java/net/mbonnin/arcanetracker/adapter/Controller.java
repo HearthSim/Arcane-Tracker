@@ -19,9 +19,9 @@ import net.mbonnin.arcanetracker.parser.Entity;
 import net.mbonnin.arcanetracker.parser.EntityList;
 import net.mbonnin.arcanetracker.parser.Game;
 import net.mbonnin.arcanetracker.parser.GameLogic;
-import net.mbonnin.hsmodel.playerclass.PlayerClassKt;
-import net.mbonnin.hsmodel.rarity.RarityKt;
-import net.mbonnin.hsmodel.type.TypeKt;
+import net.mbonnin.hsmodel.PlayerClass;
+import net.mbonnin.hsmodel.Rarity;
+import net.mbonnin.hsmodel.Type;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -301,9 +301,9 @@ public class Controller implements GameLogic.Listener {
         // trying a definition that's a bit different from the player definition here
         EntityList allEntities = mGame.getEntityList(e -> mOpponentId.equals(e.tags.get(Entity.KEY_CONTROLLER))
                 && !Entity.ZONE_SETASIDE.equals(e.tags.get(Entity.KEY_ZONE))
-                && !TypeKt.ENCHANTMENT.equals(e.tags.get(Entity.KEY_CARDTYPE))
-                && !TypeKt.HERO.equals(e.tags.get(Entity.KEY_CARDTYPE))
-                && !TypeKt.HERO_POWER.equals(e.tags.get(Entity.KEY_CARDTYPE)));
+                && !Type.ENCHANTMENT.equals(e.tags.get(Entity.KEY_CARDTYPE))
+                && !Type.HERO.equals(e.tags.get(Entity.KEY_CARDTYPE))
+                && !Type.HERO_POWER.equals(e.tags.get(Entity.KEY_CARDTYPE)));
 
         list.addAll(entityListToItemList(allEntities, e -> true));
 
@@ -342,14 +342,14 @@ public class Controller implements GameLogic.Listener {
 
         if (false) {
             Stream.of(getEntityListInZone(mOpponentId, Entity.ZONE_HAND)).forEach(e -> {
-                e.tags.put(Entity.KEY_CLASS, PlayerClassKt.MAGE);
+                e.tags.put(Entity.KEY_CLASS, PlayerClass.MAGE);
                 e.tags.put(Entity.KEY_ZONE, Entity.ZONE_SECRET);
                 e.extra.drawTurn = 18;
                 e.extra.playTurn = 23;
             });
         }
         EntityList entities = getEntityListInZone(mOpponentId, Entity.ZONE_SECRET)
-                .filter(e -> !RarityKt.LEGENDARY.equals(e.tags.get(Entity.KEY_RARITY))); // remove quests
+                .filter(e -> !Rarity.LEGENDARY.equals(e.tags.get(Entity.KEY_RARITY))); // remove quests
 
         Collections.sort(entities, (a, b) -> compareNullSafe(a.tags.get(Entity.KEY_ZONE_POSITION), b.tags.get(Entity.KEY_ZONE_POSITION)));
 

@@ -10,7 +10,7 @@ import net.mbonnin.arcanetracker.CardUtil;
 import net.mbonnin.arcanetracker.Deck;
 import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Utils;
-import net.mbonnin.hsmodel.rarity.RarityKt;
+import net.mbonnin.hsmodel.Rarity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -81,7 +81,7 @@ public class EditableItemAdapter extends ItemAdapter {
                 DeckEntryItem deckEntryItem = (DeckEntryItem)o;
                 if (deckEntryItem.count == 2) {
                     list.add(deckEntryItem.card.id);
-                } else if (deckEntryItem.count == 1 && RarityKt.LEGENDARY.equals(deckEntryItem.card.rarity)) {
+                } else if (deckEntryItem.count == 1 && Rarity.LEGENDARY.equals(deckEntryItem.card.rarity)) {
                     list.add(deckEntryItem.card.id);
                 }
             }

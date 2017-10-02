@@ -3,10 +3,8 @@ package net.mbonnin.arcanetracker
 
 import net.mbonnin.hsmodel.Card
 import net.mbonnin.hsmodel.CardJson
-import net.mbonnin.hsmodel.playerclass.HUNTER
-import net.mbonnin.hsmodel.playerclass.MAGE
-import net.mbonnin.hsmodel.playerclass.PALADIN
-import net.mbonnin.hsmodel.type.SPELL
+import net.mbonnin.hsmodel.PlayerClass
+import net.mbonnin.hsmodel.Type
 
 object CardUtil {
     @JvmField
@@ -28,24 +26,24 @@ object CardUtil {
 
     fun secret(playerClass: String): Card {
         val card = unknown()
-        card.type = SPELL
+        card.type = Type.SPELL
         card.text = Utils.getString(R.string.secretText)
 
         when (playerClass) {
-            PALADIN -> {
+            PlayerClass.PALADIN -> {
                 card.id = "secret_p"
                 card.cost = 1
-                card.playerClass = PALADIN
+                card.playerClass = PlayerClass.PALADIN
             }
-            HUNTER -> {
+            PlayerClass.HUNTER -> {
                 card.id = "secret_h"
                 card.cost = 2
-                card.playerClass = HUNTER
+                card.playerClass = PlayerClass.HUNTER
             }
-            MAGE -> {
+            PlayerClass.MAGE -> {
                 card.id = "secret_m"
                 card.cost = 3
-                card.playerClass = MAGE
+                card.playerClass = PlayerClass.MAGE
             }
         }
         card.name = Utils.getString(R.string.secret)

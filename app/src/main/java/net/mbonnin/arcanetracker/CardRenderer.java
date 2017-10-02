@@ -20,9 +20,9 @@ import android.widget.TextView;
 import com.squareup.picasso.LruCache;
 
 import net.mbonnin.hsmodel.Card;
-import net.mbonnin.hsmodel.race.RaceKt;
-import net.mbonnin.hsmodel.rarity.RarityKt;
-import net.mbonnin.hsmodel.type.TypeKt;
+import net.mbonnin.hsmodel.Race;
+import net.mbonnin.hsmodel.Rarity;
+import net.mbonnin.hsmodel.Type;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -117,9 +117,9 @@ public class CardRenderer {
         drawCardArt(canvas, card);
 
         String type;
-        if (TypeKt.HERO.equals(card.type)) {
+        if (Type.HERO.equals(card.type)) {
             // special case until I add support for heroes cards
-            type = TypeKt.MINION;
+            type = Type.MINION;
         } else {
             type = card.type;
         }
@@ -135,7 +135,7 @@ public class CardRenderer {
 
         if (!TextUtils.isEmpty(card.rarity)) {
             dy = 607;
-            if (TypeKt.MINION.equals(card.type)) {
+            if (Type.MINION.equals(card.type)) {
                 dx = 326;
             } else {
                 dx = 311;
@@ -145,7 +145,7 @@ public class CardRenderer {
             drawAssetIfExists(canvas, s, dx, dy);
         }
 
-        if (RarityKt.LEGENDARY.equals(card.rarity) && TypeKt.MINION.equals(card.type)) {
+        if (Rarity.LEGENDARY.equals(card.rarity) && Type.MINION.equals(card.type)) {
             drawAssetIfExists(canvas, "elite", 196, 0);
         }
 
@@ -156,12 +156,12 @@ public class CardRenderer {
             Paint paint = new Paint();
             paint.setAlpha(60);
 
-            if (TypeKt.MINION.equals(card.type) && !TextUtils.isEmpty(card.race)) {
+            if (Type.MINION.equals(card.type) && !TextUtils.isEmpty(card.race)) {
                 dx -= 12; // Shift up
-            } else if (TypeKt.SPELL.equals(card.type)) {
+            } else if (Type.SPELL.equals(card.type)) {
                 dx = 264;
                 dy = 726;
-            } else if (TypeKt.WEAPON.equals(card.type)) {
+            } else if (Type.WEAPON.equals(card.type)) {
                 dx = 264;
             }
 
@@ -238,7 +238,7 @@ public class CardRenderer {
         text = builder.toString();
 
         TextPaint textPaint = new TextPaint();
-        textPaint.setColor(TypeKt.WEAPON.equals(card.type) ? Color.WHITE : Color.BLACK);
+        textPaint.setColor(Type.WEAPON.equals(card.type) ? Color.WHITE : Color.BLACK);
         textPaint.setStyle(Paint.Style.FILL);
         textPaint.setAntiAlias(true);
         textPaint.setTypeface(franklin);
@@ -264,28 +264,28 @@ public class CardRenderer {
         Context context = ArcaneTrackerApplication.getContext();
 
         switch (card.race) {
-            case RaceKt.MECHANICAL:
+            case Race.MECHANICAL:
                 s = context.getString(R.string.race_mechanical);
                 break;
-            case RaceKt.DEMON:
+            case Race.DEMON:
                 s = context.getString(R.string.race_demon);
                 break;
-            case RaceKt.BEAST:
+            case Race.BEAST:
                 s = context.getString(R.string.race_beast);
                 break;
-            case RaceKt.DRAGON:
+            case Race.DRAGON:
                 s = context.getString(R.string.race_dragon);
                 break;
-            case RaceKt.MURLOC:
+            case Race.MURLOC:
                 s = context.getString(R.string.race_murloc);
                 break;
-            case RaceKt.PIRATE:
+            case Race.PIRATE:
                 s = context.getString(R.string.race_pirate);
                 break;
-            case RaceKt.TOTEM:
+            case Race.TOTEM:
                 s = context.getString(R.string.race_totem);
                 break;
-            case RaceKt.ELEMENTAL:
+            case Race.ELEMENTAL:
                 s = context.getString(R.string.race_elemental);
                 break;
         }
@@ -324,20 +324,20 @@ public class CardRenderer {
         drawNumber(canvas, 116, 170 + offset, card.cost, 170);
 
         switch (card.type) {
-            case TypeKt.MINION:
+            case Type.MINION:
                 drawAssetIfExists(canvas, "attack", 0, 862);
                 drawAssetIfExists(canvas, "health", 575, 876);
                 break;
-            case TypeKt.WEAPON:
+            case Type.WEAPON:
                 drawAssetIfExists(canvas, "attack-weapon", 32, 906);
                 drawAssetIfExists(canvas, "health-weapon", 584, 890);
                 break;
         }
 
-        if (TypeKt.MINION.equals(card.type)) {
+        if (Type.MINION.equals(card.type)) {
             drawNumber(canvas, 128, 994 + offset, card.attack, 150);
             drawNumber(canvas, 668, 994 + offset, card.health, 150);
-        } else if (TypeKt.WEAPON.equals(card.type)) {
+        } else if (Type.WEAPON.equals(card.type)) {
             drawNumber(canvas, 128, 994 + offset, card.attack, 150);
             drawNumber(canvas, 668, 994 + offset, card.durability, 150);
         }
@@ -401,7 +401,7 @@ public class CardRenderer {
          * the path is aligned to the bottom of the banner, hence the negative voffset to center the text
          */
         switch (card.type) {
-            case TypeKt.MINION:
+            case Type.MINION:
                 x = 94;
                 y = 546;
 
@@ -410,13 +410,13 @@ public class CardRenderer {
                 path.cubicTo(411.44719f, 81.55055f, 487.45236f, 71.558015f, 578.30781f, 115.12471f);
 
                 break;
-            case TypeKt.SPELL:
+            case Type.SPELL:
                 x = 66;
                 y = 530;
                 path.moveTo(55.440299f, 131.50746f);
                 path.rCubicTo(165.651711f, -48.547726f, 319.389151f, -69.712531f, 530.298511f, 0);
                 break;
-            case TypeKt.WEAPON:
+            case Type.WEAPON:
                 x = 56;
                 y = 551;
 
@@ -450,7 +450,7 @@ public class CardRenderer {
 
         switch (card.type) {
             default:
-            case TypeKt.MINION: {
+            case Type.MINION: {
                 dx = 100;
                 dy = 75;
                 dWidth = 590;
@@ -459,14 +459,14 @@ public class CardRenderer {
                 clipPath.addOval(rect, Path.Direction.CCW);
                 break;
             }
-            case TypeKt.SPELL:
+            case Type.SPELL:
                 dx = 125;
                 dy = 117;
                 dWidth = 529;
                 dHeight = 529;
                 clipPath.addRect(dx, 165, dx + dWidth, 165 + 434, Path.Direction.CCW);
                 break;
-            case TypeKt.WEAPON: {
+            case Type.WEAPON: {
                 dx = 150;
                 dy = 135;
                 dWidth = 476;

@@ -27,7 +27,7 @@ import net.mbonnin.arcanetracker.parser.LogReader;
 import net.mbonnin.arcanetracker.parser.PowerParser;
 import net.mbonnin.hsmodel.Card;
 import net.mbonnin.hsmodel.CardJson;
-import net.mbonnin.hsmodel.playerclass.PlayerClassKt;
+import net.mbonnin.hsmodel.PlayerClass;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -167,9 +167,9 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
         /*
          * these are 3 fake cards needed for CardRender
          */
-        injectedCards.add(CardUtil.INSTANCE.secret(PlayerClassKt.PALADIN));
-        injectedCards.add(CardUtil.INSTANCE.secret(PlayerClassKt.HUNTER));
-        injectedCards.add(CardUtil.INSTANCE.secret(PlayerClassKt.MAGE));
+        injectedCards.add(CardUtil.INSTANCE.secret(PlayerClass.PALADIN));
+        injectedCards.add(CardUtil.INSTANCE.secret(PlayerClass.HUNTER));
+        injectedCards.add(CardUtil.INSTANCE.secret(PlayerClass.MAGE));
 
         CardJson.INSTANCE.init(jsonName, injectedCards);
     }

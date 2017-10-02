@@ -1,10 +1,19 @@
 package net.mbonnin.arcanetracker
 
-import net.mbonnin.hsmodel.playerclass.*
+import net.mbonnin.hsmodel.PlayerClass.DRUID
+import net.mbonnin.hsmodel.PlayerClass.HUNTER
+import net.mbonnin.hsmodel.PlayerClass.MAGE
+import net.mbonnin.hsmodel.PlayerClass.NEUTRAL
+import net.mbonnin.hsmodel.PlayerClass.PALADIN
+import net.mbonnin.hsmodel.PlayerClass.PRIEST
+import net.mbonnin.hsmodel.PlayerClass.ROGUE
+import net.mbonnin.hsmodel.PlayerClass.SHAMAN
+import net.mbonnin.hsmodel.PlayerClass.WARLOCK
+import net.mbonnin.hsmodel.PlayerClass.WARRIOR
 import java.util.regex.Pattern
 
 fun allHeroes(): Array<String> {
-    return arrayOf(WARRIOR, SHAMAN, ROGUE, PALADIN, HUNTER, DRUID, WARLOCK, MAGE, PRIEST, NEUTRAL)
+    return arrayOf(SHAMAN, WARRIOR, ROGUE, PALADIN, HUNTER, DRUID, WARLOCK, MAGE, PRIEST, NEUTRAL)
 }
 
 fun getDisplayName(classIndex: Int): String {

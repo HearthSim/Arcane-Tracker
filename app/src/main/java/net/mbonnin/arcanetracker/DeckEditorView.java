@@ -19,15 +19,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import net.mbonnin.arcanetracker.adapter.EditableItemAdapter;
-import net.mbonnin.hsmodel.Card;
-import net.mbonnin.hsmodel.playerclass.PlayerClassKt;
+import net.mbonnin.hsmodel.PlayerClass;
 
 import java.util.ArrayList;
 import java.util.Locale;
-
-/**
- * Created by martin on 10/21/16.
- */
 
 public class DeckEditorView extends RelativeLayout {
 
@@ -144,7 +139,7 @@ public class DeckEditorView extends RelativeLayout {
         });
 
         neutralImageView.setOnClickListener(v -> {
-            mCardsAdapter.setClass(PlayerClassKt.NEUTRAL);
+            mCardsAdapter.setClass(PlayerClass.NEUTRAL);
             cardsRecyclerView.scrollToPosition(0);
             classImageViewDisabled.setVisibility(VISIBLE);
             neutralImageViewDisabled.setVisibility(GONE);

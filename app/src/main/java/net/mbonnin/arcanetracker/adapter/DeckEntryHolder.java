@@ -19,7 +19,7 @@ import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Utils;
 import net.mbonnin.arcanetracker.ViewManager;
 import net.mbonnin.hsmodel.Card;
-import net.mbonnin.hsmodel.rarity.RarityKt;
+import net.mbonnin.hsmodel.Rarity;
 
 import timber.log.Timber;
 
@@ -134,7 +134,7 @@ class DeckEntryHolder extends RecyclerView.ViewHolder implements View.OnTouchLis
 
             if (entry.gift) {
                 gift.setVisibility(View.VISIBLE);
-            } else if (RarityKt.LEGENDARY.equals(card.rarity)) {
+            } else if (Rarity.LEGENDARY.equals(card.rarity)) {
                 count.setVisibility(View.VISIBLE);
                 count.setText("\u2605");
             } else if (c > 1){
