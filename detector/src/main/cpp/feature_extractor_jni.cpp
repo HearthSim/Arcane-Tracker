@@ -4,9 +4,12 @@
 #include "jni.h"
 #include "lodepng.h"
 #include <malloc.h>
+#include <android/log.h>
+
 
 extern "C" {
 
+void save_png(uint8_t *image, int w, int h, const char *name, int index);
 void computeHaar(double *pDouble, double *pDouble1);
 double *scaledIntegralImage(uint8_t *in, int pixel_stride, int stride, jdouble in_x, jdouble in_y,
                             jdouble in_w, jdouble in_h,
@@ -15,6 +18,8 @@ double *scaledIntegralImage(uint8_t *in, int pixel_stride, int stride, jdouble i
 #define FEATURES_PER_CHANNEL 5
 #define HAAR_SCALED_SIZE 32
 #define PHASH_SCALED_SIZE 8
+
+#define DUMP_PNG 0
 
 JNIEXPORT jdoubleArray JNICALL
 Java_net_mbonnin_arcanetracker_detector_FeatureExtractor_allocateVector(JNIEnv *env, jobject obj) {
@@ -125,11 +130,30 @@ void computeHaar(double *integralImage, double *vector) {
                 - 2 * getPoint(integralImage, HAAR_SCALED_SIZE, HAAR_SCALED_SIZE / 4);
 }
 
-int *scaledImage(uint8_t *in, int pixel_stride, int stride, jdouble in_x, jdouble in_y,
-                 jdouble in_w, jdouble in_h,
-                 int out_w, int out_h) {
-    int *out = (int *) malloc(out_w * out_h * sizeof(int));
-    int *out_ptr = out;
+uint8_t *scaleImage(uint8_t *in, int pixel_stride, int stride, jdouble in_x, jdouble in_y,
+                    jdouble in_w, jdouble in_h,
+                    int out_w, int out_h) {
+
+    __android_log_print(ANDROID_LOG_DEBUG, "TAG2", "scale: %dx%d -> %dx%d", (int) in_w, (int) in_h,
+                        out_w, out_h);
+
+    if (1 && in_w / out_w > 2) {
+        int intermediate_w = (int) (in_w / 2 + 1);
+        int intermediate_h = (int) (in_h / 2 + 1);
+
+        uint8_t *intermediate = scaleImage(in, pixel_stride, stride, in_x, in_y, in_w, in_h,
+                                           intermediate_w,
+                                           intermediate_h);
+        uint8_t *ret = scaleImage(intermediate, 1, intermediate_w, 0, 0, intermediate_w,
+                                  intermediate_h, out_w, out_h);
+
+        free(intermediate);
+        return ret;
+    }
+
+
+    uint8_t *out = (uint8_t *) malloc(out_w * out_h * sizeof(uint8_t));
+    uint8_t *out_ptr = out;
     double ax = out_w / in_w;
     double ay = out_h / in_h;
 
@@ -149,13 +173,14 @@ int *scaledImage(uint8_t *in, int pixel_stride, int stride, jdouble in_x, jdoubl
             double X0Y1 = in[x0 * pixel_stride + y1 * stride];
             double X1Y1 = in[x1 * pixel_stride + y1 * stride];
 
-            double v0 = (x - x0) * X0Y0 + (x1 - x) * X1Y0;
-            double v1 = (x - x0) * X0Y1 + (x1 - x) * X1Y1;
-            double v = (y - y0) * v0 + (y1 - y) * v1;
+            double v0 = (x1 - x) * X0Y0 + (x - x0) * X1Y0;
+            double v1 = (x1 - x) * X0Y1 + (x - x0) * X1Y1;
+            double v = (y1 - y) * v0 + (y - y0) * v1;
 
-            *out_ptr++ = (int) v;
+            *out_ptr++ = (uint8_t) (((int) v) & 0xff);
         }
     }
+    __android_log_print(ANDROID_LOG_DEBUG, "TAG2", "done %dx%d (ax=%f, ay=%f)", out_w, out_h, ax, ay);
     return out;
 }
 
@@ -167,64 +192,101 @@ Java_net_mbonnin_arcanetracker_detector_FeatureExtractor_getHash(JNIEnv *env, jo
                                                                  jdouble h) {
 
     uint8_t *buf = (uint8_t *) env->GetDirectBufferAddress(byteBuffer);
+    static int index = 0;
 
-    int *red = scaledImage(buf, 4, stride, x, y, w, h, PHASH_SCALED_SIZE, PHASH_SCALED_SIZE);
-    int *green = scaledImage(buf + 1, 4, stride, x, y, w, h, PHASH_SCALED_SIZE, PHASH_SCALED_SIZE);
-    int *blue = scaledImage(buf + 2, 4, stride, x, y, w, h, PHASH_SCALED_SIZE, PHASH_SCALED_SIZE);
+    uint8_t *red = scaleImage(buf, 4, stride, x, y, w, h, PHASH_SCALED_SIZE, PHASH_SCALED_SIZE);
+    uint8_t *green = scaleImage(buf + 1, 4, stride, x, y, w, h, PHASH_SCALED_SIZE,
+                                PHASH_SCALED_SIZE);
+    uint8_t *blue = scaleImage(buf + 2, 4, stride, x, y, w, h, PHASH_SCALED_SIZE,
+                               PHASH_SCALED_SIZE);
 
-    int *acc = (int *) malloc(PHASH_SCALED_SIZE * PHASH_SCALED_SIZE * sizeof(int));
-    int *p = acc;
-    int *r = red;
-    int *g = green;
-    int *b = blue;
+    uint8_t *acc = (uint8_t *) malloc(PHASH_SCALED_SIZE * PHASH_SCALED_SIZE);
+    uint8_t *p = acc;
+    uint8_t *r = red;
+    uint8_t *g = green;
+    uint8_t *b = blue;
 
     double sum = 0;
     for (int i = 0; i < PHASH_SCALED_SIZE * PHASH_SCALED_SIZE; i++) {
-        *p = *r++ + *g++ + *b++;
+        *p = (uint8_t) ((*r++ + *g++ + (int) *b++) / 3 & 0xff);
         sum += *p;
         p++;
     }
 
-    if (true) {
-        unsigned char *image = (unsigned char *) malloc(PHASH_SCALED_SIZE * PHASH_SCALED_SIZE);
-        for (int i = 0; i < PHASH_SCALED_SIZE * PHASH_SCALED_SIZE; i++) {
-            image[i] = (unsigned char) ((acc[i] / 3) & 0xff);
-        }
-
-        lodepng::State state;
-        // input color type
-        state.info_raw.colortype = LCT_GREY;
-        state.info_raw.bitdepth = 8;
-        // output color type
-        state.info_png.color.colortype = LCT_GREY;
-        state.info_png.color.bitdepth = 8;
-        state.encoder.auto_convert = 0; // without this, it would ignore the output color type specified above and choose an optimal one instead
-
-        //encode and save
-        std::vector<unsigned char> buffer;
-        lodepng::encode(buffer, &image[0], PHASH_SCALED_SIZE, PHASH_SCALED_SIZE, state);
-        lodepng::save_file(buffer, "/sdcard/resized.png");
-        free(image);
-    }
-
-
     sum /= (PHASH_SCALED_SIZE * PHASH_SCALED_SIZE);
+    __android_log_print(ANDROID_LOG_DEBUG, "TAG2", "average: %f", sum);
 
     jlong ret = 0;
     p = acc;
     for (int i = 0; i < PHASH_SCALED_SIZE * PHASH_SCALED_SIZE; i++) {
         if (*p > sum) {
-            ret |= 1 << i;
+            ret |= 1L << i;
         }
         p++;
     }
 
+    if (0) {
+        uint8_t *tmp = (uint8_t *) malloc((size_t) ((int) w * (int) h));
+        uint8_t *t = tmp;
+        for (int j = 0; j < (int) h; j++) {
+            for (int i = 0; i < (int) w; i++) {
+                *t++ = buf[4 * (i + (int) x) + (j + (int) y) * stride];
+            }
+        }
+        save_png(tmp, (int) w, (int) h, "original", index);
+
+        uint8_t *tmp2 = scaleImage(tmp, 1, (int)w, 0, 0, (int)w, (int)h, w, h);
+        save_png(tmp2, w, h, "noresize", index);
+        free(tmp2);
+        free(tmp);
+
+        save_png(acc, PHASH_SCALED_SIZE, PHASH_SCALED_SIZE, "acc", index);
+
+        tmp = (uint8_t *) malloc(PHASH_SCALED_SIZE * PHASH_SCALED_SIZE);
+        t = tmp;
+        p = acc;
+        for (int i = 0; i < PHASH_SCALED_SIZE * PHASH_SCALED_SIZE; i++) {
+            if (*p > sum) {
+                *t = 255;
+            } else {
+                *t = 0;
+            }
+            t++;
+            p++;
+        }
+        save_png(tmp, PHASH_SCALED_SIZE, PHASH_SCALED_SIZE, "vector", index);
+        free(tmp);
+
+    }
+
+    index++;
 
     free(acc);
     free(red);
     free(green);
     free(blue);
+
+    __android_log_print(ANDROID_LOG_DEBUG, "TAG2", "ret=%ld", ret);
+
     return ret;
+}
+
+void save_png(uint8_t *image, int w, int h, const char *name, int index) {
+    lodepng::State state;
+    // input color type
+    state.info_raw.colortype = LCT_GREY;
+    state.info_raw.bitdepth = 8;
+    // output color type
+    state.info_png.color.colortype = LCT_GREY;
+    state.info_png.color.bitdepth = 8;
+    state.encoder.auto_convert = 0; // without this, it would ignore the output color type specified above and choose an optimal one instead
+
+    //encode and save
+    std::vector<unsigned char> buffer;
+    lodepng::encode(buffer, image, w, h, state);
+    char buf[1024];
+    snprintf(buf, 1024, "sdcard/%s-%d.png", name, index);
+    lodepng::save_file(buffer, buf);
 }
 
 }

@@ -163,16 +163,18 @@ class Detector(var context: Context, var isTablet: Boolean) {
     }
 
 
-    private fun hammingDistance(a: Long, b: Long): Int {
-        var dist = 0
+    companion object {
+        fun hammingDistance(a: Long, b: Long): Int {
+            var dist = 0
 
-        val c = a xor b
-        for (i in 0 until 64) {
-            if (c and 1L.shl(i) != 0L) {
-                dist++
+            val c = a xor b
+            for (i in 0 until 64) {
+                if (c and 1L.shl(i) != 0L) {
+                    dist++
+                }
             }
+            return dist
         }
-        return dist
     }
 }
 
