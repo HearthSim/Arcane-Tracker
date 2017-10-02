@@ -14,6 +14,8 @@ class FeatureExtractor {
      */
     external private fun getFeatures(byteBuffer: ByteBuffer, stride: Int, x: Double, y: Double, w: Double, h: Double, features: DoubleArray)
 
+    external private fun getHash(byteBuffer: ByteBuffer, stride: Int, x: Double, y: Double, w: Double, h: Double): Long
+
     external private fun allocateVector(): DoubleArray
 
 
@@ -24,5 +26,9 @@ class FeatureExtractor {
     fun getFeatures(byteBuffer: ByteBuffer, stride: Int, rrect: RRect): DoubleArray {
         getFeatures(byteBuffer, stride, rrect.x, rrect.y, rrect.w, rrect.h, vector)
         return vector
+    }
+
+    fun getHash(byteBuffer: ByteBuffer, stride: Int, rrect: RRect): Long {
+        return getHash(byteBuffer, stride, rrect.x, rrect.y, rrect.w, rrect.h)
     }
 }

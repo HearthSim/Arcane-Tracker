@@ -55,7 +55,7 @@ class Detector(var context: Context, var isTablet: Boolean) {
     val arenaResult = Array<String>(3, {""})
     val generatedData = Gson().fromJson(InputStreamReader(context.resources.openRawResource(R.raw.generated_data)), GeneratedData::class.java)
 
-    fun matchImage(byteBufferImage: ByteBufferImage,  rrect: RRect, candidates: Array<DoubleArray>):MatchResult {
+    fun matchImage(byteBufferImage: ByteBufferImage,  rrect: RRect, candidates: List<DoubleArray>):MatchResult {
 
         val vector = featureDetector.getFeatures(byteBufferImage.buffer, byteBufferImage.stride, rrect.scale(byteBufferImage.w.toDouble(), byteBufferImage.h.toDouble()));
 
@@ -126,6 +126,53 @@ class Detector(var context: Context, var isTablet: Boolean) {
         Log.d("Detector", sb.toString())
 
         return arenaResult;
+    }
+
+    fun detectArenaPhash(byteBufferImage: ByteBufferImage):Array<String> {
+        val sb = StringBuilder()
+        for (i in 0 until arenaResult.size) {
+            val matchResult = matchImagePhash(byteBufferImage, ARENA_RECTS[i], generatedData.TIERLIST_PHASH)
+            arenaResult[i] = generatedData.TIERLIST_IDS[matchResult.bestIndex]
+
+            sb.append("[" + arenaResult[i] + "(" + matchResult.distance + ")]")
+        }
+
+        Log.d("Detector", sb.toString())
+
+        return arenaResult;
+    }
+
+    fun matchImagePhash(byteBufferImage: ByteBufferImage,  rrect: RRect, candidates: List<Long>):MatchResult {
+
+        val vector = featureDetector.getHash(byteBufferImage.buffer, byteBufferImage.stride, rrect.scale(byteBufferImage.w.toDouble(), byteBufferImage.h.toDouble()));
+
+        var index = 0
+        matchResult.bestIndex = INDEX_UNKNOWN
+        matchResult.distance = Double.MAX_VALUE
+
+        for (rankVector in candidates) {
+            val dist = hammingDistance(rankVector, vector)
+            //Log.d("Detector", String.format("%d: %f", rank, dist))
+            if (dist < matchResult.distance) {
+                matchResult.distance = dist.toDouble()
+                matchResult.bestIndex = index
+            }
+            index++
+        }
+        return matchResult
+    }
+
+
+    private fun hammingDistance(a: Long, b: Long): Int {
+        var dist = 0
+
+        val c = a xor b
+        for (i in 0 until 64) {
+            if (c and 1L.shl(i) != 0L) {
+                dist++
+            }
+        }
+        return dist
     }
 }
 

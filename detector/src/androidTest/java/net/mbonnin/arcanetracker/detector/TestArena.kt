@@ -2,19 +2,39 @@ package net.mbonnin.arcanetracker.detector
 
 import android.support.test.InstrumentationRegistry
 import android.util.Log
+import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.cardid.*
+import org.junit.BeforeClass
 import org.junit.Test
 import java.io.FileInputStream
 
 class TestArena {
-    var total = 0
-    var failed = ArrayList<String>()
-    lateinit var detector: Detector
+    val expected = ArrayList<String>()
+    val detected = ArrayList<String>()
+    val file = ArrayList<String>()
+    val position = ArrayList<Int>()
+
+    var method: ((ByteBufferImage) -> Array<String>)? = { byteBufferImage -> detector.detectArenaPhash(byteBufferImage)}
+
+    companion object {
+        lateinit var detector: Detector
+
+        @BeforeClass
+        @JvmStatic
+        fun beforeClass() {
+            CardJson.init("enUS")
+            detector = Detector(InstrumentationRegistry.getTargetContext(), false)
+        }
+    }
+
+
+    @Test
+    fun testPhash() {
+        doTest("/sdcard/tests/arena_choices/0.png", COLDLIGHT_SEER, TOLVIR_STONESHAPER, DEVILSAUR_EGG)
+    }
 
     @Test
     fun doDetect() {
-        detector = Detector(InstrumentationRegistry.getTargetContext(), false)
-
         doTest("/sdcard/tests/arena_choices/0.png", COLDLIGHT_SEER, TOLVIR_STONESHAPER, DEVILSAUR_EGG)
         doTest("/sdcard/tests/arena_choices/1.png", DEADSCALE_KNIGHT, RECKLESS_ROCKETEER, MAGMA_RAGER)
         doTest("/sdcard/tests/arena_choices/2.png", HOLY_SMITE, BIGTIME_RACKETEER, SQUIRMING_TENTACLE)
@@ -65,33 +85,27 @@ class TestArena {
         doTest("/sdcard/tests/arena_choices/47.png", SARONITE_CHAIN_GANG, GRIMESTREET_ENFORCER, ARROGANT_CRUSADER)
         doTest("/sdcard/tests/arena_choices/48.png", REXXAR, MALFURION_STORMRAGE, TYRANDE_WHISPERWIND)
 
-        Log.d("TestArena", failed.size.toString() + "/" + total + "(" + (failed.size.toDouble() / total) + ")")
-        Log.d("TestArena", failed.joinToString("\n"))
+        var failed = 0
+        for (i in 0 until expected.size) {
+            if (expected[i] != detected[i]) {
+                val expectedName = CardJson.getCard(expected[i])
+                val detectedName = CardJson.getCard(detected[i])
+                Log.d("TestArena", String.format("%10s[%d]: %.20s detected instead of %20s", file[i], position[i], detectedName, expectedName))
+                failed++
+            }
+        }
+        Log.d("TestArena", String.format("%d/%d (%f%%)", failed, expected.size, failed.toDouble() / expected.size))
     }
 
     fun doTest(imagePath: String, vararg id: String) {
         val byteBufferImage = inputStreamToByteBufferImage(FileInputStream(imagePath))
-        val result = detector.detectArena(byteBufferImage)
+        val result = method!!.invoke(byteBufferImage)
 
         for (i in 0 until 3) {
-            if (result[i] != id[i]) {
-                val sb = StringBuilder()
-
-                try {
-                    val expectedVector = detector.generatedData.TIERLIST[detector.generatedData.TIERLIST_IDS.indexOf(id[i])]
-                    val expectedResult = detector.matchImage(byteBufferImage, ARENA_RECTS[i], arrayOf(expectedVector))
-
-                    sb.append("expected: " + id[i] + " (" + expectedResult.distance + ")")
-                    val actualVector = detector.generatedData.TIERLIST[detector.generatedData.TIERLIST_IDS.indexOf(result[i])]
-                    val actualResult = detector.matchImage(byteBufferImage, ARENA_RECTS[i], arrayOf(actualVector))
-                    sb.append("actual: " + result[i] + " (" + actualResult.distance + ")")
-                } catch (e: Exception) {
-                    Log.d("TestArena", "", e)
-                }
-
-                failed.add(sb.toString())
-            }
-            total++
+            expected.add(id[i])
+            detected.add(result[i])
+            file.add(imagePath.substringAfterLast("/"))
+            position.add(i)
         }
     }
 }

@@ -1,10 +1,11 @@
 package net.mbonnin.arcanetracker.detector
 
 class GeneratedData(
-    val RANKS: Array<DoubleArray>,
-    val FORMATS: Array<DoubleArray>,
-    val MODES: Array<DoubleArray>,
-    val MODES_TABLET: Array<DoubleArray>,
-    val TIERLIST: Array<DoubleArray>,
-    val TIERLIST_IDS: Array<String>
+    val RANKS: List<DoubleArray>,
+    val FORMATS: List<DoubleArray>,
+    val MODES: List<DoubleArray>,
+    val MODES_TABLET: List<DoubleArray>,
+    val TIERLIST_IDS: List<String>,
+    val TIERLIST: List<DoubleArray>,
+    val TIERLIST_PHASH: List<Long>
 )

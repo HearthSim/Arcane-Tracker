@@ -14,7 +14,6 @@ import org.junit.Test
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.util.*
 
 
 val MEDAL_RRECT = RRect(24.0, 82.0, 209.0, 92.0).scale(1 / 256.0, 1 / 256.0)
@@ -33,7 +32,8 @@ val HERO_RECT = RRect(
         h = 84.009).scale(1 / 250.0, 1 / 345.0)
 
 class GenerateData {
-    @Rule @JvmField
+    @Rule
+    @JvmField
     val permissionsRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
 
     @Test
@@ -42,8 +42,8 @@ class GenerateData {
 
         val range = 0..25
 
-        val ranks = getVectorArray(range.map { String.format("/medals/Medal_Ranked_%d.png", it) }, featureExtractor, MEDAL_RRECT)
-        val formats = getVectorArray(listOf("wild", "standard").map { String.format("/formats/%s.png", it) }, featureExtractor, FORMAT_RRECT)
+        val ranks = getVectorArray(range.map { String.format("/medals/Medal_Ranked_%d.png", it) }, featuresCallback(featureExtractor, MEDAL_RRECT))
+        val formats = getVectorArray(listOf("wild", "standard").map { String.format("/formats/%s.png", it) }, featuresCallback(featureExtractor, FORMAT_RRECT))
         val modes = getVectorArray(listOf(
                 "casual_standard",
                 "casual_wild",
@@ -51,7 +51,7 @@ class GenerateData {
                 "ranked_wild")
                 .map {
                     String.format("/modes/%s.png", it)
-                }, featureExtractor, MODE_RRECT)
+                }, featuresCallback(featureExtractor, MODE_RRECT))
         val modes_tablet = getVectorArray(listOf(
                 "casual_standard_tablet",
                 "casual_wild_tablet",
@@ -59,11 +59,11 @@ class GenerateData {
                 "ranked_wild_tablet")
                 .map {
                     String.format("/modes/%s.png", it)
-                }, featureExtractor, MODE_RRECT_TABLET)
+                }, featuresCallback(featureExtractor, MODE_RRECT_TABLET))
 
         val arena = appendArena(featureExtractor);
 
-        val generatedData = GeneratedData(ranks, formats, modes, modes_tablet, arena.second, arena.first)
+        val generatedData = GeneratedData(ranks, formats, modes, modes_tablet, arena.first, arena.second, arena.third)
 
         // lol, that's the simplest way I found to send the generated file to the outside world without requiring write permissions !
         val okhttpClient = OkHttpClient()
@@ -86,18 +86,17 @@ class GenerateData {
         FileOutputStream(File("/sdcard/generated_data.json")).write(Gson().toJson(generatedData).toByteArray())
     }
 
-    private fun appendArena(featureExtractor: FeatureExtractor): Pair<Array<String>, Array<DoubleArray>> {
-
+    private fun appendArena(featureExtractor: FeatureExtractor): Triple<List<String>, List<DoubleArray>, List<Long>> {
 
         val list = Tierlist.get(InstrumentationRegistry.getTargetContext()).list
 
-        val ids = ArrayList<String>()
+        val cardIds = list.map { it.CardId }
         val vectors = ArrayList<DoubleArray>()
+        val hashes = ArrayList<Long>()
 
-        ids.addAll(list
-                .map { it.CardId }
-                )
-        vectors.addAll(getVectorArray(ids.map { "/cards/" + it + ".jpg" }, featureExtractor, CARD_RECT))
+        val ids = ArrayList<String>()
+
+        ids.addAll(cardIds)
 
         val heroes = listOf(
                 "HERO_01",
@@ -120,15 +119,33 @@ class GenerateData {
                 "KARA_00_03H"
         )
 
-        vectors.addAll(getVectorArray(heroes.map { "/heroes/A" + it + ".png" }, featureExtractor, HERO_RECT))
+        //vectors.addAll(getVectorArray(ids.map { "/cards/" + it + ".jpg" }, featuresCallback(featureExtractor, CARD_RECT)))
+        //vectors.addAll(getVectorArray(heroes.map { "/heroes/A" + it + ".png" }, featuresCallback(featureExtractor, HERO_RECT)))
+
+        hashes.addAll(getVectorArray(ids.map { "/cards/" + it + ".jpg" }, phashCallback(featureExtractor, CARD_RECT)))
+        hashes.addAll(getVectorArray(heroes.map { "/heroes/A" + it + ".png" },  phashCallback(featureExtractor, HERO_RECT)))
+
         ids.addAll(heroes)
 
-        return Array(ids.size, { ids.get(it) }) to Array(vectors.size, { vectors.get(it) })
+        return Triple(ids, vectors, hashes)
     }
 
+    private fun featuresCallback(featureExtractor: FeatureExtractor, rrect: RRect): (ByteBufferImage) -> DoubleArray {
+        return { byteBufferImage ->
+            featureExtractor.getFeatures(byteBufferImage.buffer, byteBufferImage.stride,
+                    rrect.scale(byteBufferImage.w.toDouble(), byteBufferImage.h.toDouble())).copyOf()
+        }
+    }
 
-    private fun getVectorArray(fileList: List<String>, featureExtractor: FeatureExtractor, rrect: RRect): Array<DoubleArray> {
-        val vectors = arrayListOf<DoubleArray>()
+    private fun phashCallback(featureExtractor: FeatureExtractor, rrect: RRect): (ByteBufferImage) -> Long {
+        return { byteBufferImage ->
+            featureExtractor.getHash(byteBufferImage.buffer, byteBufferImage.stride,
+                    rrect.scale(byteBufferImage.w.toDouble(), byteBufferImage.h.toDouble()))
+        }
+    }
+
+    private fun <T> getVectorArray(fileList: List<String>, apply: (ByteBufferImage) -> T): ArrayList<T> {
+        val vectors = ArrayList<T>()
 
         var i = 0
         for (fileName in fileList) {
@@ -139,15 +156,14 @@ class GenerateData {
                 val bm = BitmapFactory.decodeStream(inputStream)
                 val byteBufferImage = bitmapToByteBufferImage(bm!!)
 
-                val vector = featureExtractor.getFeatures(byteBufferImage.buffer, byteBufferImage.stride,
-                        rrect.scale(byteBufferImage.w.toDouble(), byteBufferImage.h.toDouble()));
+                val vector = apply(byteBufferImage)
 
-                vectors.add(vector.copyOf())
+                vectors.add(vector)
             } catch (e: Exception) {
                 Log.e("TAG", "oops", e)
             }
         }
 
-        return Array<DoubleArray>(vectors.size, { vectors.get(it) })
+        return vectors
     }
 }

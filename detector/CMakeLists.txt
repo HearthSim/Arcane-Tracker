@@ -18,6 +18,7 @@ add_library( # Specifies the name of the library.
 
              # Provides a relative path to your source file(s).
              src/main/cpp/feature_extractor_jni.cpp
+             src/main/cpp/lodepng.cpp
              )
 
 find_library( # Defines the name of the path variable that stores the
