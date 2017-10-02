@@ -1,6 +1,7 @@
 app/google-services.json
 /app/keystore.properties
 /app/keystore.jks
+/detector/src/androidTest
 *.iml
 .gradle
 /local.properties
