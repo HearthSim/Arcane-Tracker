@@ -56,7 +56,7 @@ public class Entity {
 
     public void setCardId(String cardID) {
         this.CardID = cardID;
-        this.card = CardUtil.getCard(cardID);
+        this.card = CardUtil.INSTANCE.getCard(cardID);
     }
 
     public static class Extra {

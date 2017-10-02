@@ -167,9 +167,9 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
         /*
          * these are 3 fake cards needed for CardRender
          */
-        injectedCards.add(CardUtil.secret(PlayerClassKt.PALADIN));
-        injectedCards.add(CardUtil.secret(PlayerClassKt.HUNTER));
-        injectedCards.add(CardUtil.secret(PlayerClassKt.MAGE));
+        injectedCards.add(CardUtil.INSTANCE.secret(PlayerClassKt.PALADIN));
+        injectedCards.add(CardUtil.INSTANCE.secret(PlayerClassKt.HUNTER));
+        injectedCards.add(CardUtil.INSTANCE.secret(PlayerClassKt.MAGE));
 
         CardJson.INSTANCE.init(jsonName, injectedCards);
     }

@@ -78,7 +78,7 @@ public class DetailsView extends LinearLayout {
                 builder.append("\n");
             }
             if (!TextUtils.isEmpty(entity.extra.createdBy)) {
-                builder.append(getContext().getString(R.string.createdBy, CardUtil.getCard(entity.extra.createdBy).name));
+                builder.append(getContext().getString(R.string.createdBy, CardUtil.INSTANCE.getCard(entity.extra.createdBy).name));
             }
 
             if (Entity.ZONE_SECRET.equals(entity.tags.get(Entity.KEY_ZONE))
@@ -194,7 +194,7 @@ public class DetailsView extends LinearLayout {
 
     private void addSecret(List<DeckEntryItem> list, String cardId, boolean condition) {
         DeckEntryItem deckEntryItem = new DeckEntryItem();
-        deckEntryItem.card = CardUtil.getCard(cardId);
+        deckEntryItem.card = CardUtil.INSTANCE.getCard(cardId);
         deckEntryItem.count = condition ? 0 : 1;
         list.add(deckEntryItem);
     }

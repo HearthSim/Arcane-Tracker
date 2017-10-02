@@ -17,7 +17,7 @@ public class Player {
     public Entity heroPower;
 
     public int classIndex() {
-        Card card = CardUtil.getCard(hero.CardID);
+        Card card = CardUtil.INSTANCE.getCard(hero.CardID);
         return HeroUtilKt.getClassIndex(card.playerClass);
     }
 }

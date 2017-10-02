@@ -9,6 +9,7 @@ import net.mbonnin.hsmodel.playerclass.PALADIN
 import net.mbonnin.hsmodel.type.SPELL
 
 object CardUtil {
+    @JvmField
     val UNKNOWN = unknown()
 
     fun unknown(): Card {
@@ -29,6 +30,7 @@ object CardUtil {
         val card = unknown()
         card.type = SPELL
         card.text = Utils.getString(R.string.secretText)
+
         when (playerClass) {
             PALADIN -> {
                 card.id = "secret_p"

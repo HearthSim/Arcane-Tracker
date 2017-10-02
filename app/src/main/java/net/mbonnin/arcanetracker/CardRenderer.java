@@ -106,7 +106,7 @@ public class CardRenderer {
         Bitmap bitmap = Bitmap.createBitmap(TOTAL_WIDTH / 2, TOTAL_HEIGHT / 2, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         canvas.scale(0.5f, 0.5f);
-        Card card = CardUtil.getCard(id);
+        Card card = CardUtil.INSTANCE.getCard(id);
         int dx, dy;
         String s;
 

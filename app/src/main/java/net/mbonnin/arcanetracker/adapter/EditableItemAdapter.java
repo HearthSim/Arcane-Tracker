@@ -37,7 +37,7 @@ public class EditableItemAdapter extends ItemAdapter {
         ArrayList<Object> list = new ArrayList<>();
         for (Map.Entry<String, Integer> entry: mDeck.cards.entrySet()) {
             DeckEntryItem item = new DeckEntryItem();
-            item.card = CardUtil.getCard(entry.getKey());
+            item.card = CardUtil.INSTANCE.getCard(entry.getKey());
             item.count = entry.getValue();
             list.add(item);
         }

@@ -207,7 +207,7 @@ public class Controller implements GameLogic.Listener {
         for (Entity entity : originalDeckEntityList) {
             if (entity.card == null) {
                 if (i < cardIdsFromDeck.size()) {
-                    entity.extra.tmpCard = CardUtil.getCard(cardIdsFromDeck.get(i));
+                    entity.extra.tmpCard = CardUtil.INSTANCE.getCard(cardIdsFromDeck.get(i));
                     i++;
                 }
             }
@@ -239,7 +239,7 @@ public class Controller implements GameLogic.Listener {
         for (Entity entity : entities) {
             DeckEntryItem deckEntry = new DeckEntryItem();
             if (TextUtils.isEmpty(entity.CardID) || entity.extra.hide) {
-                deckEntry.card = CardUtil.unknown();
+                deckEntry.card = CardUtil.INSTANCE.unknown();
                 StringBuilder builder = new StringBuilder();
                 builder.append("#").append(GameLogic.gameTurnToHumanTurn(entity.extra.drawTurn));
                 if (entity.extra.mulliganed) {
@@ -359,9 +359,9 @@ public class Controller implements GameLogic.Listener {
                 String clazz = entity.tags.get(Entity.KEY_CLASS);
 
                 if (clazz != null) {
-                    deckEntry.card = CardUtil.secret(clazz);
+                    deckEntry.card = CardUtil.INSTANCE.secret(clazz);
                 } else {
-                    deckEntry.card = CardUtil.secret("MAGE");
+                    deckEntry.card = CardUtil.INSTANCE.secret("MAGE");
                 }
             } else {
                 deckEntry.card = entity.card;
@@ -384,7 +384,7 @@ public class Controller implements GameLogic.Listener {
 
         for (Map.Entry<String, Integer> entry : cardMap.entrySet()) {
             DeckEntryItem deckEntry = new DeckEntryItem();
-            deckEntry.card = CardUtil.getCard(entry.getKey());
+            deckEntry.card = CardUtil.INSTANCE.getCard(entry.getKey());
             deckEntry.count = entry.getValue();
             list.add(deckEntry);
             unknown -= deckEntry.count;

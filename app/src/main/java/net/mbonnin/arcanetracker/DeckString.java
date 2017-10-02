@@ -53,7 +53,7 @@ public class DeckString {
 
         int heroCount = VarInt.getVarInt(byteBuffer);
         for (int i = 0; i < heroCount; i++) {
-            Card card = CardUtil.getCard(VarInt.getVarInt(byteBuffer));
+            Card card = CardUtil.INSTANCE.getCard(VarInt.getVarInt(byteBuffer));
             if (card != null) {
                 deck.classIndex = HeroUtilKt.getClassIndex(card.playerClass);
             }
@@ -62,7 +62,7 @@ public class DeckString {
         deck.cards = new HashMap<>();
         int cardCount = VarInt.getVarInt(byteBuffer);
         for (int i = 0; i < cardCount; i++) {
-            Card card = CardUtil.getCard(VarInt.getVarInt(byteBuffer));
+            Card card = CardUtil.INSTANCE.getCard(VarInt.getVarInt(byteBuffer));
             if (card != null) {
                 Timber.d("card1: %s", card.name);
                 deck.cards.put(card.id, 1);
@@ -71,7 +71,7 @@ public class DeckString {
 
         cardCount = VarInt.getVarInt(byteBuffer);
         for (int i = 0; i < cardCount; i++) {
-            Card card = CardUtil.getCard(VarInt.getVarInt(byteBuffer));
+            Card card = CardUtil.INSTANCE.getCard(VarInt.getVarInt(byteBuffer));
             if (card != null) {
                 Timber.d("card2: %s", card.name);
                 deck.cards.put(card.id, 2);
@@ -80,7 +80,7 @@ public class DeckString {
 
         cardCount = VarInt.getVarInt(byteBuffer);
         for (int i = 0; i < cardCount; i++) {
-            Card card = CardUtil.getCard(VarInt.getVarInt(byteBuffer));
+            Card card = CardUtil.INSTANCE.getCard(VarInt.getVarInt(byteBuffer));
             int c = VarInt.getVarInt(byteBuffer);
             if (card != null) {
                 deck.cards.put(card.id, c);
