@@ -30,10 +30,6 @@ import rx.Single
 import rx.SingleSubscriber
 import timber.log.Timber
 
-import net.mbonnin.arcanetracker.detector.MODE_RANKED_STANDARD
-import net.mbonnin.arcanetracker.detector.MODE_RANKED_WILD
-import kotlin.experimental.and
-
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 class ScreenCapture private constructor(internal var mediaProjection: MediaProjection) : ImageReader.OnImageAvailableListener {
     private val mDetector: Detector

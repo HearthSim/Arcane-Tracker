@@ -25,7 +25,6 @@ import net.mbonnin.hsmodel.Rarity;
 import net.mbonnin.hsmodel.Type;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -186,8 +185,6 @@ public class CardRenderer {
                 FileOutputStream fileOutputStream = new FileOutputStream(debugFile);
                 bitmap.compress(Bitmap.CompressFormat.PNG, 90, fileOutputStream);
                 fileOutputStream.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
