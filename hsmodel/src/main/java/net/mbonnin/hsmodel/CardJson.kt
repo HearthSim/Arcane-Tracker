@@ -7,20 +7,28 @@ import java.util.*
 
 
 object CardJson {
-    private lateinit var list: ArrayList<Card>
+    private lateinit var allCards: ArrayList<Card>
 
     fun init(lang: String, injectedCards: List<Card>?) {
-        val inputStream = CardJson::class.java.getResourceAsStream("/cards_$lang.json")
-        val reader = InputStreamReader(inputStream)
-        list = Gson().fromJson<ArrayList<Card>>(reader, object : TypeToken<ArrayList<Card>>() {}.type)
+        val reader = InputStreamReader(CardJson::class.java.getResourceAsStream("/cards_$lang.json"))
+        allCards = Gson().fromJson<ArrayList<Card>>(reader, object : TypeToken<ArrayList<Card>>() {}.type)
 
-        injectedCards?.let { list.addAll(it) }
+        injectedCards?.let { allCards.addAll(it) }
 
-        Collections.sort(list) { a, b -> a.id?.compareTo(b?.id ?: "") ?: 0 }
+        Collections.sort(allCards) { a, b -> a.id.compareTo(b.id) }
+
+        val tierListReader = InputStreamReader(CardJson::class.java.getResourceAsStream("/tierlist.json"))
+        val tiercards = Gson().fromJson<TierCards>(tierListReader, TierCards::class.java).Cards
+                .sortedBy { it.CardId }
+
+        for (tiercard in tiercards) {
+            val card = getCard(tiercard.CardId)
+            card!!.scores = tiercard.Scores
+        }
     }
 
     fun allCards(): List<Card> {
-        return list
+        return allCards
     }
 
     fun init(lang: String) {
@@ -28,11 +36,11 @@ object CardJson {
     }
 
     fun getCard(id: String): Card? {
-        val index = Collections.binarySearch(list, id)
+        val index = Collections.binarySearch(allCards, id)
         return if (index < 0) {
             null
         } else {
-            list[index]
+            allCards[index]
         }
     }
 }

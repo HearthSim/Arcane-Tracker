@@ -8,7 +8,6 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
-import net.mbonnin.arcanetracker.detector.Tierlist
 
 class ArenaGuessView : View {
     private var cardId: String = "id"
@@ -39,9 +38,9 @@ class ArenaGuessView : View {
         this.cardId = cardId
         this.cardName = CardUtil.getCard(cardId).name!!
 
-        val tierCard = Tierlist.get(context).get(cardId)
-        tierCard?.let {
-            for (heroScore in tierCard.Scores) {
+        val card = CardUtil.getCard(cardId)
+        card.scores?.let {
+            for (heroScore in it) {
                 if (playerClass.compareTo(heroScore.Hero, true) == 0) {
                     this.score = heroScore.Score
                 }

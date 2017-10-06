@@ -7,8 +7,8 @@ class Card : Comparable<String> {
     var name: String? = null
     @JvmField
     var playerClass: String? = null
-    @JvmField
-    var id: String? = null
+
+    lateinit var id: String
     @JvmField
     var rarity: String? = null
     @JvmField
@@ -52,5 +52,7 @@ class Card : Comparable<String> {
         const val CLASS_INDEX_NEUTRAL = 9
 
     }
+
+    var scores: List<TierScore>? = null
 
 }

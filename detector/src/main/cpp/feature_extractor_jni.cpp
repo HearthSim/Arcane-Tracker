@@ -20,25 +20,23 @@ double *scaledIntegralImage(uint8_t *in, int pixel_stride, int stride, jdouble i
 #define PHASH_SCALED_SIZE 8
 
 #define DUMP_PNG 0
+#define DBG if (0)
+
+#define TAG "JNI"
+
 
 JNIEXPORT jdoubleArray JNICALL
-Java_net_mbonnin_arcanetracker_detector_FeatureExtractor_allocateVector(JNIEnv *env, jobject obj) {
-    jdoubleArray result;
-    result = env->NewDoubleArray(3 * FEATURES_PER_CHANNEL);
-    if (result == NULL) {
-        return NULL;  /* out of memory error thrown */
-    }
-
-    return result;
-}
-
-JNIEXPORT void JNICALL
 Java_net_mbonnin_arcanetracker_detector_FeatureExtractor_getFeatures(JNIEnv *env, jobject obj,
                                                                      jobject byteBuffer,
                                                                      jint stride, jdouble x,
                                                                      jdouble y, jdouble w,
-                                                                     jdouble h,
-                                                                     jdoubleArray vector) {
+                                                                     jdouble h) {
+
+    jdoubleArray vector;
+    vector = env->NewDoubleArray(3 * FEATURES_PER_CHANNEL);
+    if (vector == NULL) {
+        return NULL;  /* out of memory error thrown */
+    }
 
     uint8_t *buf = (uint8_t *) env->GetDirectBufferAddress(byteBuffer);
 
@@ -59,6 +57,7 @@ Java_net_mbonnin_arcanetracker_detector_FeatureExtractor_getFeatures(JNIEnv *env
     env->SetDoubleArrayRegion(vector, 0, 3 * FEATURES_PER_CHANNEL, v);
 
     free(v);
+    return vector;
 }
 
 
@@ -134,7 +133,7 @@ uint8_t *scaleImage(uint8_t *in, int pixel_stride, int stride, jdouble in_x, jdo
                     jdouble in_w, jdouble in_h,
                     int out_w, int out_h) {
 
-    __android_log_print(ANDROID_LOG_DEBUG, "TAG2", "scale: %dx%d -> %dx%d", (int) in_w, (int) in_h,
+    DBG __android_log_print(ANDROID_LOG_DEBUG, TAG, "scale: %dx%d -> %dx%d", (int) in_w, (int) in_h,
                         out_w, out_h);
 
     if (1 && in_w / out_w > 2) {
@@ -180,7 +179,7 @@ uint8_t *scaleImage(uint8_t *in, int pixel_stride, int stride, jdouble in_x, jdo
             *out_ptr++ = (uint8_t) (((int) v) & 0xff);
         }
     }
-    __android_log_print(ANDROID_LOG_DEBUG, "TAG2", "done %dx%d (ax=%f, ay=%f)", out_w, out_h, ax, ay);
+    DBG __android_log_print(ANDROID_LOG_DEBUG, TAG, "done %dx%d (ax=%f, ay=%f)", out_w, out_h, ax, ay);
     return out;
 }
 
@@ -214,7 +213,7 @@ Java_net_mbonnin_arcanetracker_detector_FeatureExtractor_getHash(JNIEnv *env, jo
     }
 
     sum /= (PHASH_SCALED_SIZE * PHASH_SCALED_SIZE);
-    __android_log_print(ANDROID_LOG_DEBUG, "TAG2", "average: %f", sum);
+    DBG __android_log_print(ANDROID_LOG_DEBUG, TAG, "average: %f", sum);
 
     jlong ret = 0;
     p = acc;
@@ -266,22 +265,21 @@ Java_net_mbonnin_arcanetracker_detector_FeatureExtractor_getHash(JNIEnv *env, jo
     free(green);
     free(blue);
 
-    __android_log_print(ANDROID_LOG_DEBUG, "TAG2", "ret=%ld", ret);
+    DBG __android_log_print(ANDROID_LOG_DEBUG, TAG, "ret=%ld", ret);
 
     return ret;
 }
 
 void save_png(uint8_t *image, int w, int h, const char *name, int index) {
     lodepng::State state;
-    // input color type
+
     state.info_raw.colortype = LCT_GREY;
     state.info_raw.bitdepth = 8;
-    // output color type
+
     state.info_png.color.colortype = LCT_GREY;
     state.info_png.color.bitdepth = 8;
     state.encoder.auto_convert = 0; // without this, it would ignore the output color type specified above and choose an optimal one instead
 
-    //encode and save
     std::vector<unsigned char> buffer;
     lodepng::encode(buffer, image, w, h, state);
     char buf[1024];

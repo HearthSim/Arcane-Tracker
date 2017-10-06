@@ -5,6 +5,7 @@ import android.util.Log
 import com.google.gson.Gson
 import java.io.InputStreamReader
 import java.nio.ByteBuffer
+import kotlin.reflect.KFunction2
 
 class ByteBufferImage(val w: Int,
                       val h: Int,
@@ -52,36 +53,16 @@ val ARENA_RECTS = arrayOf(
 )
 
 class Detector(var context: Context, var isTablet: Boolean) {
-    val featureDetector = FeatureExtractor()
-    val matchResult = MatchResult()
+    val featureDetector = FeatureExtractor.INSTANCE
     val arenaResult = Array<String>(3, {""})
     val generatedData = Gson().fromJson(InputStreamReader(context.resources.openRawResource(R.raw.generated_data)), GeneratedData::class.java)
 
-    fun matchImage(byteBufferImage: ByteBufferImage,  rrect: RRect, candidates: List<DoubleArray>):MatchResult {
-
-        val vector = featureDetector.getFeatures(byteBufferImage.buffer, byteBufferImage.stride, rrect.scale(byteBufferImage.w.toDouble(), byteBufferImage.h.toDouble()));
-
-        var index = 0
-        matchResult.bestIndex = INDEX_UNKNOWN
-        matchResult.distance = Double.MAX_VALUE
-
-        for (rankVector in candidates) {
-            var dist = 0.0
-            for (i in 0 until vector.size) {
-                dist += (vector[i] - rankVector[i]) * (vector[i] - rankVector[i])
-            }
-            //Log.d("Detector", String.format("%d: %f", rank, dist))
-            if (dist < matchResult.distance) {
-                matchResult.distance = dist
-                matchResult.bestIndex = index
-            }
-            index++
-        }
-        return matchResult
-    }
-
     fun detectRank(byteBufferImage: ByteBufferImage):Int {
-        val matchResult = matchImage(byteBufferImage, if (isTablet) RANK_RRECT_TABLET else RANK_RRECT , generatedData.RANKS)
+        val matchResult = matchImage(byteBufferImage,
+                if (isTablet) RANK_RRECT_TABLET else RANK_RRECT,
+                Detector.Companion::extractHaar,
+                Detector.Companion::euclidianDistance,
+                generatedData.RANKS)
 
         if (matchResult.distance > 400) {
             matchResult.bestIndex = INDEX_UNKNOWN
@@ -94,7 +75,11 @@ class Detector(var context: Context, var isTablet: Boolean) {
 
     fun detectFormat(byteBufferImage: ByteBufferImage):Int {
 
-        val matchResult = matchImage(byteBufferImage, if (isTablet) FORMAT_RRECT_TABLET else FORMAT_RRECT, generatedData.FORMATS)
+        val matchResult = matchImage(byteBufferImage,
+                if (isTablet) FORMAT_RRECT_TABLET else FORMAT_RRECT,
+                Detector.Companion::extractHaar,
+                Detector.Companion::euclidianDistance,
+                generatedData.FORMATS)
         if (matchResult.distance > 400) {
             matchResult.bestIndex = INDEX_UNKNOWN
         }
@@ -106,7 +91,11 @@ class Detector(var context: Context, var isTablet: Boolean) {
 
     fun detectMode(byteBufferImage: ByteBufferImage):Int {
 
-        val matchResult = matchImage(byteBufferImage, if (isTablet) MODE_RRECT_TABLET else MODE_RRECT, if (isTablet) generatedData.MODES_TABLET else generatedData.MODES)
+        val matchResult = matchImage(byteBufferImage,
+                if (isTablet) MODE_RRECT_TABLET else MODE_RRECT,
+                Detector.Companion::extractHaar,
+                Detector.Companion::euclidianDistance,
+                if (isTablet) generatedData.MODES_TABLET else generatedData.MODES)
         if (matchResult.distance > 400) {
             matchResult.bestIndex = INDEX_UNKNOWN
         }
@@ -120,58 +109,36 @@ class Detector(var context: Context, var isTablet: Boolean) {
         }
     }
 
-    fun detectArena(byteBufferImage: ByteBufferImage, hero: String):Array<String> {
-        val sb = StringBuilder()
-        for (i in 0 until arenaResult.size) {
-            val matchResult = matchImage(byteBufferImage, ARENA_RECTS[i], generatedData.TIERLIST)
-            arenaResult[i] = generatedData.TIERLIST_IDS[matchResult.bestIndex]
-
-            sb.append("[" + arenaResult[i] + "(" + matchResult.distance + ")]")
-        }
-
-        Log.d("Detector", sb.toString())
-
-        return arenaResult;
+    fun detectArenaHaar(byteBufferImage: ByteBufferImage, hero: String):Array<String> {
+        return detectArena(byteBufferImage, Detector.Companion::extractHaar, Detector.Companion::euclidianDistance, generatedData.TIERLIST)
     }
 
     fun detectArenaPhash(byteBufferImage: ByteBufferImage):Array<String> {
+        return detectArena(byteBufferImage, Detector.Companion::extractPhash, Detector.Companion::hammingDistance, generatedData.TIERLIST_PHASH)
+    }
+
+    private fun <T> detectArena(byteBufferImage: ByteBufferImage, extractFeatures: KFunction2<ByteBufferImage, RRect, T>, computeDistance: KFunction2<T, T, Double>, candidates: List<T>): Array<String> {
         val sb = StringBuilder()
         for (i in 0 until arenaResult.size) {
-            val matchResult = matchImagePhash(byteBufferImage, ARENA_RECTS[i], generatedData.TIERLIST_PHASH)
+            val matchResult = matchImage(byteBufferImage,
+                    ARENA_RECTS[i],
+                    extractFeatures,
+                    computeDistance,
+                    candidates)
             arenaResult[i] = generatedData.TIERLIST_IDS[matchResult.bestIndex]
 
             sb.append("[" + arenaResult[i] + "(" + matchResult.distance + ")]")
         }
 
         Log.d("Detector", sb.toString())
-
-        return arenaResult;
+        return arenaResult
     }
 
-    fun matchImagePhash(byteBufferImage: ByteBufferImage,  rrect: RRect, candidates: List<Long>):MatchResult {
-
-        val vector = featureDetector.getHash(byteBufferImage.buffer, byteBufferImage.stride, rrect.scale(byteBufferImage.w.toDouble(), byteBufferImage.h.toDouble()));
-
-        var index = 0
-        matchResult.bestIndex = INDEX_UNKNOWN
-        matchResult.distance = Double.MAX_VALUE
-
-        for (rankVector in candidates) {
-            val dist = hammingDistance(rankVector, vector)
-            //Log.d("Detector", String.format("%d: %f", rank, dist))
-            if (dist < matchResult.distance) {
-                matchResult.distance = dist.toDouble()
-                matchResult.bestIndex = index
-            }
-            index++
-        }
-        return matchResult
-    }
 
 
     companion object {
-        fun hammingDistance(a: Long, b: Long): Int {
-            var dist = 0
+        fun hammingDistance(a: Long, b: Long): Double {
+            var dist = 0.0
 
             val c = a xor b
             for (i in 0 until 64) {
@@ -181,6 +148,51 @@ class Detector(var context: Context, var isTablet: Boolean) {
             }
             return dist
         }
+
+        fun euclidianDistance(a: DoubleArray, b: DoubleArray): Double {
+            var dist = 0.0
+            for (i in 0 until a.size) {
+                dist += (a[i] - b[i]) * (a[i] - b[i])
+            }
+            return dist
+        }
+
+        fun extractHaar(byteBufferImage: ByteBufferImage, rrect: RRect): DoubleArray {
+            return FeatureExtractor.INSTANCE.getFeatures(byteBufferImage.buffer, byteBufferImage.stride,
+                    rrect.scale(byteBufferImage.w.toDouble(), byteBufferImage.h.toDouble()))
+        }
+
+        fun extractPhash(byteBufferImage: ByteBufferImage, rrect: RRect): Long {
+            return FeatureExtractor.INSTANCE.getHash(byteBufferImage.buffer, byteBufferImage.stride,
+                    rrect.scale(byteBufferImage.w.toDouble(), byteBufferImage.h.toDouble()))
+        }
+
+        fun <T> matchImage(byteBufferImage: ByteBufferImage, rrect: RRect, extractFeatures: (ByteBufferImage, RRect) -> T, computeDistance: (T, T) -> Double, candidates: List<T>):MatchResult {
+
+            val vector = extractFeatures(byteBufferImage, rrect)
+
+            var index = 0
+
+            val matchResult = MatchResult()
+
+            matchResult.bestIndex = INDEX_UNKNOWN
+            matchResult.distance = Double.MAX_VALUE
+
+            for (candidate in candidates) {
+                val dist = computeDistance(vector, candidate)
+                //Log.d("Detector", String.format("%d: %f", rank, dist))
+                if (dist < matchResult.distance) {
+                    matchResult.distance = dist
+                    matchResult.bestIndex = index
+                }
+                index++
+            }
+            return matchResult
+        }
+        fun <T> getModel(context: Context, resId: Int, clazz: Class<T>): T {
+            return Gson().fromJson(InputStreamReader(context.resources.openRawResource(resId)), clazz)
+        }
+
     }
 }
 
