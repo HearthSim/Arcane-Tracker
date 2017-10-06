@@ -304,12 +304,12 @@ public class SettingsCompanion {
 
             Completable completable;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-                    && ScreenCapture.get() != null) {
+                    && ScreenCapture.Companion.get() != null) {
                 /* 1s is hopefully enough for the settings view to disappear */
                 Toast.makeText(view.getContext(), Utils.getString(R.string.preparingEmail), Toast.LENGTH_SHORT).show();
 
                 completable = Completable.timer(1, TimeUnit.SECONDS)
-                        .andThen(ScreenCapture.get().screenShotSingle())
+                        .andThen(ScreenCapture.Companion.get().screenShotSingle())
                         .observeOn(AndroidSchedulers.mainThread())
                         .map(file -> arrayUri.add(FileProvider.getUriForFile(view.getContext(), "net.mbonnin.arcanetracker.fileprovider", file)))
                         .toCompletable();

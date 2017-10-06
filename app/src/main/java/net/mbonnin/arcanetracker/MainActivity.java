@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE_MEDIAPROJECTION) {
             if (resultCode == RESULT_OK) {
                 MediaProjection projection = mProjectionManager.getMediaProjection(resultCode, data);
-                ScreenCapture.create(projection);
+                ScreenCapture.Companion.create(projection);
                 tryToLaunchGame();
             } else {
                 new AlertDialog.Builder(this)
@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (false && Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && ScreenCapture.get() == null) {
+        if (false && Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && ScreenCapture.Companion.get() == null) {
             mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
             startActivityForResult(mProjectionManager.createScreenCaptureIntent(), REQUEST_CODE_MEDIAPROJECTION);
             return;
