@@ -1,21 +1,10 @@
 package net.mbonnin.arcanetracker
 
-import android.os.Handler
 import android.widget.Toast
-
 import net.mbonnin.arcanetracker.detector.*
-
-import java.util.Locale
-
 import rx.Completable
 import rx.android.schedulers.AndroidSchedulers
-
-import net.mbonnin.arcanetracker.detector.FORMAT_UNKNOWN
-import net.mbonnin.arcanetracker.detector.MODE_UNKNOWN
-import net.mbonnin.arcanetracker.detector.RANK_UNKNOWN
-import rx.functions.Action0
-import java.util.concurrent.ThreadPoolExecutor
-import java.util.concurrent.TimeUnit
+import java.util.*
 
 object ScreenCaptureResult {
     @Volatile private var rank = RANK_UNKNOWN
@@ -77,7 +66,7 @@ object ScreenCaptureResult {
         format = FORMAT_UNKNOWN
     }
 
-    fun setArena(arenaResult: Array<String>) {
+    fun setArena(arenaResult: Array<String>, hero: String) {
 
         for (i in 0..2) {
             if (arenaResult[i] != filters[i].cardId) {
@@ -87,9 +76,19 @@ object ScreenCaptureResult {
             } else {
                 filters[i].count++
                 if (filters[i].count == 50) {
-                    runOnMainThread({ArenaGuessCompanion.show(i, filters[i].cardId)})
+                    runOnMainThread({ArenaGuessCompanion.show(i, filters[i].cardId, hero)})
                 }
             }
         }
+    }
+
+    fun clearArena() {
+        for (i in 0..2) {
+            if ("" != filters[i].cardId) {
+                runOnMainThread { ArenaGuessCompanion.hide(i)}
+                filters[i].cardId = ""
+            }
+        }
+
     }
 }

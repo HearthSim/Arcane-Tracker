@@ -120,7 +120,7 @@ class Detector(var context: Context, var isTablet: Boolean) {
         }
     }
 
-    fun detectArena(byteBufferImage: ByteBufferImage):Array<String> {
+    fun detectArena(byteBufferImage: ByteBufferImage, hero: String):Array<String> {
         val sb = StringBuilder()
         for (i in 0 until arenaResult.size) {
             val matchResult = matchImage(byteBufferImage, ARENA_RECTS[i], generatedData.TIERLIST)

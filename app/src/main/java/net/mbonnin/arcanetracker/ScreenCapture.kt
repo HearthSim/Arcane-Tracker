@@ -5,30 +5,21 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Point
-import android.media.Image
 import android.media.ImageReader
 import android.media.projection.MediaProjection
 import android.os.Build
 import android.os.Handler
 import android.os.HandlerThread
 import android.support.annotation.RequiresApi
-import android.view.Display
-import android.view.WindowManager
-
-import net.mbonnin.arcanetracker.detector.ByteBufferImage
-import net.mbonnin.arcanetracker.detector.Detector
 import net.mbonnin.arcanetracker.detector.*
 import net.mbonnin.arcanetracker.parser.LoadingScreenParser
-
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.nio.ByteBuffer
-import java.util.LinkedList
-
 import rx.Single
 import rx.SingleSubscriber
 import timber.log.Timber
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 class ScreenCapture private constructor(internal var mediaProjection: MediaProjection) : ImageReader.OnImageAvailableListener {
@@ -99,9 +90,15 @@ class ScreenCapture private constructor(internal var mediaProjection: MediaProje
                         }
                     }
                 }
-            } else if (LoadingScreenParser.MODE_DRAFT == LoadingScreenParser.get().mode) {
-                val arenaResult = mDetector.detectArena(bbImage)
-                ScreenCaptureResult.setArena(arenaResult)
+            }
+
+            if (LoadingScreenParser.MODE_DRAFT == LoadingScreenParser.get().mode) {
+                val hero = getPlayerClass(DeckList.getArenaDeck().classIndex)
+
+                val arenaResult = mDetector.detectArena(bbImage, hero)
+                ScreenCaptureResult.setArena(arenaResult, hero)
+            } else {
+                ScreenCaptureResult.clearArena()
             }
             image.close()
         }
