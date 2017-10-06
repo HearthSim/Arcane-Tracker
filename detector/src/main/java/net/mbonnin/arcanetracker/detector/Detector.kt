@@ -35,6 +35,9 @@ const val MODE_CASUAL_WILD = 1
 const val MODE_RANKED_STANDARD = 2
 const val MODE_RANKED_WILD = 3
 
+const val MODE_CASUAL = 0
+const val MODE_RANKED = 1
+
 val FORMAT_RRECT = RRect(1754.0, 32.0, 138.0, 98.0).scale(1/1920.0, 1/1080.0)
 val FORMAT_RRECT_TABLET = RRect(1609.0, 39.0, 96.0, 73.0).scale(1/2048.0, 1/1536.0)
 val RANK_RRECT = RRect(820.0, 424.0, 230.0, 102.0).scale(1/1920.0, 1/1080.0)
@@ -111,7 +114,11 @@ class Detector(var context: Context, var isTablet: Boolean) {
 
         //Log.d("Detector", "mode: " + matchResult.bestIndex + "(" + matchResult.distance +  ")")
 
-        return matchResult.bestIndex;
+        when (matchResult.bestIndex) {
+            MODE_CASUAL_STANDARD, MODE_CASUAL_WILD -> return MODE_CASUAL
+            MODE_RANKED_STANDARD, MODE_RANKED_WILD -> return MODE_RANKED
+            else -> return MODE_UNKNOWN
+        }
     }
 
     fun detectArena(byteBufferImage: ByteBufferImage):Array<String> {

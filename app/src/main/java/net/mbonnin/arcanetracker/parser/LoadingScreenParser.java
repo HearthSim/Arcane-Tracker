@@ -77,7 +77,7 @@ public class LoadingScreenParser implements LogReader.LineConsumer {
                         break;
                 }
                 if (mMode.equals(MODE_TOURNAMENT)) {
-                    Completable.fromAction(() -> ScreenCaptureResult.reset())
+                    Completable.fromAction(() -> ScreenCaptureResult.INSTANCE.reset())
                             .subscribeOn(AndroidSchedulers.mainThread())
                             .subscribe();
                 }

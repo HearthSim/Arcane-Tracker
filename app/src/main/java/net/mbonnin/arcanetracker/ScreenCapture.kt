@@ -95,19 +95,16 @@ class ScreenCapture private constructor(internal var mediaProjection: MediaProje
                 }
                 val mode = mDetector.detectMode(bbImage)
                 if (mode != MODE_UNKNOWN) {
-                    when (mode) {
-                        MODE_RANKED_STANDARD, MODE_RANKED_WILD -> {
-                            ScreenCaptureResult.setMode(ScreenCaptureResult.MODE_RANKED)
-                            val rank = mDetector.detectRank(bbImage)
-                            if (rank != RANK_UNKNOWN) {
-                                ScreenCaptureResult.setRank(rank)
-                            }
+                    ScreenCaptureResult.setMode(mode)
+                    if (mode == MODE_RANKED) {
+                        val rank = mDetector.detectRank(bbImage)
+                        if (rank != RANK_UNKNOWN) {
+                            ScreenCaptureResult.setRank(rank)
                         }
-                        else -> ScreenCaptureResult.setMode(ScreenCaptureResult.MODE_CASUAL)
                     }
                 }
             } else if (LoadingScreenParser.MODE_DRAFT == LoadingScreenParser.get().mode) {
-                //arenaResult = mDetector.detectArena(bbImage);
+                val arenaResult = mDetector.detectArena(bbImage)
             }
             image.close()
         }

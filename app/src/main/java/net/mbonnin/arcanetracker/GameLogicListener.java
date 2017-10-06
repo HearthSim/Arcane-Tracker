@@ -24,6 +24,9 @@ import java.util.HashMap;
 
 import timber.log.Timber;
 
+import static net.mbonnin.arcanetracker.detector.DetectorKt.MODE_CASUAL;
+import static net.mbonnin.arcanetracker.detector.DetectorKt.MODE_RANKED;
+
 public class GameLogicListener implements GameLogic.Listener {
 
     private static GameLogicListener sGameLogicListener;
@@ -153,19 +156,19 @@ public class GameLogicListener implements GameLogic.Listener {
             mGame.bnetGameType = BnetGameType.BGT_TAVERNBRAWL_1P_VERSUS_AI;
         } else if (LoadingScreenParser.get().getGameplayMode().equals(LoadingScreenParser.MODE_ADVENTURE)) {
             mGame.bnetGameType = BnetGameType.BGT_VS_AI;
-        } else if (ScreenCaptureResult.getMode() == ScreenCaptureResult.MODE_RANKED
-                && ScreenCaptureResult.getFormat() == DetectorKt.FORMAT_STANDARD) {
+        } else if (ScreenCaptureResult.INSTANCE.getMode() == MODE_RANKED
+                && ScreenCaptureResult.INSTANCE.getFormat() == DetectorKt.FORMAT_STANDARD) {
             mGame.bnetGameType = BnetGameType.BGT_RANKED_STANDARD;
-            mGame.rank = ScreenCaptureResult.getRank();
-        } else if (ScreenCaptureResult.getMode() == ScreenCaptureResult.MODE_RANKED
-                && ScreenCaptureResult.getFormat() == DetectorKt.FORMAT_WILD) {
+            mGame.rank = ScreenCaptureResult.INSTANCE.getRank();
+        } else if (ScreenCaptureResult.INSTANCE.getMode() == MODE_RANKED
+                && ScreenCaptureResult.INSTANCE.getFormat() == DetectorKt.FORMAT_WILD) {
             mGame.bnetGameType = BnetGameType.BGT_RANKED_WILD;
-            mGame.rank = ScreenCaptureResult.getRank();
-        } else if (ScreenCaptureResult.getMode() == ScreenCaptureResult.MODE_CASUAL
-                && ScreenCaptureResult.getFormat() == DetectorKt.FORMAT_STANDARD) {
+            mGame.rank = ScreenCaptureResult.INSTANCE.getRank();
+        } else if (ScreenCaptureResult.INSTANCE.getMode() == MODE_CASUAL
+                && ScreenCaptureResult.INSTANCE.getFormat() == DetectorKt.FORMAT_STANDARD) {
             mGame.bnetGameType = BnetGameType.BGT_CASUAL_STANDARD_NORMAL;
-        } else if (ScreenCaptureResult.getMode() == ScreenCaptureResult.MODE_CASUAL
-                && ScreenCaptureResult.getFormat() == DetectorKt.FORMAT_WILD) {
+        } else if (ScreenCaptureResult.INSTANCE.getMode() == MODE_CASUAL
+                && ScreenCaptureResult.INSTANCE.getFormat() == DetectorKt.FORMAT_WILD) {
             mGame.bnetGameType = BnetGameType.BGT_CASUAL_WILD;
         } else {
             mGame.bnetGameType = BnetGameType.BGT_UNKNOWN;
