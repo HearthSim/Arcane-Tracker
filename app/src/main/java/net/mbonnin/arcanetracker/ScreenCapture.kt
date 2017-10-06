@@ -105,6 +105,7 @@ class ScreenCapture private constructor(internal var mediaProjection: MediaProje
                 }
             } else if (LoadingScreenParser.MODE_DRAFT == LoadingScreenParser.get().mode) {
                 val arenaResult = mDetector.detectArena(bbImage)
+                ScreenCaptureResult.setArena(arenaResult)
             }
             image.close()
         }

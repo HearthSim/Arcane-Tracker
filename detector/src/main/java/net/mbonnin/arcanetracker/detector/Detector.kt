@@ -30,13 +30,12 @@ const val FORMAT_WILD = 0
 const val FORMAT_STANDARD =1
 
 const val MODE_UNKNOWN = INDEX_UNKNOWN
-const val MODE_CASUAL_STANDARD = 0
-const val MODE_CASUAL_WILD = 1
-const val MODE_RANKED_STANDARD = 2
-const val MODE_RANKED_WILD = 3
-
-const val MODE_CASUAL = 0
-const val MODE_RANKED = 1
+private const val MODE_CASUAL_STANDARD = 0
+private const val MODE_CASUAL_WILD = 1
+private const val MODE_RANKED_STANDARD = 2
+private const val MODE_RANKED_WILD = 3
+const val MODE_CASUAL = 4
+const val MODE_RANKED = 5
 
 val FORMAT_RRECT = RRect(1754.0, 32.0, 138.0, 98.0).scale(1/1920.0, 1/1080.0)
 val FORMAT_RRECT_TABLET = RRect(1609.0, 39.0, 96.0, 73.0).scale(1/2048.0, 1/1536.0)
