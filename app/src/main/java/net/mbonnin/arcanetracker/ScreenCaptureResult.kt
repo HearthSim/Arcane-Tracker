@@ -14,18 +14,17 @@ import net.mbonnin.arcanetracker.detector.FORMAT_UNKNOWN
 import net.mbonnin.arcanetracker.detector.MODE_UNKNOWN
 import net.mbonnin.arcanetracker.detector.RANK_UNKNOWN
 import rx.functions.Action0
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
 
 object ScreenCaptureResult {
     @Volatile private var rank = RANK_UNKNOWN
     @Volatile private var format = FORMAT_UNKNOWN
     @Volatile private var mode = MODE_UNKNOWN
 
-    private val handler = Handler()
-
     class LowPass {
         var count = 0
         var cardId = ""
-        var reset = Runnable {}
     }
 
     private val filters = Array(3, {LowPass()})
@@ -37,13 +36,13 @@ object ScreenCaptureResult {
         }
     }
 
-    private fun runOnMainThread(action: Action0) {
+    private fun runOnMainThread(action: () -> Unit) {
         Completable.fromAction(action)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe()
     }
     private fun displayToast(toast: String) {
-        runOnMainThread(Action0 { Toast.makeText(ArcaneTrackerApplication.getContext(), toast, Toast.LENGTH_SHORT).show() })
+        runOnMainThread({ Toast.makeText(ArcaneTrackerApplication.getContext(), toast, Toast.LENGTH_SHORT).show() })
     }
 
     fun setFormat(format: Int) {
@@ -79,9 +78,17 @@ object ScreenCaptureResult {
     }
 
     fun setArena(arenaResult: Array<String>) {
+
         for (i in 0..2) {
             if (arenaResult[i] != filters[i].cardId) {
-
+                filters[i].count = 0
+                filters[i].cardId = arenaResult[i]
+                runOnMainThread({ArenaGuessCompanion.hide(i)})
+            } else {
+                filters[i].count++
+                if (filters[i].count == 50) {
+                    runOnMainThread({ArenaGuessCompanion.show(i, filters[i].cardId)})
+                }
             }
         }
     }
