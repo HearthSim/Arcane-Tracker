@@ -5,6 +5,7 @@ import net.mbonnin.arcanetracker.parser.Game;
 import net.mbonnin.arcanetracker.parser.GameLogic;
 import net.mbonnin.arcanetracker.parser.PowerParser;
 import net.mbonnin.hsmodel.Card;
+import net.mbonnin.hsmodel.CardId;
 import net.mbonnin.hsmodel.CardJson;
 
 import org.junit.Assert;
@@ -76,11 +77,11 @@ public class TestParser {
     public void testCreatedBy() throws Exception {
         Game game = runParser("/created_by.log");
 
-        Assert.assertEquals(game.findEntitySafe("73").extra.createdBy, Card.SERVANT_OF_KALYMOS);
-        Assert.assertEquals(game.findEntitySafe("78").extra.createdBy, Card.SERVANT_OF_KALYMOS);
-        Assert.assertEquals(game.findEntitySafe("75").extra.createdBy, Card.FROZEN_CLONE);
-        Assert.assertEquals(game.findEntitySafe("76").extra.createdBy, Card.FROZEN_CLONE);
-        Assert.assertEquals(game.findEntitySafe("80").extra.createdBy, Card.MIRROR_ENTITY);
+        Assert.assertEquals(game.findEntitySafe("73").extra.createdBy, CardId.SERVANT_OF_KALIMOS);
+        Assert.assertEquals(game.findEntitySafe("78").extra.createdBy, CardId.SERVANT_OF_KALIMOS);
+        Assert.assertEquals(game.findEntitySafe("75").extra.createdBy, CardId.FROZEN_CLONE);
+        Assert.assertEquals(game.findEntitySafe("76").extra.createdBy, CardId.FROZEN_CLONE);
+        Assert.assertEquals(game.findEntitySafe("80").extra.createdBy, CardId.MIRROR_ENTITY);
     }
 
     @Test
@@ -145,7 +146,7 @@ public class TestParser {
             public void somethingChanged() {
                 Entity e = game.findEntityUnsafe("99");
                 if (e != null) {
-                    Assert.assertTrue(e.CardID.equals(Card.CHOOSE_YOUR_PATH));
+                    Assert.assertTrue(e.CardID.equals(CardId.CHOOSE_YOUR_PATH));
                 }
             }
         });
