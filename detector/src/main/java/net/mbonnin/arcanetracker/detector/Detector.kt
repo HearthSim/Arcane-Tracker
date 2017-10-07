@@ -3,6 +3,8 @@ package net.mbonnin.arcanetracker.detector
 import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
+import net.mbonnin.hsmodel.CardJson
+import net.mbonnin.hsmodel.PlayerClass
 import java.io.InputStreamReader
 import java.nio.ByteBuffer
 import kotlin.reflect.KFunction2
@@ -28,7 +30,7 @@ const val RANK_UNKNOWN = INDEX_UNKNOWN
 
 const val FORMAT_UNKNOWN = INDEX_UNKNOWN
 const val FORMAT_WILD = 0
-const val FORMAT_STANDARD =1
+const val FORMAT_STANDARD = 1
 
 const val MODE_UNKNOWN = INDEX_UNKNOWN
 private const val MODE_CASUAL_STANDARD = 0
@@ -38,26 +40,27 @@ private const val MODE_RANKED_WILD = 3
 const val MODE_CASUAL = 4
 const val MODE_RANKED = 5
 
-val FORMAT_RRECT = RRect(1754.0, 32.0, 138.0, 98.0).scale(1/1920.0, 1/1080.0)
-val FORMAT_RRECT_TABLET = RRect(1609.0, 39.0, 96.0, 73.0).scale(1/2048.0, 1/1536.0)
-val RANK_RRECT = RRect(820.0, 424.0, 230.0, 102.0).scale(1/1920.0, 1/1080.0)
-val RANK_RRECT_TABLET = RRect(1730.0, 201.0, 110.0, 46.0).scale(1/2048.0, 1/1536.0)
-val MODE_RRECT = RRect(1270.0, 256.0, 140.0, 32.0).scale(1/1920.0, 1/1080.0)
-val MODE_RRECT_TABLET = RRect(1432.0, 400.0, 160.0, 34.0).scale(1/2048.0, 1/1536.0)
+val FORMAT_RRECT = RRect(1754.0, 32.0, 138.0, 98.0).scale(1 / 1920.0, 1 / 1080.0)
+val FORMAT_RRECT_TABLET = RRect(1609.0, 39.0, 96.0, 73.0).scale(1 / 2048.0, 1 / 1536.0)
+val RANK_RRECT = RRect(820.0, 424.0, 230.0, 102.0).scale(1 / 1920.0, 1 / 1080.0)
+val RANK_RRECT_TABLET = RRect(1730.0, 201.0, 110.0, 46.0).scale(1 / 2048.0, 1 / 1536.0)
+val MODE_RRECT = RRect(1270.0, 256.0, 140.0, 32.0).scale(1 / 1920.0, 1 / 1080.0)
+val MODE_RRECT_TABLET = RRect(1432.0, 400.0, 160.0, 34.0).scale(1 / 2048.0, 1 / 1536.0)
 
 // beware Y coordinates in inkscape are from the lower left corner
 val ARENA_RECTS = arrayOf(
-        RRect(344.138, 1080.0 - 642.198 - 187.951, 185.956, 187.951).scale(1/1920.0, 1/1080.0),
-        RRect(854.205, 1080.0 - 642.198 - 187.951, 185.956, 187.951).scale(1/1920.0, 1/1080.0),
-        RRect(1379.876, 1080.0 - 642.198 - 187.951, 185.956, 187.951).scale(1/1920.0, 1/1080.0)
+        RRect(344.138, 1080.0 - 642.198 - 187.951, 185.956, 187.951).scale(1 / 1920.0, 1 / 1080.0),
+        RRect(854.205, 1080.0 - 642.198 - 187.951, 185.956, 187.951).scale(1 / 1920.0, 1 / 1080.0),
+        RRect(1379.876, 1080.0 - 642.198 - 187.951, 185.956, 187.951).scale(1 / 1920.0, 1 / 1080.0)
 )
 
 class Detector(var context: Context, var isTablet: Boolean) {
-    val featureDetector = FeatureExtractor.INSTANCE
-    val arenaResult = Array<String>(3, {""})
+    var mapping: List<Int> = listOf()
+    var lastHero: String = ""
+    val arenaResult = Array<String>(3, { "" })
     val generatedData = Gson().fromJson(InputStreamReader(context.resources.openRawResource(R.raw.generated_data)), GeneratedData::class.java)
 
-    fun detectRank(byteBufferImage: ByteBufferImage):Int {
+    fun detectRank(byteBufferImage: ByteBufferImage): Int {
         val matchResult = matchImage(byteBufferImage,
                 if (isTablet) RANK_RRECT_TABLET else RANK_RRECT,
                 Detector.Companion::extractHaar,
@@ -73,7 +76,7 @@ class Detector(var context: Context, var isTablet: Boolean) {
         return matchResult.bestIndex;
     }
 
-    fun detectFormat(byteBufferImage: ByteBufferImage):Int {
+    fun detectFormat(byteBufferImage: ByteBufferImage): Int {
 
         val matchResult = matchImage(byteBufferImage,
                 if (isTablet) FORMAT_RRECT_TABLET else FORMAT_RRECT,
@@ -89,7 +92,7 @@ class Detector(var context: Context, var isTablet: Boolean) {
         return matchResult.bestIndex;
     }
 
-    fun detectMode(byteBufferImage: ByteBufferImage):Int {
+    fun detectMode(byteBufferImage: ByteBufferImage): Int {
 
         val matchResult = matchImage(byteBufferImage,
                 if (isTablet) MODE_RRECT_TABLET else MODE_RRECT,
@@ -109,22 +112,35 @@ class Detector(var context: Context, var isTablet: Boolean) {
         }
     }
 
-    fun detectArenaHaar(byteBufferImage: ByteBufferImage, hero: String):Array<String> {
-        return detectArena(byteBufferImage, Detector.Companion::extractHaar, Detector.Companion::euclidianDistance, generatedData.TIERLIST)
+    fun detectArenaHaar(byteBufferImage: ByteBufferImage, hero: String): Array<String> {
+        return detectArena(byteBufferImage, Detector.Companion::extractHaar, Detector.Companion::euclidianDistance, generatedData.TIERLIST_HAAR, hero)
     }
 
-    fun detectArenaPhash(byteBufferImage: ByteBufferImage):Array<String> {
-        return detectArena(byteBufferImage, Detector.Companion::extractPhash, Detector.Companion::hammingDistance, generatedData.TIERLIST_PHASH)
+    fun detectArenaPhash(byteBufferImage: ByteBufferImage, hero: String): Array<String> {
+        return detectArena(byteBufferImage, Detector.Companion::extractPhash, Detector.Companion::hammingDistance, generatedData.TIERLIST_PHASH, hero)
     }
 
-    private fun <T> detectArena(byteBufferImage: ByteBufferImage, extractFeatures: KFunction2<ByteBufferImage, RRect, T>, computeDistance: KFunction2<T, T, Double>, candidates: List<T>): Array<String> {
+    private fun <T> detectArena(byteBufferImage: ByteBufferImage, extractFeatures: KFunction2<ByteBufferImage, RRect, T>, computeDistance: KFunction2<T, T, Double>, candidates: List<T>, hero: String): Array<String> {
+        if (hero != lastHero) {
+            mapping = CardJson.allCards().filter { it.scores != null }.mapIndexed { index, card ->
+                if (!PlayerClass.NEUTRAL.equals(card.playerClass) && hero != card.playerClass) {
+                    // do not consider cards that are the wrong hero
+                    null
+                } else {
+                    index
+                }
+            }.filterNotNull()
+
+            lastHero = hero
+        }
         val sb = StringBuilder()
         for (i in 0 until arenaResult.size) {
             val matchResult = matchImage(byteBufferImage,
                     ARENA_RECTS[i],
                     extractFeatures,
                     computeDistance,
-                    candidates)
+                    candidates,
+                    mapping)
             arenaResult[i] = generatedData.TIERLIST_IDS[matchResult.bestIndex]
 
             sb.append("[" + arenaResult[i] + "(" + matchResult.distance + ")]")
@@ -133,7 +149,6 @@ class Detector(var context: Context, var isTablet: Boolean) {
         Log.d("Detector", sb.toString())
         return arenaResult
     }
-
 
 
     companion object {
@@ -167,28 +182,37 @@ class Detector(var context: Context, var isTablet: Boolean) {
                     rrect.scale(byteBufferImage.w.toDouble(), byteBufferImage.h.toDouble()))
         }
 
-        fun <T> matchImage(byteBufferImage: ByteBufferImage, rrect: RRect, extractFeatures: (ByteBufferImage, RRect) -> T, computeDistance: (T, T) -> Double, candidates: List<T>):MatchResult {
+        fun <T> matchImage(byteBufferImage: ByteBufferImage, rrect: RRect, extractFeatures: KFunction2<ByteBufferImage, RRect, T>, computeDistance: KFunction2<T, T, Double>, candidates: List<T>, mapping: List<Int>? = null): MatchResult {
 
             val vector = extractFeatures(byteBufferImage, rrect)
-
-            var index = 0
 
             val matchResult = MatchResult()
 
             matchResult.bestIndex = INDEX_UNKNOWN
             matchResult.distance = Double.MAX_VALUE
 
-            for (candidate in candidates) {
-                val dist = computeDistance(vector, candidate)
-                //Log.d("Detector", String.format("%d: %f", rank, dist))
-                if (dist < matchResult.distance) {
-                    matchResult.distance = dist
-                    matchResult.bestIndex = index
+            if (mapping != null) {
+                for (mapIndex in mapping) {
+                    val dist = computeDistance(vector, candidates[mapIndex])
+                    //Log.d("Detector", String.format("%d: %f", rank, dist))
+                    if (dist < matchResult.distance) {
+                        matchResult.distance = dist
+                        matchResult.bestIndex = mapIndex
+                    }
                 }
-                index++
+            } else {
+                candidates.forEachIndexed { index, candidate ->
+                    val dist = computeDistance(vector, candidate)
+                    //Log.d("Detector", String.format("%d: %f", rank, dist))
+                    if (dist < matchResult.distance) {
+                        matchResult.distance = dist
+                        matchResult.bestIndex = index
+                    }
+                }
             }
             return matchResult
         }
+
         fun <T> getModel(context: Context, resId: Int, clazz: Class<T>): T {
             return Gson().fromJson(InputStreamReader(context.resources.openRawResource(resId)), clazz)
         }

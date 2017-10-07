@@ -111,8 +111,9 @@ static inline double getPoint(double *integralImage, int x, int y) {
 
 void computeHaar(double *integralImage, double *vector) {
     *vector++ =
-            getPoint(integralImage, HAAR_SCALED_SIZE, HAAR_SCALED_SIZE) -
-            128.0 * HAAR_SCALED_SIZE * HAAR_SCALED_SIZE;
+            getPoint(integralImage, 3 * HAAR_SCALED_SIZE / 4, HAAR_SCALED_SIZE)
+            - getPoint(integralImage, 2 * HAAR_SCALED_SIZE / 4, HAAR_SCALED_SIZE)
+            + getPoint(integralImage, 1 * HAAR_SCALED_SIZE / 4, HAAR_SCALED_SIZE);
 
     *vector++ = getPoint(integralImage, HAAR_SCALED_SIZE, HAAR_SCALED_SIZE)
                 - 2 * getPoint(integralImage, HAAR_SCALED_SIZE / 2, HAAR_SCALED_SIZE);

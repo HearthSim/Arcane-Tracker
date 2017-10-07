@@ -6,6 +6,6 @@ class GeneratedData(
     val MODES: List<DoubleArray>,
     val MODES_TABLET: List<DoubleArray>,
     val TIERLIST_IDS: List<String>,
-    val TIERLIST: List<DoubleArray>,
+    val TIERLIST_HAAR: List<DoubleArray>,
     val TIERLIST_PHASH: List<Long>
 )

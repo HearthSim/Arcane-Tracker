@@ -5,6 +5,9 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
+import android.support.v4.content.res.ResourcesCompat
+import android.text.TextPaint
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
@@ -20,10 +23,11 @@ class ArenaGuessView : View {
     private val rect = RectF()
 
     private val paint = Paint()
+    val textPaint = TextPaint()
 
     @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : super(context, attrs, defStyleAttr) {
-        this.w = dpToPx(150)
-        this.h = dpToPx(50)
+        this.w = dpToPx(180)
+        this.h = dpToPx(40)
 
 
     }
@@ -41,8 +45,17 @@ class ArenaGuessView : View {
         val card = CardUtil.getCard(cardId)
         card.scores?.let {
             for (heroScore in it) {
-                if (playerClass.compareTo(heroScore.Hero, true) == 0) {
+                val hero2 = heroScore.Hero
+                if (hero2 != null && playerClass.compareTo(hero2, true) == 0) {
                     this.score = heroScore.Score
+                }
+            }
+            if (this.score < 0) {
+                for (heroScore in it) {
+                    val hero2 = heroScore.Hero
+                    if (hero2 == null) {
+                        this.score = heroScore.Score
+                    }
                 }
             }
         }
@@ -64,50 +77,64 @@ class ArenaGuessView : View {
         val radius = dpToPx(5).toFloat()
         canvas.drawRoundRect(rect, radius, radius, paint)
 
-        //paint.typeface = ResourcesCompat.getFont(context, R.font.belwe_bold);
 
-        paint.color = Color.WHITE
-        paint.textSize = dpToPx(20).toFloat()
-        paint.textAlign = Paint.Align.LEFT
+        textPaint.color = Color.WHITE
+        textPaint.style = Paint.Style.FILL
+        textPaint.isAntiAlias = true
+        textPaint.textSize = dpToPx(15).toFloat()
+        textPaint.textAlign = Paint.Align.LEFT
+        textPaint.typeface = ResourcesCompat.getFont(context, R.font.belwe_bold);
 
-        canvas.drawText(cardName, (h + dpToPx(5)).toFloat(), dpToPx(25).toFloat(), paint)
 
-        val s = if (score < 0) "?" else score.toString()
+        val x = (h + dpToPx(5)).toFloat()
+        val ellipsized = TextUtils.ellipsize(cardName, textPaint, w - x - dpToPx(5), TextUtils.TruncateAt.END)
+        canvas.drawText(ellipsized.toString(), x, dpToPx(25).toFloat(), textPaint)
 
-        if (score < 0) {
-            paint.color = Color.GRAY
-        } else {
-            paint.color = mixColors(Color.parseColor("#ff0000"), Color.parseColor("#00ff00"), score / 100)
-        }
+        val s = if (score < 0) "?" else score.toInt().toString()
+
+        paint.color = scoreColor(score)
 
         canvas.drawCircle((h / 2).toFloat(), (h / 2).toFloat(), (h / 2).toFloat(), paint)
 
-        val y = (h / 2).toFloat() - (paint.ascent()) / 2
+        val y = (h / 2).toFloat() - (textPaint.ascent()) / 2
 
         val textSize = dpToPx(30).toFloat()
-        paint.textSize = textSize
-        paint.textAlign = Paint.Align.CENTER
-        paint.color = Color.WHITE
-        paint.style = Paint.Style.FILL
+        textPaint.textSize = textSize
+        textPaint.textAlign = Paint.Align.CENTER
+        textPaint.color = Color.WHITE
+        textPaint.style = Paint.Style.FILL
 
-        canvas.drawText(s, (h / 2).toFloat(), y, paint)
+        canvas.drawText(s, (h / 2).toFloat(), y, textPaint)
 
-        paint.textSize = textSize
-        paint.strokeWidth = textSize * 0.01f
-        paint.textAlign = Paint.Align.CENTER
-        paint.color = Color.BLACK
-        paint.style = Paint.Style.STROKE
+        textPaint.textSize = textSize
+        textPaint.strokeWidth = textSize * 0.01f
+        textPaint.textAlign = Paint.Align.CENTER
+        textPaint.color = Color.BLACK
+        textPaint.style = Paint.Style.STROKE
 
-        canvas.drawText(s, (h / 2).toFloat(), y, paint)
+        canvas.drawText(s, (h / 2).toFloat(), y, textPaint)
     }
 
-    private fun mixColors(c1: Int, c2: Int, a: Float): Int {
-        return Color.argb(
-                ((1 - a) * Color.alpha(c1) + a * Color.alpha(c2)).toInt(),
-                ((1 - a) * Color.red(c1)   + a * Color.red(c2)).toInt(),
-                ((1 - a) * Color.green(c1) + a * Color.green(c2)).toInt(),
-                ((1 - a) * Color.blue(c1)  + a * Color.blue(c2)).toInt()
-        )
+    private val hsv = FloatArray(3)
+
+    private fun scoreColor(score: Float): Int {
+        var step: Int
+        when {
+            score < 68 -> step = 0
+            score < 86 -> step = 1
+            score < 95 -> step = 2
+            score < 104 -> step = 3
+            score < 113 -> step = 4
+            score < 131 -> step = 5
+            score < 300 -> step = 6
+            else -> return Color.GRAY
+        }
+
+        hsv[0] = step * 120.0f/6
+        hsv[1] = 0.78f
+        hsv[2] = 0.80f
+
+        return Color.HSVToColor(hsv)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

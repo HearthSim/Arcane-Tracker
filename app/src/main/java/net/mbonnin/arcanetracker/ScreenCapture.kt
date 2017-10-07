@@ -95,7 +95,7 @@ class ScreenCapture private constructor(internal var mediaProjection: MediaProje
             if (LoadingScreenParser.MODE_DRAFT == LoadingScreenParser.get().mode) {
                 val hero = getPlayerClass(DeckList.getArenaDeck().classIndex)
 
-                val arenaResult = mDetector.detectArena(bbImage, hero)
+                val arenaResult = mDetector.detectArenaHaar(bbImage, hero)
                 ScreenCaptureResult.setArena(arenaResult, hero)
             } else {
                 ScreenCaptureResult.clearArena()
@@ -149,13 +149,13 @@ class ScreenCapture private constructor(internal var mediaProjection: MediaProje
     }
 
     companion object {
-        private lateinit var sScreenCapture: ScreenCapture
+        private var sScreenCapture: ScreenCapture? = null
 
         fun get(): ScreenCapture? {
             return sScreenCapture
         }
 
-        fun create(mediaProjection: MediaProjection): ScreenCapture {
+        fun create(mediaProjection: MediaProjection): ScreenCapture? {
             sScreenCapture = ScreenCapture(mediaProjection)
             return sScreenCapture
         }

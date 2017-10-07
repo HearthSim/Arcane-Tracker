@@ -19,7 +19,7 @@ object ArenaGuessCompanion {
         val measureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         views[index]?.measure(measureSpec, measureSpec)
 
-        params.x = (198 + index * 1563/3) * w / 1920
+        params.x = (180 + index * 1563/3) * w / 1920
         params.y = 30 * w / 1080
         params.w = views[index]?.measuredWidth!!
         params.h = views[index]?.measuredHeight!!
