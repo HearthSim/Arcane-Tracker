@@ -121,7 +121,7 @@ public class GameLogicListener implements GameLogic.Listener {
 
         Deck deck = MainViewCompanion.getPlayerCompanion().getDeck();
         if (Settings.get(Settings.AUTO_SELECT_DECK, true)) {
-            if (LoadingScreenParser.MODE_DRAFT.equals(LoadingScreenParser.get().getGameplayMode())) {
+            if (LoadingScreenParser.Companion.getMODE_DRAFT().equals(LoadingScreenParser.Companion.get().getGameplayMode())) {
                 deck = DeckList.getArenaDeck();
                 Timber.w("useArena deck");
             } else {
@@ -150,11 +150,11 @@ public class GameLogicListener implements GameLogic.Listener {
         mGame = game;
         mGameOver = false;
 
-        if (LoadingScreenParser.get().getGameplayMode().equals(LoadingScreenParser.MODE_DRAFT)) {
+        if (LoadingScreenParser.Companion.get().getGameplayMode().equals(LoadingScreenParser.Companion.getMODE_DRAFT())) {
             mGame.bnetGameType = BnetGameType.BGT_ARENA;
-        } else if (LoadingScreenParser.get().getGameplayMode().equals(LoadingScreenParser.MODE_TAVERN_BRAWL)) {
+        } else if (LoadingScreenParser.Companion.get().getGameplayMode().equals(LoadingScreenParser.Companion.getMODE_TAVERN_BRAWL())) {
             mGame.bnetGameType = BnetGameType.BGT_TAVERNBRAWL_1P_VERSUS_AI;
-        } else if (LoadingScreenParser.get().getGameplayMode().equals(LoadingScreenParser.MODE_ADVENTURE)) {
+        } else if (LoadingScreenParser.Companion.get().getGameplayMode().equals(LoadingScreenParser.Companion.getMODE_ADVENTURE())) {
             mGame.bnetGameType = BnetGameType.BGT_VS_AI;
         } else if (ScreenCaptureResult.INSTANCE.getMode() == MODE_RANKED
                 && ScreenCaptureResult.INSTANCE.getFormat() == DetectorKt.FORMAT_STANDARD) {
@@ -177,7 +177,7 @@ public class GameLogicListener implements GameLogic.Listener {
 
     @Override
     public void gameOver() {
-        String mode = LoadingScreenParser.get().getGameplayMode();
+        String mode = LoadingScreenParser.Companion.get().getGameplayMode();
 
         Timber.w("gameOver  %s [mode %s] [user %s]", mGame.victory ? "victory" : "lost", mode, Trackobot.get().getUser());
 
@@ -198,7 +198,7 @@ public class GameLogicListener implements GameLogic.Listener {
             DeckList.save();
         }
 
-        if ((Utils.isAppDebuggable() || LoadingScreenParser.MODE_DRAFT.equals(mode) || LoadingScreenParser.MODE_TOURNAMENT.equals(mode))
+        if ((Utils.isAppDebuggable() || LoadingScreenParser.Companion.getMODE_DRAFT().equals(mode) || LoadingScreenParser.Companion.getMODE_TOURNAMENT().equals(mode))
                 && Trackobot.get().getUser() != null) {
             ResultData resultData = new ResultData();
             resultData.result = new Result();

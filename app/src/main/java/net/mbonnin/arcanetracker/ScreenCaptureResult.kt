@@ -11,12 +11,13 @@ object ScreenCaptureResult {
     @Volatile private var format = FORMAT_UNKNOWN
     @Volatile private var mode = MODE_UNKNOWN
 
-    class LowPass {
-        var count = 0
+    class Filter {
         var cardId = ""
+        var displayedCardId = ""
+        var minDistance = Double.MAX_VALUE
     }
 
-    private val filters = Array(3, {LowPass()})
+    private val filters = Array(3, { Filter() })
 
     fun setRank(rank: Int) {
         if (rank != ScreenCaptureResult.rank) {
@@ -30,6 +31,7 @@ object ScreenCaptureResult {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe()
     }
+
     private fun displayToast(toast: String) {
         runOnMainThread({ Toast.makeText(ArcaneTrackerApplication.getContext(), toast, Toast.LENGTH_SHORT).show() })
     }
@@ -66,27 +68,39 @@ object ScreenCaptureResult {
         format = FORMAT_UNKNOWN
     }
 
-    fun setArena(arenaResult: Array<String>, hero: String) {
-
+    @Synchronized
+    fun setArena(arenaResult: Array<ArenaResult>, hero: String) {
+        if (System.currentTimeMillis() - clearTime < 1000) {
+            return
+        }
         for (i in 0..2) {
-            if (arenaResult[i] != filters[i].cardId) {
-                filters[i].count = 0
-                filters[i].cardId = arenaResult[i]
-                runOnMainThread({ArenaGuessCompanion.hide(i)})
-            } else {
-                filters[i].count++
-                if (filters[i].count == 50) {
-                    runOnMainThread({ArenaGuessCompanion.show(i, filters[i].cardId, hero)})
-                }
+            if (arenaResult[i].distance < filters[i].minDistance) {
+                filters[i].minDistance = arenaResult[i].distance
+                filters[i].cardId = arenaResult[i].cardId
+                displayIfNeeded(i, filters[i], hero)
             }
         }
     }
 
+    private fun displayIfNeeded(index: Int, filter: Filter, hero: String) {
+        if (filter.cardId != filter.displayedCardId) {
+            runOnMainThread({ ArenaGuessCompanion.show(index, filter.cardId, hero) })
+            filter.displayedCardId = filter.cardId
+        }
+
+    }
+
+    private var clearTime: Long = 0
+
+    @Synchronized
     fun clearArena() {
+        clearTime = System.currentTimeMillis()
         for (i in 0..2) {
             if ("" != filters[i].cardId) {
-                runOnMainThread { ArenaGuessCompanion.hide(i)}
+                runOnMainThread { ArenaGuessCompanion.hide(i) }
                 filters[i].cardId = ""
+                filters[i].displayedCardId = ""
+                filters[i].minDistance = Double.MAX_VALUE
             }
         }
 

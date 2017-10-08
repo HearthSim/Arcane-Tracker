@@ -68,7 +68,7 @@ class ScreenCapture private constructor(internal var mediaProjection: MediaProje
                     }
                 }
                 try {
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, FileOutputStream(file))
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 90, FileOutputStream(file))
                 } catch (e: FileNotFoundException) {
                     e.printStackTrace()
                 }
@@ -97,8 +97,8 @@ class ScreenCapture private constructor(internal var mediaProjection: MediaProje
                     && ArenaParser.DRAFT_MODE_DRAFTING == ArenaParser.get().draftMode) {
                 val hero = getPlayerClass(DeckList.getArenaDeck().classIndex)
 
-                val arenaResult = mDetector.detectArenaHaar(bbImage, hero)
-                ScreenCaptureResult.setArena(arenaResult, hero)
+                val arenaResults = mDetector.detectArenaHaar(bbImage, hero)
+                ScreenCaptureResult.setArena(arenaResults, hero)
             } else {
                 ScreenCaptureResult.clearArena()
             }

@@ -3,6 +3,7 @@ package net.mbonnin.arcanetracker.parser
 import android.os.Handler
 import net.mbonnin.arcanetracker.DeckList
 import net.mbonnin.arcanetracker.MainViewCompanion
+import net.mbonnin.arcanetracker.ScreenCaptureResult
 import net.mbonnin.arcanetracker.adapter.Controller
 import net.mbonnin.arcanetracker.heroIdToClassIndex
 import net.mbonnin.hsmodel.Card
@@ -19,14 +20,18 @@ class ArenaParser : LogReader.LineConsumer {
     internal val Client_chooses = Pattern.compile(".*Client chooses: .* \\((.*)\\)")
     internal val DraftManagerOnBegin = Pattern.compile(".*DraftManager.OnBegin.*")
     val SetDrafMode = Pattern.compile(".*SetDraftMode - (.*)")
+
     private val mHandler: Handler
     private var mReadingPreviousData = true
+    private var parsingDraftMode: String = DRAFT_MODE_UNKNOWN
+
+    @Volatile var draftMode: String = DRAFT_MODE_UNKNOWN
+        private set
 
     init {
         mHandler = Handler()
     }
 
-    var draftMode: String = DRAFT_MODE_UNKNOWN
 
     private constructor () {
     }
@@ -35,6 +40,15 @@ class ArenaParser : LogReader.LineConsumer {
         Timber.v(rawLine)
         var matcher: Matcher
 
+        matcher = SetDrafMode.matcher(rawLine)
+        if (matcher.matches()) {
+            if (mReadingPreviousData) {
+                parsingDraftMode = matcher.group(1)
+            } else {
+                draftMode = matcher.group(1)
+            }
+            return
+        }
 
         if (!mReadingPreviousData) {
             /*
@@ -69,14 +83,6 @@ class ArenaParser : LogReader.LineConsumer {
                 }
                 return
             }
-
-            matcher = SetDrafMode.matcher(rawLine)
-            if (matcher.matches()) {
-                mHandler.post {
-                    draftMode = matcher.group(1)
-                }
-            }
-            return
         }
     }
 
@@ -101,6 +107,8 @@ class ArenaParser : LogReader.LineConsumer {
         Controller.get().setPlayerDeck(deck.cards)
 
         DeckList.saveArena()
+
+        ScreenCaptureResult.clearArena()
     }
 
     private fun newArenaRun() {
@@ -110,6 +118,7 @@ class ArenaParser : LogReader.LineConsumer {
 
     override fun onPreviousDataRead() {
         mReadingPreviousData = false
+        draftMode = parsingDraftMode
     }
 
     companion object {
@@ -122,6 +131,9 @@ class ArenaParser : LogReader.LineConsumer {
         private var arenaParser: ArenaParser? = null
 
         fun get(): ArenaParser {
+            /*
+             * this is not thread safe but should be ok no matter what since get() is called from Application.onCreate()
+             */
             if (arenaParser == null) {
                 arenaParser = ArenaParser()
             }

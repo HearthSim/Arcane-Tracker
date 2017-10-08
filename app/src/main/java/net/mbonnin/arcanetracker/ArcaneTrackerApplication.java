@@ -137,7 +137,7 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
          * we need to read the whole loading screen if we start Arcane Tracker while in the 'tournament' play screen
          * or arena screen already (and not in main menu)
          */
-        new LogReader("LoadingScreen.log", LoadingScreenParser.get());
+        new LogReader("LoadingScreen.log", LoadingScreenParser.Companion.get());
 
         GameLogic.get().addListener(GameLogicListener.get());
         Handler handler = new Handler();

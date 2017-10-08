@@ -23,6 +23,8 @@ class MatchResult {
     var distance = 0.0
 }
 
+class ArenaResult(var cardId: String = "", var distance: Double = 0.0)
+
 class ATImage(val w: Int, val h: Int, val buffer: DoubleArray)
 
 const val INDEX_UNKNOWN = -1
@@ -57,7 +59,6 @@ val ARENA_RECTS = arrayOf(
 class Detector(var context: Context, var isTablet: Boolean) {
     var mapping: List<Int> = listOf()
     var lastHero: String = ""
-    val arenaResult = Array<String>(3, { "" })
     val generatedData = Gson().fromJson(InputStreamReader(context.resources.openRawResource(R.raw.generated_data)), GeneratedData::class.java)
 
     fun detectRank(byteBufferImage: ByteBufferImage): Int {
@@ -112,15 +113,17 @@ class Detector(var context: Context, var isTablet: Boolean) {
         }
     }
 
-    fun detectArenaHaar(byteBufferImage: ByteBufferImage, hero: String): Array<String> {
+    fun detectArenaHaar(byteBufferImage: ByteBufferImage, hero: String): Array<ArenaResult> {
         return detectArena(byteBufferImage, Detector.Companion::extractHaar, Detector.Companion::euclidianDistance, generatedData.TIERLIST_HAAR, hero)
     }
 
-    fun detectArenaPhash(byteBufferImage: ByteBufferImage, hero: String): Array<String> {
+    fun detectArenaPhash(byteBufferImage: ByteBufferImage, hero: String): Array<ArenaResult> {
         return detectArena(byteBufferImage, Detector.Companion::extractPhash, Detector.Companion::hammingDistance, generatedData.TIERLIST_PHASH, hero)
     }
 
-    private fun <T> detectArena(byteBufferImage: ByteBufferImage, extractFeatures: KFunction2<ByteBufferImage, RRect, T>, computeDistance: KFunction2<T, T, Double>, candidates: List<T>, hero: String): Array<String> {
+    private fun <T> detectArena(byteBufferImage: ByteBufferImage, extractFeatures: KFunction2<ByteBufferImage, RRect, T>, computeDistance: KFunction2<T, T, Double>, candidates: List<T>, hero: String): Array<ArenaResult> {
+        val arenaResults = Array<ArenaResult?>(3,{null})
+
         if (hero != lastHero) {
             mapping = CardJson.allCards().filter { it.scores != null }.mapIndexed { index, card ->
                 if (!PlayerClass.NEUTRAL.equals(card.playerClass) && hero != card.playerClass) {
@@ -134,20 +137,20 @@ class Detector(var context: Context, var isTablet: Boolean) {
             lastHero = hero
         }
         val sb = StringBuilder()
-        for (i in 0 until arenaResult.size) {
+        for (i in 0 until arenaResults.size) {
             val matchResult = matchImage(byteBufferImage,
                     ARENA_RECTS[i],
                     extractFeatures,
                     computeDistance,
                     candidates,
                     mapping)
-            arenaResult[i] = generatedData.TIERLIST_IDS[matchResult.bestIndex]
+            arenaResults[i] = ArenaResult(generatedData.TIERLIST_IDS[matchResult.bestIndex], matchResult.distance)
 
-            sb.append("[" + arenaResult[i] + "(" + matchResult.distance + ")]")
+            sb.append("[" + arenaResults[i]?.cardId + "(" + matchResult.distance + ")]")
         }
 
         Log.d("Detector", sb.toString())
-        return arenaResult
+        return arenaResults as Array<ArenaResult>
     }
 
 

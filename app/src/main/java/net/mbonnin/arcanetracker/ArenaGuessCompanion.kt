@@ -33,11 +33,4 @@ object ArenaGuessCompanion {
             views[index] = null
         }
     }
-
-    fun hideAll() {
-        for (i in 0 until views.size) {
-            hide(i)
-        }
-    }
-
 }
