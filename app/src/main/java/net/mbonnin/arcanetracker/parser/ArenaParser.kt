@@ -15,9 +15,10 @@ import java.util.regex.Pattern
  */
 
 class ArenaParser : LogReader.LineConsumer {
-    internal val `DraftManager$OnChosen` = Pattern.compile(".*DraftManager.OnChosen\\(\\): hero=(.*) .*")
+    internal val DraftManagerOnChosen = Pattern.compile(".*DraftManager.OnChosen\\(\\): hero=(.*) .*")
     internal val Client_chooses = Pattern.compile(".*Client chooses: .* \\((.*)\\)")
-    internal val `DraftManager$OnBegin` = Pattern.compile("DraftManager.OnBegin.*")
+    internal val DraftManagerOnBegin = Pattern.compile(".*DraftManager.OnBegin.*")
+    val SetDrafMode = Pattern.compile(".*SetDraftMode - (.*)")
     private val mHandler: Handler
     private var mReadingPreviousData = true
 
@@ -25,8 +26,13 @@ class ArenaParser : LogReader.LineConsumer {
         mHandler = Handler()
     }
 
-    override fun onLine(line: String) {
-        Timber.v(line)
+    var draftMode: String = DRAFT_MODE_UNKNOWN
+
+    private constructor () {
+    }
+
+    override fun onLine(rawLine: String) {
+        Timber.v(rawLine)
         var matcher: Matcher
 
 
@@ -34,13 +40,13 @@ class ArenaParser : LogReader.LineConsumer {
             /*
              * a new ArenaDraft is started
              */
-            matcher = `DraftManager$OnBegin`.matcher(line)
+            matcher = DraftManagerOnBegin.matcher(rawLine)
             if (matcher.matches()) {
                 mHandler.post { newArenaRun() }
                 return
             }
 
-            matcher = `DraftManager$OnChosen`.matcher(line)
+            matcher = DraftManagerOnChosen.matcher(rawLine)
             if (matcher.matches()) {
                 val classIndex = heroIdToClassIndex(matcher.group(1))
                 Timber.d("new hero: %d", classIndex)
@@ -52,7 +58,7 @@ class ArenaParser : LogReader.LineConsumer {
             /*
              * a card is chosen
              */
-            matcher = `DraftManager$OnChosen`.matcher(line)
+            matcher = Client_chooses.matcher(rawLine)
             if (matcher.matches()) {
                 val cardId = matcher.group(1)
                 if (cardId.toLowerCase().startsWith("hero_")) {
@@ -61,7 +67,16 @@ class ArenaParser : LogReader.LineConsumer {
                 } else {
                     mHandler.post { newArenaCard(cardId) }
                 }
+                return
             }
+
+            matcher = SetDrafMode.matcher(rawLine)
+            if (matcher.matches()) {
+                mHandler.post {
+                    draftMode = matcher.group(1)
+                }
+            }
+            return
         }
     }
 
@@ -69,6 +84,8 @@ class ArenaParser : LogReader.LineConsumer {
         val deck = DeckList.getArenaDeck()
         deck.clear()
         deck.classIndex = classIndex
+
+        Timber.d("setArenaHero %d", classIndex)
 
         MainViewCompanion.getPlayerCompanion().deck = deck
 
@@ -93,5 +110,23 @@ class ArenaParser : LogReader.LineConsumer {
 
     override fun onPreviousDataRead() {
         mReadingPreviousData = false
+    }
+
+    companion object {
+        const val DRAFT_MODE_UNKNOWN = "UNKNOWN"
+        const val DRAFT_MODE_ACTIVE_DRAFT_DECK = "ACTIVE_DRAFT_DECK"
+        const val DRAFT_MODE_IN_REWARDS = "IN_REWARDS"
+        const val DRAFT_MODE_DRAFTING = "DRAFTING"
+        const val DRAFT_MODE_NO_ACTIVE_DRAFT = "NO_ACTIVE_DRAFT"
+
+        private var arenaParser: ArenaParser? = null
+
+        fun get(): ArenaParser {
+            if (arenaParser == null) {
+                arenaParser = ArenaParser()
+            }
+
+            return arenaParser!!
+        }
     }
 }

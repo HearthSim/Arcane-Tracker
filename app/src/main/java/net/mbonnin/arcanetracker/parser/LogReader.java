@@ -20,7 +20,7 @@ public class LogReader implements Runnable {
     private boolean mSkipPreviousData;
 
     interface LineConsumer {
-        void onLine(String line);
+        void onLine(String rawLine);
         void onPreviousDataRead();
     }
 

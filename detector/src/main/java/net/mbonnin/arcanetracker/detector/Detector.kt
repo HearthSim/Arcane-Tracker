@@ -217,6 +217,15 @@ class Detector(var context: Context, var isTablet: Boolean) {
             return Gson().fromJson(InputStreamReader(context.resources.openRawResource(resId)), clazz)
         }
 
+        fun haarToString(features: DoubleArray): String {
+            val sb= StringBuilder()
+
+            sb.append("=[")
+            sb.append(features.map {String.format("%3.2f", it)}.joinToString(" "))
+            sb.append("]")
+            return sb.toString()
+        }
+
     }
 }
 

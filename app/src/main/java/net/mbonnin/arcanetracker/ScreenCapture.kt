@@ -12,6 +12,7 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.support.annotation.RequiresApi
 import net.mbonnin.arcanetracker.detector.*
+import net.mbonnin.arcanetracker.parser.ArenaParser
 import net.mbonnin.arcanetracker.parser.LoadingScreenParser
 import rx.Single
 import rx.SingleSubscriber
@@ -92,7 +93,8 @@ class ScreenCapture private constructor(internal var mediaProjection: MediaProje
                 }
             }
 
-            if (LoadingScreenParser.MODE_DRAFT == LoadingScreenParser.get().mode) {
+            if (LoadingScreenParser.MODE_DRAFT == LoadingScreenParser.get().mode
+                    && ArenaParser.DRAFT_MODE_DRAFTING == ArenaParser.get().draftMode) {
                 val hero = getPlayerClass(DeckList.getArenaDeck().classIndex)
 
                 val arenaResult = mDetector.detectArenaHaar(bbImage, hero)

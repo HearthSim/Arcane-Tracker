@@ -107,7 +107,7 @@ class ArenaGuessView : View {
         canvas.drawText(s, (h / 2).toFloat(), y, textPaint)
 
         textPaint.textSize = textSize
-        textPaint.strokeWidth = textSize * 0.01f
+        textPaint.strokeWidth = textSize * 0.02f
         textPaint.textAlign = Paint.Align.CENTER
         textPaint.color = Color.BLACK
         textPaint.style = Paint.Style.STROKE

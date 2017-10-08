@@ -131,8 +131,7 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
          * for Arena, we read the whole file again each time because the file is not that big and it allows us to
          * get the arena deck contents
          */
-        ArenaParser arenaParser = new ArenaParser();
-        new LogReader("Arena.log", arenaParser);
+        new LogReader("Arena.log", ArenaParser.Companion.get());
 
         /*
          * we need to read the whole loading screen if we start Arcane Tracker while in the 'tournament' play screen

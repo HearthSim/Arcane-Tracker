@@ -13,7 +13,7 @@ import net.mbonnin.hsmodel.PlayerClass.WARRIOR
 import java.util.regex.Pattern
 
 fun allHeroes(): Array<String> {
-    return arrayOf(SHAMAN, WARRIOR, ROGUE, PALADIN, HUNTER, DRUID, WARLOCK, MAGE, PRIEST, NEUTRAL)
+    return arrayOf(WARRIOR, SHAMAN, ROGUE, PALADIN, HUNTER, DRUID, WARLOCK, MAGE, PRIEST, NEUTRAL)
 }
 
 fun getDisplayName(classIndex: Int): String {
