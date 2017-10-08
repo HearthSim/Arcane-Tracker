@@ -297,7 +297,6 @@ public class SettingsCompanion {
         feedbackButton.setOnClickListener(v -> {
             ViewManager.get().removeView(settingsView);
 
-
             ArrayList<Uri> arrayUri = new ArrayList<>();
             FileTree.get().sync();
             arrayUri.add(FileProvider.getUriForFile(view.getContext(), "net.mbonnin.arcanetracker.fileprovider", FileTree.get().getFile()));
@@ -465,6 +464,16 @@ public class SettingsCompanion {
             checkUserName();
         }
         updateHsReplay();
+
+        Button licensesButton = view.findViewById(R.id.licenses);
+        licensesButton.setOnClickListener(v -> {
+            ViewManager.get().removeView(settingsView);
+
+            Intent intent = new Intent();
+            intent.setClass(context, LicensesActivity.class);
+            context.startActivity(intent);
+        });
+
     }
 
     private void showRestartDialog() {

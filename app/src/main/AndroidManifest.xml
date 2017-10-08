@@ -42,6 +42,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".LicensesActivity">
+        </activity>
         <activity android:name=".DonateActivity"
                   android:screenOrientation="userLandscape"
                   android:theme="@style/Theme.Transparent"

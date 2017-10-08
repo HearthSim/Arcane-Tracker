@@ -191,4 +191,7 @@
     <string name="mage">Mage</string>
     <string name="priest">Priest</string>
     <string name="neutral">Neutral</string>
+    <string name="ossLicenses">Software licenses</string>
+    <string name="copyright">Arcane Tracker © 2017\nThis app is not affiliated with Blizzard Entertainment.</string>
+    <string name="about">About</string>
 </resources>

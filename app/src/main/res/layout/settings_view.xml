@@ -35,15 +35,6 @@
                 android:textSize="20dp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/appVersion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:text="@string/appVersion"
-                android:textColor="#808080" />
-
             <Button
                 android:id="@+id/feedBackButton"
                 android:layout_width="match_parent"
@@ -61,8 +52,6 @@
                 android:backgroundTint="@color/colorPrimary"
                 android:text="@string/resetCache"
                 android:textColor="#fff" />
-
-
 
 
             <LinearLayout
@@ -425,6 +414,44 @@
                 android:layout_marginTop="5dp"
                 android:autoLink="all"
                 android:text="@string/importExplanation"
+                android:textColor="#808080" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/about"
+                android:textColor="#000"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/licenses"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="@string/ossLicenses"
+                android:textColor="#fff" />
+
+            <TextView
+                android:id="@+id/appVersion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:text="@string/appVersion"
+                android:textColor="#808080" />
+            <TextView
+                android:id="@+id/copyright"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:autoLink="all"
+                android:gravity="center"
+                android:text="@string/copyright"
                 android:textColor="#808080" />
         </LinearLayout>
     </ScrollView>
