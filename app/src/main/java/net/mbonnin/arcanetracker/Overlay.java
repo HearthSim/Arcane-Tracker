@@ -23,7 +23,7 @@ public class Overlay {
     public void show() {
         MainViewCompanion.get().setState(MainViewCompanion.STATE_PLAYER, false);
         MainViewCompanion.get().show(true);
-        QuitDetector.get().start();
+        QuitDetector.Companion.get().start();
 
         MainService.start();
         Context context = ArcaneTrackerApplication.getContext();
@@ -93,7 +93,6 @@ public class Overlay {
     }
 
     public void hide() {
-        QuitDetector.get().stop();
         ViewManager.get().removeAllViews();
 
         MainService.stop();

@@ -403,7 +403,7 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
 
             view.findViewById(R.id.settings).setOnClickListener(v3 -> {
                 mViewManager.removeView(view);
-                SettingsCompanion.show();
+                SettingsCompanion.Companion.show();
             });
             view.findViewById(R.id.hsReplayHistory).setOnClickListener(v3 -> {
                 mViewManager.removeView(view);

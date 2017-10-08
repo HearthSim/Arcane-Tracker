@@ -61,19 +61,19 @@ public class PowerParser implements LogReader.LineConsumer {
 
 
     public void onLine(String rawLine) {
-        LogReader.LogLine logLine = LogReader.parseLine(rawLine);
+        LogReader.LogLine logLine = LogReader.Companion.parseLine(rawLine);
         if (logLine == null) {
             return;
         }
 
-        String line = logLine.line;
+        String line = logLine.getLine();
         if (mReadingPreviousData) {
             return;
         }
 
-        if (logLine.method.startsWith("GameState")) {
+        if (logLine.getMethod().startsWith("GameState")) {
             handleGameStateLine(rawLine);
-        } else if (logLine.method.startsWith("PowerTaskList.DebugPrintPower()")) {
+        } else if (logLine.getMethod().startsWith("PowerTaskList.DebugPrintPower()")) {
 
             Timber.v(rawLine);
 
