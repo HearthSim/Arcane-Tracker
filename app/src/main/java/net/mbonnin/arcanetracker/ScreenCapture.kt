@@ -12,10 +12,10 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.support.annotation.RequiresApi
 import android.text.format.DateFormat
-import android.widget.ImageView
 import net.mbonnin.arcanetracker.detector.*
 import net.mbonnin.arcanetracker.parser.ArenaParser
 import net.mbonnin.arcanetracker.parser.LoadingScreenParser
+import net.mbonnin.hsmodel.Card
 import rx.Single
 import rx.SingleSubscriber
 import timber.log.Timber
@@ -60,13 +60,13 @@ class ScreenCapture private constructor(internal var mediaProjection: MediaProje
                 val now = DateFormat.format("yyyy_MM_dd_hh_mm_ss", Date())
                 val file = File(ArcaneTrackerApplication.get().getExternalFilesDir(null), "screenshot_" + now + ".jpg")
                 val bitmap = Bitmap.createBitmap(bbImage.w, bbImage.h, Bitmap.Config.ARGB_8888)
-                val buffer = bbImage.buffer.asIntBuffer()
+                val buffer = bbImage.buffer
                 val stride = bbImage.stride
                 for (j in 0 until bbImage.h) {
                     for (i in 0 until bbImage.w) {
-                        val r = buffer.get(i * 4 + 0 + j * stride).and(0xff)
-                        val g = buffer.get(i * 4 + 1 + j * stride).and(0xff)
-                        val b = buffer.get(i * 4 + 2 + j * stride).and(0xff)
+                        val r = buffer.get(i * 4 + 0 + j * stride).toInt().and(0xff)
+                        val g = buffer.get(i * 4 + 1 + j * stride).toInt().and(0xff)
+                        val b = buffer.get(i * 4 + 2 + j * stride).toInt().and(0xff)
                         bitmap.setPixel(i, j, Color.argb(255, r, g, b))
                     }
                 }
@@ -75,17 +75,6 @@ class ScreenCapture private constructor(internal var mediaProjection: MediaProje
                 } catch (e: FileNotFoundException) {
                     e.printStackTrace()
                 }
-
-                mHandler.post({
-                    val imageView = ImageView(ArcaneTrackerApplication.getContext())
-                    imageView.setImageBitmap(bitmap)
-                    val params = ViewManager.Params()
-                    params.x = 0
-                    params.y = 0
-                    params.w = bitmap.width / 2
-                    params.h = bitmap.height / 2
-                    ViewManager.get().addView(imageView, params)
-                })
 
                 subscriber!!.onSuccess(file)
             }
@@ -109,10 +98,13 @@ class ScreenCapture private constructor(internal var mediaProjection: MediaProje
 
             if (LoadingScreenParser.MODE_DRAFT == LoadingScreenParser.get().mode
                     && ArenaParser.DRAFT_MODE_DRAFTING == ArenaParser.get().draftMode) {
-                val hero = getPlayerClass(DeckList.getArenaDeck().classIndex)
+                val index = DeckList.getArenaDeck().classIndex
 
-                val arenaResults = mDetector.detectArenaHaar(bbImage, hero)
-                ScreenCaptureResult.setArena(arenaResults, hero)
+                if (index >= 0 && index < Card.Companion.CLASS_INDEX_NEUTRAL) {
+                    val hero = getPlayerClass(index)
+                    val arenaResults = mDetector.detectArenaHaar(bbImage, hero)
+                    ScreenCaptureResult.setArena(arenaResults, hero)
+                }
             } else {
                 ScreenCaptureResult.clearArena()
             }
