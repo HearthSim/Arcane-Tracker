@@ -28,12 +28,12 @@ public class Overlay {
         MainService.start();
         Context context = ArcaneTrackerApplication.getContext();
 
-        int version = Settings.get(Settings.VERSION, 0);
+        int previousVersion = Settings.get(Settings.VERSION, 0);
+        Settings.set(Settings.VERSION, BuildConfig.VERSION_CODE);
 
         if (Settings.get(Settings.SHOW_CHANGELOG, true)
-                && version > 0
-                && version < BuildConfig.VERSION_CODE) {
-            Settings.set(Settings.VERSION, BuildConfig.VERSION_CODE);
+                && previousVersion > 0
+                && previousVersion < BuildConfig.VERSION_CODE) {
             View view = LayoutInflater.from(context).inflate(R.layout.whats_new, null);
             ViewManager.Params params = new ViewManager.Params();
             params.x = ViewManager.get().getWidth() / 4;
@@ -48,7 +48,7 @@ public class Overlay {
 
             LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.changelog);
             int foundChangelog = 0;
-            while (v > version) {
+            while (v > previousVersion) {
                 int id = context.getResources().getIdentifier("changelog_" + v, "string", context.getPackageName());
                 if (id > 0) {
                     String c = context.getString(id);
