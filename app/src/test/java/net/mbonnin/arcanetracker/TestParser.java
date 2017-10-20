@@ -4,9 +4,9 @@ import net.mbonnin.arcanetracker.parser.Entity;
 import net.mbonnin.arcanetracker.parser.Game;
 import net.mbonnin.arcanetracker.parser.GameLogic;
 import net.mbonnin.arcanetracker.parser.PowerParser;
-import net.mbonnin.hsmodel.Card;
 import net.mbonnin.hsmodel.CardId;
 import net.mbonnin.hsmodel.CardJson;
+import net.mbonnin.hsmodel.PlayerClass;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -218,4 +218,19 @@ public class TestParser {
             }
         });
     }
+
+    @Test
+    public void testNemsy() throws Exception {
+        SimpleListener listener = new SimpleListener() {
+            @Override
+            public void gameStarted(Game game) {
+                super.gameStarted(game);
+                Assert.assertTrue(game.player.playerClass().equals(PlayerClass.WARLOCK));
+
+            }
+        };
+
+        runParser("/nemsy.log", listener);
+    }
+
 }
