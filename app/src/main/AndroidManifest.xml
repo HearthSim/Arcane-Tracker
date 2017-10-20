@@ -49,6 +49,10 @@
                   android:screenOrientation="userLandscape"
                   android:theme="@style/Theme.Transparent"
             />
+        <activity android:name=".StartScreenCaptureActivity"
+                  android:screenOrientation="userLandscape"
+                  android:theme="@style/Theme.Transparent"
+            />
         <activity
             android:name=".SettingsActivity"
             android:launchMode="singleTask" />

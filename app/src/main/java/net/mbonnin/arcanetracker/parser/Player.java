@@ -21,6 +21,7 @@ public class Player {
         return HeroUtilKt.getClassIndex(card.playerClass);
     }
 
+
     public String playerClass() {
         Card card = CardUtil.INSTANCE.getCard(hero.CardID);
         return card.playerClass;

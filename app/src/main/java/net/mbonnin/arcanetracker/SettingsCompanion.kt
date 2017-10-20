@@ -1,24 +1,34 @@
 package net.mbonnin.arcanetracker
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
+import android.support.annotation.RequiresApi
 import android.support.v4.content.FileProvider
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.*
 import com.google.firebase.analytics.FirebaseAnalytics
+import net.mbonnin.arcanetracker.detector.ByteBufferImage
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.mbonnin.arcanetracker.trackobot.Trackobot
 import net.mbonnin.arcanetracker.trackobot.Url
 import net.mbonnin.arcanetracker.trackobot.User
 import rx.Completable
 import rx.Observer
+import rx.Single
 import rx.android.schedulers.AndroidSchedulers
 import rx.functions.Action1
+import rx.schedulers.Schedulers
 import timber.log.Timber
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -265,6 +275,28 @@ class SettingsCompanion(internal var settingsView: View) {
         init()
     }
 
+    private fun bbImageToFile(bbImage: ByteBufferImage): File {
+        val now = DateFormat.format("yyyy_MM_dd_hh_mm_ss", Date())
+        val file = File(ArcaneTrackerApplication.get().getExternalFilesDir(null), "screenshot_" + now + ".jpg")
+        val bitmap = Bitmap.createBitmap(bbImage.w, bbImage.h, Bitmap.Config.ARGB_8888)
+        val buffer = bbImage.buffer
+        val stride = bbImage.stride
+        for (j in 0 until bbImage.h) {
+            for (i in 0 until bbImage.w) {
+                val r = buffer.get(i * 4 + 0 + j * stride).toInt().and(0xff)
+                val g = buffer.get(i * 4 + 1 + j * stride).toInt().and(0xff)
+                val b = buffer.get(i * 4 + 2 + j * stride).toInt().and(0xff)
+                bitmap.setPixel(i, j, Color.argb(255, r, g, b))
+            }
+        }
+        try {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, FileOutputStream(file))
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        }
+        return file
+    }
+
     private fun init() {
         val view = settingsView
         val context = ArcaneTrackerApplication.getContext()
@@ -283,15 +315,31 @@ class SettingsCompanion(internal var settingsView: View) {
             arrayUri.add(FileProvider.getUriForFile(view.context, "net.mbonnin.arcanetracker.fileprovider", FileTree.get().file))
 
             val completable: Completable
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && ScreenCapture.get() != null) {
-                /* 1s is hopefully enough for the settings view to disappear */
+            val screenCapture = ScreenCaptureHolder.getScreenCapture()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && screenCapture != null) {
                 Toast.makeText(view.context, Utils.getString(R.string.preparingEmail), Toast.LENGTH_SHORT).show()
 
-                completable = Completable.timer(1, TimeUnit.SECONDS)
-                        .andThen(ScreenCapture.get()!!.screenShotSingle())
+                val fileSingle = Single.create<File> {
+                    val imageConsumer = object : ScreenCapture.Consumer {
+                        @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+                        override fun accept(bbImage: ByteBufferImage) {
+                            val file = bbImageToFile(bbImage)
+                            Timber.d("file1" + file)
+                            it.onSuccess(file)
+                            screenCapture.removeImageConsumer(this)
+                        }
+                    }
+                    screenCapture.addImageConsumer(imageConsumer)
+                }
+
+                Timber.d("file2" )
+                /* 1s is hopefully enough for the settings view to disappear  */
+                completable = Completable.timer(1, TimeUnit.SECONDS, Schedulers.io())
+                        .andThen(fileSingle)
                         .observeOn(AndroidSchedulers.mainThread())
                         .map { file -> arrayUri.add(FileProvider.getUriForFile(view.context, "net.mbonnin.arcanetracker.fileprovider", file)) }
                         .toCompletable()
+                Timber.d("file3")
             } else {
                 completable = Completable.complete()
             }
@@ -312,8 +360,6 @@ class SettingsCompanion(internal var settingsView: View) {
                             Utils.reportNonFatal(e)
                             Toast.makeText(ArcaneTrackerApplication.getContext(), Utils.getString(R.string.noEmailFound), Toast.LENGTH_LONG).show()
                         }
-
-
                     }
         }
 
@@ -597,7 +643,7 @@ class SettingsCompanion(internal var settingsView: View) {
     }
 
     companion object {
-        val timeouts = arrayOf(1, 2, 5, 10, 30, -1)
+        val timeouts = arrayOf(3, 5, 10, 30, 60, -1)
 
         fun getTimeoutIndex(): Int {
             return Settings.get(Settings.QUIT_TIMEOUT, 1)
