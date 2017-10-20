@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 class StartScreenCaptureActivity : AppCompatActivity() {
@@ -16,6 +17,7 @@ class StartScreenCaptureActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(View(this))
         mProjectionManager = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
         startActivityForResult(mProjectionManager!!.createScreenCaptureIntent(), MainActivity.REQUEST_CODE_MEDIAPROJECTION)
     }

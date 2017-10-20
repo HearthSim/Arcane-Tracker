@@ -19,12 +19,14 @@ object ScreenCaptureHolder {
     val runnable: Runnable = object : Runnable {
         @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
         override fun run() {
-            if (!screenCaptureStarting && Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true)) {
-                if (shouldDetectMode() || shouldDetectArena()) {
+            if (!screenCaptureStarting) {
+                if ((shouldDetectMode() || shouldDetectArena())
+                        && Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true)) {
                     if (screenCapture == null) {
                         screenCaptureStarting = true
                         val intent = Intent()
                         intent.setClass(ArcaneTrackerApplication.get(), StartScreenCaptureActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         ArcaneTrackerApplication.get().startActivity(intent)
                     }
                 } else {

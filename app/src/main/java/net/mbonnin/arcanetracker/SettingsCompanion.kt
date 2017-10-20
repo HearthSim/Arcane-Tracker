@@ -448,7 +448,6 @@ class SettingsCompanion(internal var settingsView: View) {
         screenCapture.isChecked = Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true)
         screenCapture.setOnCheckedChangeListener { buttonView, isChecked ->
             Settings.set(Settings.SCREEN_CAPTURE_ENABLED, isChecked)
-            showRestartDialog()
         }
 
         val quitTimeoutSeekbar = view.findViewById<SeekBar>(R.id.quitTimeoutSeekbar)

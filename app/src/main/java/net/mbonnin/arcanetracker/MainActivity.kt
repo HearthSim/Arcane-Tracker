@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (!canReallyDrawOverlays()) {
