@@ -16,7 +16,8 @@ public class TestTrackobot {
 
     @BeforeClass
     public static void beforeClass() {
-        mService = Trackobot.createService("bitter-void-terror-7444", "f762d37712");
+        // XXX: fixme
+        mService = null;//Trackobot.createService("bitter-void-terror-7444", "f762d37712");
     }
 
     @Test

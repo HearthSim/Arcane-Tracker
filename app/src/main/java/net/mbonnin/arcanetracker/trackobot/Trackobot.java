@@ -121,14 +121,14 @@ public class Trackobot {
             pendingResultData = new ArrayList<>();
         }
 
-        mService = createService(mUser.username, mUser.password);
+        mService = createService();
     }
 
     public Service service() {
         return mService;
     }
 
-    public static Service createService(String username, String password) {
+    public Service createService() {
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(chain -> {
                     Request request = chain.request();
@@ -139,8 +139,8 @@ public class Trackobot {
                     if (path.startsWith("users")) {
 
                     } else {
-                        urlBuilder.addQueryParameter("username", username);
-                        requestBuilder.addHeader("Authorization", Credentials.basic(username, password));
+                        urlBuilder.addQueryParameter("username", mUser.username);
+                        requestBuilder.addHeader("Authorization", Credentials.basic(mUser.username, mUser.password));
                     }
 
                     requestBuilder.url(urlBuilder.build());
