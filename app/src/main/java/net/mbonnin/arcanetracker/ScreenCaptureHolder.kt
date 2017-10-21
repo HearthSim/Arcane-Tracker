@@ -98,6 +98,7 @@ object ScreenCaptureHolder {
                 && ArenaParser.DRAFT_MODE_DRAFTING == ArenaParser.get().draftMode
                 && index >= 0
                 && index < Card.Companion.CLASS_INDEX_NEUTRAL
+                && false
 
     }
 
