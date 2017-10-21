@@ -77,6 +77,12 @@ android {
     packagingOptions {
         exclude 'META-INF/INDEX.LIST'
     }
+
+    sourceSets {
+        test.java.srcDirs += 'src/test/kotlin'
+        androidTest.java.srcDirs += 'src/androidTest/kotlin'
+        androidTest.java.srcDirs += 'src/androidTest/java'
+    }
 }
 
 ext {
@@ -125,11 +131,12 @@ dependencies {
     compile 'com.android.support:multidex:1.0.2'
     compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.android.support:multidex:1.0.2'
+    compile project(":detector")
 
     testCompile 'junit:junit:4.12'
     androidTestCompile 'com.android.support:multidex:1.0.2'
-    compile 'com.android.support:multidex:1.0.2'
-    compile project(":detector")
+    androidTestCompile 'junit:junit:4.12'
 }
 
 if (!file('google-services.json').exists()){

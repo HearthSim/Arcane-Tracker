@@ -179,7 +179,7 @@ public class GameLogicListener implements GameLogic.Listener {
     public void gameOver() {
         String mode = LoadingScreenParser.Companion.get().getGameplayMode();
 
-        Timber.w("gameOver  %s [mode %s] [user %s]", mGame.victory ? "victory" : "lost", mode, Trackobot.get().getUser());
+        Timber.w("gameOver  %s [mode %s] [user %s]", mGame.victory ? "victory" : "lost", mode, Trackobot.Companion.get().currentUser());
 
         Deck deck = MainViewCompanion.getPlayerCompanion().getDeck();
 
@@ -199,17 +199,17 @@ public class GameLogicListener implements GameLogic.Listener {
         }
 
         if ((Utils.isAppDebuggable() || LoadingScreenParser.Companion.getMODE_DRAFT().equals(mode) || LoadingScreenParser.Companion.getMODE_TOURNAMENT().equals(mode))
-                && Trackobot.get().getUser() != null) {
+                && Trackobot.Companion.get().currentUser() != null) {
             ResultData resultData = new ResultData();
             resultData.result = new Result();
             resultData.result.coin = mGame.getPlayer().hasCoin;
             resultData.result.win = mGame.victory;
-            resultData.result.mode = Trackobot.getMode(mGame.bnetGameType);
+            resultData.result.mode = Trackobot.Companion.getMode(mGame.bnetGameType);
             if (mGame.rank >= 0) {
                 resultData.result.rank = mGame.rank;
             }
-            resultData.result.hero = Trackobot.getHero(mGame.player.classIndex());
-            resultData.result.opponent = Trackobot.getHero(mGame.opponent.classIndex());
+            resultData.result.hero = Trackobot.Companion.getHero(mGame.player.classIndex());
+            resultData.result.opponent = Trackobot.Companion.getHero(mGame.opponent.classIndex());
             resultData.result.added = Utils.ISO8601DATEFORMAT.format(new Date());
 
             ArrayList<CardPlay> history = new ArrayList<>();
@@ -223,7 +223,7 @@ public class GameLogicListener implements GameLogic.Listener {
 
             resultData.result.card_history = history;
 
-            Trackobot.get().sendResult(resultData);
+            Trackobot.Companion.get().sendResult(resultData);
         }
 
         FileTree.get().sync();

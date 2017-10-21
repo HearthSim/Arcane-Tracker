@@ -75,9 +75,7 @@ class SettingsCompanion(internal var settingsView: View) {
     }
 
     private val mSigninButtonClicked = View.OnClickListener {
-        val user = User()
-        user.username = usernameEditText!!.text.toString()
-        user.password = passwordEditText!!.text.toString()
+        val user = User(usernameEditText!!.text.toString(), passwordEditText!!.text.toString())
 
         Trackobot.get().testUser(user)
                 .subscribe { lce ->
@@ -117,7 +115,7 @@ class SettingsCompanion(internal var settingsView: View) {
                             Toast.makeText(context, context.getString(R.string.trackobotSignupError), Toast.LENGTH_LONG).show()
                             Utils.reportNonFatal(lce.error)
                         } else {
-                            Trackobot.get().user = lce.data
+                            Trackobot.get().link(lce.data)
 
                             FirebaseAnalytics.getInstance(context).logEvent("track_o_bot_signup", null)
                             updateTrackobot(settingsView)
@@ -126,24 +124,18 @@ class SettingsCompanion(internal var settingsView: View) {
                 }
     }
 
-    private val mOneTimeAuthObserver = object : Observer<Url> {
-        override fun onCompleted() {
+    private fun onTrackobotUrl(url: Url) {
+        ViewManager.get().removeView(settingsView)
 
-        }
+        Utils.openLink(url.url)
+    }
 
-        override fun onError(e: Throwable) {
-            val context = ArcaneTrackerApplication.getContext()
-            Toast.makeText(context, context.getString(R.string.couldNotGetProfile), Toast.LENGTH_LONG).show()
-            signupButton!!.visibility = VISIBLE
-            signupProgressBar!!.visibility = GONE
-            Timber.e(e)
-        }
-
-        override fun onNext(url: Url) {
-            ViewManager.get().removeView(settingsView)
-
-            Utils.openLink(url.url)
-        }
+    private fun onTrackobotUrlError(throwable: Throwable) {
+        val context = ArcaneTrackerApplication.getContext()
+        Toast.makeText(context, context.getString(R.string.couldNotGetProfile), Toast.LENGTH_LONG).show()
+        signupButton!!.visibility = VISIBLE
+        signupProgressBar!!.visibility = GONE
+        Timber.e(throwable)
     }
 
     private val mImportButtonClicked = View.OnClickListener {
@@ -211,7 +203,7 @@ class SettingsCompanion(internal var settingsView: View) {
         importProgressBar = view.findViewById<View>(R.id.importProgressBar) as ProgressBar
         importExplanation = view.findViewById(R.id.importExplanation)
 
-        val user = Trackobot.get().user
+        val user = Trackobot.get().currentUser()
         if (user == null) {
             trackobotText!!.text = view.context.getString(R.string.trackobotExplanation)
             view.findViewById<View>(R.id.or).visibility = VISIBLE
@@ -246,7 +238,7 @@ class SettingsCompanion(internal var settingsView: View) {
 
             signinButton!!.text = view.context.getString(R.string.unlinkAccount)
             signinButton!!.setOnClickListener { v ->
-                Trackobot.get().user = null
+                Trackobot.get().unlink()
                 usernameEditText!!.setText("")
                 passwordEditText!!.setText("")
                 updateTrackobot(settingsView)
@@ -257,9 +249,9 @@ class SettingsCompanion(internal var settingsView: View) {
                 signupProgressBar!!.visibility = VISIBLE
                 signupButton!!.visibility = GONE
 
-                Trackobot.get().service().createOneTimeAuth()
+                Trackobot.get().createOneTimeAuth()
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(mOneTimeAuthObserver)
+                        .subscribe(this::onTrackobotUrl, this::onTrackobotUrlError)
             }
 
             retrievePassword!!.visibility = GONE

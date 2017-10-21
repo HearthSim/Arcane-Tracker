@@ -36,7 +36,7 @@ class Card : Comparable<String> {
     var collectible: Boolean? = null
 
     override fun compareTo(other: String): Int {
-        return id!!.compareTo(other)
+        return id.compareTo(other)
     }
 
     override fun toString(): String {
