@@ -1,5 +1,7 @@
 package net.mbonnin.arcanetracker;
 
+import android.support.test.InstrumentationRegistry;
+
 import junit.framework.Assert;
 
 import net.mbonnin.arcanetracker.trackobot.Trackobot;
@@ -11,10 +13,13 @@ import org.junit.Test;
 
 import java.util.Date;
 
+import io.paperdb.Paper;
+
 
 public class TestTrackobot {
     @Test
     public void testRank() {
+        Paper.init(InstrumentationRegistry.getTargetContext());
         ResultData resultData = new ResultData();
 
         resultData.result = new Result();
@@ -26,7 +31,7 @@ public class TestTrackobot {
         resultData.result.opponent = Trackobot.Companion.getHero(0);
         resultData.result.added = Utils.ISO8601DATEFORMAT.format(new Date());
 
-        Trackobot.Companion.get().link(new User("bitter-void-terror-7444", "f762d37712"))
+        Trackobot.Companion.get().link(new User("bitter-void-terror-7444", "f762d37712"));
         Lce<ResultData> lce = Trackobot.Companion.get().sendResultSingle(resultData)
                 .toBlocking().value();
 

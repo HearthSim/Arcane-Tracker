@@ -219,10 +219,13 @@ class Trackobot {
     companion object {
         private val KEY_USER = "USER"
         private val KEY_PENDING_RESULT_DATA = "PENDING_RESULT_DATA"
-        private var INSTANCE = Trackobot()
+        private var INSTANCE: Trackobot? = null
 
         fun get(): Trackobot {
-            return INSTANCE
+            if (INSTANCE == null) {
+                INSTANCE = Trackobot()
+            }
+            return INSTANCE!!
         }
 
         fun findTrackobotFile(): File? {
