@@ -25,16 +25,17 @@ allprojects {
     }
 
     ext.dep = [
-            gson    : 'com.google.code.gson:gson:2.8.1',
+            gson    : 'com.google.code.gson:gson:2.8.2',
             okhttp  : 'com.squareup.okhttp3:okhttp:3.9.0',
             timber  : 'com.jakewharton.timber:timber:4.5.1',
             espresso: 'com.android.support.test.espresso:espresso-core:3.0.1',
+            kotlin_stdlib: "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     ]
 
     ext.atConfig = [
             minSdkVersion   : 16,
-            targetSdkVersion: 26,
-            compileSdkVersion: 26,
+            targetSdkVersion: 27,
+            compileSdkVersion: 27,
             buildToolsVersion: '26.0.2',
     ]
 }

@@ -16,8 +16,8 @@ repositories {
     jcenter()
 }
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
-    implementation "com.google.code.gson:gson:2.8.1"
+    implementation dep.kotlin_stdlib
+    implementation dep.gson
 }
 
 compileKotlin {
