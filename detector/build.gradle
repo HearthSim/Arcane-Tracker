@@ -27,6 +27,7 @@ android {
 dependencies {
     implementation dep.kotlin_stdlib
     implementation dep.gson
+    implementation dep.timber
 
     compile(project(":hsmodel"))
 

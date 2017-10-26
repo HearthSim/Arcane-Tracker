@@ -161,7 +161,7 @@ public class HSReplay {
         }
 
         mUserAgent = ArcaneTrackerApplication.getContext().getPackageName() + "/" + BuildConfig.VERSION_NAME
-                + "; Android " + Build.VERSION.RELEASE + "; " + String.format("%.3f", Utils.INSTANCE.getDiagonal()) + "inches";
+                + "; Android " + Build.VERSION.RELEASE + ";";
 
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(chain -> {

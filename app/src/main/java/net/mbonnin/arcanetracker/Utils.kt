@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Point
 import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
 import android.net.Uri
@@ -52,22 +51,6 @@ object Utils {
 
     val hsExternalDir: String
         get() = Environment.getExternalStorageDirectory().path + "/Android/data/com.blizzard.wtcg.hearthstone/files/"
-
-    val diagonal: Double
-        get() {
-            val wm = ArcaneTrackerApplication.getContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
-            val display = wm.defaultDisplay
-            val size = Point()
-            display.getSize(size)
-            val w = size.x
-            val h = size.y
-            val dm = DisplayMetrics()
-            wm.defaultDisplay.getMetrics(dm)
-            val x = Math.pow((w / dm.xdpi).toDouble(), 2.0)
-            val y = Math.pow((h / dm.ydpi).toDouble(), 2.0)
-
-            return Math.sqrt(x + y)
-        }
 
     val isNetworkConnected: Boolean
         get() {

@@ -36,7 +36,7 @@ object ArenaGuessHolder {
     private var clearTime: Long = 0
 
     @Synchronized
-    fun clearArena() {
+    fun clear() {
         clearTime = System.currentTimeMillis()
         for (i in 0..2) {
             if ("" != filters[i].cardId) {

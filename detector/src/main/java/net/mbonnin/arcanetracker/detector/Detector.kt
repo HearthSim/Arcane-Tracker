@@ -14,18 +14,12 @@ class ByteBufferImage(val w: Int,
                       val buffer: ByteBuffer /* RGBA buffer */,
                       val stride: Int/* in bytes */)
 
-open class RRect(val x: Double, val y: Double, val w: Double, val h: Double) {
-    fun scale(sx: Double, sy: Double): RRect = RRect(sx * x, sy * y, sx * w, sy * h)
-}
-
 class MatchResult {
     var bestIndex = 0
     var distance = 0.0
 }
 
 class ArenaResult(var cardId: String = "", var distance: Double = 0.0)
-
-class ATImage(val w: Int, val h: Int, val buffer: DoubleArray)
 
 const val INDEX_UNKNOWN = -1
 const val RANK_UNKNOWN = INDEX_UNKNOWN
@@ -42,28 +36,23 @@ private const val MODE_RANKED_WILD = 3
 const val MODE_CASUAL = 4
 const val MODE_RANKED = 5
 
-val FORMAT_RRECT = RRect(1754.0, 32.0, 138.0, 98.0).scale(1 / 1920.0, 1 / 1080.0)
-val FORMAT_RRECT_TABLET = RRect(1609.0, 39.0, 96.0, 73.0).scale(1 / 2048.0, 1 / 1536.0)
-val RANK_RRECT = RRect(820.0, 424.0, 230.0, 102.0).scale(1 / 1920.0, 1 / 1080.0)
-val RANK_RRECT_TABLET = RRect(1730.0, 201.0, 110.0, 46.0).scale(1 / 2048.0, 1 / 1536.0)
-val MODE_RRECT = RRect(1270.0, 256.0, 140.0, 32.0).scale(1 / 1920.0, 1 / 1080.0)
-val MODE_RRECT_TABLET = RRect(1432.0, 400.0, 160.0, 34.0).scale(1 / 2048.0, 1 / 1536.0)
-
-// beware Y coordinates in inkscape are from the lower left corner
-val ARENA_RECTS = arrayOf(
-        RRect(344.138, 1080.0 - 642.198 - 187.951, 185.956, 187.951).scale(1 / 1920.0, 1 / 1080.0),
-        RRect(854.205, 1080.0 - 642.198 - 187.951, 185.956, 187.951).scale(1 / 1920.0, 1 / 1080.0),
-        RRect(1379.876, 1080.0 - 642.198 - 187.951, 185.956, 187.951).scale(1 / 1920.0, 1 / 1080.0)
-)
-
-class Detector(var context: Context, var isTablet: Boolean) {
+class Detector(var context: Context) {
     var mapping: List<Int> = listOf()
     var lastHero: String = ""
     val generatedData = Gson().fromJson(InputStreamReader(context.resources.openRawResource(R.raw.generated_data)), GeneratedData::class.java)
+    var rectFactory: RRectFactory? = null
+
+
+    private fun ensureRectFactory(byteBufferImage: ByteBufferImage) {
+        if (rectFactory == null) {
+            rectFactory = RRectFactory(byteBufferImage.w, byteBufferImage.h, context)
+        }
+    }
 
     fun detectRank(byteBufferImage: ByteBufferImage): Int {
+        ensureRectFactory(byteBufferImage)
         val matchResult = matchImage(byteBufferImage,
-                if (isTablet) RANK_RRECT_TABLET else RANK_RRECT,
+                rectFactory!!.RANK,
                 Detector.Companion::extractHaar,
                 Detector.Companion::euclidianDistance,
                 generatedData.RANKS)
@@ -78,9 +67,9 @@ class Detector(var context: Context, var isTablet: Boolean) {
     }
 
     fun detectFormat(byteBufferImage: ByteBufferImage): Int {
-
+        ensureRectFactory(byteBufferImage)
         val matchResult = matchImage(byteBufferImage,
-                if (isTablet) FORMAT_RRECT_TABLET else FORMAT_RRECT,
+                rectFactory!!.FORMAT,
                 Detector.Companion::extractHaar,
                 Detector.Companion::euclidianDistance,
                 generatedData.FORMATS)
@@ -94,12 +83,12 @@ class Detector(var context: Context, var isTablet: Boolean) {
     }
 
     fun detectMode(byteBufferImage: ByteBufferImage): Int {
-
+        ensureRectFactory(byteBufferImage)
         val matchResult = matchImage(byteBufferImage,
-                if (isTablet) MODE_RRECT_TABLET else MODE_RRECT,
+                rectFactory!!.MODE,
                 Detector.Companion::extractHaar,
                 Detector.Companion::euclidianDistance,
-                if (isTablet) generatedData.MODES_TABLET else generatedData.MODES)
+                if (rectFactory!!.isTablet) generatedData.MODES_TABLET else generatedData.MODES)
         if (matchResult.distance > 400) {
             matchResult.bestIndex = INDEX_UNKNOWN
         }
@@ -114,10 +103,12 @@ class Detector(var context: Context, var isTablet: Boolean) {
     }
 
     fun detectArenaHaar(byteBufferImage: ByteBufferImage, hero: String): Array<ArenaResult> {
+        ensureRectFactory(byteBufferImage)
         return detectArena(byteBufferImage, Detector.Companion::extractHaar, Detector.Companion::euclidianDistance, generatedData.TIERLIST_HAAR, hero)
     }
 
     fun detectArenaPhash(byteBufferImage: ByteBufferImage, hero: String): Array<ArenaResult> {
+        ensureRectFactory(byteBufferImage)
         return detectArena(byteBufferImage, Detector.Companion::extractPhash, Detector.Companion::hammingDistance, generatedData.TIERLIST_PHASH, hero)
     }
 
@@ -139,7 +130,7 @@ class Detector(var context: Context, var isTablet: Boolean) {
         val sb = StringBuilder()
         for (i in 0 until arenaResults.size) {
             val matchResult = matchImage(byteBufferImage,
-                    ARENA_RECTS[i],
+                    rectFactory!!.ARENA_RECTS[i],
                     extractFeatures,
                     computeDistance,
                     candidates,
@@ -176,13 +167,11 @@ class Detector(var context: Context, var isTablet: Boolean) {
         }
 
         fun extractHaar(byteBufferImage: ByteBufferImage, rrect: RRect): DoubleArray {
-            return FeatureExtractor.INSTANCE.getFeatures(byteBufferImage.buffer, byteBufferImage.stride,
-                    rrect.scale(byteBufferImage.w.toDouble(), byteBufferImage.h.toDouble()))
+            return FeatureExtractor.INSTANCE.getFeatures(byteBufferImage.buffer, byteBufferImage.stride, rrect)
         }
 
         fun extractPhash(byteBufferImage: ByteBufferImage, rrect: RRect): Long {
-            return FeatureExtractor.INSTANCE.getHash(byteBufferImage.buffer, byteBufferImage.stride,
-                    rrect.scale(byteBufferImage.w.toDouble(), byteBufferImage.h.toDouble()))
+            return FeatureExtractor.INSTANCE.getHash(byteBufferImage.buffer, byteBufferImage.stride, rrect)
         }
 
         fun <T> matchImage(byteBufferImage: ByteBufferImage, rrect: RRect, extractFeatures: KFunction2<ByteBufferImage, RRect, T>, computeDistance: KFunction2<T, T, Double>, candidates: List<T>, mapping: List<Int>? = null): MatchResult {

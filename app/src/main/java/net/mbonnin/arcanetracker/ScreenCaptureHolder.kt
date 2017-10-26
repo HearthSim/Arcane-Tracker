@@ -13,7 +13,7 @@ import net.mbonnin.hsmodel.Card
 
 object ScreenCaptureHolder {
     @SuppressLint("StaticFieldLeak")
-    private val mDetector = Detector(ArcaneTrackerApplication.get(), ArcaneTrackerApplication.get().hasTabletLayout())
+    private val mDetector = Detector(ArcaneTrackerApplication.get())
     val handler = Handler()
     var screenCaptureStarting = false
     private var screenCapture: ScreenCapture? = null
@@ -69,7 +69,7 @@ object ScreenCaptureHolder {
                 val arenaResults = mDetector.detectArenaHaar(bbImage, hero)
                 ArenaGuessHolder.setArena(arenaResults, hero)
             } else {
-                ArenaGuessHolder.clearArena()
+                ArenaGuessHolder.clear()
             }
         }
     }

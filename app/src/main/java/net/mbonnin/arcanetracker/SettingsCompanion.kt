@@ -559,7 +559,7 @@ class SettingsCompanion(internal var settingsView: View) {
             if (mHsReplayState.userName == null) {
                 hsReplayDescription.text = Utils.getString(R.string.hsReplayExplanationNoUserName)
             } else {
-                hsReplayDescription.text = Utils.getString(R.string.hsReplayExplanationWithUserName, mHsReplayState.userName)
+                hsReplayDescription.text = Utils.getString(R.string.hsReplayExplanationWithUserName, mHsReplayState.userName as String)
             }
         }
 

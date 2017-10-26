@@ -46,11 +46,9 @@
             android:name=".LicensesActivity">
         </activity>
         <activity android:name=".DonateActivity"
-                  android:screenOrientation="userLandscape"
                   android:theme="@style/Theme.Transparent"
             />
         <activity android:name=".StartScreenCaptureActivity"
-                  android:screenOrientation="userLandscape"
                   android:theme="@style/Theme.Transparent"
             />
         <activity
