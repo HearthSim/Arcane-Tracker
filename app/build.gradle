@@ -134,7 +134,7 @@ dependencies {
     compile 'com.android.support:multidex:1.0.2'
     compile project(":detector")
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation dep.junit
     androidTestImplementation "com.android.support.test:runner:1.0.1"
     androidTestImplementation "com.android.support.test:rules:1.0.1"
     androidTestImplementation "com.android.support:multidex:1.0.2"
