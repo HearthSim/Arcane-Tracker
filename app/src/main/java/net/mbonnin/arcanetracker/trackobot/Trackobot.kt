@@ -49,7 +49,7 @@ class Trackobot {
 
         mUser = Paper.book().read<User>(KEY_USER)
 
-        if (Utils.isAppDebuggable()) {
+        if (Utils.isAppDebuggable) {
             mUser = User("bitter-void-terror-7444", "f762d37712")
             Paper.book().write(KEY_USER, mUser)
         }
@@ -94,7 +94,7 @@ class Trackobot {
     }
 
     fun sendResult(resultData: ResultData) {
-        if (!Utils.isNetworkConnected()) {
+        if (!Utils.isNetworkConnected) {
             Timber.w("offline, sendResult later")
             pendingResultData!!.add(resultData)
             Paper.book().write(KEY_PENDING_RESULT_DATA, pendingResultData!!)

@@ -170,7 +170,7 @@ class MainActivity : AppCompatActivity() {
             try {
                 val inputStream = resources.openRawResource(R.raw.log_config)
 
-                val file = File(Utils.getHSExternalDir() + "log.config")
+                val file = File(Utils.hsExternalDir + "log.config")
                 val outputStream = FileOutputStream(file)
 
                 val buffer = ByteArray(8192)

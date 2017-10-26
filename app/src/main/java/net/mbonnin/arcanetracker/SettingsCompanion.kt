@@ -296,7 +296,7 @@ class SettingsCompanion(internal var settingsView: View) {
         updateTrackobot(view)
 
         val appVersion = view.findViewById<TextView>(R.id.appVersion)
-        appVersion.text = view.context.getString(R.string.thisIsArcaneTracker, BuildConfig.VERSION_NAME, if (Utils.isAppDebuggable()) " (debug)" else "")
+        appVersion.text = view.context.getString(R.string.thisIsArcaneTracker, BuildConfig.VERSION_NAME, if (Utils.isAppDebuggable) " (debug)" else "")
 
         val feedbackButton = view.findViewById<Button>(R.id.feedBackButton)
         feedbackButton.setOnClickListener { v ->

@@ -41,10 +41,10 @@ public class ManaSelectionView extends LinearLayout {
             }
             textView.setText(text);
             int w;
-            w = Utils.dpToPx(30);
+            w = Utils.INSTANCE.dpToPx(30);
 
             LinearLayout.LayoutParams layoutParams = new LayoutParams(w, w);
-            layoutParams.leftMargin = Utils.dpToPx(2);
+            layoutParams.leftMargin = Utils.INSTANCE.dpToPx(2);
 
             int finalI = i;
             textView.setOnClickListener(v -> {

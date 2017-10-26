@@ -116,7 +116,7 @@ public class HSReplay {
         summary.win = game.victory;
         summary.hero = game.player.classIndex();
         summary.opponentHero = game.opponent.classIndex();
-        summary.date = Utils.ISO8601DATEFORMAT.format(new Date());
+        summary.date = Utils.INSTANCE.getISO8601DATEFORMAT().format(new Date());
         summary.deckName = MainViewCompanion.getPlayerCompanion().getDeck().name;
         summary.bnetGameType = game.bnetGameType;
 
@@ -161,7 +161,7 @@ public class HSReplay {
         }
 
         mUserAgent = ArcaneTrackerApplication.getContext().getPackageName() + "/" + BuildConfig.VERSION_NAME
-                + "; Android " + Build.VERSION.RELEASE + "; " + String.format("%.3f", Utils.getDiagonal()) + "inches";
+                + "; Android " + Build.VERSION.RELEASE + "; " + String.format("%.3f", Utils.INSTANCE.getDiagonal()) + "inches";
 
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(chain -> {
@@ -207,7 +207,7 @@ public class HSReplay {
 
     public Observable<Lce<String>> createToken() {
         TokenRequest tokenRequest = new TokenRequest();
-        tokenRequest.test_data = Utils.isAppDebuggable();
+        tokenRequest.test_data = Utils.INSTANCE.isAppDebuggable();
         return service().createToken(tokenRequest)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

@@ -29,7 +29,7 @@ public class EditableItemAdapter extends ItemAdapter {
     }
 
     public void addCard(String cardId) {
-        Utils.cardMapAdd(mDeck.cards, cardId, 1);
+        Utils.INSTANCE.cardMapAdd(mDeck.cards, cardId, 1);
         update();
     }
 

@@ -148,7 +148,7 @@ public class DeckCompanion {
         deck.checkClassIndex();
 
         mDeck = deck;
-        background.setBackgroundDrawable(Utils.getDrawableForClassIndex(deck.classIndex));
+        background.setBackgroundDrawable(Utils.INSTANCE.getDrawableForClassIndex(deck.classIndex));
         deckName.setText(deck.name);
     }
 

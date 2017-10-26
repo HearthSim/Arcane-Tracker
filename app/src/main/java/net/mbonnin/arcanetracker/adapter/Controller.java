@@ -291,12 +291,12 @@ public class Controller implements GameLogic.Listener {
 
         Collection<?> secrets = getSecrets();
         if (secrets.size() > 0) {
-            list.add(new HeaderItem(Utils.getString(R.string.secrets)));
+            list.add(new HeaderItem(Utils.INSTANCE.getString(R.string.secrets)));
             list.addAll(secrets);
         }
         list.addAll(getHand());
 
-        list.add(new HeaderItem(Utils.getString(R.string.allCards)));
+        list.add(new HeaderItem(Utils.INSTANCE.getString(R.string.allCards)));
 
         // trying a definition that's a bit different from the player definition here
         EntityList allEntities = mGame.getEntityList(e -> mOpponentId.equals(e.tags.get(Entity.KEY_CONTROLLER))
@@ -313,7 +313,7 @@ public class Controller implements GameLogic.Listener {
     private void updatePlayer() {
         ArrayList<Object> list = new ArrayList<>();
 
-        list.add(new HeaderItem(Utils.getString(R.string.deck)));
+        list.add(new HeaderItem(Utils.INSTANCE.getString(R.string.deck)));
 
         if (mPlayerCardMap != null) {
             assignCardsFromDeck();

@@ -70,7 +70,7 @@ public class CardRenderer {
         LruCache lruCache = ArcaneTrackerApplication.get().getImageCache();
         Bitmap bitmap = lruCache.get(name);
         if (bitmap == null) {
-            bitmap = Utils.getAssetBitmap(String.format("renderer/%s.webp", name));
+            bitmap = Utils.INSTANCE.getAssetBitmap(String.format("renderer/%s.webp", name));
             if (bitmap != null) {
                 lruCache.set(name, bitmap);
             }
@@ -179,7 +179,7 @@ public class CardRenderer {
 
         bitmap.compress(Bitmap.CompressFormat.WEBP, 90, outputStream);
 
-        if (false && Utils.isAppDebuggable()) {
+        if (false && Utils.INSTANCE.isAppDebuggable()) {
             File debugFile = new File("/sdcard/" + card.id + ".png");
             try {
                 FileOutputStream fileOutputStream = new FileOutputStream(debugFile);
@@ -476,7 +476,7 @@ public class CardRenderer {
 
         canvas.save();
         canvas.clipPath(clipPath);
-        Bitmap t = Utils.getAssetBitmap("cards/" + card.id + ".webp", "renderer/default.webp");
+        Bitmap t = Utils.INSTANCE.getAssetBitmap("cards/" + card.id + ".webp", "renderer/default.webp");
         RectF dstRect = new RectF(dx, dy, dx + dWidth, dy + dHeight);
         if (t != null) {
             Rect srcRect = new Rect(0, 0, t.getWidth(), t.getHeight());

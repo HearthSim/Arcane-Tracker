@@ -52,7 +52,7 @@ public class DetailsView extends LinearLayout {
 
             StringBuilder builder = new StringBuilder();
 
-            if (Utils.isAppDebuggable()) {
+            if (Utils.INSTANCE.isAppDebuggable()) {
                 builder.append(getContext().getString(R.string.card, entity.EntityID));
                 builder.append("\n");
             }
@@ -83,14 +83,14 @@ public class DetailsView extends LinearLayout {
 
             if (Entity.ZONE_SECRET.equals(entity.tags.get(Entity.KEY_ZONE))
                     && TextUtils.isEmpty(entity.CardID)) {
-                builder.append(Utils.getString(R.string.possibleSecrets));
+                builder.append(Utils.INSTANCE.getString(R.string.possibleSecrets));
                 appendPossibleSecrets((LinearLayout) b.getRoot(), entity);
             }
 
             String s = builder.toString();
 
-            if (Utils.isEmpty(s)) {
-                builder.append(Utils.getString(R.string.inDeck));
+            if (Utils.INSTANCE.isEmpty(s)) {
+                builder.append(Utils.INSTANCE.getString(R.string.inDeck));
                 builder.append("\n");
                 s = builder.toString();
             }
@@ -111,9 +111,9 @@ public class DetailsView extends LinearLayout {
                 continue;
             }
             LayoutParams layoutParams = new LayoutParams(mCardWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
-            int p = Utils.dpToPx(5);
+            int p = Utils.INSTANCE.dpToPx(5);
             layoutParams.leftMargin = layoutParams.rightMargin = p;
-            layoutParams.topMargin = Utils.dpToPx(mTopMargin);
+            layoutParams.topMargin = Utils.INSTANCE.dpToPx(mTopMargin);
             child.setLayoutParams(layoutParams);
         }
         requestLayout();

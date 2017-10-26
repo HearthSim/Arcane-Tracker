@@ -1,5 +1,6 @@
 package net.mbonnin.arcanetracker
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.media.projection.MediaProjection
 import android.os.Build
@@ -11,6 +12,7 @@ import net.mbonnin.arcanetracker.parser.LoadingScreenParser
 import net.mbonnin.hsmodel.Card
 
 object ScreenCaptureHolder {
+    @SuppressLint("StaticFieldLeak")
     private val mDetector = Detector(ArcaneTrackerApplication.get(), ArcaneTrackerApplication.get().hasTabletLayout())
     val handler = Handler()
     var screenCaptureStarting = false
@@ -47,15 +49,15 @@ object ScreenCaptureHolder {
             if (shouldDetectMode()) {
                 val format = mDetector.detectFormat(bbImage)
                 if (format != FORMAT_UNKNOWN) {
-                    ScreenCaptureResult.setFormat(format)
+                    FMRHolder.format = format
                 }
                 val mode = mDetector.detectMode(bbImage)
                 if (mode != MODE_UNKNOWN) {
-                    ScreenCaptureResult.setMode(mode)
+                    FMRHolder.mode = mode
                     if (mode == MODE_RANKED) {
                         val rank = mDetector.detectRank(bbImage)
                         if (rank != RANK_UNKNOWN) {
-                            ScreenCaptureResult.setRank(rank)
+                            FMRHolder.rank = rank
                         }
                     }
                 }
@@ -65,9 +67,9 @@ object ScreenCaptureHolder {
                 val index = DeckList.getArenaDeck().classIndex
                 val hero = getPlayerClass(index)
                 val arenaResults = mDetector.detectArenaHaar(bbImage, hero)
-                ScreenCaptureResult.setArena(arenaResults, hero)
+                ArenaGuessHolder.setArena(arenaResults, hero)
             } else {
-                ScreenCaptureResult.clearArena()
+                ArenaGuessHolder.clearArena()
             }
         }
     }
@@ -98,8 +100,6 @@ object ScreenCaptureHolder {
                 && ArenaParser.DRAFT_MODE_DRAFTING == ArenaParser.get().draftMode
                 && index >= 0
                 && index < Card.Companion.CLASS_INDEX_NEUTRAL
-                && false
-
     }
 
     fun start() {

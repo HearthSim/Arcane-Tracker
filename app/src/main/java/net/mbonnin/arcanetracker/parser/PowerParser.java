@@ -254,7 +254,7 @@ public class PowerParser implements LogReader.LineConsumer {
     private void handleGameStateLine(String rawLine) {
         if (rawLine.contains("CREATE_GAME")) {
             rawBuilder = new StringBuilder();
-            rawMatchStart = Utils.ISO8601DATEFORMAT.format(new Date());
+            rawMatchStart = Utils.INSTANCE.getISO8601DATEFORMAT().format(new Date());
 
             Timber.w(rawMatchStart + " - CREATE GAME: " + rawLine);
             rawGoldRewardStateCount = 0;

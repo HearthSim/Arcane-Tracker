@@ -45,7 +45,7 @@ public class MainService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        Utils.logWithDate("MainService.onCreate()");
+        Utils.INSTANCE.logWithDate("MainService.onCreate()");
 
         Intent intent = StopServiceBroadcastReceiver.getIntent();
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -68,7 +68,7 @@ public class MainService extends Service {
     public void onDestroy() {
         super.onDestroy();
 
-        Utils.logWithDate("MainService.onDestroy()");
+        Utils.INSTANCE.logWithDate("MainService.onDestroy()");
 
         FileTree.get().sync();
         stopForeground(true);

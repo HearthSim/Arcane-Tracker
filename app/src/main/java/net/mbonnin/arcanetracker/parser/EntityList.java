@@ -13,7 +13,7 @@ public class EntityList extends ArrayList<Entity> {
     public static final Predicate<Entity> IS_NOT_IN_DECK = new NegatePredicate(IS_IN_DECK);
     public static final Predicate<Entity> IS_IN_HAND = new ZonePredicate(Entity.ZONE_HAND);
 
-    public static final Predicate<Entity> HAS_CARD_ID = entity -> !Utils.isEmpty(entity.CardID);
+    public static final Predicate<Entity> HAS_CARD_ID = entity -> !Utils.INSTANCE.isEmpty(entity.CardID);
     private static final Predicate<Entity> IS_ENCHANTMENT = new CardTypePredicate(Type.ENCHANTMENT);
     public static final Predicate<Entity> IS_NOT_ENCHANTMENT = new NegatePredicate(IS_ENCHANTMENT);
 
@@ -67,7 +67,7 @@ public class EntityList extends ArrayList<Entity> {
     public HashMap<String, Integer> toCardMap() {
         HashMap<String, Integer> map = new HashMap<String, Integer>();
         for (Entity entity : filter(HAS_CARD_ID)) {
-            Utils.cardMapAdd(map, entity.CardID, 1);
+            Utils.INSTANCE.cardMapAdd(map, entity.CardID, 1);
         }
         return map;
     }

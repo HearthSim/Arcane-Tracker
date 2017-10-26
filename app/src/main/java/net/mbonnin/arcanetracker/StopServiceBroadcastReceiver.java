@@ -29,6 +29,6 @@ public class StopServiceBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Utils.exitApp();
+        Utils.INSTANCE.exitApp();
     }
 }

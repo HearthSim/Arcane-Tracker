@@ -278,7 +278,7 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
     }
 
     public int getMinDrawerWidth() {
-        return Utils.dpToPx(50);
+        return Utils.INSTANCE.dpToPx(50);
     }
 
     public int getMaxDrawerWidth() {
@@ -337,7 +337,7 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
             mWidth = (int) (0.33 * 0.5 * mViewManager.getWidth());
         }
         mX = 0;
-        mPadding = Utils.dpToPx(5);
+        mPadding = Utils.INSTANCE.dpToPx(5);
 
         mParams = new ViewManager.Params();
         mParams.x = 0;
@@ -353,8 +353,8 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
 
         mButtonWidth = Settings.get(Settings.BUTTON_WIDTH, 0);
         if (mButtonWidth < getMinButtonWidth() || mButtonWidth >= getMaxButtonWidth()) {
-            int dp = Utils.is7InchesOrHigher() ? 50 : 30;
-            mButtonWidth = Utils.dpToPx(dp);
+            int dp = Utils.INSTANCE.is7InchesOrHigher() ? 50 : 30;
+            mButtonWidth = Utils.INSTANCE.dpToPx(dp);
         }
 
         int wMeasureSpec = View.MeasureSpec.makeMeasureSpec(mButtonWidth, View.MeasureSpec.EXACTLY);
@@ -363,7 +363,7 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
         handlesView.getParams().w = handlesView.getMeasuredWidth();
         handlesView.getParams().h = handlesView.getMeasuredHeight();
         handlesView.getParams().x = mPadding;
-        handlesView.getParams().y = ViewManager.get().getHeight() - handlesView.getParams().h - Utils.dpToPx(50);
+        handlesView.getParams().y = ViewManager.get().getHeight() - handlesView.getParams().h - Utils.INSTANCE.dpToPx(50);
         configureHandles(handlesView);
 
         setState(STATE_PLAYER, false);
@@ -372,11 +372,11 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
     }
 
     public int getMaxButtonWidth() {
-        return Utils.dpToPx(75);
+        return Utils.INSTANCE.dpToPx(75);
     }
 
     public int getMinButtonWidth() {
-        return Utils.dpToPx(20);
+        return Utils.INSTANCE.dpToPx(20);
     }
 
     public void show(boolean show) {
@@ -396,9 +396,9 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
             View view = LayoutInflater.from(v.getContext()).inflate(R.layout.more_view, null);
 
             Drawable d = AppCompatResources.getDrawable(v.getContext(), R.drawable.heart);
-            d.setBounds(0, 0, Utils.dpToPx(26), Utils.dpToPx(24));
+            d.setBounds(0, 0, Utils.INSTANCE.dpToPx(26), Utils.INSTANCE.dpToPx(24));
             ((TextView)view.findViewById(R.id.donate)).setCompoundDrawables(null, null, d, null);
-            ((TextView)view.findViewById(R.id.donate)).setCompoundDrawablePadding(Utils.dpToPx(13));
+            ((TextView)view.findViewById(R.id.donate)).setCompoundDrawablePadding(Utils.INSTANCE.dpToPx(13));
             view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
             view.findViewById(R.id.settings).setOnClickListener(v3 -> {
@@ -422,7 +422,7 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
             } else {
                 donateView.setVisibility(View.GONE);
             }
-            view.findViewById(R.id.quit).setOnClickListener(v3 -> Utils.exitApp());
+            view.findViewById(R.id.quit).setOnClickListener(v3 -> Utils.INSTANCE.exitApp());
 
             int wMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
             view.measure(wMeasureSpec, wMeasureSpec);

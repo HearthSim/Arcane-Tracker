@@ -197,7 +197,7 @@ public class CardsAdapter extends RecyclerView.Adapter {
 
         textView.setText(card.name);
 
-        Picasso.with(context).load(Utils.getCardUrl(card.id)).into(imageView, new Callback() {
+        Picasso.with(context).load(Utils.INSTANCE.getCardUrl(card.id)).into(imageView, new Callback() {
             @Override
             public void onSuccess() {
                 textView.setText("");

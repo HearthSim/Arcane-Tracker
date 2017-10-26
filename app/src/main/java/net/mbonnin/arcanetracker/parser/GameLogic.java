@@ -107,8 +107,8 @@ public class GameLogic {
              */
             EntityList secretEntityList = getSecretEntityList();
             for (Entity secretEntity : secretEntityList) {
-                if (!Utils.equalsNullSafe(secretEntity.tags.get(Entity.KEY_CONTROLLER), playedEntity.tags.get(Entity.KEY_CONTROLLER))
-                        && !Utils.isEmpty(playedEntity.CardID)) {
+                if (!Utils.INSTANCE.equalsNullSafe(secretEntity.tags.get(Entity.KEY_CONTROLLER), playedEntity.tags.get(Entity.KEY_CONTROLLER))
+                        && !Utils.INSTANCE.isEmpty(playedEntity.CardID)) {
                     /*
                      * it can happen that we don't know the id of the played entity, for an example if the player has a secret and its opponent plays one
                      * it should be ok to ignore those since these are opponent plays
@@ -139,7 +139,7 @@ public class GameLogic {
 
             EntityList secretEntityList = getSecretEntityList();
             for (Entity secretEntity : secretEntityList) {
-                if (Utils.equalsNullSafe(secretEntity.tags.get(Entity.KEY_CONTROLLER), targetEntity.tags.get(Entity.KEY_CONTROLLER))) {
+                if (Utils.INSTANCE.equalsNullSafe(secretEntity.tags.get(Entity.KEY_CONTROLLER), targetEntity.tags.get(Entity.KEY_CONTROLLER))) {
                     if (Type.MINION.equals(targetEntity.tags.get(Entity.KEY_CARDTYPE))) {
                         secretEntity.extra.selfMinionWasAttacked = true;
                     } else if (Type.HERO.equals(targetEntity.tags.get(Entity.KEY_CARDTYPE))) {
@@ -200,7 +200,7 @@ public class GameLogic {
                         Entity damagedEntity = mGame.findEntitySafe(id);
                         EntityList secretEntityList = getSecretEntityList();
                         for (Entity e2 : secretEntityList) {
-                            if (Utils.equalsNullSafe(e2.tags.get(Entity.KEY_CONTROLLER), damagedEntity.tags.get(Entity.KEY_CONTROLLER))) {
+                            if (Utils.INSTANCE.equalsNullSafe(e2.tags.get(Entity.KEY_CONTROLLER), damagedEntity.tags.get(Entity.KEY_CONTROLLER))) {
                                 if (Type.HERO.equals(damagedEntity.tags.get(Entity.KEY_CARDTYPE))) {
                                     e2.extra.selfHeroDamaged = true;
                                 }
@@ -217,7 +217,7 @@ public class GameLogic {
     private void handleShowEntityTag(ShowEntityTag tag) {
         Entity entity = mGame.findEntitySafe(tag.Entity);
 
-        if (!Utils.isEmpty(entity.CardID) && !entity.CardID.equals(tag.CardID)) {
+        if (!Utils.INSTANCE.isEmpty(entity.CardID) && !entity.CardID.equals(tag.CardID)) {
             Timber.e("[Inconsistent] entity " + entity + " changed cardId " + entity.CardID + " -> " + tag.CardID);
         }
         entity.setCardId(tag.CardID);
@@ -297,7 +297,7 @@ public class GameLogic {
                  */
                 EntityList secretEntityList = mGame.getEntityList(e -> Entity.ZONE_SECRET.equals(e.tags.get(Entity.KEY_ZONE)));
                 for (Entity secretEntity : secretEntityList) {
-                    if (Utils.equalsNullSafe(secretEntity.tags.get(Entity.KEY_CONTROLLER), entity.tags.get(Entity.KEY_CONTROLLER))
+                    if (Utils.INSTANCE.equalsNullSafe(secretEntity.tags.get(Entity.KEY_CONTROLLER), entity.tags.get(Entity.KEY_CONTROLLER))
                             && Type.MINION.equals(entity.tags.get(Entity.KEY_CARDTYPE))) {
                             Entity controllerEntity = mGame.findControllerEntity(entity);
                             if (controllerEntity != null && "0".equals(controllerEntity.tags.get(Entity.KEY_CURRENT_PLAYER))) {
@@ -331,7 +331,7 @@ public class GameLogic {
                 }
             }
             for (Entity secretEntity : secretEntityList) {
-                if (currentPlayer != null && Utils.equalsNullSafe(secretEntity.tags.get(Entity.KEY_CONTROLLER), currentPlayer.PlayerID)) {
+                if (currentPlayer != null && Utils.INSTANCE.equalsNullSafe(secretEntity.tags.get(Entity.KEY_CONTROLLER), currentPlayer.PlayerID)) {
                     EntityList list = getMinionsOnBoardForController(secretEntity.tags.get(Entity.KEY_CONTROLLER));
                     if (!list.isEmpty()) {
                         Timber.d("Competitive condition");
@@ -358,7 +358,7 @@ public class GameLogic {
             if (!Type.MINION.equals(e.tags.get(Entity.KEY_CARDTYPE))) {
                 return false;
             }
-            if (!Utils.equalsNullSafe(playerId, e.tags.get(Entity.KEY_CONTROLLER))) {
+            if (!Utils.INSTANCE.equalsNullSafe(playerId, e.tags.get(Entity.KEY_CONTROLLER))) {
                 return false;
             }
 
@@ -445,7 +445,7 @@ public class GameLogic {
         });
 
         for (Entity entity : entities) {
-            if (!Utils.isEmpty(entity.CardID)) {
+            if (!Utils.INSTANCE.isEmpty(entity.CardID)) {
                 knownCardsInHand++;
             }
             totalCardsInHand++;
@@ -512,7 +512,7 @@ public class GameLogic {
         Entity blockEntity = mGame.findEntitySafe(blockTag.Entity);
         Entity entity = mGame.findEntitySafe(fullEntityTag.ID);
 
-        if (Utils.isEmpty(blockEntity.CardID)) {
+        if (Utils.INSTANCE.isEmpty(blockEntity.CardID)) {
             return;
         }
 
@@ -670,7 +670,7 @@ public class GameLogic {
 
             }
         }
-        if (!Utils.isEmpty(guessedId)) {
+        if (!Utils.INSTANCE.isEmpty(guessedId)) {
             entity.setCardId(guessedId);
         }
 
@@ -690,7 +690,7 @@ public class GameLogic {
             mGame.entityMap.put(tag.ID, entity);
         }
         entity.EntityID = tag.ID;
-        if (!Utils.isEmpty(tag.CardID)) {
+        if (!Utils.INSTANCE.isEmpty(tag.CardID)) {
             entity.setCardId(tag.CardID);
         }
         entity.tags.putAll(tag.tags);

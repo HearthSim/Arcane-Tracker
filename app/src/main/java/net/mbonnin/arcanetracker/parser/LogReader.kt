@@ -31,7 +31,7 @@ class LogReader @JvmOverloads constructor(private val mLog: String, val mLineCon
         var lastSize: Long
         while (!mCanceled) {
             var myReader: MyVeryOwnReader? = null
-            val file = File(Utils.getHSExternalDir() + "/Logs/" + mLog)
+            val file = File(Utils.hsExternalDir + "/Logs/" + mLog)
 
             /*
              * try to open file

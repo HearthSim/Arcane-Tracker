@@ -79,7 +79,7 @@ class DeckEntryHolder extends RecyclerView.ViewHolder implements View.OnTouchLis
             params.w = detailsView.getMeasuredWidth();
             params.h = detailsView.getMeasuredHeight();
 
-            params.x = (int) (downX + Utils.dpToPx(40));
+            params.x = (int) (downX + Utils.INSTANCE.dpToPx(40));
             params.y = (int) (downY - params.h / 2);
             if (params.y < 0) {
                 params.y = 0;
@@ -92,7 +92,7 @@ class DeckEntryHolder extends RecyclerView.ViewHolder implements View.OnTouchLis
     }
     public DeckEntryHolder(View itemView) {
         super(itemView);
-        RecyclerView.LayoutParams params = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(30));
+        RecyclerView.LayoutParams params = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.INSTANCE.dpToPx(30));
         itemView.setLayoutParams(params);
         background = ((ImageView)(itemView.findViewById(R.id.background)));
         cost = ((TextView)itemView.findViewById(R.id.cost));
@@ -115,7 +115,7 @@ class DeckEntryHolder extends RecyclerView.ViewHolder implements View.OnTouchLis
                 .placeholder(R.drawable.hero_10)
                 .into(background);
 
-        int costInt = Utils.valueOf(card.cost);
+        int costInt = Utils.INSTANCE.valueOf(card.cost);
         if (costInt >= 0) {
             cost.setText(costInt + "");
             cost.setVisibility(View.VISIBLE);
@@ -152,7 +152,7 @@ class DeckEntryHolder extends RecyclerView.ViewHolder implements View.OnTouchLis
             downX = event.getRawX();
             downY = event.getRawY();
             if (!"?".equals(card.id)) {
-                Picasso.with(v.getContext()).load(Utils.getCardUrl(card.id)).into(new Target() {
+                Picasso.with(v.getContext()).load(Utils.INSTANCE.getCardUrl(card.id)).into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                         DeckEntryHolder.this.bitmap = bitmap;

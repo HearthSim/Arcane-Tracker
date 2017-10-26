@@ -44,7 +44,7 @@ public class DeckListAdapter extends RecyclerView.Adapter {
 
         view.setOnClickListener(v -> onDeckSelectedListener.onClick(deck));
 
-        ((ImageView)(view.findViewById(R.id.deckImageRound))).setImageDrawable(Utils.getDrawableForName(String.format("hero_%02d_round", deck.classIndex + 1)));
+        ((ImageView)(view.findViewById(R.id.deckImageRound))).setImageDrawable(Utils.INSTANCE.getDrawableForName(String.format("hero_%02d_round", deck.classIndex + 1)));
         ((TextView)(view.findViewById(R.id.deckName))).setText(deck.name);
     }
 

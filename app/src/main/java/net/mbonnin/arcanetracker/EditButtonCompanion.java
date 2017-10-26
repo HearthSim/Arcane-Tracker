@@ -143,7 +143,7 @@ public class EditButtonCompanion {
                 DeckList.addDeck(deck);
                 MainViewCompanion.getPlayerCompanion().setDeck(deck);
             } else {
-                Toast.makeText(context, Utils.getString(R.string.cannotParseDeckstring), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, Utils.INSTANCE.getString(R.string.cannotParseDeckstring), Toast.LENGTH_LONG).show();
             }
         });
 

@@ -98,17 +98,17 @@ public class GameLogicListener implements GameLogic.Listener {
          * if a card is not in the original deck, increase newCards. At the end, if the total of cards is > 30, the deck is not viable
          */
         for (String cardId : mulliganCards.keySet()) {
-            int inDeck = Utils.cardMapGet(deckCards, cardId);
-            int inMulligan = Utils.cardMapGet(mulliganCards, cardId);
+            int inDeck = Utils.INSTANCE.cardMapGet(deckCards, cardId);
+            int inMulligan = Utils.INSTANCE.cardMapGet(mulliganCards, cardId);
 
             int a = Math.min(inDeck, inMulligan);
 
-            Utils.cardMapAdd(deckCards, cardId, -a);
+            Utils.INSTANCE.cardMapAdd(deckCards, cardId, -a);
             newCards += inMulligan - a;
             matchedCards += a;
         }
 
-        if (Utils.cardMapTotal(deckCards) + matchedCards + newCards > Deck.MAX_CARDS) {
+        if (Utils.INSTANCE.cardMapTotal(deckCards) + matchedCards + newCards > Deck.MAX_CARDS) {
             return -1;
         }
 
@@ -156,19 +156,19 @@ public class GameLogicListener implements GameLogic.Listener {
             mGame.bnetGameType = BnetGameType.BGT_TAVERNBRAWL_1P_VERSUS_AI;
         } else if (LoadingScreenParser.Companion.get().getGameplayMode().equals(LoadingScreenParser.Companion.getMODE_ADVENTURE())) {
             mGame.bnetGameType = BnetGameType.BGT_VS_AI;
-        } else if (ScreenCaptureResult.INSTANCE.getMode() == MODE_RANKED
-                && ScreenCaptureResult.INSTANCE.getFormat() == DetectorKt.FORMAT_STANDARD) {
+        } else if (FMRHolder.INSTANCE.getMode() == MODE_RANKED
+                && FMRHolder.INSTANCE.getFormat() == DetectorKt.FORMAT_STANDARD) {
             mGame.bnetGameType = BnetGameType.BGT_RANKED_STANDARD;
-            mGame.rank = ScreenCaptureResult.INSTANCE.getRank();
-        } else if (ScreenCaptureResult.INSTANCE.getMode() == MODE_RANKED
-                && ScreenCaptureResult.INSTANCE.getFormat() == DetectorKt.FORMAT_WILD) {
+            mGame.rank = FMRHolder.INSTANCE.getRank();
+        } else if (FMRHolder.INSTANCE.getMode() == MODE_RANKED
+                && FMRHolder.INSTANCE.getFormat() == DetectorKt.FORMAT_WILD) {
             mGame.bnetGameType = BnetGameType.BGT_RANKED_WILD;
-            mGame.rank = ScreenCaptureResult.INSTANCE.getRank();
-        } else if (ScreenCaptureResult.INSTANCE.getMode() == MODE_CASUAL
-                && ScreenCaptureResult.INSTANCE.getFormat() == DetectorKt.FORMAT_STANDARD) {
+            mGame.rank = FMRHolder.INSTANCE.getRank();
+        } else if (FMRHolder.INSTANCE.getMode() == MODE_CASUAL
+                && FMRHolder.INSTANCE.getFormat() == DetectorKt.FORMAT_STANDARD) {
             mGame.bnetGameType = BnetGameType.BGT_CASUAL_STANDARD_NORMAL;
-        } else if (ScreenCaptureResult.INSTANCE.getMode() == MODE_CASUAL
-                && ScreenCaptureResult.INSTANCE.getFormat() == DetectorKt.FORMAT_WILD) {
+        } else if (FMRHolder.INSTANCE.getMode() == MODE_CASUAL
+                && FMRHolder.INSTANCE.getFormat() == DetectorKt.FORMAT_WILD) {
             mGame.bnetGameType = BnetGameType.BGT_CASUAL_WILD;
         } else {
             mGame.bnetGameType = BnetGameType.BGT_UNKNOWN;
@@ -198,7 +198,7 @@ public class GameLogicListener implements GameLogic.Listener {
             DeckList.save();
         }
 
-        if ((Utils.isAppDebuggable() || LoadingScreenParser.Companion.getMODE_DRAFT().equals(mode) || LoadingScreenParser.Companion.getMODE_TOURNAMENT().equals(mode))
+        if ((Utils.INSTANCE.isAppDebuggable() || LoadingScreenParser.Companion.getMODE_DRAFT().equals(mode) || LoadingScreenParser.Companion.getMODE_TOURNAMENT().equals(mode))
                 && Trackobot.Companion.get().currentUser() != null) {
             ResultData resultData = new ResultData();
             resultData.result = new Result();
@@ -210,7 +210,7 @@ public class GameLogicListener implements GameLogic.Listener {
             }
             resultData.result.hero = Trackobot.Companion.getHero(mGame.player.classIndex());
             resultData.result.opponent = Trackobot.Companion.getHero(mGame.opponent.classIndex());
-            resultData.result.added = Utils.ISO8601DATEFORMAT.format(new Date());
+            resultData.result.added = Utils.INSTANCE.getISO8601DATEFORMAT().format(new Date());
 
             ArrayList<CardPlay> history = new ArrayList<>();
             for (Play play : mGame.plays) {
@@ -236,10 +236,10 @@ public class GameLogicListener implements GameLogic.Listener {
 
         EntityList originalDeck = game.getEntityList(entity -> game.player.entity.PlayerID.equals(entity.extra.originalController));
         HashMap<String, Integer> originalDeckMap = originalDeck.toCardMap();
-        if (Settings.get(Settings.AUTO_ADD_CARDS, true) && Utils.cardMapTotal(deck.cards) < Deck.MAX_CARDS) {
+        if (Settings.get(Settings.AUTO_ADD_CARDS, true) && Utils.INSTANCE.cardMapTotal(deck.cards) < Deck.MAX_CARDS) {
             for (String cardId : originalDeckMap.keySet()) {
                 int found = originalDeckMap.get(cardId);
-                if (found > Utils.cardMapGet(deck.cards, cardId)) {
+                if (found > Utils.INSTANCE.cardMapGet(deck.cards, cardId)) {
                     Timber.w("adding card to the deck " + cardId);
                     deck.cards.put(cardId, found);
                 }

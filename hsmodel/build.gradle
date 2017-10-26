@@ -53,7 +53,6 @@ artifacts {
     archives sourcesJar, javadocJar
 }
 
-
 publishing {
     publications {
         MyPublication(MavenPublication) {

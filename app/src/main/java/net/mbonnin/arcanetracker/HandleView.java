@@ -46,7 +46,7 @@ public class HandleView extends View {
     }
 
     public void init(Drawable drawable, int color) {
-        mShadowSize = Utils.dpToPx(3);
+        mShadowSize = Utils.INSTANCE.dpToPx(3);
         mViewManager = ViewManager.get();
 
         // for blur

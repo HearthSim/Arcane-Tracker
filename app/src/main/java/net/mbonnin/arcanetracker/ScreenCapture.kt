@@ -53,7 +53,6 @@ class ScreenCapture constructor(mediaProjection: MediaProjection) : ImageReader.
                 bbImageConsumer.accept(bbImage)
             }
 
-
             image.close()
         }
     }

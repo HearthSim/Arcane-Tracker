@@ -105,7 +105,7 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
             res.updateConfiguration(conf, dm);
         }
 
-        Utils.logWithDate("ArcaneTrackerApplication.onCreate() + version=" + BuildConfig.VERSION_CODE);
+        Utils.INSTANCE.logWithDate("ArcaneTrackerApplication.onCreate() + version=" + BuildConfig.VERSION_CODE);
 
         Paper.init(this);
 
@@ -119,7 +119,7 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
                 .build();
 
         Picasso.setSingletonInstance(picasso);
-        if (Utils.isAppDebuggable()) {
+        if (Utils.INSTANCE.isAppDebuggable()) {
             Picasso.with(this).setIndicatorsEnabled(true);
         }
 

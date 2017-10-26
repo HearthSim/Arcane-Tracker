@@ -1,8 +1,5 @@
 package net.mbonnin.arcanetracker.parser
 
-import net.mbonnin.arcanetracker.ScreenCaptureResult
-import rx.Completable
-import rx.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 import java.util.regex.Pattern
 
@@ -46,12 +43,12 @@ class LoadingScreenParser private constructor() : LogReader.LineConsumer {
                  */
                 mode = mParsedMode
                 when (mode) {
-                    MODE_DRAFT, MODE_TOURNAMENT, MODE_ADVENTURE, MODE_FRIENDLY, MODE_TAVERN_BRAWL -> gameplayMode = mode
-                }
-                if (mode == MODE_TOURNAMENT) {
-                    Completable.fromAction { ScreenCaptureResult.reset() }
-                            .subscribeOn(AndroidSchedulers.mainThread())
-                            .subscribe()
+                    MODE_DRAFT,
+                    MODE_TOURNAMENT,
+                    MODE_ADVENTURE,
+                    MODE_FRIENDLY,
+                    MODE_TAVERN_BRAWL
+                    -> gameplayMode = mode
                 }
             }
         }

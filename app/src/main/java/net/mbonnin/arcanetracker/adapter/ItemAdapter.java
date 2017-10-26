@@ -103,7 +103,7 @@ public class ItemAdapter extends RecyclerView.Adapter {
                 });
             }
         }
-        RecyclerView.LayoutParams params2 = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(30));
+        RecyclerView.LayoutParams params2 = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.INSTANCE.dpToPx(30));
         holder.itemView.setLayoutParams(params2);
     }
 

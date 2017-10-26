@@ -3,7 +3,7 @@ package net.mbonnin.arcanetracker.parser
 import android.os.Handler
 import net.mbonnin.arcanetracker.DeckList
 import net.mbonnin.arcanetracker.MainViewCompanion
-import net.mbonnin.arcanetracker.ScreenCaptureResult
+import net.mbonnin.arcanetracker.FMRHolder
 import net.mbonnin.arcanetracker.adapter.Controller
 import net.mbonnin.arcanetracker.heroIdToClassIndex
 import net.mbonnin.hsmodel.Card
@@ -108,7 +108,7 @@ class ArenaParser : LogReader.LineConsumer {
 
         DeckList.saveArena()
 
-        ScreenCaptureResult.clearArena()
+        FMRHolder.clearArena()
     }
 
     private fun newArenaRun() {

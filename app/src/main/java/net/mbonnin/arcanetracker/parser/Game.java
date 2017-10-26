@@ -46,7 +46,7 @@ public class Game {
     public Entity findControllerEntity(Entity entity) {
         String playerId = entity.tags.get(Entity.KEY_CONTROLLER);
         for (Entity e: entityMap.values()) {
-            if (Utils.equalsNullSafe(e.PlayerID, playerId)) {
+            if (Utils.INSTANCE.equalsNullSafe(e.PlayerID, playerId)) {
                 return e;
             }
         }
@@ -95,7 +95,7 @@ public class Game {
             return gameEntity;
         }
 
-        if (Utils.isEmpty(IdOrBattleTag)) {
+        if (Utils.INSTANCE.isEmpty(IdOrBattleTag)) {
             return unknownEntity("empty");
         }
 
