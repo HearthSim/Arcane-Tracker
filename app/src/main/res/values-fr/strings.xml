@@ -93,7 +93,7 @@
     <string name="loss">Défaite</string>
     <string name="mulliganed">M</string>
     <string name="newDeck">Nouveau deck</string>
-    <string name="next">suivant ▶</string>
+    <string name="next">suivant</string>
     <string name="no">Non</string>
     <string name="noBrowserFound">Aucun navigateur externe n\'a été trouvé pour ouvrir l\'URL. Veuillez installer chrome ou tout autre navigateur.</string>
     <string name="noEmailFound">Aucune application de messagerie n\'a été trouvée</string>

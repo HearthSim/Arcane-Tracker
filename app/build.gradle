@@ -3,6 +3,7 @@ plugins {
 }
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion atConfig.compileSdkVersion
@@ -12,8 +13,8 @@ android {
         applicationId "net.mbonnin.arcanetracker"
         minSdkVersion 19
         targetSdkVersion atConfig.targetSdkVersion
-        versionCode 229
-        versionName "2.29"
+        versionCode 230
+        versionName "2.30"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -138,6 +139,7 @@ dependencies {
     androidTestImplementation "com.android.support.test:runner:1.0.1"
     androidTestImplementation "com.android.support.test:rules:1.0.1"
     androidTestImplementation "com.android.support:multidex:1.0.2"
+    kapt "com.android.databinding:compiler:$android_gradle_plugin_version"
 }
 
 if (!file('google-services.json').exists()){

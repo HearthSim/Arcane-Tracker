@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +12,6 @@ import android.text.SpannableString;
 import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 
 import com.example.android.trivialdrivesample.util.IabHelper;
@@ -28,9 +26,6 @@ import java.util.List;
 import timber.log.Timber;
 
 import static android.view.View.GONE;
-import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
-import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
 import static android.view.View.VISIBLE;
 
 public class DonateActivity extends AppCompatActivity {
@@ -179,20 +174,7 @@ public class DonateActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        View decorView = getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            uiOptions |= View.SYSTEM_UI_FLAG_FULLSCREEN
-                    | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
-        } else {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            uiOptions |= SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-        }
-
-        decorView.setSystemUiVisibility(uiOptions);
+        ActivityExtensionsKt.makeFullscreen(this);
     }
 
     @Override

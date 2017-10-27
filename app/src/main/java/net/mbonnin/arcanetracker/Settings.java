@@ -28,6 +28,7 @@ public class Settings {
     public static final String SHOW_CHANGELOG = "SHOW_CHANGELOG";
     public static final String HSREPLAY_USERNAME = "HSREPLAY_USERNAME";
     public static final String SCREEN_CAPTURE_ENABLED = "SCREEN_CAPTURE_ENABLED";
+    public static final String SCREEN_CAPTURE_RATIONALE_SHOWN = "SCREEN_CAPTURE_RATIONALE_SHOWN";
     public static final String QUIT_TIMEOUT = "QUIT_TIMEOUT";
 
     private static SharedPreferences getPreferences() {

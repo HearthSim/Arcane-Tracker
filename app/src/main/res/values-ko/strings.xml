@@ -36,7 +36,7 @@
   <string name="arenaDeck">투기장 덱</string>
   <string name="yourDeck">당신의 덱</string>
   <string name="gotIt">알았음</string>
-  <string name="next">다음 ▶</string>
+  <string name="next">다음</string>
   <string name="clickOpponent">상대의 덱을 보려면 클릭하세요.</string>
   <string name="clickPlayer">당신의 덱을 보려면 클릭하세요.</string>
   <string name="rename">이름 바꾸기</string>
