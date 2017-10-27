@@ -41,11 +41,20 @@ class Detector(var context: Context) {
     var lastHero: String = ""
     val generatedData = Gson().fromJson(InputStreamReader(context.resources.openRawResource(R.raw.generated_data)), GeneratedData::class.java)
     var rectFactory: RRectFactory? = null
-
+    var forceIsTablet = false
+    var isTablet: Boolean = false
+        set(value) {
+            rectFactory?.isTablet = value
+            forceIsTablet = true
+            field = value
+        }
 
     private fun ensureRectFactory(byteBufferImage: ByteBufferImage) {
         if (rectFactory == null) {
             rectFactory = RRectFactory(byteBufferImage.w, byteBufferImage.h, context)
+            if (forceIsTablet) {
+                rectFactory?.isTablet = isTablet
+            }
         }
     }
 
@@ -218,6 +227,21 @@ class Detector(var context: Context) {
             return sb.toString()
         }
 
+        fun formatString(format: Int): String {
+            return when(format) {
+                FORMAT_WILD -> "WILD"
+                FORMAT_STANDARD -> "STANDARD"
+                else -> "UNKNOWN"
+            }
+        }
+
+        fun formatMode(mode: Int): String {
+            return when(mode) {
+                MODE_CASUAL -> "MODE_CASUAL"
+                MODE_RANKED -> "MODE_RANKED"
+                else -> "UNKNOWN"
+            }
+        }
     }
 }
 

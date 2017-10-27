@@ -7,7 +7,7 @@ import timber.log.Timber
 
 class RRectFactory(val screenWidth: Int, val screenHeight: Int, context: Context) {
 
-    val isTablet: Boolean
+    var isTablet: Boolean
 
     init {
         val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -36,7 +36,7 @@ class RRectFactory(val screenWidth: Int, val screenHeight: Int, context: Context
         when {
             isNexus9Like() -> FORMAT_NEXUS9
             isPixelLike() -> FORMAT_PIXEL
-            isTablet -> scaleTablet(FORMAT_PIXEL)
+            isTablet -> scaleTablet(FORMAT_NEXUS9)
             else -> scalePhone(FORMAT_PIXEL)
         }
     }
@@ -68,10 +68,10 @@ class RRectFactory(val screenWidth: Int, val screenHeight: Int, context: Context
     }
 
     fun scale(rRect: RRect, refWidth: Double, refHeight: Double): RRect {
-        var scaledWidth: Double
-        var scaledHeight: Double
+        val scaledWidth: Double
+        val scaledHeight: Double
 
-        if (screenWidth/screenHeight > refWidth/refHeight) {
+        if (screenWidth.toDouble()/screenHeight > refWidth/refHeight) {
             scaledHeight = screenHeight.toDouble()
             scaledWidth = refWidth * scaledHeight/refHeight
         } else {
