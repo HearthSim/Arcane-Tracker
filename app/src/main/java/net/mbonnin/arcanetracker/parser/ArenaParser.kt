@@ -1,12 +1,10 @@
 package net.mbonnin.arcanetracker.parser
 
 import android.os.Handler
-import net.mbonnin.arcanetracker.ArenaGuessHolder
-import net.mbonnin.arcanetracker.DeckList
-import net.mbonnin.arcanetracker.MainViewCompanion
+import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.adapter.Controller
-import net.mbonnin.arcanetracker.heroIdToClassIndex
 import net.mbonnin.hsmodel.Card
+import net.mbonnin.hsmodel.Type
 import timber.log.Timber
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -75,9 +73,11 @@ class ArenaParser : LogReader.LineConsumer {
             matcher = Client_chooses.matcher(rawLine)
             if (matcher.matches()) {
                 val cardId = matcher.group(1)
-                if (cardId.toLowerCase().startsWith("hero_")) {
+                val card = CardUtil.getCard(cardId)
+                if (Type.HERO.equals(card.type)
+                        || Type.HERO_POWER.equals(card.type)) {
                     // This must be a hero ("Client chooses: Tyrande Whisperwind (HERO_09a)")
-                    Timber.e("skip hero " + cardId)
+                    Timber.d("skip hero or hero_power" + cardId)
                 } else {
                     mHandler.post { newArenaCard(cardId) }
                 }
