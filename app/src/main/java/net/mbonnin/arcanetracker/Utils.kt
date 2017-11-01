@@ -160,8 +160,8 @@ object Utils {
         return "" == str
     }
 
-    fun equalsNullSafe(a: String?, b: String): Boolean {
-        return a != null && a == b
+    fun equalsNullSafe(a: String?, b: String?): Boolean {
+        return a == b
     }
 
     fun cardMapGet(map: HashMap<String, Int>, key: String): Int {
