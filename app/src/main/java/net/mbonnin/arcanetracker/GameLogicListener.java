@@ -85,12 +85,12 @@ public class GameLogicListener implements GameLogic.Listener {
         int matchedCards = 0;
         int newCards = 0;
 
-        /**
+        /*
          * copy the cards
          */
         HashMap<String, Integer> deckCards = new HashMap<>(deck.cards);
 
-        /**
+        /*
          * iterate through the mulligan cards.
          *
          * count the one that match the original deck and remove them from the original deck
@@ -131,7 +131,7 @@ public class GameLogicListener implements GameLogic.Listener {
                  * we filter the original deck to remove the coin mainly
                  */
                 HashMap<String, Integer> map = game.getEntityList(entity -> {
-                    return game.getPlayer().entity.EntityID.equals(entity.tags.get(Entity.KEY_CONTROLLER))
+                    return game.player.entity.PlayerID.equals(entity.tags.get(Entity.KEY_CONTROLLER))
                             && Entity.ZONE_HAND.equals(entity.tags.get(Entity.KEY_ZONE))
                             && game.player.entity.PlayerID.equals(entity.extra.originalController);
                 })
