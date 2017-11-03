@@ -127,6 +127,7 @@ object Utils {
     fun exitApp() {
         Overlay.get().hide()
         FileTree.get().sync()
+        MainService.stop()
         System.exit(0)
     }
 
