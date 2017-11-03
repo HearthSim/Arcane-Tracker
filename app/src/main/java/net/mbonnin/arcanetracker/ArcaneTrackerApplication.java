@@ -125,7 +125,7 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
 
         StopServiceBroadcastReceiver.init();
 
-        QuitDetector.Companion.get();
+        QuitDetector.Companion.get().start();
         ScreenCaptureHolder.INSTANCE.start();
 
         initCardJson();
@@ -159,6 +159,7 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
 
         CardRenderer.get();
 
+        MainService.start();
     }
 
     private void initCardJson() {

@@ -35,10 +35,8 @@ class QuitDetector {
 
             if (!visible) {
                 val timeoutMin = SettingsCompanion.getTimeoutValue()
-                if (timeoutMin < 0) {
-                    return
-                }
-                if (System.currentTimeMillis() - lastTimeMillis > timeoutMin * 60 * 1000) {
+
+                if (timeoutMin > 0 && System.currentTimeMillis() - lastTimeMillis > timeoutMin * 60 * 1000) {
                     Timber.d("Quit after inactivity")
                     Utils.exitApp()
                 }

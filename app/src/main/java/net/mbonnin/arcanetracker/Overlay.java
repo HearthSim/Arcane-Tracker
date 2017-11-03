@@ -23,9 +23,7 @@ public class Overlay {
     public void show() {
         MainViewCompanion.get().setState(MainViewCompanion.STATE_PLAYER, false);
         MainViewCompanion.get().show(true);
-        QuitDetector.Companion.get().start();
 
-        MainService.start();
         Context context = ArcaneTrackerApplication.getContext();
 
         int previousVersion = Settings.get(Settings.VERSION, 0);
@@ -41,12 +39,12 @@ public class Overlay {
             params.w = ViewManager.get().getWidth() / 2;
             params.h = 7 * ViewManager.get().getHeight() / 8;
 
-            CheckBox checkBox = ((CheckBox)view.findViewById(R.id.checkbox));
+            CheckBox checkBox = view.findViewById(R.id.checkbox);
             checkBox.setChecked(true);
 
             int v = BuildConfig.VERSION_CODE;
 
-            LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.changelog);
+            LinearLayout linearLayout = view.findViewById(R.id.changelog);
             int foundChangelog = 0;
             while (v > previousVersion) {
                 int id = context.getResources().getIdentifier("changelog_" + v, "string", context.getPackageName());
@@ -94,7 +92,5 @@ public class Overlay {
 
     public void hide() {
         ViewManager.get().removeAllViews();
-
-        MainService.stop();
     }
 }
