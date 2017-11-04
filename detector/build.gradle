@@ -32,6 +32,7 @@ dependencies {
     compile(project(":hsmodel"))
 
     testImplementation dep.junit
+    testImplementation 'ar.com.hjg:pngj:2.1.0'
 
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation dep.espresso
