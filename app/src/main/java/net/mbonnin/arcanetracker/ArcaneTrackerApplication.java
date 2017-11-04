@@ -142,12 +142,12 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
          */
         new LogReader("LoadingScreen.log", LoadingScreenParser.Companion.get());
 
-        GameLogic.get().addListener(GameLogicListener.get());
+        GameLogic.get().addListener(GameLogicListener.Companion.get());
         Handler handler = new Handler();
         PowerParser powerParser = new PowerParser(tag -> {
             handler.post(() -> GameLogic.get().handleRootTag(tag));
         }, (gameStr, gameStart) -> {
-            GameLogicListener.get().uploadGame(gameStr, gameStart);
+            GameLogicListener.Companion.get().uploadGame(gameStr, gameStart);
             return null;
         });
         /*

@@ -41,22 +41,30 @@ class LoadingScreenParser private constructor() : LogReader.LineConsumer {
                 /*
                  * do not trigger the mode changes for previous modes, it selects the arena deck at startup always
                  */
-                mode = mParsedMode
-                when (mode) {
-                    MODE_DRAFT,
-                    MODE_TOURNAMENT,
-                    MODE_ADVENTURE,
-                    MODE_FRIENDLY,
-                    MODE_TAVERN_BRAWL
-                    -> gameplayMode = mode
-                }
+                setModeInternal(mParsedMode)
             }
         }
     }
 
+    private fun setModeInternal(parsedMode: String?) {
+        Timber.d("setModeInternal " + parsedMode)
+
+        mode = parsedMode
+
+        when (mode) {
+            MODE_DRAFT,
+            MODE_TOURNAMENT,
+            MODE_ADVENTURE,
+            MODE_FRIENDLY,
+            MODE_TAVERN_BRAWL
+            -> gameplayMode = mode
+        }
+    }
+
     override fun onPreviousDataRead() {
+        Timber.d("onPreviousDataRead")
         mReadingPreviousData = false
-        mode = mParsedMode
+        setModeInternal(mParsedMode)
     }
 
     companion object {
