@@ -11,7 +11,7 @@ object CardJson {
 
     fun init(lang: String, injectedCards: List<Card>?) {
         val reader = InputStreamReader(CardJson::class.java.getResourceAsStream("/cards_$lang.json"))
-        allCards = Gson().fromJson<ArrayList<Card>>(reader, object : TypeToken<ArrayList<Card>>() {}.type)
+        allCards = Gson().fromJson<ArrayList<Card>>(reader, object : TypeToken<ArrayList<Card>?>() {}.type)
 
         injectedCards?.let { allCards.addAll(it) }
 

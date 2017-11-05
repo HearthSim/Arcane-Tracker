@@ -1,6 +1,9 @@
 package net.mbonnin.arcanetracker.detector
 
 import com.google.gson.JsonParser
+import net.mbonnin.arcanetracker.detector.RRectFactory.Companion.RECTS_MINION_PIXEL
+import net.mbonnin.arcanetracker.detector.RRectFactory.Companion.RECTS_SPELLS_PIXEL
+import net.mbonnin.arcanetracker.detector.RRectFactory.Companion.RECTS_WEAPON_PIXEL
 import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.Type
 import org.junit.Assert
@@ -15,23 +18,7 @@ class Superpose {
     val DATA_ROOT = "/home/martin/git/arcane_data"
     val OUTPUT_DIR = "/home/martin/tmp/superpose"
 
-    val RECTS_MINION = arrayOf(
-            RRect(324.0, 258.0, 208.0, 208.0),
-            RRect(844.0, 258.0, 208.0, 208.0),
-            RRect(1364.0, 258.0, 208.0, 208.0)
-    )
 
-    val RECTS_SPELLS = arrayOf(
-            RRect(331.0, 280.0, 189.0, 189.0),
-            RRect(850.0, 280.0, 189.0, 189.0),
-            RRect(1369.0, 280.0, 189.0, 189.0)
-    )
-
-    val WEAPON_SPELLS = arrayOf(
-            RRect(347.0, 270.0, 173.0, 173.0),
-            RRect(870.0, 270.0, 173.0, 173.0),
-            RRect(1391.0, 270.0, 173.0, 173.0)
-    )
 
     @Test
     fun superpose() {
@@ -94,9 +81,9 @@ class Superpose {
 
     private fun superposeModel(choiceImage: ByteBufferImage, index: Int, cardId: String) {
         val rect = when(CardJson.getCard(cardId)?.type) {
-            Type.MINION -> RECTS_MINION[index]
-            Type.SPELL -> RECTS_SPELLS[index]
-            Type.WEAPON -> WEAPON_SPELLS[index]
+            Type.MINION -> RECTS_MINION_PIXEL[index]
+            Type.SPELL -> RECTS_SPELLS_PIXEL[index]
+            Type.WEAPON -> RECTS_WEAPON_PIXEL[index]
             else -> null
         }
 

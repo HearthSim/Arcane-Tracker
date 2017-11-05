@@ -30,6 +30,8 @@ allprojects {
             okhttp  : 'com.squareup.okhttp3:okhttp:3.9.0',
             timber  : 'com.jakewharton.timber:timber:4.5.1',
             espresso: 'com.android.support.test.espresso:espresso-core:3.0.1',
+            test_runner: 'com.android.support.test:runner:1.0.1',
+            test_rules: 'com.android.support.test:rules:1.0.1',
             kotlin_stdlib: "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version",
             junit: 'junit:junit:4.12',
     ]

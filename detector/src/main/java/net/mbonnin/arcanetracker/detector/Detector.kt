@@ -175,6 +175,14 @@ class Detector(var context: Context) {
             return dist
         }
 
+        fun manhattanDistance(a: DoubleArray, b: DoubleArray): Double {
+            var dist = 0.0
+            for (i in 0 until a.size) {
+                dist += Math.abs(a[i] - b[i])
+            }
+            return dist
+        }
+
         fun extractHaar(byteBufferImage: ByteBufferImage, rrect: RRect): DoubleArray {
             return FeatureExtractor.INSTANCE.getFeatures(byteBufferImage.buffer, byteBufferImage.stride, rrect)
         }

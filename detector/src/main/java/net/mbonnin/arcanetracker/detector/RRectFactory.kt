@@ -63,11 +63,11 @@ class RRectFactory(val screenWidth: Int, val screenHeight: Int, context: Context
         return scale(rRect, 1920.0, 1080.0)
     }
 
-    fun scaleTablet(rRect: RRect): RRect {
+    private fun scaleTablet(rRect: RRect): RRect {
         return scale(rRect, 2048.0, 1536.0)
     }
 
-    fun scale(rRect: RRect, refWidth: Double, refHeight: Double): RRect {
+    private fun scale(rRect: RRect, refWidth: Double, refHeight: Double): RRect {
         val scaledWidth: Double
         val scaledHeight: Double
 
@@ -94,6 +94,24 @@ class RRectFactory(val screenWidth: Int, val screenHeight: Int, context: Context
 
         val MODE_PIXEL = RRect(1270.0, 256.0, 140.0, 32.0)
         val MODE_NEXUS9 = RRect(1432.0, 400.0, 160.0, 34.0)
+
+        val RECTS_MINION_PIXEL = arrayOf(
+                RRect(324.0, 258.0, 208.0, 208.0),
+                RRect(844.0, 258.0, 208.0, 208.0),
+                RRect(1364.0, 258.0, 208.0, 208.0)
+        )
+
+        val RECTS_SPELLS_PIXEL = arrayOf(
+                RRect(331.0, 280.0, 189.0, 189.0),
+                RRect(850.0, 280.0, 189.0, 189.0),
+                RRect(1369.0, 280.0, 189.0, 189.0)
+        )
+
+        val RECTS_WEAPON_PIXEL = arrayOf(
+                RRect(347.0, 270.0, 173.0, 173.0),
+                RRect(870.0, 270.0, 173.0, 173.0),
+                RRect(1391.0, 270.0, 173.0, 173.0)
+        )
 
         val ARENA_RECTS_PIXEL = arrayOf(
                 RRect(344.138, 1080.0 - 642.198 - 187.951, 185.956, 187.951),
