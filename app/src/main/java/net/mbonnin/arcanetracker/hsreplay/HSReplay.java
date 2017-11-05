@@ -67,7 +67,7 @@ public class HSReplay {
         uploadRequest.match_start = matchStart;
         uploadRequest.build = 20022;
         uploadRequest.friendly_player_id = friendlyPlayerId;
-        uploadRequest.game_type = summary.bnetGameType;
+        uploadRequest.game_type = summary.bnetGameType.getIntValue();
         if (game.rank > 0) {
             if (friendlyPlayerId.equals("1")) {
                 uploadRequest.player1.rank = game.rank;

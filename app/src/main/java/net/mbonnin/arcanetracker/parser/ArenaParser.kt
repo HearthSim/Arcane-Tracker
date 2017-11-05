@@ -1,8 +1,11 @@
 package net.mbonnin.arcanetracker.parser
 
 import android.os.Handler
-import net.mbonnin.arcanetracker.*
+import net.mbonnin.arcanetracker.CardUtil
+import net.mbonnin.arcanetracker.DeckList
+import net.mbonnin.arcanetracker.MainViewCompanion
 import net.mbonnin.arcanetracker.adapter.Controller
+import net.mbonnin.arcanetracker.heroIdToClassIndex
 import net.mbonnin.hsmodel.Card
 import net.mbonnin.hsmodel.Type
 import timber.log.Timber
@@ -107,8 +110,6 @@ class ArenaParser : LogReader.LineConsumer {
         Controller.get().setPlayerDeck(deck.cards)
 
         DeckList.saveArena()
-
-        ArenaGuessHolder.clear()
     }
 
     private fun newArenaRun() {

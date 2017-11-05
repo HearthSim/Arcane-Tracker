@@ -13,15 +13,10 @@ object ArenaGuessHolder {
 
     @Synchronized
     fun setArena(arenaResult: Array<ArenaResult>, hero: String) {
-        if (System.currentTimeMillis() - clearTime < 1000) {
-            return
-        }
         for (i in 0..2) {
-            if (arenaResult[i].distance < filters[i].minDistance) {
-                filters[i].minDistance = arenaResult[i].distance
-                filters[i].cardId = arenaResult[i].cardId
-                displayIfNeeded(i, filters[i], hero)
-            }
+            filters[i].minDistance = arenaResult[i].distance
+            filters[i].cardId = arenaResult[i].cardId
+            displayIfNeeded(i, filters[i], hero)
         }
     }
 
@@ -33,11 +28,9 @@ object ArenaGuessHolder {
 
     }
 
-    private var clearTime: Long = 0
 
     @Synchronized
     fun clear() {
-        clearTime = System.currentTimeMillis()
         for (i in 0..2) {
             if ("" != filters[i].cardId) {
                 Utils.runOnMainThread { ArenaGuessCompanion.hide(i) }

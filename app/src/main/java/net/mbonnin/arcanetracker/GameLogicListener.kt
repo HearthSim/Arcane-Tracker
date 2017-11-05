@@ -1,5 +1,6 @@
 package net.mbonnin.arcanetracker
 
+import android.os.Bundle
 import android.os.Handler
 import com.google.firebase.analytics.FirebaseAnalytics
 import net.mbonnin.arcanetracker.detector.FORMAT_STANDARD
@@ -129,7 +130,10 @@ class GameLogicListener private constructor() : GameLogic.Listener {
 
         FileTree.get().sync()
 
-        FirebaseAnalytics.getInstance(ArcaneTrackerApplication.getContext()).logEvent("game_ended", null)
+        val bundle = Bundle()
+        bundle.putString(EventParams.BNET_GAME_TYPE.value, mGame!!.bnetGameType.name)
+        FirebaseAnalytics.getInstance(ArcaneTrackerApplication.getContext()).logEvent("game_ended", bundle)
+
         mGameOver = true
     }
 

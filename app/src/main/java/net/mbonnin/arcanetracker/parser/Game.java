@@ -2,6 +2,7 @@ package net.mbonnin.arcanetracker.parser;
 
 import com.annimon.stream.function.Predicate;
 
+import net.mbonnin.arcanetracker.BnetGameType;
 import net.mbonnin.arcanetracker.Utils;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class Game {
 
     public ArrayList<Play> plays = new ArrayList<>();
     public boolean victory;
-    public int bnetGameType;
+    public BnetGameType bnetGameType;
     public String lastPlayedCardId;
     public int rank = -1;
 

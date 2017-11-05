@@ -1,5 +1,7 @@
 package net.mbonnin.arcanetracker.model;
 
+import net.mbonnin.arcanetracker.BnetGameType;
+
 public class GameSummary {
     public String deckName;
     public int hero;
@@ -10,5 +12,5 @@ public class GameSummary {
 
     public String hsreplayUrl;
     // added in v213
-    public int bnetGameType;
+    public BnetGameType bnetGameType;
 }
