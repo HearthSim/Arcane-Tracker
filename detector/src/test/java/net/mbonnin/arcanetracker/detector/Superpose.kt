@@ -2,6 +2,7 @@ package net.mbonnin.arcanetracker.detector
 
 import com.google.gson.JsonParser
 import net.mbonnin.hsmodel.CardJson
+import net.mbonnin.hsmodel.Type
 import org.junit.Assert
 import org.junit.Test
 import java.io.File
@@ -14,13 +15,23 @@ class Superpose {
     val DATA_ROOT = "/home/martin/git/arcane_data"
     val OUTPUT_DIR = "/home/martin/tmp/superpose"
 
-    val RECTS = arrayOf(
+    val RECTS_MINION = arrayOf(
             RRect(324.0, 258.0, 208.0, 208.0),
             RRect(844.0, 258.0, 208.0, 208.0),
             RRect(1364.0, 258.0, 208.0, 208.0)
     )
 
-    val CARD_RECT = RRect(120.0, 120.0, 250.0, 250.0)
+    val RECTS_SPELLS = arrayOf(
+            RRect(331.0, 280.0, 189.0, 189.0),
+            RRect(850.0, 280.0, 189.0, 189.0),
+            RRect(1369.0, 280.0, 189.0, 189.0)
+    )
+
+    val WEAPON_SPELLS = arrayOf(
+            RRect(347.0, 270.0, 173.0, 173.0),
+            RRect(870.0, 270.0, 173.0, 173.0),
+            RRect(1391.0, 270.0, 173.0, 173.0)
+    )
 
     @Test
     fun superpose() {
@@ -82,9 +93,20 @@ class Superpose {
     }
 
     private fun superposeModel(choiceImage: ByteBufferImage, index: Int, cardId: String) {
+        val rect = when(CardJson.getCard(cardId)?.type) {
+            Type.MINION -> RECTS_MINION[index]
+            Type.SPELL -> RECTS_SPELLS[index]
+            Type.WEAPON -> WEAPON_SPELLS[index]
+            else -> null
+        }
+
+        if (rect == null) {
+            System.err.println("no rect for" + CardJson.getCard(cardId)?.name)
+            return
+        }
 
         val pngCard = String.format("%s/card%s.png", OUTPUT_DIR, cardId)
-        val process = Runtime.getRuntime().exec(String.format("convert %s/models/cards/%s.jpg  -crop 250x250+120+120 -resize 208x208 %s", DATA_ROOT, cardId, pngCard))
+        val process = Runtime.getRuntime().exec(String.format("convert %s/models/cards/%s.jpg  -crop 250x250+120+120 -resize %sx%s %s", DATA_ROOT, cardId, rect.w.toInt(), rect.h.toInt(), pngCard))
         if (process.waitFor() != 0) {
             Assert.fail("cannot execute resize;" + convertStreamToString(process.errorStream))
         }
@@ -94,9 +116,8 @@ class Superpose {
         val choiceBuffer = choiceImage.buffer
         val cardBuffer = cardImage.buffer
 
-        val rect = RECTS[index]
-        for (x in 0 until 208) {
-            for (y in 0 until 208) {
+        for (x in 0 until rect.w.toInt()) {
+            for (y in 0 until rect.h.toInt()) {
                 val offset = ((x + rect.x) * 4 + (y + rect.y) * choiceImage.stride).toInt()
                 val cardOffset = (x * 4 + y * cardImage.stride)
                 for (i in 0 until 3) {
