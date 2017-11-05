@@ -7,6 +7,7 @@ import org.junit.Test
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStreamReader
+import java.util.*
 
 
 class Superpose {
@@ -31,12 +32,29 @@ class Superpose {
 
         CardJson.init("enUS")
 
-        val nameToCardID = CardJson.allCards().filter { it.name != null }.associateBy({
-            it.name!!.toUpperCase()
+        val map = TreeMap<String, ArrayList<String>>()
+
+        CardJson.allCards().filter { it.name != null }.forEach({
+            val cardName = it.name!!
+                    .toUpperCase()
                     .replace(" ", "_")
                     .replace(Regex("[^A-Z_]"), "")
-        },
-                { it.id })
+
+            map.getOrPut(cardName, { ArrayList() }).add(it.id)
+        })
+
+        val nameToCardID = TreeMap<String, String>()
+
+        for (entry in map) {
+            entry.value.sort()
+            for ((i, id) in entry.value.withIndex()) {
+                var name = entry.key
+                if (i > 0) {
+                    name += i
+                }
+                nameToCardID.put(name, id)
+            }
+        }
 
         val choices = JsonParser().parse(reader).asJsonObject
 
@@ -51,7 +69,7 @@ class Superpose {
                 if (cardId != null) {
                     superposeModel(choiceImage, index, cardId)
                 } else {
-                    //Assert.fail("No mapping for name " + name.asString)
+                    Assert.fail("No mapping for name " + name.asString)
                 }
             }
             byteBufferImageToPng(choiceImage, File(OUTPUT_DIR, fileIndex + ".png"))
