@@ -12,7 +12,6 @@ import android.widget.TextView;
 import net.mbonnin.arcanetracker.adapter.Controller;
 import net.mbonnin.hsmodel.Card;
 
-import io.paperdb.Paper;
 import timber.log.Timber;
 
 import static android.view.View.GONE;
@@ -76,7 +75,7 @@ public class DeckCompanion {
             setDeck(DeckList.getOpponentDeck());
         } else {
             new EditButtonCompanion(settings);
-            String lastUsedId = Paper.book().read(KEY_LAST_USED_DECK_ID);
+            String lastUsedId = PaperDb.INSTANCE.read(KEY_LAST_USED_DECK_ID);
 
             Deck deck = null;
             if (lastUsedId != null) {
@@ -93,7 +92,7 @@ public class DeckCompanion {
 
             if (deck == null) {
                 deck = DeckList.createDeck(Card.CLASS_INDEX_WARRIOR);
-                Paper.book().write(KEY_LAST_USED_DECK_ID, deck.id);
+                PaperDb.INSTANCE.write(KEY_LAST_USED_DECK_ID, deck.id);
             }
 
             recyclerView.setAdapter(Controller.get().getPlayerAdapter());
@@ -106,7 +105,7 @@ public class DeckCompanion {
 
     public void setDeck(Deck deck) {
         if (!isOpponent) {
-            Paper.book().write(KEY_LAST_USED_DECK_ID, deck.id);
+            PaperDb.INSTANCE.write(KEY_LAST_USED_DECK_ID, deck.id);
             winLoss.setText(deck.wins + " - " + deck.losses);
 
             winLoss.setOnClickListener(v2 -> {

@@ -9,6 +9,7 @@ import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
 import net.mbonnin.arcanetracker.BuildConfig;
 import net.mbonnin.arcanetracker.Lce;
 import net.mbonnin.arcanetracker.MainViewCompanion;
+import net.mbonnin.arcanetracker.PaperDb;
 import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Settings;
 import net.mbonnin.arcanetracker.Utils;
@@ -22,7 +23,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import io.paperdb.Paper;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -88,7 +88,7 @@ public class HSReplay {
                     }
 
                     summary.hsreplayUrl = upload.url;
-                    Paper.book().write(KEY_GAME_LIST, mGameList);
+                    PaperDb.INSTANCE.write(KEY_GAME_LIST, mGameList);
 
                     return putToS3(upload.put_url, gameStr).subscribeOn(Schedulers.io());
                 })
@@ -121,7 +121,7 @@ public class HSReplay {
         summary.bnetGameType = game.bnetGameType;
 
         mGameList.add(0, summary);
-        Paper.book().write(KEY_GAME_LIST, mGameList);
+        PaperDb.INSTANCE.write(KEY_GAME_LIST, mGameList);
 
         if (mToken == null) {
             return;
@@ -155,7 +155,7 @@ public class HSReplay {
     }
 
     public HSReplay() {
-        mGameList = Paper.book().read(KEY_GAME_LIST);
+        mGameList = PaperDb.INSTANCE.read(KEY_GAME_LIST);
         if (mGameList == null) {
             mGameList = new ArrayList<>();
         }
@@ -247,6 +247,6 @@ public class HSReplay {
 
     public void eraseGameSummary() {
         mGameList.clear();
-        Paper.book().write(KEY_GAME_LIST, mGameList);
+        PaperDb.INSTANCE.write(KEY_GAME_LIST, mGameList);
     }
 }

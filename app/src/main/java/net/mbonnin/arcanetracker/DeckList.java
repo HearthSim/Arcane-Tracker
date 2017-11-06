@@ -3,8 +3,6 @@ package net.mbonnin.arcanetracker;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import io.paperdb.Paper;
-
 /**
  * Created by martin on 10/20/16.
  */
@@ -39,7 +37,7 @@ public class DeckList {
     }
     static ArrayList<Deck> get() {
         if (sList == null) {
-            sList = Paper.book().read(KEY_LIST);
+            sList = PaperDb.INSTANCE.read(KEY_LIST);
         }
         if (sList == null) {
             sList = new ArrayList<>();
@@ -50,15 +48,15 @@ public class DeckList {
     }
 
     public static void save() {
-        Paper.book().write(KEY_LIST, sList);
+        PaperDb.INSTANCE.write(KEY_LIST, sList);
     }
     public static void saveArena() {
-        Paper.book().write(KEY_ARENA_DECK, getArenaDeck());
+        PaperDb.INSTANCE.write(KEY_ARENA_DECK, getArenaDeck());
     }
 
     public static Deck getArenaDeck() {
         if (sArenaDeck == null) {
-            sArenaDeck = Paper.book().read(KEY_ARENA_DECK);
+            sArenaDeck = PaperDb.INSTANCE.read(KEY_ARENA_DECK);
             if (sArenaDeck == null) {
                 sArenaDeck = new Deck();
                 sArenaDeck.id = ARENA_DECK_ID;

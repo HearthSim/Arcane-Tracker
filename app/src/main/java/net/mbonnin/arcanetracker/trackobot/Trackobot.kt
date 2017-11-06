@@ -3,7 +3,6 @@ package net.mbonnin.arcanetracker.trackobot
 import android.os.Environment
 import android.widget.Toast
 import com.google.gson.stream.MalformedJsonException
-import io.paperdb.Paper
 import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.trackobot.model.HistoryList
 import net.mbonnin.arcanetracker.trackobot.model.ResultData
@@ -37,24 +36,24 @@ class Trackobot {
 
     fun link(user: User) {
         mUser = user
-        Paper.book().write(KEY_USER, user)
+        PaperDb.write(KEY_USER, user)
     }
 
     fun unlink() {
         mUser = null
-        Paper.book().delete(KEY_USER)
+        PaperDb.delete(KEY_USER)
     }
 
     init {
 
-        mUser = Paper.book().read<User>(KEY_USER)
+        mUser = PaperDb.read<User>(KEY_USER)
 
         if (Utils.isAppDebuggable) {
             mUser = User("bitter-void-terror-7444", "f762d37712")
-            Paper.book().write(KEY_USER, mUser)
+            PaperDb.write(KEY_USER, mUser)
         }
 
-        pendingResultData = Paper.book().read<ArrayList<ResultData>>(KEY_PENDING_RESULT_DATA)
+        pendingResultData = PaperDb.read<ArrayList<ResultData>>(KEY_PENDING_RESULT_DATA)
         if (pendingResultData == null) {
             pendingResultData = ArrayList()
         }
@@ -97,7 +96,7 @@ class Trackobot {
         if (!Utils.isNetworkConnected) {
             Timber.w("offline, sendResult later")
             pendingResultData!!.add(resultData)
-            Paper.book().write(KEY_PENDING_RESULT_DATA, pendingResultData!!)
+            PaperDb.write(KEY_PENDING_RESULT_DATA, pendingResultData!!)
             return
         }
 
@@ -111,7 +110,7 @@ class Trackobot {
 
             sendResultInternal(pendingData)
 
-            Paper.book().write(KEY_PENDING_RESULT_DATA, pendingResultData!!)
+            PaperDb.write(KEY_PENDING_RESULT_DATA, pendingResultData!!)
         }
 
         sendResultInternal(resultData)
