@@ -3,7 +3,7 @@
 # this script will download ~1GB of unity3d files to the current directory
 # it expects only one device connected to adb
 
-if false
+if true
 then
 for i in $(adb shell su -c ls '/data/data/com.blizzard.wtcg.hearthstone/files/Data/dxt/*.unity3d' | sed 's/\r//g')
 do
