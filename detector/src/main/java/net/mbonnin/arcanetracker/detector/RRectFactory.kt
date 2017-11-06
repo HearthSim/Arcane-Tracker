@@ -5,33 +5,34 @@ import android.util.DisplayMetrics
 import android.view.WindowManager
 import timber.log.Timber
 
-class RRectFactory(val screenWidth: Int, val screenHeight: Int, context: Context) {
+class RRectFactory(val screenWidth: Int, val screenHeight: Int, val isTablet: Boolean) {
 
-    var isTablet: Boolean
+    constructor(screenWidth: Int, screenHeight: Int, context: Context): this(screenWidth, screenHeight, getIsTablet(screenWidth, screenHeight, context))
 
-    init {
-        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        val display = wm.defaultDisplay
-        val dm = DisplayMetrics()
-        display.getMetrics(dm)
-
-        // we don't retrieve the screenWidth and screenHeight from the displayMnager as it may have the status/nav bars
-        val diagonal = Math.hypot(screenWidth.toDouble() / dm.xdpi, screenHeight.toDouble() / dm.ydpi).toFloat()
-
-        Timber.d("diagonal=" + diagonal)
-        isTablet = diagonal >= 8
-    }
 
     private fun isNexus9Like() = isTablet && screenWidth == 2048 && screenHeight == 1536
     private fun isPixelLike() = !isTablet && screenWidth == 1920 && screenHeight == 1080
 
-    val ARENA_RECTS by lazy {
+    val ARENA_MINIONS by lazy {
         when {
-            isPixelLike() -> ARENA_RECTS_PIXEL
-            else -> ARENA_RECTS_PIXEL.map(this::scalePhone).toTypedArray()
+            isPixelLike() -> ARENA_MINIONS_PIXEL
+            else -> ARENA_MINIONS_PIXEL.map(this::scalePhone).toTypedArray()
         }
     }
 
+    val ARENA_SPELLS by lazy {
+        when {
+            isPixelLike() -> ARENA_SPELLS_PIXEL
+            else -> ARENA_SPELLS_PIXEL.map(this::scalePhone).toTypedArray()
+        }
+    }
+
+    val ARENA_WEAPONS by lazy {
+        when {
+            isPixelLike() -> ARENA_WEAPONS_PIXEL
+            else -> ARENA_WEAPONS_PIXEL.map(this::scalePhone).toTypedArray()
+        }
+    }
     val FORMAT by lazy {
         when {
             isNexus9Like() -> FORMAT_NEXUS9
@@ -95,28 +96,35 @@ class RRectFactory(val screenWidth: Int, val screenHeight: Int, context: Context
         val MODE_PIXEL = RRect(1270.0, 256.0, 140.0, 32.0)
         val MODE_NEXUS9 = RRect(1432.0, 400.0, 160.0, 34.0)
 
-        val RECTS_MINION_PIXEL = arrayOf(
+        val ARENA_MINIONS_PIXEL = arrayOf(
                 RRect(324.0, 258.0, 208.0, 208.0),
                 RRect(844.0, 258.0, 208.0, 208.0),
                 RRect(1364.0, 258.0, 208.0, 208.0)
         )
 
-        val RECTS_SPELLS_PIXEL = arrayOf(
+        val ARENA_SPELLS_PIXEL = arrayOf(
                 RRect(331.0, 280.0, 189.0, 189.0),
                 RRect(850.0, 280.0, 189.0, 189.0),
                 RRect(1369.0, 280.0, 189.0, 189.0)
         )
 
-        val RECTS_WEAPON_PIXEL = arrayOf(
+        val ARENA_WEAPONS_PIXEL = arrayOf(
                 RRect(347.0, 270.0, 173.0, 173.0),
                 RRect(870.0, 270.0, 173.0, 173.0),
                 RRect(1391.0, 270.0, 173.0, 173.0)
         )
 
-        val ARENA_RECTS_PIXEL = arrayOf(
-                RRect(344.138, 1080.0 - 642.198 - 187.951, 185.956, 187.951),
-                RRect(854.205, 1080.0 - 642.198 - 187.951, 185.956, 187.951),
-                RRect(1379.876, 1080.0 - 642.198 - 187.951, 185.956, 187.951)
-        )
+        fun getIsTablet(screenWidth: Int, screenHeight: Int, context: Context): Boolean  {
+            val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            val display = wm.defaultDisplay
+            val dm = DisplayMetrics()
+            display.getMetrics(dm)
+
+            // we don't retrieve the screenWidth and screenHeight from the displayMnager as it may have the status/nav bars
+            val diagonal = Math.hypot(screenWidth.toDouble() / dm.xdpi, screenHeight.toDouble() / dm.ydpi).toFloat()
+
+            Timber.d("diagonal=" + diagonal)
+            return diagonal >= 8
+        }
     }
 }

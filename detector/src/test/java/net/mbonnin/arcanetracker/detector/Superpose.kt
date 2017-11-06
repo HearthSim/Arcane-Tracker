@@ -1,9 +1,10 @@
 package net.mbonnin.arcanetracker.detector
 
 import com.google.gson.JsonParser
-import net.mbonnin.arcanetracker.detector.RRectFactory.Companion.RECTS_MINION_PIXEL
-import net.mbonnin.arcanetracker.detector.RRectFactory.Companion.RECTS_SPELLS_PIXEL
-import net.mbonnin.arcanetracker.detector.RRectFactory.Companion.RECTS_WEAPON_PIXEL
+import net.mbonnin.arcanetracker.detector.Detector.Companion.NAME_TO_CARD_ID
+import net.mbonnin.arcanetracker.detector.RRectFactory.Companion.ARENA_MINIONS_PIXEL
+import net.mbonnin.arcanetracker.detector.RRectFactory.Companion.ARENA_SPELLS_PIXEL
+import net.mbonnin.arcanetracker.detector.RRectFactory.Companion.ARENA_WEAPONS_PIXEL
 import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.Type
 import org.junit.Assert
@@ -11,7 +12,6 @@ import org.junit.Test
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStreamReader
-import java.util.*
 
 
 class Superpose {
@@ -22,7 +22,6 @@ class Superpose {
 
     @Test
     fun superpose() {
-        val reader = InputStreamReader(CardJson::class.java.getResourceAsStream("/arena_choices.json"))
         val outFile = File(OUTPUT_DIR)
         if (!outFile.exists()) {
             outFile.mkdirs()
@@ -30,30 +29,7 @@ class Superpose {
 
         CardJson.init("enUS")
 
-        val map = TreeMap<String, ArrayList<String>>()
-
-        CardJson.allCards().filter { it.name != null }.forEach({
-            val cardName = it.name!!
-                    .toUpperCase()
-                    .replace(" ", "_")
-                    .replace(Regex("[^A-Z_]"), "")
-
-            map.getOrPut(cardName, { ArrayList() }).add(it.id)
-        })
-
-        val nameToCardID = TreeMap<String, String>()
-
-        for (entry in map) {
-            entry.value.sort()
-            for ((i, id) in entry.value.withIndex()) {
-                var name = entry.key
-                if (i > 0) {
-                    name += i
-                }
-                nameToCardID.put(name, id)
-            }
-        }
-
+        val reader = InputStreamReader(CardJson::class.java.getResourceAsStream("/arena_choices.json"))
         val choices = JsonParser().parse(reader).asJsonObject
 
         Parallel(choices.entrySet().toList(), {
@@ -63,7 +39,7 @@ class Superpose {
             val choiceImage = pngToByteBufferImage(FileInputStream(inputFile))
 
             it.value.asJsonArray.forEachIndexed { index, name ->
-                val cardId = nameToCardID[name.asString]
+                val cardId = NAME_TO_CARD_ID[name.asString]
                 if (cardId != null) {
                     superposeModel(choiceImage, index, cardId)
                 } else {
@@ -81,9 +57,9 @@ class Superpose {
 
     private fun superposeModel(choiceImage: ByteBufferImage, index: Int, cardId: String) {
         val rect = when(CardJson.getCard(cardId)?.type) {
-            Type.MINION -> RECTS_MINION_PIXEL[index]
-            Type.SPELL -> RECTS_SPELLS_PIXEL[index]
-            Type.WEAPON -> RECTS_WEAPON_PIXEL[index]
+            Type.MINION -> ARENA_MINIONS_PIXEL[index]
+            Type.SPELL -> ARENA_SPELLS_PIXEL[index]
+            Type.WEAPON -> ARENA_WEAPONS_PIXEL[index]
             else -> null
         }
 

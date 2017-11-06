@@ -14,9 +14,14 @@ void computeHaar(double *pDouble, double *pDouble1);
 double *scaledIntegralImage(uint8_t *in, int pixel_stride, int stride, jdouble in_x, jdouble in_y,
                             jdouble in_w, jdouble in_h,
                             int out_w, int out_h);
+uint8_t *scaleImage(uint8_t *in, int pixel_stride, int stride, jdouble in_x, jdouble in_y,
+                    jdouble in_w, jdouble in_h,
+                    int out_w, int out_h);
+
+static int index = 0;
 
 #define FEATURES_PER_CHANNEL 5
-#define HAAR_SCALED_SIZE 32
+#define HAAR_SCALED_SIZE 128
 #define PHASH_SCALED_SIZE 8
 
 #define DUMP_PNG 0
@@ -24,7 +29,54 @@ double *scaledIntegralImage(uint8_t *in, int pixel_stride, int stride, jdouble i
 
 #define TAG "JNI"
 
+double *computeIntegralImage(uint8_t *in, int stride, int w, int h) {
+    double *out = (double *) malloc(w * h * sizeof(double));
+    double *out_ptr = out;
 
+    uint8_t *in_ptr;
+    for (int j = 0; j < h; j++) {
+        in_ptr = in + j * stride;
+
+        for (int i = 0; i < w; i++) {
+            double v = *in_ptr++;
+
+            if (j > 0) {
+                v += out[i + (j - 1) * w];
+            }
+            if (i > 0) {
+                v += out[i - 1 + j * w];
+            }
+            if (i > 0 && j > 0) {
+                v -= out[i - 1 + (j - 1) * w];
+            }
+            *out_ptr++ = v;
+        }
+    }
+
+    return out;
+}
+
+static inline uint8_t clip(int in) {
+    if (in < 0) {
+        return 0;
+    } else if (in >= 255) {
+        return 255;
+    } else {
+        return (uint8_t) in;
+    }
+}
+/**
+ *
+ * @param env
+ * @param obj
+ * @param byteBuffer a ByteBuffer containing pixels in RGBA order
+ * @param stride
+ * @param x
+ * @param y
+ * @param w
+ * @param h
+ * @return
+ */
 JNIEXPORT jdoubleArray JNICALL
 Java_net_mbonnin_arcanetracker_detector_FeatureExtractor_getFeatures(JNIEnv *env, jobject obj,
                                                                      jobject byteBuffer,
@@ -41,11 +93,41 @@ Java_net_mbonnin_arcanetracker_detector_FeatureExtractor_getFeatures(JNIEnv *env
     uint8_t *buf = (uint8_t *) env->GetDirectBufferAddress(byteBuffer);
 
     double *v = (double *) malloc(3 * FEATURES_PER_CHANNEL * sizeof(double));
-    for (int i = 0; i < 3; i++) {
-        double *integralImage = scaledIntegralImage(buf + i, 4, stride, x, y, w, h,
-                                                    HAAR_SCALED_SIZE,
-                                                    HAAR_SCALED_SIZE);
 
+    uint8_t *yuv[3];
+    uint8_t *resized[3];
+
+    for (int i = 0; i < 3; i++) {
+        resized[i] = scaleImage(buf + i, 4, stride, x, y, w, h, HAAR_SCALED_SIZE, HAAR_SCALED_SIZE);
+        yuv[i] = (uint8_t *) malloc(HAAR_SCALED_SIZE * HAAR_SCALED_SIZE);
+    }
+
+    uint8_t *r = resized[0];
+    uint8_t *g = resized[1];
+    uint8_t *b = resized[2];
+    uint8_t *yy = yuv[0];
+    uint8_t *uu = yuv[1];
+    uint8_t *vv = yuv[2];
+    for (int j = 0; j < HAAR_SCALED_SIZE; j++) {
+        for (int i = 0; i < HAAR_SCALED_SIZE; i++) {
+            int rr = *r++;
+            int gg = *g++;
+            int bb = *b++;
+            *yy++ = (77 * rr + 150 * gg + 29 * bb + 128) >> 8;
+            *uu++ = ((-43 * rr - 84 * gg + 127 * bb + 128) >> 8) + 128;
+            *vv++ = ((127 * rr - 106 * gg - 21 * bb + 128) >> 8) + 128;
+        }
+    }
+
+    save_png(resized[0], HAAR_SCALED_SIZE, HAAR_SCALED_SIZE, "resized-r", index);
+    save_png(resized[1], HAAR_SCALED_SIZE, HAAR_SCALED_SIZE, "resized-g", index);
+    save_png(resized[2], HAAR_SCALED_SIZE, HAAR_SCALED_SIZE, "resized-b", index);
+    save_png(yuv[0], HAAR_SCALED_SIZE, HAAR_SCALED_SIZE, "resized-y", index);
+    save_png(yuv[1], HAAR_SCALED_SIZE, HAAR_SCALED_SIZE, "resized-u", index);
+    save_png(yuv[2], HAAR_SCALED_SIZE, HAAR_SCALED_SIZE, "resized-v", index);
+
+    for (int i = 0; i < 3; i++) {
+        double *integralImage = computeIntegralImage(yuv[i], HAAR_SCALED_SIZE, HAAR_SCALED_SIZE, HAAR_SCALED_SIZE);
         computeHaar(integralImage, v + i * FEATURES_PER_CHANNEL);
         free(integralImage);
     }
@@ -56,53 +138,14 @@ Java_net_mbonnin_arcanetracker_detector_FeatureExtractor_getFeatures(JNIEnv *env
 
     env->SetDoubleArrayRegion(vector, 0, 3 * FEATURES_PER_CHANNEL, v);
 
-    free(v);
-    return vector;
-}
-
-
-double *scaledIntegralImage(uint8_t *in, int pixel_stride, int stride, jdouble in_x, jdouble in_y,
-                            jdouble in_w, jdouble in_h,
-                            int out_w, int out_h) {
-    double *out = (double *) malloc(out_w * out_h * sizeof(double));
-    double *out_ptr = out;
-    double ax = out_w / in_w;
-    double ay = out_h / in_h;
-
-    for (int j = 0; j < out_h; j++) {
-        for (int i = 0; i < out_w; i++) {
-            double x = in_x + i / ax;
-            double y = in_y + j / ay;
-
-
-            int x0 = (int) x;
-            int y0 = (int) y;
-            int x1 = x0 + 1;
-            int y1 = y0 + 1;
-
-            double X0Y0 = in[x0 * pixel_stride + y0 * stride];
-            double X1Y0 = in[x1 * pixel_stride + y0 * stride];
-            double X0Y1 = in[x0 * pixel_stride + y1 * stride];
-            double X1Y1 = in[x1 * pixel_stride + y1 * stride];
-
-            double v0 = (x - x0) * X0Y0 + (x1 - x) * X1Y0;
-            double v1 = (x - x0) * X0Y1 + (x1 - x) * X1Y1;
-            double v = (y - y0) * v0 + (y1 - y) * v1;
-
-            if (j > 0) {
-                v += out[i + (j - 1) * out_w];
-            }
-            if (i > 0) {
-                v += out[i - 1 + j * out_w];
-            }
-            if (i > 0 && j > 0) {
-                v -= out[i - 1 + (j - 1) * out_w];
-            }
-            *out_ptr++ = v;
-        }
+    for (int i = 0; i < 3; i++) {
+        free(resized[i]);
+        free(yuv[i]);
     }
+    free(v);
 
-    return out;
+    index++;
+    return vector;
 }
 
 static inline double getPoint(double *integralImage, int x, int y) {
@@ -135,9 +178,9 @@ uint8_t *scaleImage(uint8_t *in, int pixel_stride, int stride, jdouble in_x, jdo
                     int out_w, int out_h) {
 
     DBG __android_log_print(ANDROID_LOG_DEBUG, TAG, "scale: %dx%d -> %dx%d", (int) in_w, (int) in_h,
-                        out_w, out_h);
+                            out_w, out_h);
 
-    if (1 && in_w / out_w > 2) {
+    if (0 && in_w / out_w > 2) {
         int intermediate_w = (int) (in_w / 2 + 1);
         int intermediate_h = (int) (in_h / 2 + 1);
 
@@ -151,7 +194,6 @@ uint8_t *scaleImage(uint8_t *in, int pixel_stride, int stride, jdouble in_x, jdo
         return ret;
     }
 
-
     uint8_t *out = (uint8_t *) malloc(out_w * out_h * sizeof(uint8_t));
     uint8_t *out_ptr = out;
     double ax = out_w / in_w;
@@ -161,7 +203,6 @@ uint8_t *scaleImage(uint8_t *in, int pixel_stride, int stride, jdouble in_x, jdo
         for (int i = 0; i < out_w; i++) {
             double x = in_x + i / ax;
             double y = in_y + j / ay;
-
 
             int x0 = (int) x;
             int y0 = (int) y;
@@ -180,7 +221,8 @@ uint8_t *scaleImage(uint8_t *in, int pixel_stride, int stride, jdouble in_x, jdo
             *out_ptr++ = (uint8_t) (((int) v) & 0xff);
         }
     }
-    DBG __android_log_print(ANDROID_LOG_DEBUG, TAG, "done %dx%d (ax=%f, ay=%f)", out_w, out_h, ax, ay);
+    DBG __android_log_print(ANDROID_LOG_DEBUG, TAG, "done %dx%d (ax=%f, ay=%f)", out_w, out_h, ax,
+                            ay);
     return out;
 }
 
@@ -192,7 +234,6 @@ Java_net_mbonnin_arcanetracker_detector_FeatureExtractor_getHash(JNIEnv *env, jo
                                                                  jdouble h) {
 
     uint8_t *buf = (uint8_t *) env->GetDirectBufferAddress(byteBuffer);
-    static int index = 0;
 
     uint8_t *red = scaleImage(buf, 4, stride, x, y, w, h, PHASH_SCALED_SIZE, PHASH_SCALED_SIZE);
     uint8_t *green = scaleImage(buf + 1, 4, stride, x, y, w, h, PHASH_SCALED_SIZE,
@@ -235,7 +276,7 @@ Java_net_mbonnin_arcanetracker_detector_FeatureExtractor_getHash(JNIEnv *env, jo
         }
         save_png(tmp, (int) w, (int) h, "original", index);
 
-        uint8_t *tmp2 = scaleImage(tmp, 1, (int)w, 0, 0, (int)w, (int)h, w, h);
+        uint8_t *tmp2 = scaleImage(tmp, 1, (int) w, 0, 0, (int) w, (int) h, w, h);
         save_png(tmp2, w, h, "noresize", index);
         free(tmp2);
         free(tmp);

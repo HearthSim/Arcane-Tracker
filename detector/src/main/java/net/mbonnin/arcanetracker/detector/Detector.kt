@@ -5,8 +5,10 @@ import android.util.Log
 import com.google.gson.Gson
 import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.PlayerClass
+import net.mbonnin.hsmodel.Type
 import java.io.InputStreamReader
 import java.nio.ByteBuffer
+import java.util.*
 import kotlin.reflect.KFunction2
 
 class ByteBufferImage(val w: Int,
@@ -37,24 +39,17 @@ const val MODE_CASUAL = 4
 const val MODE_RANKED = 5
 
 class Detector(var context: Context) {
-    var mapping: List<Int> = listOf()
-    var lastHero: String = ""
+    private val mappings = Array<List<Int>>(3, { listOf()})
+    private val arena_rects by lazy {
+        arrayOf(rectFactory!!.ARENA_MINIONS, rectFactory!!.ARENA_SPELLS, rectFactory!!.ARENA_WEAPONS)
+    }
+    var lastPlayerClass: String? = "?"
     val generatedData = Gson().fromJson(InputStreamReader(context.resources.openRawResource(R.raw.generated_data)), GeneratedData::class.java)
     var rectFactory: RRectFactory? = null
-    var forceIsTablet = false
-    var isTablet: Boolean = false
-        set(value) {
-            rectFactory?.isTablet = value
-            forceIsTablet = true
-            field = value
-        }
 
     private fun ensureRectFactory(byteBufferImage: ByteBufferImage) {
         if (rectFactory == null) {
             rectFactory = RRectFactory(byteBufferImage.w, byteBufferImage.h, context)
-            if (forceIsTablet) {
-                rectFactory?.isTablet = isTablet
-            }
         }
     }
 
@@ -111,7 +106,7 @@ class Detector(var context: Context) {
         }
     }
 
-    fun detectArenaHaar(byteBufferImage: ByteBufferImage, hero: String): Array<ArenaResult> {
+    fun detectArenaHaar(byteBufferImage: ByteBufferImage, hero: String?): Array<ArenaResult> {
         ensureRectFactory(byteBufferImage)
         return detectArena(byteBufferImage, Detector.Companion::extractHaar, Detector.Companion::euclidianDistance, generatedData.TIERLIST_HAAR, hero)
     }
@@ -121,38 +116,50 @@ class Detector(var context: Context) {
         return detectArena(byteBufferImage, Detector.Companion::extractPhash, Detector.Companion::hammingDistance, generatedData.TIERLIST_PHASH, hero)
     }
 
-    private fun <T> detectArena(byteBufferImage: ByteBufferImage, extractFeatures: KFunction2<ByteBufferImage, RRect, T>, computeDistance: KFunction2<T, T, Double>, candidates: List<T>, hero: String): Array<ArenaResult> {
-        val arenaResults = Array<ArenaResult?>(3,{null})
-
-        if (hero != lastHero) {
-            mapping = CardJson.allCards().filter { it.scores != null }.mapIndexed { index, card ->
-                if (!PlayerClass.NEUTRAL.equals(card.playerClass) && hero != card.playerClass) {
-                    // do not consider cards that are the wrong hero
-                    null
-                } else {
-                    index
-                }
-            }.filterNotNull()
-
-            lastHero = hero
-        }
-        val sb = StringBuilder()
-        for (i in 0 until arenaResults.size) {
-            val matchResult = matchImage(byteBufferImage,
-                    rectFactory!!.ARENA_RECTS[i],
-                    extractFeatures,
-                    computeDistance,
-                    candidates,
-                    mapping)
-            arenaResults[i] = ArenaResult(generatedData.TIERLIST_IDS[matchResult.bestIndex], matchResult.distance)
-
-            sb.append("[" + arenaResults[i]?.cardId + "(" + matchResult.distance + ")]")
-        }
-
-        Log.d("Detector", sb.toString())
-        return arenaResults as Array<ArenaResult>
+    private fun getMapping(playerClass: String?, type: String): List<Int> {
+        return CardJson.allCards().filter { it.scores != null }.mapIndexed { index, card ->
+            if (playerClass != null
+                    && !PlayerClass.NEUTRAL.equals(card.playerClass)
+                    && playerClass != card.playerClass
+                    && type != card.type) {
+                // do not consider cards that are the wrong hero
+                null
+            } else {
+                index
+            }
+        }.filterNotNull()
     }
 
+    private fun <T> detectArena(byteBufferImage: ByteBufferImage, extractFeatures: KFunction2<ByteBufferImage, RRect, T>, computeDistance: KFunction2<T, T, Double>, candidates: List<T>, playerClass: String?): Array<ArenaResult> {
+        val arenaResults = Array<ArenaResult>(3, {ArenaResult("", Double.MAX_VALUE)})
+
+        if (playerClass != lastPlayerClass) {
+            mappings[0] = getMapping(playerClass, Type.MINION)
+            mappings[1] = getMapping(playerClass, Type.SPELL)
+            mappings[2] = getMapping(playerClass, Type.WEAPON)
+
+            lastPlayerClass = playerClass
+        }
+
+        for (type in 0 until mappings.size) {
+            for (i in 0 until arenaResults.size) {
+                val matchResult = matchImage(byteBufferImage,
+                        arena_rects[type][i],
+                        extractFeatures,
+                        computeDistance,
+                        candidates,
+                        mappings[type])
+
+                if (matchResult.distance < arenaResults[i].distance) {
+                    arenaResults[i].distance = matchResult.distance
+                    arenaResults[i].cardId = generatedData.TIERLIST_IDS[matchResult.bestIndex]
+                }
+            }
+        }
+
+        Log.d("Detector", arenaResults.map{ "[" + it.cardId + "(" + it.distance + ")]"}.joinToString { "," })
+        return arenaResults
+    }
 
     companion object {
         fun hammingDistance(a: Long, b: Long): Double {
@@ -222,10 +229,6 @@ class Detector(var context: Context) {
             return matchResult
         }
 
-        fun <T> getModel(context: Context, resId: Int, clazz: Class<T>): T {
-            return Gson().fromJson(InputStreamReader(context.resources.openRawResource(resId)), clazz)
-        }
-
         fun haarToString(features: DoubleArray): String {
             val sb= StringBuilder()
 
@@ -249,6 +252,34 @@ class Detector(var context: Context) {
                 MODE_RANKED -> "MODE_RANKED"
                 else -> "UNKNOWN"
             }
+        }
+
+        val NAME_TO_CARD_ID by lazy {
+            val map = TreeMap<String, ArrayList<String>>()
+
+            CardJson.allCards().filter { it.name != null }.forEach({
+                val cardName = it.name!!
+                        .toUpperCase()
+                        .replace(" ", "_")
+                        .replace(Regex("[^A-Z_]"), "")
+
+                map.getOrPut(cardName, { ArrayList() }).add(it.id)
+            })
+
+            val nameToCardID = TreeMap<String, String>()
+
+            for (entry in map) {
+                entry.value.sort()
+                for ((i, id) in entry.value.withIndex()) {
+                    var name = entry.key
+                    if (i > 0) {
+                        name += i
+                    }
+                    nameToCardID.put(name, id)
+                }
+            }
+
+            nameToCardID
         }
     }
 }
