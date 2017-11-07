@@ -67,7 +67,7 @@ public class HSReplay {
         uploadRequest.match_start = matchStart;
         uploadRequest.build = 20022;
         uploadRequest.friendly_player_id = friendlyPlayerId;
-        uploadRequest.game_type = summary.bnetGameType.getIntValue();
+        uploadRequest.game_type = summary.bnetGameType;
         if (game.rank > 0) {
             if (friendlyPlayerId.equals("1")) {
                 uploadRequest.player1.rank = game.rank;
@@ -118,7 +118,7 @@ public class HSReplay {
         summary.opponentHero = game.opponent.classIndex();
         summary.date = Utils.INSTANCE.getISO8601DATEFORMAT().format(new Date());
         summary.deckName = MainViewCompanion.getPlayerCompanion().getDeck().name;
-        summary.bnetGameType = game.bnetGameType;
+        summary.bnetGameType = game.bnetGameType.getIntValue();
 
         mGameList.add(0, summary);
         PaperDb.INSTANCE.write(KEY_GAME_LIST, mGameList);
