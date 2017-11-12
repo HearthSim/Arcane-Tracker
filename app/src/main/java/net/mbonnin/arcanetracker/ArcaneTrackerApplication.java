@@ -15,6 +15,7 @@ import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.WindowManager;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.LruCache;
 import com.squareup.picasso.Picasso;
@@ -160,6 +161,9 @@ public class ArcaneTrackerApplication extends MultiDexApplication {
         CardRenderer.get();
 
         MainService.start();
+
+        FirebaseAnalytics.getInstance(this).setUserProperty(FirebaseConstants.SCREEN_CAPTURE_ENABLED.name().toLowerCase(),
+                Boolean.toString(Settings.get(Settings.SCREEN_CAPTURE_ENABLED, false)));
     }
 
     private void initCardJson() {
