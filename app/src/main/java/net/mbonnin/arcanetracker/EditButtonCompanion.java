@@ -36,7 +36,7 @@ public class EditButtonCompanion {
             mViewManager.removeView(view);
 
             View deckListView = LayoutInflater.from(v2.getContext()).inflate(R.layout.decklist_view, null);
-            RecyclerView recyclerView = (RecyclerView) deckListView.findViewById(R.id.recyclerView);
+            RecyclerView recyclerView = deckListView.findViewById(R.id.recyclerView);
             recyclerView.setLayoutManager(new LinearLayoutManager(v2.getContext()));
             DeckListAdapter adapter = new DeckListAdapter();
             adapter.setOnDeckSelectedListener(deck -> {

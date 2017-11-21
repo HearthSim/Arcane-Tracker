@@ -33,11 +33,8 @@ public class PicassoCardRequestHandler extends RequestHandler {
 
     @Override
     public boolean canHandleRequest(Request data) {
-        if (data.uri.getScheme().equals("card")) {
-            return true;
-        }
+        return data.uri.getScheme().equals("card");
 
-        return false;
     }
 
     private static String getKey(String cardId, String langKey) {

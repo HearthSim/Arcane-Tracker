@@ -18,9 +18,9 @@ import net.mbonnin.arcanetracker.hsreplay.HSReplay;
 public class HistoryCompanion {
     public HistoryCompanion(View view) {
         view.findViewById(R.id.historyEmpty);
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        TextView historyEmpty = (TextView) view.findViewById(R.id.historyEmpty);
-        Button eraseHistory = (Button) view.findViewById(R.id.eraseHistory);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        TextView historyEmpty = view.findViewById(R.id.historyEmpty);
+        Button eraseHistory = view.findViewById(R.id.eraseHistory);
 
         GameAdapter adapter = new GameAdapter(HSReplay.get().getGameSummary());
         adapter.setOnclickListener(summary -> {

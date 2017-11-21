@@ -14,7 +14,7 @@ public class GameAdapter extends RecyclerView.Adapter {
     private final ArrayList<GameSummary> mGameList;
     private Listener mListener;
 
-    public static interface Listener {
+    public interface Listener {
         void onClick(GameSummary summary);
     }
     public GameAdapter(ArrayList<GameSummary> gameList) {

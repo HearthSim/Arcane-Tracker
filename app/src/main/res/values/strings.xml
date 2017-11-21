@@ -24,16 +24,6 @@
     <string name="card">Card [%s]</string>
     <string name="cardsLanguage">Cards Language</string>
     <string name="changeDeck">Change active deck</string>
-    <string name="changelog_213">Support for deckstrings. You can now paste decks copied from the game. Just click \"new deck\" after copying your deck.\nMark HSReplay.net uploads as Arena when needed\nYou can now edit the win/loss counter.</string>
-    <string name="changelog_214">Fixed a bug that prevented the tracker to detect new arena runs if your hero was golden.\nIncreased the time we wait for logs to complete at the end of a game. This should fix some instances where the logs are not uploaded to hsreplay.net.\nImproved french translations.</string>
-    <string name="changelog_217">Added support for the Frozen Throne extension.</string>
-    <string name="changelog_219">Fixed a crash at startup for devices on kitkat and below.</string>
-    <string name="changelog_220">Fixed a crash when clicking \'new deck\'\nImproved the HSReplay.net settings.</string>
-    <string name="changelog_221">Secret tracker: long press a secret in your opponent deck to determine which secrets are/are not possible.\nShow the creator of gift cards when possible.\nAdd support for Android Oreo.\nAllow to paste custom deckstrings.</string>
-    <string name="changelog_222">Secret tracker: fix sometimes Vaporize or Effigy badly detected.\nAdded Elise the trailblazer gift card support.\nDisplay the notification again in Android O.</string>
-    <string name="changelog_223">Fixed a couple of crashes, improved memory usage.</string>
-    <string name="changelog_227">Fixed detection of Nemsy.\nRank/mode detection using screen capture (beta).</string>
-    <string name="changelog_231">Marin the fox is now tracked by Arcane Tracker!\nFixed the auto-selection of decks based on mulliganed cards.\nCrash fixes.</string>
     <string name="clazz">Class</string>
     <string name="clickOpponent">Click here to see your opponent\'s deck.</string>
     <string name="clickPlayer">Click here to see your deck.</string>

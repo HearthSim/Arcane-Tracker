@@ -195,7 +195,7 @@ public class DeckEditorView extends RelativeLayout {
         ViewManager.Params params = new ViewManager.Params();
         params.x = 0;
         params.y = 0;
-        params.w = (int) (viewManager.getUsableWidth());
+        params.w = viewManager.getUsableWidth();
         params.h = viewManager.getUsableHeight();
 
         deckEditorView.setDeck(deck);

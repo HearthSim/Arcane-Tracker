@@ -34,8 +34,7 @@ class ArenaParser : LogReader.LineConsumer {
     }
 
 
-    private constructor () {
-    }
+    private constructor ()
 
     override fun onLine(rawLine: String) {
         Timber.v(rawLine)

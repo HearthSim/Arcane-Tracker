@@ -16,7 +16,7 @@ class QuitDetector {
         override fun run() {
             val displayMetrics = DisplayMetrics()
             val windowManager = ArcaneTrackerApplication.get().getSystemService(WINDOW_SERVICE) as WindowManager
-            windowManager.getDefaultDisplay().getMetrics(displayMetrics)
+            windowManager.defaultDisplay.getMetrics(displayMetrics)
             val height = displayMetrics.heightPixels
             val width = displayMetrics.widthPixels
 
@@ -51,7 +51,6 @@ class QuitDetector {
     }
 
     @Volatile private var lastTimeMillis: Long = 0L
-        private set
 
     fun ping() {
         lastTimeMillis = System.currentTimeMillis()

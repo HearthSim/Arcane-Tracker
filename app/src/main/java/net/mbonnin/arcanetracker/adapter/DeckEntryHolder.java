@@ -94,12 +94,12 @@ class DeckEntryHolder extends RecyclerView.ViewHolder implements View.OnTouchLis
         super(itemView);
         RecyclerView.LayoutParams params = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.INSTANCE.dpToPx(30));
         itemView.setLayoutParams(params);
-        background = ((ImageView)(itemView.findViewById(R.id.background)));
-        cost = ((TextView)itemView.findViewById(R.id.cost));
-        name = ((TextView)itemView.findViewById(R.id.name));
-        count = ((TextView)itemView.findViewById(R.id.count));
+        background = itemView.findViewById(R.id.background);
+        cost = itemView.findViewById(R.id.cost);
+        name = itemView.findViewById(R.id.name);
+        count = itemView.findViewById(R.id.count);
         overlay = itemView.findViewById(R.id.overlay);
-        gift = (ImageView)itemView.findViewById(R.id.gift);
+        gift = itemView.findViewById(R.id.gift);
 
         mHandler = new Handler();
         itemView.setOnTouchListener(this);

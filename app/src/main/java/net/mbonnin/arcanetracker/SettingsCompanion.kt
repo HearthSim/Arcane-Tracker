@@ -184,7 +184,7 @@ class SettingsCompanion(internal var settingsView: View) {
         } else {
             explanation += settingsView.resources.getString(R.string.never)
         }
-        quitTimeoutExplanation.setText(explanation)
+        quitTimeoutExplanation.text = explanation
     }
 
     internal var mHsReplayState = HsReplayState()

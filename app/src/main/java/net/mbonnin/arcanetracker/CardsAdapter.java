@@ -60,7 +60,7 @@ public class CardsAdapter extends RecyclerView.Adapter {
         RecyclerView.ViewHolder holder = new RecyclerView.ViewHolder(view) {
         };
 
-        ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
+        ImageView imageView = view.findViewById(R.id.imageView);
         ((AspectRatioImageView)imageView).setAspectRatio(1.51f);
 
         view.setOnTouchListener((v, event) -> {
@@ -182,8 +182,8 @@ public class CardsAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ImageView imageView = (ImageView) holder.itemView.findViewById(R.id.imageView);
-        TextView textView = (TextView) holder.itemView.findViewById(R.id.textView);
+        ImageView imageView = holder.itemView.findViewById(R.id.imageView);
+        TextView textView = holder.itemView.findViewById(R.id.textView);
 
         Card card = mCardList.get(position);
 

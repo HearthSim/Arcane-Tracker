@@ -29,16 +29,12 @@ android {
         }
     }
 
-    lintOptions {
-        abortOnError false
-    }
-
     dataBinding {
         enabled = true
     }
 
     def props = new Properties()
-    def f = project.file("keystore.properties");
+    def f = project.file("keystore.properties")
     if (f.exists()) {
         props.load(new FileInputStream(f))
 
@@ -70,11 +66,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    lintOptions {
-        lintConfig file('lint.xml')
-        checkReleaseBuilds false
-    }
-
     packagingOptions {
         exclude 'META-INF/INDEX.LIST'
     }
@@ -87,8 +78,8 @@ android {
 }
 
 ext {
-    supportLibVersion = '27.0.0'
-    playServicesVersion = '11.4.2'
+    supportLibVersion = '27.0.1'
+    playServicesVersion = '11.6.0'
 }
 
 repositories {

@@ -34,7 +34,7 @@ class ArenaGuessView : View {
 
     fun dpToPx(dp: Int): Int {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(),
-                getContext().resources.displayMetrics).toInt()
+                context.resources.displayMetrics).toInt()
     }
 
 
@@ -83,7 +83,7 @@ class ArenaGuessView : View {
         textPaint.isAntiAlias = true
         textPaint.textSize = dpToPx(15).toFloat()
         textPaint.textAlign = Paint.Align.LEFT
-        textPaint.typeface = ResourcesCompat.getFont(context, R.font.belwe_bold);
+        textPaint.typeface = ResourcesCompat.getFont(context, R.font.belwe_bold)
 
 
         val x = (h + dpToPx(5)).toFloat()

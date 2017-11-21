@@ -25,7 +25,7 @@ public class GemView extends View {
         Drawable drawable = getResources().getDrawable(R.drawable.cost_mana);
         drawable.draw(canvas);
 
-        int size = (int) (canvas.getHeight());
+        int size = canvas.getHeight();
         float dx = canvas.getWidth()/2;
         float dy = canvas.getHeight() * 3 /4;
 

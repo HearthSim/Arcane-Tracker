@@ -17,9 +17,6 @@ import java.util.concurrent.CopyOnWriteArrayList
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 class ScreenCapture constructor(mediaProjection: MediaProjection) : ImageReader.OnImageAvailableListener {
     internal var mCallback: MediaProjection.Callback = object : MediaProjection.Callback() {
-        override fun onStop() {
-            super.onStop()
-        }
     }
     internal var mWidth: Int = 0
     internal var mHeight: Int = 0

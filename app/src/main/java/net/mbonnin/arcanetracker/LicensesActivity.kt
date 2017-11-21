@@ -30,8 +30,8 @@ class LicensesActivity : Activity() {
             val view = LayoutInflater.from(this).inflate(R.layout.license_item, linearLayout, false)
             val params = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
             linearLayout.addView(view, params)
-            view.findViewById<TextView>(R.id.tv1).setText(license.first)
-            view.findViewById<TextView>(R.id.tv2).setText(license.second)
+            view.findViewById<TextView>(R.id.tv1).text = license.first
+            view.findViewById<TextView>(R.id.tv2).text = license.second
 
 
         }

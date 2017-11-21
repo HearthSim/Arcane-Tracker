@@ -389,7 +389,7 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
     }
 
     private void configureHandles(View v) {
-        HandleView handleView = (HandleView) v.findViewById(R.id.settingsHandle);
+        HandleView handleView = v.findViewById(R.id.settingsHandle);
         Drawable drawable = v.getContext().getResources().getDrawable(R.drawable.settings_handle);
         handleView.init(drawable, v.getContext().getResources().getColor(R.color.gray));
         handleView.setOnClickListener(v2 -> {
@@ -439,12 +439,12 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
             mViewManager.addModalView(view, params);
         });
 
-        handleView = (HandleView) v.findViewById(R.id.opponentHandle);
+        handleView = v.findViewById(R.id.opponentHandle);
         drawable = v.getContext().getResources().getDrawable(R.drawable.icon_white);
         handleView.init(drawable, v.getContext().getResources().getColor(R.color.opponentColor));
         handleView.setOnClickListener(new ClickListener(STATE_OPPONENT));
 
-        handleView = (HandleView) v.findViewById(R.id.playerHandle);
+        handleView = v.findViewById(R.id.playerHandle);
         drawable = v.getContext().getResources().getDrawable(R.drawable.icon_white);
         handleView.init(drawable, v.getContext().getResources().getColor(R.color.colorPrimary));
         handleView.setOnClickListener(new ClickListener(STATE_PLAYER));

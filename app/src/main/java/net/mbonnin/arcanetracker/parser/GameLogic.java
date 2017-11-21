@@ -358,11 +358,7 @@ public class GameLogic {
             if (!Type.MINION.equals(e.tags.get(Entity.KEY_CARDTYPE))) {
                 return false;
             }
-            if (!Utils.INSTANCE.equalsNullSafe(playerId, e.tags.get(Entity.KEY_CONTROLLER))) {
-                return false;
-            }
-
-            return true;
+            return Utils.INSTANCE.equalsNullSafe(playerId, e.tags.get(Entity.KEY_CONTROLLER));
         });
     }
 

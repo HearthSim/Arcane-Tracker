@@ -6,7 +6,7 @@ package net.mbonnin.arcanetracker.parser;
 
 public class Play {
 
-    public Play() {};
+    public Play() {}
 
     public Play(int turn, boolean isOpponent, String cardId) {
         this.turn = turn;

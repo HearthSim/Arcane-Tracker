@@ -18,12 +18,12 @@ public class GameViewHolder extends RecyclerView.ViewHolder {
 
     public GameViewHolder(View itemView) {
         super(itemView);
-        hero = (ImageView) itemView.findViewById(R.id.hero);
-        opponentHero = (ImageView) itemView.findViewById(R.id.opponentHero);
-        deckName = (TextView) itemView.findViewById(R.id.deckName);
-        winLoss = (TextView) itemView.findViewById(R.id.winLoss);
+        hero = itemView.findViewById(R.id.hero);
+        opponentHero = itemView.findViewById(R.id.opponentHero);
+        deckName = itemView.findViewById(R.id.deckName);
+        winLoss = itemView.findViewById(R.id.winLoss);
         coin = itemView.findViewById(R.id.coin);
-        opponentName = (TextView) itemView.findViewById(R.id.opponentName);
+        opponentName = itemView.findViewById(R.id.opponentName);
     }
 
     public void bind(GameSummary summary) {

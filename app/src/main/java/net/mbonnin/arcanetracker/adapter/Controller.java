@@ -249,7 +249,7 @@ public class Controller implements GameLogic.Listener {
             } else {
                 deckEntry.card = entity.card;
             }
-            deckEntry.gift = entity.extra.hide ? false : entity.extra.tmpIsGift;
+            deckEntry.gift = !entity.extra.hide && entity.extra.tmpIsGift;
             deckEntry.count = 1;
             Entity clone = entity.clone();
             if (entity.extra.hide) {

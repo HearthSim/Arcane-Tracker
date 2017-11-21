@@ -31,9 +31,9 @@ public class CreateDeckView extends CardView {
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        Button button = (Button)findViewById(R.id.button);
-        EditText editText = (EditText)findViewById(R.id.editText);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        Button button = findViewById(R.id.button);
+        EditText editText = findViewById(R.id.editText);
 
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         ClassAdapter adapter = new ClassAdapter();

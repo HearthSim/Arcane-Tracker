@@ -11,8 +11,8 @@ public class LoadableButtonCompanion {
 
     public LoadableButtonCompanion(View View) {
         mView = View;
-        button = (Button) View.findViewById(R.id.button);
-        progressBar = (ProgressBar) View.findViewById(R.id.progressBar);
+        button = View.findViewById(R.id.button);
+        progressBar = View.findViewById(R.id.progressBar);
     }
 
     public void setLoading() {

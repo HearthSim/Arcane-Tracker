@@ -26,7 +26,7 @@ class StartScreenCaptureActivity : AppCompatActivity() {
             setContentView(View(this))
             startActivity()
         } else {
-            binding = StartScreenCaptureActivityBinding.inflate(android.view.LayoutInflater.from(this));
+            binding = StartScreenCaptureActivityBinding.inflate(android.view.LayoutInflater.from(this))
             setContentView(binding.root)
 
             val clickListener = { _: View ->

@@ -14,11 +14,8 @@ import java.io.InputStream;
 public class PicassoBarRequestHandler extends RequestHandler {
     @Override
     public boolean canHandleRequest(Request data) {
-        if (data.uri.getScheme().equals("bar")) {
-            return true;
-        }
+        return data.uri.getScheme().equals("bar");
 
-        return false;
     }
 
     @Override

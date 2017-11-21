@@ -47,10 +47,10 @@ public class DeckCompanion {
         int h = mViewManager.getHeight();
 
         settings = v.findViewById(R.id.edit);
-        winLoss = (TextView) v.findViewById(R.id.winLoss);
-        deckName = (TextView) v.findViewById(R.id.deckName);
-        background = (ImageView) v.findViewById(R.id.background);
-        recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
+        winLoss = v.findViewById(R.id.winLoss);
+        deckName = v.findViewById(R.id.deckName);
+        background = v.findViewById(R.id.background);
+        recyclerView = v.findViewById(R.id.recyclerView);
 
         int x = Settings.get("x" + isOpponent, -1);
         if (x == -1) {
@@ -111,11 +111,11 @@ public class DeckCompanion {
             winLoss.setOnClickListener(v2 -> {
                 View view2 = LayoutInflater.from(v2.getContext()).inflate(R.layout.edit_win_loss, null);
 
-                NumberPicker win = (NumberPicker) view2.findViewById(R.id.win);
+                NumberPicker win = view2.findViewById(R.id.win);
                 win.setMinValue(0);
                 win.setMaxValue(999);
                 win.setValue(deck.wins);
-                NumberPicker losses = (NumberPicker) view2.findViewById(R.id.loss);
+                NumberPicker losses = view2.findViewById(R.id.loss);
                 losses.setMinValue(0);
                 losses.setMaxValue(999);
                 losses.setValue(deck.losses);
