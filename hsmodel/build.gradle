@@ -1,4 +1,4 @@
-import net.mbonnin.hsmodel.GenerateConstantsPlugin
+import net.mbonnin.arcanetracker.GenerateConstantsPlugin
 
 plugins {
     id "com.jfrog.bintray" version "1.7.3"
