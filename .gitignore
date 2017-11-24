@@ -18,3 +18,4 @@ app/google-services.json
 /app/src/main/assets/bars
 /buildSrc/build
 /hsmodel/build
+/.idea/*
