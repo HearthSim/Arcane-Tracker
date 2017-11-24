@@ -10,6 +10,10 @@ android {
     compileSdkVersion atConfig.compileSdkVersion
     buildToolsVersion atConfig.buildToolsVersion
 
+    lintOptions {
+        disable 'MissingTranslation'
+    }
+
     defaultConfig {
         applicationId "net.mbonnin.arcanetracker"
         minSdkVersion 19
