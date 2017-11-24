@@ -1,5 +1,5 @@
 import net.mbonnin.arcanetracker.GenerateConstantsPlugin
-import net.mbonnin.arcanetracker.UpdateCardsJson
+import net.mbonnin.arcanetracker.UpdateCardsJsonPlugin
 
 plugins {
     id "com.jfrog.bintray" version "1.7.3"
@@ -11,7 +11,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: "kotlin"
 apply plugin: GenerateConstantsPlugin
-apply plugin: UpdateCardsJson
+apply plugin: UpdateCardsJsonPlugin
 
 repositories {
     mavenCentral()

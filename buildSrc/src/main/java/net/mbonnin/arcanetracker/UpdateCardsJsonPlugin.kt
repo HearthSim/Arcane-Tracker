@@ -1,6 +1,6 @@
 package net.mbonnin.arcanetracker
 
-import io.reactivex.Single
+import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -9,7 +9,7 @@ import org.gradle.api.Project
 import java.io.File
 import java.io.IOException
 
-open class UpdateCardsJson : Plugin<Project> {
+open class UpdateCardsJsonPlugin : Plugin<Project> {
     override fun apply(p0: Project) {
         p0.tasks.create("updateCardsJson") {
             it.doLast {downloadAllJson(p0.file("src/main/resources/"))}
@@ -38,12 +38,12 @@ open class UpdateCardsJson : Plugin<Project> {
         }
 
         private fun downloadAllJson(outputDir: File) {
-            val sources = arrayOf("enUS", "frFR", "ptBR", "ruRU", "koKR", "zhCN", "zhTW", "esES")
-                    .map { { downloadOneJson(it, outputDir) } }
-                    .map { Single.fromCallable(it) }
-                    .map { it.subscribeOn(Schedulers.io()) }
-
-            Single.zip(sources, {""})
+            Observable.fromArray("enUS", "frFR", "ptBR", "ruRU", "koKR", "zhCN", "zhTW", "esES")
+                    .flatMap {
+                        Observable.fromCallable({ downloadOneJson(it, outputDir) })
+                                .subscribeOn(Schedulers.io())
+                    }
+                    .toList()
                     .blockingGet()
         }
     }
