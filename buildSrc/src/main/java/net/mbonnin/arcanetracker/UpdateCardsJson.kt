@@ -1,5 +1,7 @@
 package net.mbonnin.arcanetracker
 
+import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.gradle.api.Plugin
@@ -25,7 +27,7 @@ open class UpdateCardsJson : Plugin<Project> {
 
                 if (bytes != null) {
                     outputFile.writeBytes(bytes)
-                    System.err.println(url)
+                    System.out.println(url)
                 } else {
                     throw IOException()
                 }
@@ -36,8 +38,13 @@ open class UpdateCardsJson : Plugin<Project> {
         }
 
         private fun downloadAllJson(outputDir: File) {
-            arrayOf("enUS", "frFR", "ptBR", "ruRU", "koKR", "zhCN", "zhTW", "esES")
-                    .forEach { downloadOneJson(it, outputDir) }
+            val sources = arrayOf("enUS", "frFR", "ptBR", "ruRU", "koKR", "zhCN", "zhTW", "esES")
+                    .map { { downloadOneJson(it, outputDir) } }
+                    .map { Single.fromCallable(it) }
+                    .map { it.subscribeOn(Schedulers.io()) }
+
+            Single.zip(sources, {""})
+                    .blockingGet()
         }
     }
 }
