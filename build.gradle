@@ -32,6 +32,8 @@ allprojects {
     ext.dep = [
             gson    : 'com.google.code.gson:gson:2.8.2',
             okhttp  : 'com.squareup.okhttp3:okhttp:3.9.0',
+            moshi: 'com.squareup.moshi:moshi:1.5.0',
+            moshi_kotlin: 'com.squareup.moshi:moshi-kotlin:1.5.0',
             timber  : 'com.jakewharton.timber:timber:4.5.1',
             espresso: 'com.android.support.test.espresso:espresso-core:3.0.1',
             test_runner: 'com.android.support.test:runner:1.0.1',
