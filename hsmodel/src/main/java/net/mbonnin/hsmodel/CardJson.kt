@@ -1,30 +1,43 @@
 package net.mbonnin.hsmodel
 
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import java.io.InputStreamReader
+import com.squareup.moshi.KotlinJsonAdapterFactory
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
+import okio.Okio
 import java.util.*
 
 
 object CardJson {
-    private lateinit var allCards: ArrayList<Card>
+    private val allCards = ArrayList<Card>()
 
     fun init(lang: String, injectedCards: List<Card>?) {
-        val reader = InputStreamReader(CardJson::class.java.getResourceAsStream("/cards_$lang.json"))
-        allCards = Gson().fromJson<ArrayList<Card>>(reader, object : TypeToken<ArrayList<Card>?>() {}.type)
+        val moshi = Moshi.Builder()
+                // Add any other JsonAdapter factories.
+                .add(KotlinJsonAdapterFactory())
+                .build()
+
+        val listMyData = Types.newParameterizedType(List::class.java, Card::class.java)
+
+        val parsedCards = moshi.adapter<List<Card>>(listMyData).fromJson(Okio.buffer(Okio.source(CardJson::class.java.getResourceAsStream("/cards_$lang.json"))))
+
+        // this will crash if something wrong happens during deserialisation but that's what we want
+        allCards.addAll(parsedCards!!)
 
         injectedCards?.let { allCards.addAll(it) }
 
         Collections.sort(allCards) { a, b -> a.id.compareTo(b.id) }
 
-        val tierListReader = InputStreamReader(CardJson::class.java.getResourceAsStream("/tierlist.json"))
-        val tiercards = Gson().fromJson<TierCards>(tierListReader, TierCards::class.java).Cards
-                .sortedBy { it.CardId }
 
-        for (tiercard in tiercards) {
-            val card = getCard(tiercard.CardId)
-            card!!.scores = tiercard.Scores
-        }
+        val bufferedSource = Okio.buffer(Okio.source(CardJson::class.java.getResourceAsStream("/tierlist.json")))
+        val tiercards = moshi.adapter(TierCards::class.java).fromJson(bufferedSource)
+
+        // this will crash if something wrong happens during deserialisation but that's what we want
+        tiercards!!.Cards
+                .sortedBy {  it.CardId }
+                .forEach {
+                    val card = getCard(it.CardId)
+                    card!!.scores = it.Scores
+                }
     }
 
     fun allCards(): List<Card> {

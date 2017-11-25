@@ -19,7 +19,8 @@ repositories {
 }
 dependencies {
     implementation dep.kotlin_stdlib
-    implementation dep.gson
+    implementation dep.moshi
+    implementation dep.moshi_kotlin
 }
 
 compileKotlin {
