@@ -1,39 +1,37 @@
 package net.mbonnin.hsmodel
 
 
-class Card : Comparable<String> {
-
+data class Card(
     @JvmField
-    var name: String? = null
+    val name: String? = null,
     @JvmField
-    var playerClass: String? = null
-
-    lateinit var id: String
+    val playerClass: String? = null,
     @JvmField
-    var rarity: String? = null
+    val id: String,
     @JvmField
-    var type: String? = null
+    val rarity: String? = null,
     @JvmField
-    var text: String? = null
+    val type: String? = null,
     @JvmField
-    var race: String? = null
+    val text: String? = null,
     @JvmField
-    var set: String? = null
+    val race: String? = null,
     @JvmField
-    var multiClassGroup: String? = null
+    val set: String? = null,
     @JvmField
-    var dbfId: Int = 0
-
+    val multiClassGroup: String? = null,
     @JvmField
-    var cost: Int? = null
+    val dbfId: Int = 0,
     @JvmField
-    var attack: Int? = null
+    val cost: Int? = null,
     @JvmField
-    var health: Int? = null
+    val attack: Int? = null,
     @JvmField
-    var durability: Int? = null
+    val health: Int? = null,
     @JvmField
-    var collectible: Boolean? = null
+    val durability: Int? = null,
+    @JvmField
+    val collectible: Boolean? = null) : Comparable<String> {
 
     override fun compareTo(other: String): Int {
         return id.compareTo(other)
@@ -54,5 +52,4 @@ class Card : Comparable<String> {
     }
 
     var scores: List<TierScore>? = null
-
 }

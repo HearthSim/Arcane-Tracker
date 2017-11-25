@@ -10,44 +10,53 @@ object CardUtil {
     @JvmField
     val UNKNOWN = unknown()
 
-    fun unknown(): Card {
-        val card = Card()
-        card.name = "?"
-        card.playerClass = "?"
-        card.cost = Card.UNKNOWN_COST
-        card.id = "?"
-        card.rarity = "?"
-        card.type = Card.UNKNOWN_TYPE
-        card.text = "?"
-        card.race = "?"
-        card.collectible = false
+    fun unknown(name: String? = null): Card {
+        val card = Card(
+                id = "?",
+                name = name?:"?",
+                playerClass = "?",
+                cost = Card.UNKNOWN_COST,
+                rarity = "?",
+                type = Card.UNKNOWN_TYPE,
+                text = "?",
+                race = "?",
+                collectible = false
+        )
         return card
     }
 
     fun secret(playerClass: String): Card {
-        val card = unknown()
-        card.type = Type.SPELL
-        card.text = Utils.getString(R.string.secretText)
+        val id: String
+        val cost: Int
+        val pClass: String
 
         when (playerClass) {
             PlayerClass.PALADIN -> {
-                card.id = "secret_p"
-                card.cost = 1
-                card.playerClass = PlayerClass.PALADIN
+                id = "secret_p"
+                cost = 1
+                pClass = PlayerClass.PALADIN
             }
             PlayerClass.HUNTER -> {
-                card.id = "secret_h"
-                card.cost = 2
-                card.playerClass = PlayerClass.HUNTER
+                id = "secret_h"
+                cost = 2
+                pClass = PlayerClass.HUNTER
             }
             PlayerClass.MAGE -> {
-                card.id = "secret_m"
-                card.cost = 3
-                card.playerClass = PlayerClass.MAGE
+                id = "secret_m"
+                cost = 3
+                pClass = PlayerClass.MAGE
             }
+            else -> return unknown()
         }
-        card.name = Utils.getString(R.string.secret)
-        return card
+
+        return Card(
+                type = Type.SPELL,
+                text = Utils.getString(R.string.secretText),
+                name = Utils.getString(R.string.secret),
+                id = id,
+                cost = cost,
+                playerClass = pClass
+        )
     }
 
     fun getCard(dbfId: Int): Card? {

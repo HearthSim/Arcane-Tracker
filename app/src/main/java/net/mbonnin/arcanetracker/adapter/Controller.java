@@ -239,13 +239,12 @@ public class Controller implements GameLogic.Listener {
         for (Entity entity : entities) {
             DeckEntryItem deckEntry = new DeckEntryItem();
             if (TextUtils.isEmpty(entity.CardID) || entity.extra.hide) {
-                deckEntry.card = CardUtil.INSTANCE.unknown();
                 StringBuilder builder = new StringBuilder();
                 builder.append("#").append(GameLogic.gameTurnToHumanTurn(entity.extra.drawTurn));
                 if (entity.extra.mulliganed) {
                     builder.append(" (M)");
                 }
-                deckEntry.card.name = builder.toString();
+                deckEntry.card = CardUtil.INSTANCE.unknown(builder.toString());
             } else {
                 deckEntry.card = entity.card;
             }
