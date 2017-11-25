@@ -6,6 +6,10 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
+static def extraFile(filename) {
+    "../extra/app/" + filename
+}
+
 android {
     compileSdkVersion atConfig.compileSdkVersion
     buildToolsVersion atConfig.buildToolsVersion
@@ -28,7 +32,7 @@ android {
         mbonnin {
             keyAlias 'mbonnin'
             keyPassword 'password'
-            storeFile file('keystore.jks')
+            storeFile file(extraFile('keystore.jks'))
             storePassword 'password'
             // sha1: 46:AF:3F:32:C0:F9:9C:EA:29:4E:F0:73:4D:2F:73:0B:E4:40:BB:7C
         }
@@ -39,7 +43,7 @@ android {
     }
 
     def props = new Properties()
-    def f = project.file("keystore.properties")
+    def f = project.file(extraFile('keystore.properties'))
     if (f.exists()) {
         props.load(new FileInputStream(f))
 
@@ -138,15 +142,17 @@ dependencies {
     kapt "com.android.databinding:compiler:$android_gradle_plugin_version"
 }
 
-if (!file('google-services.json').exists()){
-    println 'copying google-services.json.mock'
-    copy {
-        from("./")
-        into("./")
-        include("google-services.json.mock")
-        rename { String fileName ->
-            fileName.replace('.mock', '')
-        }
+def googleServicesFile = file('google-services.json')
+def googleServicesExtraFile = file(extraFile('google-services.json'))
+def googleServicesMockFile = file('google-services.json.mock')
+
+if (!googleServicesFile.exists()){
+    if (googleServicesExtraFile.exists()) {
+        println 'using extra google-services.json'
+        googleServicesFile.bytes = googleServicesExtraFile.bytes
+    } else {
+        println 'using mock google-services.json'
+        googleServicesFile.bytes = googleServicesMockFile.bytes
     }
 }
 

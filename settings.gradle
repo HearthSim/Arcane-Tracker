@@ -1,1 +1,1 @@
-include ':app', ':detector', ':hsmodel'
+include ':app', ':detector', ':hsmodel', ':extra'
