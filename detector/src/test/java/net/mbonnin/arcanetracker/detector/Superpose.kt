@@ -18,8 +18,6 @@ class Superpose {
     val DATA_ROOT = "/home/martin/git/arcane_data"
     val OUTPUT_DIR = "/home/martin/tmp/superpose"
 
-
-
     @Test
     fun superpose() {
         val outFile = File(OUTPUT_DIR)
