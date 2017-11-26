@@ -3,27 +3,25 @@ package net.mbonnin.hsmodel
 
 data class Card(
     @JvmField
-    val name: String? = null,
-    @JvmField
-    val playerClass: String? = null,
-    @JvmField
     val id: String,
+    @JvmField
+    val dbfId: Int,
+    @JvmField
+    val type: String,
+    @JvmField
+    val playerClass: String,
+    @JvmField
+    val set: String,
+    @JvmField
+    val cost: Int,
+    @JvmField
+    val name: String,
+    @JvmField
+    val text: String? = null, // this can be null sometimes
     @JvmField
     val rarity: String? = null,
     @JvmField
-    val type: String? = null,
-    @JvmField
-    val text: String? = null,
-    @JvmField
     val race: String? = null,
-    @JvmField
-    val set: String? = null,
-    @JvmField
-    val multiClassGroup: String? = null,
-    @JvmField
-    val dbfId: Int = 0,
-    @JvmField
-    val cost: Int? = null,
     @JvmField
     val attack: Int? = null,
     @JvmField
@@ -31,7 +29,7 @@ data class Card(
     @JvmField
     val durability: Int? = null,
     @JvmField
-    val collectible: Boolean? = null) : Comparable<String> {
+    val collectible: Boolean = false) : Comparable<String> {
 
     override fun compareTo(other: String): Int {
         return id.compareTo(other)

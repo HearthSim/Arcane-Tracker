@@ -7,21 +7,47 @@ import okio.Okio
 import java.util.*
 
 
+
+
 object CardJson {
     private val allCards = ArrayList<Card>()
 
     fun init(lang: String, injectedCards: List<Card>?) {
         val moshi = Moshi.Builder()
-                // Add any other JsonAdapter factories.
                 .add(KotlinJsonAdapterFactory())
                 .build()
 
-        val listMyData = Types.newParameterizedType(List::class.java, Card::class.java)
+        val cardDataType = Types.newParameterizedType(Map::class.java, String::class.java, Card::class.java)
+        val cardDataSource = Okio.buffer(Okio.source(CardJson::class.java.getResourceAsStream("/cardData.json")))
+        val cardData = cardDataSource.use {
+            moshi.adapter<List<Card>>(cardDataType).fromJson(cardDataSource)
+        }
 
-        val parsedCards = moshi.adapter<List<Card>>(listMyData).fromJson(Okio.buffer(Okio.source(CardJson::class.java.getResourceAsStream("/cards_$lang.json"))))
+        val cardTranslationType = Types.newParameterizedType(Map::class.java, String::class.java, Map::class.java)
+        val cardTranslationSource = Okio.buffer(Okio.source(CardJson::class.java.getResourceAsStream("/cardTranslation.json")))
+        val cardTranslation = cardTranslationSource.use {
+            moshi.adapter<Map<String, Map<String, CardTranslation>>>(cardTranslationType).fromJson(cardTranslationSource)!!
+        }
 
         // this will crash if something wrong happens during deserialisation but that's what we want
-        allCards.addAll(parsedCards!!)
+        allCards.addAll(cardData!!
+                .map {
+                    val cardTranslationLang = cardTranslation[lang]!!
+                    Card(id = it.id,
+                            name = cardTranslationLang[it.id]!!.name,
+                            text = cardTranslationLang[it.id]!!.text,
+                            playerClass = it.playerClass,
+                            rarity =  it.rarity,
+                            race = it.race,
+                            type = it.type,
+                            set = it.set,
+                            dbfId = it.dbfId,
+                            cost = it.cost,
+                            attack = it.attack,
+                            health = it.health,
+                            durability = it.durability,
+                            collectible = it.collectible)
+                })
 
         injectedCards?.let { allCards.addAll(it) }
 

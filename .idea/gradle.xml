@@ -9,7 +9,6 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/detector" />
             <option value="$PROJECT_DIR$/extra" />
             <option value="$PROJECT_DIR$/hsmodel" />
