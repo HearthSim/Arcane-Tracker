@@ -642,10 +642,6 @@ public class GameLogic {
                 case CardId.WEASEL_TUNNELER:
                     guessedId = CardId.WEASEL_TUNNELER;
                     break;
-                case CardId.GRIMESTREET_ENFORCER:
-                    guessedId = CardId.SMUGGLING;
-                    entity.tags.put(Entity.KEY_CARDTYPE, Type.ENCHANTMENT); // so that it does not appear in the opponent hand
-                    break;
                 case CardId.RAPTOR_HATCHLING:
                     guessedId = CardId.RAPTOR_PATRIARCH;
                     break;

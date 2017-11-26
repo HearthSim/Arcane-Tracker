@@ -113,11 +113,7 @@ public class CardsAdapter extends RecyclerView.Adapter {
         List<Card> allCards = CardJson.INSTANCE.allCards();
 
         for (Card card : allCards) {
-            if (card.collectible == null || !card.collectible) {
-                continue;
-            }
-
-            if (card.cost == null) {
+            if (!card.collectible) {
                 continue;
             }
 
@@ -131,18 +127,6 @@ public class CardsAdapter extends RecyclerView.Adapter {
                 }
             }
 
-            /*if (card.type == null
-                    || (!card.type.equals("SPELL") && !card.type.equals("MINION") && !card.type.equals("WEAPON"))) {
-                continue;
-            }*/
-
-            if (card.playerClass == null) {
-                /**
-                 * is that possible ?
-                 */
-                continue;
-            }
-
             if (!mClass.equals(card.playerClass)) {
                 continue;
             }
@@ -153,7 +137,7 @@ public class CardsAdapter extends RecyclerView.Adapter {
                     found = true;
                 }
 
-                if (!found && card.name != null && card.name.toLowerCase().indexOf(mSearchQuery) != -1) {
+                if (!found && card.name.toLowerCase().indexOf(mSearchQuery) != -1) {
                     found = true;
                 }
 

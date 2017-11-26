@@ -1,10 +1,8 @@
 package net.mbonnin.arcanetracker
 
 
-import net.mbonnin.hsmodel.Card
-import net.mbonnin.hsmodel.CardJson
-import net.mbonnin.hsmodel.PlayerClass
-import net.mbonnin.hsmodel.Type
+import net.mbonnin.hsmodel.*
+import net.mbonnin.hsmodel.Set
 
 object CardUtil {
     @JvmField
@@ -20,7 +18,9 @@ object CardUtil {
                 type = Card.UNKNOWN_TYPE,
                 text = "?",
                 race = "?",
-                collectible = false
+                collectible = false,
+                dbfId = 0,
+                set = Set.CORE
         )
         return card
     }
@@ -55,7 +55,9 @@ object CardUtil {
                 name = Utils.getString(R.string.secret),
                 id = id,
                 cost = cost,
-                playerClass = pClass
+                playerClass = pClass,
+                dbfId = 0,
+                set = Set.CORE
         )
     }
 

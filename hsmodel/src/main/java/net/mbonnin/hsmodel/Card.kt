@@ -29,6 +29,8 @@ data class Card(
     @JvmField
     val durability: Int? = null,
     @JvmField
+    val multiClassGroup: String? = null,
+    @JvmField
     val collectible: Boolean = false) : Comparable<String> {
 
     override fun compareTo(other: String): Int {

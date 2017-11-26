@@ -30,7 +30,7 @@ object CardJson {
                 .build()
 
         val cardData = decode<List<Card>>("/card_data.json", Types.newParameterizedType(List::class.java, Card::class.java))
-        val cardTranslation = decode<Map<String, Card>>("/card_translation_${lang}.json", Types.newParameterizedType(Map::class.java, String::class.java, CardTranslation::class.java))
+        val cardTranslation = decode<Map<String, CardTranslation>>("/card_translation_${lang}.json", Types.newParameterizedType(Map::class.java, String::class.java, CardTranslation::class.java))
 
         allCards.addAll(cardData
                 .map {
@@ -47,7 +47,8 @@ object CardJson {
                             attack = it.attack,
                             health = it.health,
                             durability = it.durability,
-                            collectible = it.collectible)
+                            collectible = it.collectible,
+                            multiClassGroup = it.multiClassGroup)
                 })
 
         injectedCards?.let { allCards.addAll(it) }
