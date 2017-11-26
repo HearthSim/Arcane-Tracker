@@ -4,6 +4,7 @@ import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import okio.Okio
+import java.lang.reflect.Type
 import java.util.*
 
 
@@ -11,31 +12,31 @@ import java.util.*
 
 object CardJson {
     private val allCards = ArrayList<Card>()
+    private val moshi = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
+
+    private fun <T> decode(resourceName: String, type: Type): T {
+        val adapter = moshi.adapter<T>(type)
+        val bufferedSource = Okio.buffer(Okio.source(CardJson::class.java.getResourceAsStream(resourceName)))
+        return bufferedSource.use {
+            adapter.fromJson(bufferedSource)
+        }!! // <= not really sure if moshi can return null values since it usually throws exceptions
+    }
 
     fun init(lang: String, injectedCards: List<Card>?) {
         val moshi = Moshi.Builder()
                 .add(KotlinJsonAdapterFactory())
                 .build()
 
-        val cardDataType = Types.newParameterizedType(Map::class.java, String::class.java, Card::class.java)
-        val cardDataSource = Okio.buffer(Okio.source(CardJson::class.java.getResourceAsStream("/cardData.json")))
-        val cardData = cardDataSource.use {
-            moshi.adapter<List<Card>>(cardDataType).fromJson(cardDataSource)
-        }
+        val cardData = decode<List<Card>>("/card_data.json", Types.newParameterizedType(List::class.java, Card::class.java))
+        val cardTranslation = decode<Map<String, Card>>("/card_translation_${lang}.json", Types.newParameterizedType(Map::class.java, String::class.java, CardTranslation::class.java))
 
-        val cardTranslationType = Types.newParameterizedType(Map::class.java, String::class.java, Map::class.java)
-        val cardTranslationSource = Okio.buffer(Okio.source(CardJson::class.java.getResourceAsStream("/cardTranslation.json")))
-        val cardTranslation = cardTranslationSource.use {
-            moshi.adapter<Map<String, Map<String, CardTranslation>>>(cardTranslationType).fromJson(cardTranslationSource)!!
-        }
-
-        // this will crash if something wrong happens during deserialisation but that's what we want
-        allCards.addAll(cardData!!
+        allCards.addAll(cardData
                 .map {
-                    val cardTranslationLang = cardTranslation[lang]!!
                     Card(id = it.id,
-                            name = cardTranslationLang[it.id]!!.name,
-                            text = cardTranslationLang[it.id]!!.text,
+                            name = cardTranslation[it.id]!!.name,
+                            text = cardTranslation[it.id]!!.text,
                             playerClass = it.playerClass,
                             rarity =  it.rarity,
                             race = it.race,
@@ -57,7 +58,6 @@ object CardJson {
         val bufferedSource = Okio.buffer(Okio.source(CardJson::class.java.getResourceAsStream("/tierlist.json")))
         val tiercards = moshi.adapter(TierCards::class.java).fromJson(bufferedSource)
 
-        // this will crash if something wrong happens during deserialisation but that's what we want
         tiercards!!.Cards
                 .sortedBy {  it.CardId }
                 .forEach {
