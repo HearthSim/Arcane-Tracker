@@ -117,6 +117,10 @@ public class CardsAdapter extends RecyclerView.Adapter {
                 continue;
             }
 
+            if (card.cost == null) {
+                continue;
+            }
+
             if (mCost != -1) {
                 if (mCost == 7) {
                     if (card.cost < 7) {
@@ -133,15 +137,15 @@ public class CardsAdapter extends RecyclerView.Adapter {
 
             if (mSearchQuery != null) {
                 boolean found = false;
-                if (card.text != null && card.text.toLowerCase().indexOf(mSearchQuery) != -1) {
+                if (card.text != null && card.text.toLowerCase().contains(mSearchQuery)) {
                     found = true;
                 }
 
-                if (!found && card.name.toLowerCase().indexOf(mSearchQuery) != -1) {
+                if (!found && card.name.toLowerCase().contains(mSearchQuery)) {
                     found = true;
                 }
 
-                if (!found && card.race != null && card.race.toLowerCase().indexOf(mSearchQuery) != -1) {
+                if (!found && card.race != null && card.race.toLowerCase().contains(mSearchQuery)) {
                     found = true;
                 }
 
@@ -154,7 +158,7 @@ public class CardsAdapter extends RecyclerView.Adapter {
         }
 
         Collections.sort(mCardList, (a, b) -> {
-            int r = a.cost - b.cost;
+            int r = Utils.INSTANCE.compareNullSafe(a.cost, b.cost);
             if (r != 0) {
                 return r;
             }

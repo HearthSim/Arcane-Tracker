@@ -13,11 +13,11 @@ data class Card(
     @JvmField
     val set: String,
     @JvmField
-    val cost: Int,
-    @JvmField
     val name: String,
     @JvmField
-    val text: String? = null, // this can be null sometimes
+    val cost: Int? = null, // null for hero cards & enchantments
+    @JvmField
+    val text: String? = null, //  null for hero cards, also for some regular cards like snowflipper penguin
     @JvmField
     val rarity: String? = null,
     @JvmField
@@ -43,7 +43,7 @@ data class Card(
 
     companion object {
 
-        const val UNKNOWN_COST = -1
+        val UNKNOWN_COST: Int? = null
         const val UNKNOWN_TYPE = "UNKNOWN_TYPE"
 
         const val CLASS_INDEX_WARRIOR = 0

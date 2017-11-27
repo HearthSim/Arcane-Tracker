@@ -42,7 +42,7 @@ public class EditableItemAdapter extends ItemAdapter {
             list.add(item);
         }
 
-        Collections.sort(list, (a,b) -> ((DeckEntryItem)a).card.cost - ((DeckEntryItem)b).card.cost);
+        Collections.sort(list, (a,b) -> Utils.INSTANCE.compareNullSafe(((DeckEntryItem)a).card.cost, ((DeckEntryItem)b).card.cost));
 
         setList(list);
     }

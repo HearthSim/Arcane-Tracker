@@ -88,6 +88,10 @@ object Utils {
         Timber.w(df.format(c.time) + s)
     }
 
+    fun compareNullSafe(a: Int?, b: Int?): Int {
+        return (a?:0) - (b?:0)
+    }
+
     fun reportNonFatal(e: Throwable) {
         Timber.w(e)
         FirebaseCrash.report(e)

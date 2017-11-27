@@ -148,6 +148,9 @@ class Trackobot {
         } else if (lce.error != null) {
             val e = lce.error
             val message: String
+
+            Timber.d("trackobot upload error")
+
             val context = ArcaneTrackerApplication.getContext()
             if (e is HttpException) {
                 message = context.getString(R.string.trackobotHttpError, e.code())

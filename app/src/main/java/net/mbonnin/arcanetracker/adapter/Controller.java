@@ -83,17 +83,7 @@ public class Controller implements GameLogic.Listener {
          * Sort and merge
          */
         Comparator<Entity> comparator = (a, b) -> {
-            int acost = a.extra.tmpCard.cost;
-            int bcost = b.extra.tmpCard.cost;
-
-            if (acost < 0) {
-                acost = Integer.MAX_VALUE;
-            }
-            if (bcost < 0) {
-                bcost = Integer.MAX_VALUE;
-            }
-
-            int ret = acost - bcost;
+            int ret = Utils.INSTANCE.compareNullSafe(a.extra.tmpCard.cost, b.extra.tmpCard.cost);
 
             if (ret != 0) {
                 return ret;
@@ -394,15 +384,7 @@ public class Controller implements GameLogic.Listener {
             DeckEntryItem da = (DeckEntryItem) a;
             DeckEntryItem db = (DeckEntryItem) b;
 
-            int acost = da.card.cost;
-            int bcost = db.card.cost;
-            if (acost < 0) {
-                acost = Integer.MAX_VALUE;
-            }
-            if (bcost < 0) {
-                bcost = Integer.MAX_VALUE;
-            }
-            return acost - bcost;
+            return Utils.INSTANCE.compareNullSafe(da.card.cost, db.card.cost);
         });
 
         if (unknown > 0) {
