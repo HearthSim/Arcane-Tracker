@@ -28,6 +28,8 @@ dependencies {
     implementation dep.kotlin_stdlib
     implementation dep.gson
     implementation dep.timber
+    implementation dep.moshi
+    implementation dep.moshi_kotlin
 
     compile(project(":hsmodel"))
 

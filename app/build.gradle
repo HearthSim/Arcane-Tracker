@@ -86,11 +86,6 @@ android {
     }
 }
 
-ext {
-    supportLibVersion = '27.0.1'
-    playServicesVersion = '11.6.0'
-}
-
 repositories {
     jcenter()
     google()
@@ -102,11 +97,11 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    compile "com.android.support:support-v4:$supportLibVersion"
-    compile "com.android.support:appcompat-v7:$supportLibVersion"
-    compile "com.android.support:design:$supportLibVersion"
-    compile "com.android.support:recyclerview-v7:$supportLibVersion"
-    compile "com.android.support:cardview-v7:$supportLibVersion"
+    compile dep.support_v4
+    compile dep.appcompat_v7
+    compile dep.design
+    compile dep.recyclerview_v7
+    compile dep.cardview_v7
 
     compile "com.android.support.constraint:constraint-layout:1.0.2"
 
@@ -124,10 +119,10 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.3.0'
 
-    compile "com.google.android.gms:play-services-auth:$playServicesVersion"
-    compile "com.google.firebase:firebase-core:$playServicesVersion"
-    compile "com.google.firebase:firebase-crash:$playServicesVersion"
-    compile "com.google.firebase:firebase-messaging:$playServicesVersion"
+    compile dep.play_auth
+    compile dep.play_firebase_core
+    compile dep.play_firebase_crash
+    compile dep.play_firebase_messaging
 
     compile 'com.android.support:multidex:1.0.2'
     compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'

@@ -119,12 +119,12 @@ Java_net_mbonnin_arcanetracker_detector_FeatureExtractor_getFeatures(JNIEnv *env
         }
     }
 
-    save_png(resized[0], HAAR_SCALED_SIZE, HAAR_SCALED_SIZE, "resized-r", index);
-    save_png(resized[1], HAAR_SCALED_SIZE, HAAR_SCALED_SIZE, "resized-g", index);
-    save_png(resized[2], HAAR_SCALED_SIZE, HAAR_SCALED_SIZE, "resized-b", index);
-    save_png(yuv[0], HAAR_SCALED_SIZE, HAAR_SCALED_SIZE, "resized-y", index);
-    save_png(yuv[1], HAAR_SCALED_SIZE, HAAR_SCALED_SIZE, "resized-u", index);
-    save_png(yuv[2], HAAR_SCALED_SIZE, HAAR_SCALED_SIZE, "resized-v", index);
+//    save_png(resized[0], HAAR_SCALED_SIZE, HAAR_SCALED_SIZE, "resized-r", index);
+//    save_png(resized[1], HAAR_SCALED_SIZE, HAAR_SCALED_SIZE, "resized-g", index);
+//    save_png(resized[2], HAAR_SCALED_SIZE, HAAR_SCALED_SIZE, "resized-b", index);
+//    save_png(yuv[0], HAAR_SCALED_SIZE, HAAR_SCALED_SIZE, "resized-y", index);
+//    save_png(yuv[1], HAAR_SCALED_SIZE, HAAR_SCALED_SIZE, "resized-u", index);
+//    save_png(yuv[2], HAAR_SCALED_SIZE, HAAR_SCALED_SIZE, "resized-v", index);
 
     for (int i = 0; i < 3; i++) {
         double *integralImage = computeIntegralImage(yuv[i], HAAR_SCALED_SIZE, HAAR_SCALED_SIZE, HAAR_SCALED_SIZE);

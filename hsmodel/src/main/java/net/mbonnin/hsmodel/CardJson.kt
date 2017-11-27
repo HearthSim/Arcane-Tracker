@@ -24,16 +24,21 @@ object CardJson {
         }!! // <= not really sure if moshi can return null values since it usually throws exceptions
     }
 
-    fun init(lang: String, injectedCards: List<Card>?) {
-        val moshi = Moshi.Builder()
-                .add(KotlinJsonAdapterFactory())
-                .build()
+    val cardData = decode<List<Card>>("/card_data.json", Types.newParameterizedType(List::class.java, Card::class.java))
+    val tierlist = decode<TierCards>("/tierlist.json", TierCards::class.java)
 
-        val cardData = decode<List<Card>>("/card_data.json", Types.newParameterizedType(List::class.java, Card::class.java))
+    fun init(lang: String, injectedCards: List<Card>?) {
         val cardTranslation = decode<Map<String, CardTranslation>>("/card_translation_${lang}.json", Types.newParameterizedType(Map::class.java, String::class.java, CardTranslation::class.java))
+
+        var tierCards = tierlist.Cards.sortedBy { it.CardId }
 
         allCards.addAll(cardData
                 .map {
+
+                    val cardId = it
+                    val index = tierCards.binarySearch { cardId.compareTo(it.CardId) }
+                    val tierCard = if (index > 0) tierCards[index] else null
+
                     Card(id = it.id,
                             name = cardTranslation[it.id]!!.name,
                             text = cardTranslation[it.id]!!.text,
@@ -48,23 +53,13 @@ object CardJson {
                             health = it.health,
                             durability = it.durability,
                             collectible = it.collectible,
-                            multiClassGroup = it.multiClassGroup)
+                            multiClassGroup = it.multiClassGroup,
+                            scores = tierCard?.Scores)
                 })
 
         injectedCards?.let { allCards.addAll(it) }
 
-        Collections.sort(allCards) { a, b -> a.id.compareTo(b.id) }
-
-
-        val bufferedSource = Okio.buffer(Okio.source(CardJson::class.java.getResourceAsStream("/tierlist.json")))
-        val tiercards = moshi.adapter(TierCards::class.java).fromJson(bufferedSource)
-
-        tiercards!!.Cards
-                .sortedBy {  it.CardId }
-                .forEach {
-                    val card = getCard(it.CardId)
-                    card!!.scores = it.Scores
-                }
+        allCards.sortBy { it.id }
     }
 
     fun allCards(): List<Card> {

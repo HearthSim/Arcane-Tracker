@@ -2,11 +2,12 @@ package net.mbonnin.arcanetracker.detector
 
 import android.content.Context
 import android.util.Log
-import com.google.gson.Gson
+import com.squareup.moshi.KotlinJsonAdapterFactory
+import com.squareup.moshi.Moshi
 import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.PlayerClass
 import net.mbonnin.hsmodel.Type
-import java.io.InputStreamReader
+import okio.Okio
 import java.nio.ByteBuffer
 import java.util.*
 import kotlin.reflect.KFunction2
@@ -39,12 +40,25 @@ const val MODE_CASUAL = 4
 const val MODE_RANKED = 5
 
 class Detector(var context: Context) {
+    private val moshi = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
+
+    private fun <T> decode(resourceName: String, type: java.lang.reflect.Type): T {
+        val adapter = moshi.adapter<T>(type)
+        val bufferedSource = Okio.buffer(Okio.source(CardJson::class.java.getResourceAsStream(resourceName)))
+        return bufferedSource.use {
+            adapter.fromJson(bufferedSource)
+        }!! // <= not really sure if moshi can return null values since it usually throws exceptions
+    }
     private val mappings = Array<List<Int>>(3, { listOf()})
     private val arena_rects by lazy {
         arrayOf(rectFactory!!.ARENA_MINIONS, rectFactory!!.ARENA_SPELLS, rectFactory!!.ARENA_WEAPONS)
     }
+
     var lastPlayerClass: String? = "?"
-    val generatedData = Gson().fromJson(InputStreamReader(context.resources.openRawResource(R.raw.generated_data)), GeneratedData::class.java)
+    val generatedData = decode<FormatModeRankData>("/format_mode_rank_data.json", FormatModeRankData::class.java)
+    val arenaData = decode<ArenaData>("/arena_data.json", ArenaData::class.java)
     var rectFactory: RRectFactory? = null
 
     private fun ensureRectFactory(byteBufferImage: ByteBufferImage) {
@@ -108,12 +122,7 @@ class Detector(var context: Context) {
 
     fun detectArenaHaar(byteBufferImage: ByteBufferImage, hero: String?): Array<ArenaResult> {
         ensureRectFactory(byteBufferImage)
-        return detectArena(byteBufferImage, Detector.Companion::extractHaar, Detector.Companion::euclidianDistance, generatedData.TIERLIST_HAAR, hero)
-    }
-
-    fun detectArenaPhash(byteBufferImage: ByteBufferImage, hero: String): Array<ArenaResult> {
-        ensureRectFactory(byteBufferImage)
-        return detectArena(byteBufferImage, Detector.Companion::extractPhash, Detector.Companion::hammingDistance, generatedData.TIERLIST_PHASH, hero)
+        return detectArena(byteBufferImage, Detector.Companion::extractHaar, Detector.Companion::euclidianDistance, arenaData.features, hero)
     }
 
     private fun getMapping(playerClass: String?, type: String): List<Int> {
@@ -152,7 +161,7 @@ class Detector(var context: Context) {
 
                 if (matchResult.distance < arenaResults[i].distance) {
                     arenaResults[i].distance = matchResult.distance
-                    arenaResults[i].cardId = generatedData.TIERLIST_IDS[matchResult.bestIndex]
+                    arenaResults[i].cardId = arenaData.ids[matchResult.bestIndex]
                 }
             }
         }
@@ -192,10 +201,6 @@ class Detector(var context: Context) {
 
         fun extractHaar(byteBufferImage: ByteBufferImage, rrect: RRect): DoubleArray {
             return FeatureExtractor.INSTANCE.getFeatures(byteBufferImage.buffer, byteBufferImage.stride, rrect)
-        }
-
-        fun extractPhash(byteBufferImage: ByteBufferImage, rrect: RRect): Long {
-            return FeatureExtractor.INSTANCE.getHash(byteBufferImage.buffer, byteBufferImage.stride, rrect)
         }
 
         fun <T> matchImage(byteBufferImage: ByteBufferImage, rrect: RRect, extractFeatures: KFunction2<ByteBufferImage, RRect, T>, computeDistance: KFunction2<T, T, Double>, candidates: List<T>, mapping: List<Int>? = null): MatchResult {
