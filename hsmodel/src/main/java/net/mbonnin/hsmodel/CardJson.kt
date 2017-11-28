@@ -8,15 +8,14 @@ import java.lang.reflect.Type
 import java.util.*
 
 
-
-
 object CardJson {
     private val allCards = ArrayList<Card>()
-    private val moshi = Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
 
-    private fun <T> decode(resourceName: String, type: Type): T {
+    fun <T> decode(resourceName: String, type: Type): T {
+        val moshi = Moshi.Builder()
+                .add(KotlinJsonAdapterFactory())
+                .build()
+
         val adapter = moshi.adapter<T>(type)
         val bufferedSource = Okio.buffer(Okio.source(CardJson::class.java.getResourceAsStream(resourceName)))
         return bufferedSource.use {
@@ -24,26 +23,40 @@ object CardJson {
         }!! // <= not really sure if moshi can return null values since it usually throws exceptions
     }
 
-    val cardData = decode<List<Card>>("/card_data.json", Types.newParameterizedType(List::class.java, Card::class.java))
-    val tierlist = decode<TierCards>("/tierlist.json", TierCards::class.java)
 
     fun init(lang: String, injectedCards: List<Card>?) {
         val cardTranslation = decode<Map<String, CardTranslation>>("/card_translation_${lang}.json", Types.newParameterizedType(Map::class.java, String::class.java, CardTranslation::class.java))
 
-        var tierCards = tierlist.Cards.sortedBy { it.CardId }
+        val cardData = decode<List<Card>>("/card_data.json", Types.newParameterizedType(List::class.java, Card::class.java))
+        val tierlist = decode<TierCards>("/tierlist.json", TierCards::class.java)
+        val arenaData = decode<ArenaData>("/arena_data.json", ArenaData::class.java)
 
-        allCards.addAll(cardData
+        val tierCards = tierlist.Cards.sortedBy { it.CardId }
+
+        val augmentedCards = cardData
                 .map {
 
-                    val cardId = it
-                    val index = tierCards.binarySearch { cardId.compareTo(it.CardId) }
-                    val tierCard = if (index > 0) tierCards[index] else null
+                    val card = it
+                    var index = tierCards.binarySearch { it.CardId.compareTo(card.id) }
+                    var tierCard = if (index > 0) tierCards[index] else null
+
+                    index = arenaData.ids.binarySearch { it.compareTo(card.id) }
+                    var (features, goldenFeatures) = if (index > 0)
+                        arenaData.features[index] to arenaData.featuresGolden[index]
+                    else
+                        null to null
+
+                    if (!it.isDraftable()) {
+                        tierCard = null
+                        features = null
+                        goldenFeatures = null
+                    }
 
                     Card(id = it.id,
                             name = cardTranslation[it.id]!!.name,
                             text = cardTranslation[it.id]!!.text,
                             playerClass = it.playerClass,
-                            rarity =  it.rarity,
+                            rarity = it.rarity,
                             race = it.race,
                             type = it.type,
                             set = it.set,
@@ -54,8 +67,12 @@ object CardJson {
                             durability = it.durability,
                             collectible = it.collectible,
                             multiClassGroup = it.multiClassGroup,
-                            scores = tierCard?.Scores)
-                })
+                            scores = tierCard?.Scores,
+                            features = features,
+                            goldenFeatures = goldenFeatures)
+                }
+
+        allCards.addAll(augmentedCards)
 
         injectedCards?.let { allCards.addAll(it) }
 

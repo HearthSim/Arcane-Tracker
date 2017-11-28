@@ -32,6 +32,8 @@ data class Card(
         val multiClassGroup: String? = null,
         @JvmField
         val collectible: Boolean = false,
+        val features: DoubleArray? = null,
+        val goldenFeatures: DoubleArray? = null,
         val scores: List<TierScore>? = null
 ) : Comparable<String> {
 

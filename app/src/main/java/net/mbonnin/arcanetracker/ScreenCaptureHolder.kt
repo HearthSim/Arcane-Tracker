@@ -65,9 +65,9 @@ object ScreenCaptureHolder {
 
             if (shouldDetectArena()) {
                 val index = DeckList.getArenaDeck().classIndex
-                val hero = getPlayerClass(index)
-                val arenaResults = mDetector.detectArenaHaar(bbImage, hero)
-                ArenaGuessHolder.setArena(arenaResults, hero)
+                val playerClass = getPlayerClass(index)
+                val arenaResults = mDetector.detectArena(bbImage, playerClass)
+                ArenaGuessHolder.setArena(arenaResults, playerClass)
             } else {
                 ArenaGuessHolder.clear()
             }

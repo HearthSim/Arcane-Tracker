@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
+import net.mbonnin.hsmodel.Card
 import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.PlayerClass
 import net.mbonnin.hsmodel.Type
@@ -51,14 +52,12 @@ class Detector(var context: Context) {
             adapter.fromJson(bufferedSource)
         }!! // <= not really sure if moshi can return null values since it usually throws exceptions
     }
-    private val mappings = Array<List<Int>>(3, { listOf()})
     private val arena_rects by lazy {
         arrayOf(rectFactory!!.ARENA_MINIONS, rectFactory!!.ARENA_SPELLS, rectFactory!!.ARENA_WEAPONS)
     }
 
     var lastPlayerClass: String? = "?"
     val generatedData = decode<FormatModeRankData>("/format_mode_rank_data.json", FormatModeRankData::class.java)
-    val arenaData = decode<ArenaData>("/arena_data.json", ArenaData::class.java)
     var rectFactory: RRectFactory? = null
 
     private fun ensureRectFactory(byteBufferImage: ByteBufferImage) {
@@ -120,11 +119,6 @@ class Detector(var context: Context) {
         }
     }
 
-    fun detectArenaHaar(byteBufferImage: ByteBufferImage, hero: String?): Array<ArenaResult> {
-        ensureRectFactory(byteBufferImage)
-        return detectArena(byteBufferImage, Detector.Companion::extractHaar, Detector.Companion::euclidianDistance, arenaData.features, hero)
-    }
-
     private fun getMapping(playerClass: String?, type: String): List<Int> {
         return CardJson.allCards().filter { it.scores != null }.mapIndexed { index, card ->
             if (playerClass != null
@@ -139,50 +133,52 @@ class Detector(var context: Context) {
         }.filterNotNull()
     }
 
-    private fun <T> detectArena(byteBufferImage: ByteBufferImage, extractFeatures: KFunction2<ByteBufferImage, RRect, T>, computeDistance: KFunction2<T, T, Double>, candidates: List<T>, playerClass: String?): Array<ArenaResult> {
+    private lateinit var cardByType: Array<List<Card>>
+
+    fun detectArena(byteBufferImage: ByteBufferImage, playerClass: String?): Array<ArenaResult> {
+        ensureRectFactory(byteBufferImage)
         val arenaResults = Array<ArenaResult>(3, {ArenaResult("", Double.MAX_VALUE)})
 
         if (playerClass != lastPlayerClass) {
-            mappings[0] = getMapping(playerClass, Type.MINION)
-            mappings[1] = getMapping(playerClass, Type.SPELL)
-            mappings[2] = getMapping(playerClass, Type.WEAPON)
+            val subList = CardJson.allCards().filter { it.scores != null }
+                    .filter { playerClass == null || playerClass == it.playerClass }
 
-            lastPlayerClass = playerClass
+            cardByType = arrayOf(
+                    subList.filter { Type.MINION == it.type },
+                    subList.filter { Type.SPELL == it.type },
+                    subList.filter { Type.WEAPON == it.type }
+            )
         }
 
-        for (type in 0 until mappings.size) {
-            for (i in 0 until arenaResults.size) {
-                val matchResult = matchImage(byteBufferImage,
-                        arena_rects[type][i],
-                        extractFeatures,
-                        computeDistance,
-                        candidates,
-                        mappings[type])
+        for (position in 0 until 3) {
 
-                if (matchResult.distance < arenaResults[i].distance) {
-                    arenaResults[i].distance = matchResult.distance
-                    arenaResults[i].cardId = arenaData.ids[matchResult.bestIndex]
+            var minDistance = Double.MAX_VALUE
+            var bestId = ""
+            for (type in 0 until 3) {
+                val vector = extractHaar(byteBufferImage, arena_rects[type][position])
+                for (card in cardByType[type]) {
+                    var distance = manhattanDistance(vector, card.features!!)
+                    if (distance < minDistance) {
+                        minDistance = distance
+                        bestId = card.id
+                    }
+
+                    distance = manhattanDistance(vector, card.goldenFeatures!!)
+                    if (distance < minDistance) {
+                        minDistance = distance
+                        bestId = card.id
+                    }
                 }
             }
-        }
 
-        Log.d("Detector", arenaResults.map{ "[" + it.cardId + "(" + it.distance + ")]"}.joinToString { "," })
+            arenaResults[position].distance = minDistance
+            arenaResults[position].cardId = bestId
+        }
+        Log.d("Detector", arenaResults.map{ "[" + it.cardId + "(" + it.distance + ")]"}.joinToString(","))
         return arenaResults
     }
 
     companion object {
-        fun hammingDistance(a: Long, b: Long): Double {
-            var dist = 0.0
-
-            val c = a xor b
-            for (i in 0 until 64) {
-                if (c and 1L.shl(i) != 0L) {
-                    dist++
-                }
-            }
-            return dist
-        }
-
         fun euclidianDistance(a: DoubleArray, b: DoubleArray): Double {
             var dist = 0.0
             for (i in 0 until a.size) {

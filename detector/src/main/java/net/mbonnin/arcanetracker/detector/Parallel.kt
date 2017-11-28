@@ -2,7 +2,7 @@ package net.mbonnin.arcanetracker.detector
 
 import java.util.concurrent.atomic.AtomicInteger
 
-class Parallel<T, R: Any>(val input: List<T>, val computeFunction: (T) -> R, val numberOfThreads: Int = 16) {
+class Parallel<T, R: Any>(val input: List<T>, val computeFunction: (T) -> R, val numberOfThreads: Int = 8) {
 
     val readIndex = AtomicInteger(0)
     val writeIndex = AtomicInteger(0)
@@ -44,7 +44,7 @@ class Parallel<T, R: Any>(val input: List<T>, val computeFunction: (T) -> R, val
             synchronized(lock) {
                 output.set(index, o)
                 writeIndex.incrementAndGet()
-                lock.notify()
+                lock.notifyAll()
             }
         }
     }
