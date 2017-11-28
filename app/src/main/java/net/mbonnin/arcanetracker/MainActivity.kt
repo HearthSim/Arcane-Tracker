@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
 
         try {
             if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS) {
-                Timber.d("Firebase token: " + FirebaseInstanceId.getInstance().token!!)
+                Timber.d("Firebase token: " + FirebaseInstanceId.getInstance().token)
             }
         } catch (e: Exception) {
             Timber.e(e)
