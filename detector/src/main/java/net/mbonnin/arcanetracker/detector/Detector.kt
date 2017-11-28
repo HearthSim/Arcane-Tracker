@@ -140,8 +140,15 @@ class Detector(var context: Context) {
         val arenaResults = Array<ArenaResult>(3, {ArenaResult("", Double.MAX_VALUE)})
 
         if (playerClass != lastPlayerClass) {
-            val subList = CardJson.allCards().filter { it.scores != null }
-                    .filter { playerClass == null || playerClass == it.playerClass }
+            val subList = CardJson.allCards()
+                    .filter { it.scores != null } // cards available in arena
+                    .filter {
+                        when {
+                            playerClass == null -> true // running from tests
+                            it.playerClass == PlayerClass.NEUTRAL -> true
+                            it.playerClass == playerClass -> true
+                            else -> false
+                        } }
 
             cardByType = arrayOf(
                     subList.filter { Type.MINION == it.type },
