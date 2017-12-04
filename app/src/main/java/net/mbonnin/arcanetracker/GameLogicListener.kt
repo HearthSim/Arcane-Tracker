@@ -21,7 +21,7 @@ import java.util.*
 
 class GameLogicListener private constructor() : GameLogic.Listener {
     private val mHandler: Handler
-    private var mGame: Game? = null
+    var currentGame: Game? = null
     private var mGameOver: Boolean = false
 
     override fun gameStarted(game: Game) {
@@ -55,40 +55,40 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         DeckList.getOpponentDeck().classIndex = game.getOpponent().classIndex()
         MainViewCompanion.getOpponentCompanion().deck = DeckList.getOpponentDeck()
 
-        mGame = game
+        currentGame = game
         mGameOver = false
 
         if (LoadingScreenParser.get().gameplayMode == LoadingScreenParser.MODE_DRAFT) {
-            mGame!!.bnetGameType = BnetGameType.BGT_ARENA
+            currentGame!!.bnetGameType = BnetGameType.BGT_ARENA
         } else if (LoadingScreenParser.get().gameplayMode == LoadingScreenParser.MODE_TAVERN_BRAWL) {
-            mGame!!.bnetGameType = BnetGameType.BGT_TAVERNBRAWL_1P_VERSUS_AI
+            currentGame!!.bnetGameType = BnetGameType.BGT_TAVERNBRAWL_1P_VERSUS_AI
         } else if (LoadingScreenParser.get().gameplayMode == LoadingScreenParser.MODE_ADVENTURE) {
-            mGame!!.bnetGameType = BnetGameType.BGT_VS_AI
+            currentGame!!.bnetGameType = BnetGameType.BGT_VS_AI
         } else if (FMRHolder.mode == MODE_RANKED && FMRHolder.format == FORMAT_STANDARD) {
-            mGame!!.bnetGameType = BnetGameType.BGT_RANKED_STANDARD
-            mGame!!.rank = FMRHolder.rank
+            currentGame!!.bnetGameType = BnetGameType.BGT_RANKED_STANDARD
+            currentGame!!.rank = FMRHolder.rank
         } else if (FMRHolder.mode == MODE_RANKED && FMRHolder.format == FORMAT_WILD) {
-            mGame!!.bnetGameType = BnetGameType.BGT_RANKED_WILD
-            mGame!!.rank = FMRHolder.rank
+            currentGame!!.bnetGameType = BnetGameType.BGT_RANKED_WILD
+            currentGame!!.rank = FMRHolder.rank
         } else if (FMRHolder.mode == MODE_CASUAL && FMRHolder.format == FORMAT_STANDARD) {
-            mGame!!.bnetGameType = BnetGameType.BGT_CASUAL_STANDARD_NORMAL
+            currentGame!!.bnetGameType = BnetGameType.BGT_CASUAL_STANDARD_NORMAL
         } else if (FMRHolder.mode == MODE_CASUAL && FMRHolder.format == FORMAT_WILD) {
-            mGame!!.bnetGameType = BnetGameType.BGT_CASUAL_WILD
+            currentGame!!.bnetGameType = BnetGameType.BGT_CASUAL_WILD
         } else {
-            mGame!!.bnetGameType = BnetGameType.BGT_UNKNOWN
+            currentGame!!.bnetGameType = BnetGameType.BGT_UNKNOWN
         }
     }
 
     override fun gameOver() {
         val mode = LoadingScreenParser.get().gameplayMode
 
-        Timber.w("gameOver  %s [mode %s] [user %s]", if (mGame!!.victory) "victory" else "lost", mode, Trackobot.get().currentUser())
+        Timber.w("gameOver  %s [mode %s] [user %s]", if (currentGame!!.victory) "victory" else "lost", mode, Trackobot.get().currentUser())
 
         val deck = MainViewCompanion.getPlayerCompanion().deck
 
-        addKnownCardsToDeck(mGame!!, deck)
+        addKnownCardsToDeck(currentGame!!, deck)
 
-        if (mGame!!.victory) {
+        if (currentGame!!.victory) {
             deck.wins++
         } else {
             deck.losses++
@@ -104,18 +104,18 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         if ((Utils.isAppDebuggable || LoadingScreenParser.MODE_DRAFT == mode || LoadingScreenParser.MODE_TOURNAMENT == mode) && Trackobot.get().currentUser() != null) {
             val resultData = ResultData()
             resultData.result = Result()
-            resultData.result.coin = mGame!!.getPlayer().hasCoin
-            resultData.result.win = mGame!!.victory
-            resultData.result.mode = Trackobot.getMode(mGame!!.bnetGameType)
-            if (mGame!!.rank >= 0) {
-                resultData.result.rank = mGame!!.rank
+            resultData.result.coin = currentGame!!.getPlayer().hasCoin
+            resultData.result.win = currentGame!!.victory
+            resultData.result.mode = Trackobot.getMode(currentGame!!.bnetGameType)
+            if (currentGame!!.rank >= 0) {
+                resultData.result.rank = currentGame!!.rank
             }
-            resultData.result.hero = Trackobot.getHero(mGame!!.player.classIndex())
-            resultData.result.opponent = Trackobot.getHero(mGame!!.opponent.classIndex())
+            resultData.result.hero = Trackobot.getHero(currentGame!!.player.classIndex())
+            resultData.result.opponent = Trackobot.getHero(currentGame!!.opponent.classIndex())
             resultData.result.added = Utils.ISO8601DATEFORMAT.format(Date())
 
             val history = ArrayList<CardPlay>()
-            for (play in mGame!!.plays) {
+            for (play in currentGame!!.plays) {
                 val cardPlay = CardPlay()
                 cardPlay.player = if (play.isOpponent) "opponent" else "me"
                 cardPlay.turn = (play.turn + 1) / 2
@@ -131,7 +131,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         FileTree.get().sync()
 
         val bundle = Bundle()
-        bundle.putString(EventParams.BNET_GAME_TYPE.value, mGame!!.bnetGameType.name)
+        bundle.putString(EventParams.BNET_GAME_TYPE.value, currentGame!!.bnetGameType.name)
         FirebaseAnalytics.getInstance(ArcaneTrackerApplication.getContext()).logEvent("game_ended", bundle)
 
         mGameOver = true
@@ -170,7 +170,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         val runnable = object : Runnable {
             override fun run() {
                 if (mGameOver) {
-                    HSReplay.get().uploadGame(gameStart, mGame, gameStr)
+                    HSReplay.get().uploadGame(gameStart, currentGame, gameStr)
                 } else if (System.currentTimeMillis() - startTime < 30000) {
                     mHandler.postDelayed(this, 1000)
                 } else {
