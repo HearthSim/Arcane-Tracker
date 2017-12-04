@@ -89,22 +89,7 @@ class MainActivity : AppCompatActivity() {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private fun canReallyDrawOverlays(): Boolean {
-        val canDraw = android.provider.Settings.canDrawOverlays(this)
-        if (canDraw) {
-            return true
-        }
-
-        // workaround google: https://issuetracker.google.com/issues/37077274#c7
-        val view = View(this)
-        try {
-            ViewManager.get().addCenteredView(view)
-        } catch (e: Exception) {
-            return false
-        }
-
-        Timber.d("canDrawOverlays lied")
-        ViewManager.get().removeView(view)
-        return true
+        return android.provider.Settings.canDrawOverlays(this)
     }
 
     @TargetApi(Build.VERSION_CODES.M)
