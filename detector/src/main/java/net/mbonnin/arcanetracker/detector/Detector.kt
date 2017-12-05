@@ -52,6 +52,7 @@ class Detector(var context: Context) {
             adapter.fromJson(bufferedSource)
         }!! // <= not really sure if moshi can return null values since it usually throws exceptions
     }
+
     private val arena_rects by lazy {
         arrayOf(rectFactory!!.ARENA_MINIONS, rectFactory!!.ARENA_SPELLS, rectFactory!!.ARENA_WEAPONS)
     }
@@ -59,6 +60,10 @@ class Detector(var context: Context) {
     var lastPlayerClass: String? = "?"
     val generatedData = decode<FormatModeRankData>("/format_mode_rank_data.json", FormatModeRankData::class.java)
     var rectFactory: RRectFactory? = null
+    val rankMinimum = OneSecondMinimum(threshold = 50.0, tag = "rank")
+    // mode uses the glowing blue area that is subject to a bit more variation
+    val modeMinimum = OneSecondMinimum(threshold = 50.0, tag = "mode")
+    val formatMinimum = OneSecondMinimum(threshold = 50.0, tag = "format")
 
     private fun ensureRectFactory(byteBufferImage: ByteBufferImage) {
         if (rectFactory == null) {
@@ -68,76 +73,36 @@ class Detector(var context: Context) {
 
     fun detectRank(byteBufferImage: ByteBufferImage): Int {
         ensureRectFactory(byteBufferImage)
-        val matchResult = matchImage(byteBufferImage,
+        return rankMinimum.detect(byteBufferImage,
                 rectFactory!!.RANK,
-                Detector.Companion::extractHaar,
-                Detector.Companion::euclidianDistance,
                 generatedData.RANKS)
-
-        if (matchResult.distance > 400) {
-            matchResult.bestIndex = INDEX_UNKNOWN
-        }
-
-        //Log.d("Detector", "rank: " + matchResult.bestIndex + "(" + matchResult.distance +  ")")
-
-        return matchResult.bestIndex;
     }
 
     fun detectFormat(byteBufferImage: ByteBufferImage): Int {
         ensureRectFactory(byteBufferImage)
-        val matchResult = matchImage(byteBufferImage,
+        return formatMinimum.detect(byteBufferImage,
                 rectFactory!!.FORMAT,
-                Detector.Companion::extractHaar,
-                Detector.Companion::euclidianDistance,
                 generatedData.FORMATS)
-        if (matchResult.distance > 400) {
-            matchResult.bestIndex = INDEX_UNKNOWN
-        }
-
-        //Log.d("Detector", "format: " + matchResult.bestIndex + "(" + matchResult.distance +  ")")
-
-        return matchResult.bestIndex;
     }
 
     fun detectMode(byteBufferImage: ByteBufferImage): Int {
         ensureRectFactory(byteBufferImage)
-        val matchResult = matchImage(byteBufferImage,
+        val index = modeMinimum.detect(byteBufferImage,
                 rectFactory!!.MODE,
-                Detector.Companion::extractHaar,
-                Detector.Companion::euclidianDistance,
                 if (rectFactory!!.isTablet) generatedData.MODES_TABLET else generatedData.MODES)
-        if (matchResult.distance > 400) {
-            matchResult.bestIndex = INDEX_UNKNOWN
-        }
 
-        //Log.d("Detector", "mode: " + matchResult.bestIndex + "(" + matchResult.distance +  ")")
-
-        when (matchResult.bestIndex) {
+        when (index) {
             MODE_CASUAL_STANDARD, MODE_CASUAL_WILD -> return MODE_CASUAL
             MODE_RANKED_STANDARD, MODE_RANKED_WILD -> return MODE_RANKED
             else -> return MODE_UNKNOWN
         }
     }
 
-    private fun getMapping(playerClass: String?, type: String): List<Int> {
-        return CardJson.allCards().filter { it.scores != null }.mapIndexed { index, card ->
-            if (playerClass != null
-                    && !PlayerClass.NEUTRAL.equals(card.playerClass)
-                    && playerClass != card.playerClass
-                    && type != card.type) {
-                // do not consider cards that are the wrong hero
-                null
-            } else {
-                index
-            }
-        }.filterNotNull()
-    }
-
     private lateinit var cardByType: Array<List<Card>>
 
     fun detectArena(byteBufferImage: ByteBufferImage, playerClass: String?): Array<ArenaResult> {
         ensureRectFactory(byteBufferImage)
-        val arenaResults = Array<ArenaResult>(3, {ArenaResult("", Double.MAX_VALUE)})
+        val arenaResults = Array<ArenaResult>(3, { ArenaResult("", Double.MAX_VALUE) })
 
         if (playerClass != lastPlayerClass) {
             val subList = CardJson.allCards()
@@ -148,7 +113,8 @@ class Detector(var context: Context) {
                             it.playerClass == PlayerClass.NEUTRAL -> true
                             it.playerClass == playerClass -> true
                             else -> false
-                        } }
+                        }
+                    }
 
             cardByType = arrayOf(
                     subList.filter { Type.MINION == it.type },
@@ -181,7 +147,7 @@ class Detector(var context: Context) {
             arenaResults[position].distance = minDistance
             arenaResults[position].cardId = bestId
         }
-        Log.d("Detector", arenaResults.map{ "[" + it.cardId + "(" + it.distance + ")]"}.joinToString(","))
+        Log.d("Detector", arenaResults.map { "[" + it.cardId + "(" + it.distance + ")]" }.joinToString(","))
         return arenaResults
     }
 
@@ -238,16 +204,16 @@ class Detector(var context: Context) {
         }
 
         fun haarToString(features: DoubleArray): String {
-            val sb= StringBuilder()
+            val sb = StringBuilder()
 
             sb.append("=[")
-            sb.append(features.map {String.format("%3.2f", it)}.joinToString(" "))
+            sb.append(features.map { String.format("%3.2f", it) }.joinToString(" "))
             sb.append("]")
             return sb.toString()
         }
 
         fun formatString(format: Int): String {
-            return when(format) {
+            return when (format) {
                 FORMAT_WILD -> "WILD"
                 FORMAT_STANDARD -> "STANDARD"
                 else -> "UNKNOWN"
@@ -255,7 +221,7 @@ class Detector(var context: Context) {
         }
 
         fun formatMode(mode: Int): String {
-            return when(mode) {
+            return when (mode) {
                 MODE_CASUAL -> "MODE_CASUAL"
                 MODE_RANKED -> "MODE_RANKED"
                 else -> "UNKNOWN"
