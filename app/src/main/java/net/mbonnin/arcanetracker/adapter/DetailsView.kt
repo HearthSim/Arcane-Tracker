@@ -132,6 +132,7 @@ class DetailsView(context: Context) : LinearLayout(context) {
                 addSecret(list, CardId.HIDDEN_CACHE, entity.extra.otherPlayerPlayedMinion)
                 addSecret(list, CardId.MISDIRECTION, entity.extra.selfHeroAttacked)
                 addSecret(list, CardId.VENOMSTRIKE_TRAP, entity.extra.selfMinionWasAttacked)
+                addSecret(list, CardId.WANDERING_MONSTER, entity.extra.selfHeroAttacked)
             }
             PlayerClass.MAGE -> {
                 addSecret(list, CardId.MIRROR_ENTITY, entity.extra.otherPlayerPlayedMinion)
@@ -145,6 +146,7 @@ class DetailsView(context: Context) : LinearLayout(context) {
                 addSecret(list, CardId.ICE_BLOCK, false)
                 addSecret(list, CardId.SPELLBENDER, entity.extra.selfMinionTargetedBySpell)
                 addSecret(list, CardId.FROZEN_CLONE, entity.extra.otherPlayerPlayedMinion)
+                addSecret(list, CardId.EXPLOSIVE_RUNES, entity.extra.otherPlayerPlayedMinion)
             }
             PlayerClass.PALADIN -> {
                 addSecret(list, CardId.COMPETITIVE_SPIRIT, entity.extra.competitiveSpiritTriggerConditionHappened)
@@ -155,6 +157,11 @@ class DetailsView(context: Context) : LinearLayout(context) {
                 addSecret(list, CardId.NOBLE_SACRIFICE, entity.extra.selfHeroAttacked || entity.extra.selfMinionWasAttacked)
                 addSecret(list, CardId.GETAWAY_KODO, entity.extra.selfPlayerMinionDied)
                 addSecret(list, CardId.EYE_FOR_AN_EYE, entity.extra.selfHeroAttacked)
+            }
+            PlayerClass.ROGUE -> {
+                addSecret(list, CardId.CHEAT_DEATH, entity.extra.selfPlayerMinionDied)
+                addSecret(list, CardId.SUDDEN_BETRAYAL, entity.extra.selfHeroAttacked)
+                addSecret(list, CardId.EVASION, entity.extra.selfHeroDamaged)
             }
         }
 
