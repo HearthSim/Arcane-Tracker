@@ -41,6 +41,11 @@ object CardUtil {
                 cost = 2
                 pClass = PlayerClass.HUNTER
             }
+            PlayerClass.ROGUE -> {
+                id = "secret_r"
+                cost = 2
+                pClass = PlayerClass.ROGUE
+            }
             PlayerClass.MAGE -> {
                 id = "secret_m"
                 cost = 3
