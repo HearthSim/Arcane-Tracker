@@ -524,7 +524,7 @@ public class GameLogic {
                     guessedId = mGame.findEntitySafe(blockTag.Target).CardID;
                     break;
                 case CardId.BENEATH_THE_GROUNDS:
-                    guessedId = CardId.AMBUSH;
+                    guessedId = CardId.NERUBIAN_AMBUSH;
                     break;
                 case CardId.IRON_JUGGERNAUT:
                     guessedId = CardId.BURROWING_MINE;
