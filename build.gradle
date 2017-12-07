@@ -46,6 +46,7 @@ allprojects {
             moshi_kotlin           : 'com.squareup.moshi:moshi-kotlin:1.5.0',
             timber                 : 'com.jakewharton.timber:timber:4.5.1',
             kotlin_stdlib          : "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version",
+            kotlin_reflect         : "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version",
             rxjava2                : 'io.reactivex.rxjava2:rxjava:2.1.6',
             rxkotlin               : "io.reactivex:rxkotlin:1.0.0",
 
