@@ -192,4 +192,6 @@
     <string name="never">Never</string>
     <string name="startScreenCaptureExplanation">In order to detect your rank and play mode (casual/ranked, wild/standard), Arcane Tracker will start to record your screen.\n\nYou can chose to say no in the next screen or in the settings at any time if you don\'t want to enable rank detection.</string>
     <string name="rankDetection">Rank detection</string>
+    <string name="passwordHint">password</string>
+    <string name="usernameHint">username</string>
 </resources>
