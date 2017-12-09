@@ -192,4 +192,6 @@
     <string name="never">Nie</string>
     <string name="startScreenCaptureExplanation">Um deinen Rang und den Spielmodus zu erkennen (Ungewertet/Gewertet, Wild/Standard), wird Arcane Tracker deinen Bildschirm aufnehmen.\n\nWenn du keine Rangerkennung willst, kannst du im nächsten Dialog oder später in den Einstellungen ablehnen.</string>
     <string name="rankDetection">Rangerkennung</string>
+    <string name="usernameHint">nutzername</string>
+    <string name="passwordHint">passwort</string>
 </resources>
