@@ -5,9 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -22,7 +20,7 @@ public class HistoryCompanion {
         TextView historyEmpty = view.findViewById(R.id.historyEmpty);
         Button eraseHistory = view.findViewById(R.id.eraseHistory);
 
-        GameAdapter adapter = new GameAdapter(HSReplay.get().getGameSummary());
+        GameAdapter adapter = new GameAdapter(HSReplay.Companion.get().getGameSummary());
         adapter.setOnclickListener(summary -> {
             if (summary.hsreplayUrl == null) {
                 Context context = view.getContext();
@@ -34,23 +32,23 @@ public class HistoryCompanion {
             i.setAction(Intent.ACTION_VIEW);
             i.setData(Uri.parse(summary.hsreplayUrl));
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            ArcaneTrackerApplication.getContext().startActivity(i);
+            ArcaneTrackerApplication.Companion.getContext().startActivity(i);
         });
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(ArcaneTrackerApplication.getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(ArcaneTrackerApplication.Companion.getContext()));
         recyclerView.setAdapter(adapter);
 
         historyEmpty.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
 
         eraseHistory.setOnClickListener(v -> {
-            HSReplay.get().eraseGameSummary();
+            HSReplay.Companion.get().eraseGameSummary();
             adapter.notifyDataSetChanged();
             historyEmpty.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
         });
     }
 
     public static void show() {
-        Context context = ArcaneTrackerApplication.getContext();
+        Context context = ArcaneTrackerApplication.Companion.getContext();
         ViewManager viewManager = ViewManager.get();
         View view = LayoutInflater.from(context).inflate(R.layout.history_view, null);
 

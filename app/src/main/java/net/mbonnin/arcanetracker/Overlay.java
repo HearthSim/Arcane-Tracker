@@ -24,7 +24,7 @@ public class Overlay {
         MainViewCompanion.get().setState(MainViewCompanion.STATE_PLAYER, false);
         MainViewCompanion.get().show(true);
 
-        Context context = ArcaneTrackerApplication.getContext();
+        Context context = ArcaneTrackerApplication.Companion.getContext();
 
         int previousVersion = Settings.get(Settings.VERSION, 0);
         Settings.set(Settings.VERSION, BuildConfig.VERSION_CODE);

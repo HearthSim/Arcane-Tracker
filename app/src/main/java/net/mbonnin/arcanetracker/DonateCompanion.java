@@ -11,7 +11,7 @@ class DonateCompanion {
     }
 
     public static void show() {
-        Context context = ArcaneTrackerApplication.getContext();
+        Context context = ArcaneTrackerApplication.Companion.getContext();
         ViewManager viewManager = ViewManager.get();
 
         DonateBinding binding = DonateBinding.inflate(LayoutInflater.from(context));

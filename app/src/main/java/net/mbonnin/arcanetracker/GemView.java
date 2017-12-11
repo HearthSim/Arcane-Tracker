@@ -35,7 +35,7 @@ public class GemView extends View {
         paint.setStyle(Paint.Style.FILL);
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setAntiAlias(true);
-        paint.setTypeface(Typefaces.belwe());
+        paint.setTypeface(Typefaces.INSTANCE.belwe());
         paint.setTextSize(size);
         if (mText.length() > 1) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

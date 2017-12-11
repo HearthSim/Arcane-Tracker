@@ -53,8 +53,8 @@ public class TestParser {
     }
 
     private void runParser(String resource, GameLogic.Listener listener) throws IOException {
-        GameLogic.get().addListener(listener);
-        PowerParser powerParser = new PowerParser(tag -> GameLogic.get().handleRootTag(tag), null);
+        GameLogic.Companion.get().addListener(listener);
+        PowerParser powerParser = new PowerParser(tag -> GameLogic.Companion.get().handleRootTag(tag), null);
         InputStream inputStream = getClass().getResourceAsStream(resource);
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
         String line;
@@ -63,7 +63,7 @@ public class TestParser {
         while ((line = br.readLine()) != null) {
             powerParser.onLine(line);
         }
-        GameLogic.get().removeListener(listener);
+        GameLogic.Companion.get().removeListener(listener);
     }
 
     private Game runParser(String resource) throws IOException {

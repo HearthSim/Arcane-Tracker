@@ -10,12 +10,6 @@ import java.util.HashMap;
 
 import timber.log.Timber;
 
-/**
- * Created by martin on 11/7/16.
- */
-
-/**
- */
 public class Game {
 
     public HashMap<String, Entity> entityMap = new HashMap<>();
@@ -32,6 +26,7 @@ public class Game {
     public BnetGameType bnetGameType;
     public String lastPlayedCardId;
     public int rank = -1;
+    public boolean spectator;
 
     public Player getPlayer() {
         return player;

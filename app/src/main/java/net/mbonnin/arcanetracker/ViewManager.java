@@ -96,7 +96,7 @@ public class ViewManager {
 
     public static  ViewManager get() {
         if (sViewManager == null) {
-            sViewManager = new ViewManager(ArcaneTrackerApplication.getContext());
+            sViewManager = new ViewManager(ArcaneTrackerApplication.Companion.getContext());
         }
 
         return sViewManager;

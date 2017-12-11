@@ -94,7 +94,7 @@ public class ItemAdapter extends RecyclerView.Adapter {
         } else if (o instanceof HeaderItem) {
             HeaderItem headerItem = (HeaderItem)o;
             TextView textView = holder.itemView.findViewById(R.id.textView);
-            textView.setTypeface(Typefaces.belwe());
+            textView.setTypeface(Typefaces.INSTANCE.belwe());
             String text = "";//headerItem.expanded ?"▼":"▶";
             textView.setText(text + headerItem.title);
             if (headerItem.onClicked != null) {

@@ -270,7 +270,7 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
 
     public static MainViewCompanion get() {
         if (sMainCompanion == null) {
-            View view = LayoutInflater.from(ArcaneTrackerApplication.getContext()).inflate(R.layout.main_view, null);
+            View view = LayoutInflater.from(ArcaneTrackerApplication.Companion.getContext()).inflate(R.layout.main_view, null);
             sMainCompanion = new MainViewCompanion(view);
         }
 
@@ -414,10 +414,10 @@ public class MainViewCompanion implements ValueAnimator.AnimatorUpdateListener, 
                 donateView.setOnClickListener(v3 -> {
                     mViewManager.removeView(view);
                     Intent intent = new Intent();
-                    intent.setClass(ArcaneTrackerApplication.getContext(), DonateActivity.class);
+                    intent.setClass(ArcaneTrackerApplication.Companion.getContext(), DonateActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                    ArcaneTrackerApplication.getContext().startActivity(intent);
+                    ArcaneTrackerApplication.Companion.getContext().startActivity(intent);
                 });
             } else {
                 donateView.setVisibility(View.GONE);

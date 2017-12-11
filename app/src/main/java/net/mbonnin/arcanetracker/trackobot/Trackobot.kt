@@ -142,8 +142,8 @@ class Trackobot {
 
     private fun handleResponse(lce: Lce<ResultData>) {
         if (lce.data != null) {
-            val context = ArcaneTrackerApplication.getContext()
-            Toast.makeText(ArcaneTrackerApplication.getContext(), context.getString(R.string.trackobotSuccess), Toast.LENGTH_LONG).show()
+            val context = ArcaneTrackerApplication.context
+            Toast.makeText(ArcaneTrackerApplication.context, context.getString(R.string.trackobotSuccess), Toast.LENGTH_LONG).show()
             Timber.d("trackobot upload success")
         } else if (lce.error != null) {
             val e = lce.error
@@ -151,7 +151,7 @@ class Trackobot {
 
             Timber.d("trackobot upload error")
 
-            val context = ArcaneTrackerApplication.getContext()
+            val context = ArcaneTrackerApplication.context
             if (e is HttpException) {
                 message = context.getString(R.string.trackobotHttpError, e.code())
             } else if (e is SocketTimeoutException) {
@@ -170,7 +170,7 @@ class Trackobot {
                 message = context.getString(R.string.trackobotError)
             }
 
-            Toast.makeText(ArcaneTrackerApplication.getContext(), message, Toast.LENGTH_LONG).show()
+            Toast.makeText(ArcaneTrackerApplication.context, message, Toast.LENGTH_LONG).show()
             Utils.reportNonFatal(e)
         }
     }

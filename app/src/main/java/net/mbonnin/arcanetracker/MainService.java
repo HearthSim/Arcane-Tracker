@@ -19,12 +19,12 @@ public class MainService extends Service {
 
     public static void stop() {
         Intent serviceIntent = new Intent();
-        serviceIntent.setClass(ArcaneTrackerApplication.getContext(), MainService.class);
-        ArcaneTrackerApplication.getContext().stopService(serviceIntent);
+        serviceIntent.setClass(ArcaneTrackerApplication.Companion.getContext(), MainService.class);
+        ArcaneTrackerApplication.Companion.getContext().stopService(serviceIntent);
     }
 
     public static void start() {
-        Context context = ArcaneTrackerApplication.getContext();
+        Context context = ArcaneTrackerApplication.Companion.getContext();
         Intent serviceIntent = new Intent();
         serviceIntent.setClass(context, MainService.class);
 
@@ -50,10 +50,10 @@ public class MainService extends Service {
         Intent intent = StopServiceBroadcastReceiver.getIntent();
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Intent intent2 = new Intent(ArcaneTrackerApplication.getContext(), SettingsActivity.class);
+        Intent intent2 = new Intent(ArcaneTrackerApplication.Companion.getContext(), SettingsActivity.class);
         PendingIntent settingsPendingIntent = PendingIntent.getActivity(this, 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Notification notification = new NotificationCompat.Builder(this, ArcaneTrackerApplication.NOTIFICATION_CHANNEL_ID)
+        Notification notification = new NotificationCompat.Builder(this, ArcaneTrackerApplication.Companion.getNOTIFICATION_CHANNEL_ID())
                 .setContentText(getString(R.string.arcane_tracker_running))
                 .addAction(R.drawable.ic_close_black_24dp, "QUIT", stopPendingIntent)
                 .addAction(R.drawable.ic_settings_black_24dp, "Settings", settingsPendingIntent)
@@ -70,7 +70,7 @@ public class MainService extends Service {
 
         Utils.INSTANCE.logWithDate("MainService.onDestroy()");
 
-        FileTree.get().sync();
+        FileTree.Companion.get().sync();
         stopForeground(true);
     }
 }

@@ -132,7 +132,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
 
         val bundle = Bundle()
         bundle.putString(EventParams.BNET_GAME_TYPE.value, currentGame!!.bnetGameType.name)
-        FirebaseAnalytics.getInstance(ArcaneTrackerApplication.getContext()).logEvent("game_ended", bundle)
+        FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("game_ended", bundle)
 
         mGameOver = true
     }

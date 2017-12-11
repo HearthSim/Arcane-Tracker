@@ -32,7 +32,7 @@ public class Settings {
     public static final String QUIT_TIMEOUT = "QUIT_TIMEOUT";
 
     private static SharedPreferences getPreferences() {
-        return PreferenceManager.getDefaultSharedPreferences(ArcaneTrackerApplication.getContext());
+        return PreferenceManager.getDefaultSharedPreferences(ArcaneTrackerApplication.Companion.getContext());
     }
 
     public static boolean get(String key, boolean defaultValue) {

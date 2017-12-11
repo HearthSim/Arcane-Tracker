@@ -19,7 +19,7 @@ public class DeckList {
         Deck deck = new Deck();
         deck.classIndex = classIndex;
         deck.id = UUID.randomUUID().toString();
-        deck.name =  ArcaneTrackerApplication.getContext().getString(R.string.yourDeck);
+        deck.name =  ArcaneTrackerApplication.Companion.getContext().getString(R.string.yourDeck);
 
         get().add(deck);
 
@@ -60,7 +60,7 @@ public class DeckList {
             if (sArenaDeck == null) {
                 sArenaDeck = new Deck();
                 sArenaDeck.id = ARENA_DECK_ID;
-                sArenaDeck.name = ArcaneTrackerApplication.getContext().getString(R.string.arenaDeck);
+                sArenaDeck.name = ArcaneTrackerApplication.Companion.getContext().getString(R.string.arenaDeck);
             }
         }
         sArenaDeck.checkClassIndex();
@@ -70,7 +70,7 @@ public class DeckList {
     public static Deck getOpponentDeck() {
         if (sOpponentDeck == null) {
             sOpponentDeck = new Deck();
-            sOpponentDeck.name = ArcaneTrackerApplication.getContext().getString(R.string.opponentsDeck);
+            sOpponentDeck.name = ArcaneTrackerApplication.Companion.getContext().getString(R.string.opponentsDeck);
         }
         return sOpponentDeck;
     }

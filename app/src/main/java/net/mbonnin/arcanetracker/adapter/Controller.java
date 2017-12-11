@@ -45,7 +45,7 @@ public class Controller implements GameLogic.Listener {
     public Controller() {
         mPlayerAdapter = new ItemAdapter();
         mOpponentAdapter = new ItemAdapter();
-        GameLogic.get().addListener(this);
+        GameLogic.Companion.get().addListener(this);
         mHandler = new Handler();
     }
 
@@ -149,7 +149,7 @@ public class Controller implements GameLogic.Listener {
         ArrayList<Object> itemList = new ArrayList<>();
         itemList.addAll(deckEntryItemList);
         if (unknownCards > 0) {
-            itemList.add(ArcaneTrackerApplication.getContext().getString(R.string.unknown_cards, unknownCards));
+            itemList.add(ArcaneTrackerApplication.Companion.getContext().getString(R.string.unknown_cards, unknownCards));
         }
 
         return itemList;
@@ -220,7 +220,7 @@ public class Controller implements GameLogic.Listener {
 
     private ArrayList getHand() {
         ArrayList<Object> list = new ArrayList<>();
-        Context context = ArcaneTrackerApplication.getContext();
+        Context context = ArcaneTrackerApplication.Companion.getContext();
 
         EntityList entities = getEntityListInZone(mOpponentId, Entity.ZONE_HAND);
 
@@ -231,7 +231,7 @@ public class Controller implements GameLogic.Listener {
             DeckEntryItem deckEntry = new DeckEntryItem();
             if (TextUtils.isEmpty(entity.CardID) || entity.extra.hide) {
                 StringBuilder builder = new StringBuilder();
-                builder.append("#").append(GameLogic.gameTurnToHumanTurn(entity.extra.drawTurn));
+                builder.append("#").append(GameLogic.Companion.gameTurnToHumanTurn(entity.extra.drawTurn));
                 if (entity.extra.mulliganed) {
                     builder.append(" (M)");
                 }
@@ -388,7 +388,7 @@ public class Controller implements GameLogic.Listener {
         });
 
         if (unknown > 0) {
-            list.add(ArcaneTrackerApplication.getContext().getString(R.string.unknown_cards, unknown));
+            list.add(ArcaneTrackerApplication.Companion.getContext().getString(R.string.unknown_cards, unknown));
         }
         return list;
     }

@@ -9,7 +9,7 @@ object ArenaGuessCompanion {
     fun show(index: Int, cardId: String, playerClass: String) {
         hide(index)
 
-        views[index] = ArenaGuessView(ArcaneTrackerApplication.getContext())
+        views[index] = ArenaGuessView(ArcaneTrackerApplication.context)
         views[index]?.setCardId(cardId, playerClass)
 
         val params = ViewManager.Params()

@@ -62,12 +62,12 @@ public class CardRenderer {
 
 
     public CardRenderer() {
-        belwe = Typefaces.belwe();
-        franklin = Typefaces.franklin();
+        belwe = Typefaces.INSTANCE.belwe();
+        franklin = Typefaces.INSTANCE.franklin();
     }
 
     private synchronized Bitmap getAsset(String name) {
-        LruCache lruCache = ArcaneTrackerApplication.get().getImageCache();
+        LruCache lruCache = ArcaneTrackerApplication.Companion.get().getImageCache();
         Bitmap bitmap = lruCache.get(name);
         if (bitmap == null) {
             bitmap = Utils.INSTANCE.getAssetBitmap(String.format("renderer/%s.webp", name));
@@ -258,7 +258,7 @@ public class CardRenderer {
         }
 
         String s = null;
-        Context context = ArcaneTrackerApplication.getContext();
+        Context context = ArcaneTrackerApplication.Companion.getContext();
 
         switch (card.race) {
             case Race.MECHANICAL:
@@ -353,7 +353,7 @@ public class CardRenderer {
         paint.setStyle(Paint.Style.FILL);
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setAntiAlias(true);
-        paint.setTypeface(Typefaces.belwe());
+        paint.setTypeface(Typefaces.INSTANCE.belwe());
         paint.setTextSize(size);
 
         canvas.drawText(number, dx, dy, paint);

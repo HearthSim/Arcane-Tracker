@@ -27,7 +27,7 @@ public class DeckListAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(ArcaneTrackerApplication.getContext()).inflate(R.layout.deck_line_view, null);
+        View view = LayoutInflater.from(ArcaneTrackerApplication.Companion.getContext()).inflate(R.layout.deck_line_view, null);
         return new RecyclerView.ViewHolder(view) {};
     }
 

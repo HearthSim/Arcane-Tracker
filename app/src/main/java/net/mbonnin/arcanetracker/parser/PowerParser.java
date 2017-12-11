@@ -1,5 +1,7 @@
 package net.mbonnin.arcanetracker.parser;
 
+import android.support.annotation.NonNull;
+
 import com.annimon.stream.function.Consumer;
 
 import net.mbonnin.arcanetracker.Utils;
@@ -11,6 +13,7 @@ import net.mbonnin.arcanetracker.parser.power.HideEntityTag;
 import net.mbonnin.arcanetracker.parser.power.MetaDataTag;
 import net.mbonnin.arcanetracker.parser.power.PlayerTag;
 import net.mbonnin.arcanetracker.parser.power.ShowEntityTag;
+import net.mbonnin.arcanetracker.parser.power.SpectatorTag;
 import net.mbonnin.arcanetracker.parser.power.Tag;
 import net.mbonnin.arcanetracker.parser.power.TagChangeTag;
 
@@ -60,7 +63,15 @@ public class PowerParser implements LogReader.LineConsumer {
     }
 
 
-    public void onLine(String rawLine) {
+    public void onLine(@NonNull String rawLine) {
+        if (rawLine.startsWith("================== Begin Spectating")) {
+            mTagConsumer.accept(new SpectatorTag(true));
+            return;
+        } else if (rawLine.startsWith("================== End Spectator Mode")) {
+            mTagConsumer.accept(new SpectatorTag(false));
+            return;
+        }
+
         LogReader.LogLine logLine = LogReader.Companion.parseLine(rawLine);
         if (logLine == null) {
             return;

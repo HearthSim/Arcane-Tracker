@@ -27,7 +27,7 @@ public class PicassoCardRequestHandler extends RequestHandler {
     DiskLruCache cache;
 
     private PicassoCardRequestHandler() {
-        File file = new File(ArcaneTrackerApplication.getContext().getCacheDir(), "cardsCache");
+        File file = new File(ArcaneTrackerApplication.Companion.getContext().getCacheDir(), "cardsCache");
         cache = DiskLruCache.create(FileSystem.SYSTEM, file, VERSION, ENTRY_COUNT, 250 * 1024*1024);
     }
 

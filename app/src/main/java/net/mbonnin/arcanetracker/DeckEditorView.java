@@ -188,7 +188,7 @@ public class DeckEditorView extends RelativeLayout {
     }
 
     public static DeckEditorView show(Deck deck) {
-        Context context = ArcaneTrackerApplication.getContext();
+        Context context = ArcaneTrackerApplication.Companion.getContext();
         DeckEditorView deckEditorView = DeckEditorView.build(context);
 
         ViewManager viewManager = ViewManager.get();

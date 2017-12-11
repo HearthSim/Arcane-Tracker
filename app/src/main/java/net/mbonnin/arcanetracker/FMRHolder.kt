@@ -42,6 +42,6 @@ object FMRHolder {
 
 
     private fun displayToast(toast: String) {
-        runOnMainThread({ Toast.makeText(ArcaneTrackerApplication.getContext(), toast, Toast.LENGTH_SHORT).show() })
+        runOnMainThread({ Toast.makeText(ArcaneTrackerApplication.context, toast, Toast.LENGTH_SHORT).show() })
     }
 }

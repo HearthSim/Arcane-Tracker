@@ -88,10 +88,10 @@ class SettingsCompanion(internal var settingsView: View) {
                         signinButton!!.visibility = VISIBLE
                         signupButton!!.isEnabled = true
                         if (lce.error != null) {
-                            Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show()
+                            Toast.makeText(ArcaneTrackerApplication.context, ArcaneTrackerApplication.context.getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show()
                             Utils.reportNonFatal(lce.error)
                         } else {
-                            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.getContext()).logEvent("track_o_bot_signin", null)
+                            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("track_o_bot_signin", null)
                             updateTrackobot(settingsView)
                         }
                     }
@@ -110,7 +110,7 @@ class SettingsCompanion(internal var settingsView: View) {
                         signupButton!!.visibility = VISIBLE
                         signinButton!!.isEnabled = true
 
-                        val context = ArcaneTrackerApplication.getContext()
+                        val context = ArcaneTrackerApplication.context
                         if (lce.error != null) {
                             Toast.makeText(context, context.getString(R.string.trackobotSignupError), Toast.LENGTH_LONG).show()
                             Utils.reportNonFatal(lce.error)
@@ -131,7 +131,7 @@ class SettingsCompanion(internal var settingsView: View) {
     }
 
     private fun onTrackobotUrlError(throwable: Throwable) {
-        val context = ArcaneTrackerApplication.getContext()
+        val context = ArcaneTrackerApplication.context
         Toast.makeText(context, context.getString(R.string.couldNotGetProfile), Toast.LENGTH_LONG).show()
         signupButton!!.visibility = VISIBLE
         signupProgressBar!!.visibility = GONE
@@ -139,7 +139,7 @@ class SettingsCompanion(internal var settingsView: View) {
     }
 
     private val mImportButtonClicked = View.OnClickListener {
-        val context = ArcaneTrackerApplication.getContext()
+        val context = ArcaneTrackerApplication.context
         val f = Trackobot.findTrackobotFile()
         if (f == null) {
             Toast.makeText(context, context.getString(R.string.couldNotFindTrackobotFile), Toast.LENGTH_LONG).show()
@@ -164,10 +164,10 @@ class SettingsCompanion(internal var settingsView: View) {
                         importButton!!.isEnabled = true
 
                         if (lce.error != null) {
-                            Toast.makeText(ArcaneTrackerApplication.getContext(), ArcaneTrackerApplication.getContext().getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show()
+                            Toast.makeText(ArcaneTrackerApplication.context, ArcaneTrackerApplication.context.getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show()
                             Utils.reportNonFatal(lce.error)
                         } else {
-                            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.getContext()).logEvent("track_o_bot_import", null)
+                            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("track_o_bot_import", null)
                             updateTrackobot(settingsView)
                         }
                     }
@@ -291,7 +291,7 @@ class SettingsCompanion(internal var settingsView: View) {
 
     private fun init() {
         val view = settingsView
-        val context = ArcaneTrackerApplication.getContext()
+        val context = ArcaneTrackerApplication.context
 
         updateTrackobot(view)
 
@@ -347,10 +347,10 @@ class SettingsCompanion(internal var settingsView: View) {
                         emailIntent.putExtra(Intent.EXTRA_STREAM, arrayUri)
 
                         try {
-                            ArcaneTrackerApplication.getContext().startActivity(emailIntent)
+                            ArcaneTrackerApplication.context.startActivity(emailIntent)
                         } catch (e: Exception) {
                             Utils.reportNonFatal(e)
-                            Toast.makeText(ArcaneTrackerApplication.getContext(), Utils.getString(R.string.noEmailFound), Toast.LENGTH_LONG).show()
+                            Toast.makeText(ArcaneTrackerApplication.context, Utils.getString(R.string.noEmailFound), Toast.LENGTH_LONG).show()
                         }
                     }
         }
@@ -602,7 +602,7 @@ class SettingsCompanion(internal var settingsView: View) {
                     val i = Intent(Intent.ACTION_VIEW)
                     i.data = Uri.parse("https://hsreplay.net/games/mine/")
                     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    ArcaneTrackerApplication.getContext().startActivity(i)
+                    ArcaneTrackerApplication.context.startActivity(i)
                 }
             } else {
                 mHsReplayCompanion1!!.setText(Utils.getString(R.string.hsReplayClaim)) { v ->
@@ -620,7 +620,7 @@ class SettingsCompanion(internal var settingsView: View) {
             mHsReplayState.claimUrlLoading = true
         } else if (lce.error != null) {
             mHsReplayState.claimUrlLoading = false
-            Toast.makeText(ArcaneTrackerApplication.getContext(), Utils.getString(R.string.hsReplayClaimFailed), Toast.LENGTH_LONG).show()
+            Toast.makeText(ArcaneTrackerApplication.context, Utils.getString(R.string.hsReplayClaimFailed), Toast.LENGTH_LONG).show()
             Utils.reportNonFatal(Exception("HSReplay claim url", lce.error))
         } else if (lce.data != null) {
             mHsReplayState.claimUrlLoading = false
@@ -651,7 +651,7 @@ class SettingsCompanion(internal var settingsView: View) {
 
 
         fun show() {
-            val context = ArcaneTrackerApplication.getContext()
+            val context = ArcaneTrackerApplication.context
             val viewManager = ViewManager.get()
             val view2 = LayoutInflater.from(context).inflate(R.layout.settings_view, null)
 
