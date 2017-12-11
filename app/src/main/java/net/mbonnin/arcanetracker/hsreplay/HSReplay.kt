@@ -178,7 +178,7 @@ class HSReplay {
         mService = retrofit.create(Service::class.java)
 
         mS3Client = OkHttpClient.Builder()
-                //.addInterceptor(new GzipRequestInterceptor())
+                .addInterceptor(GzipInterceptor())
                 .build()
 
         mToken = Settings.get(Settings.HSREPLAY_TOKEN, null)
