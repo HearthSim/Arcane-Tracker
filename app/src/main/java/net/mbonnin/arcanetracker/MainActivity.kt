@@ -20,7 +20,6 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.iid.FirebaseInstanceId
 import timber.log.Timber
 import java.io.File
-import java.io.FileOutputStream
 
 class MainActivity : AppCompatActivity() {
     lateinit var activityView: View
@@ -166,20 +165,9 @@ class MainActivity : AppCompatActivity() {
             Settings.set(Settings.SHOW_NEXT_TIME, checkbox!!.isChecked)
 
             try {
-                val inputStream = resources.openRawResource(R.raw.log_config)
-
-                val file = File(Utils.hsExternalDir + "log.config")
-                val outputStream = FileOutputStream(file)
-
-                val buffer = ByteArray(8192)
-
-                while (true) {
-                    val read = inputStream.read(buffer)
-                    if (read == -1) {
-                        break
-                    } else if (read > 0) {
-                        outputStream.write(buffer, 0, read)
-                    }
+                resources.openRawResource(R.raw.log_config).bufferedReader().use {
+                    val logConfig = it.readText()
+                    File(Utils.hsExternalDir + "log.config").writeText(logConfig)
                 }
             } catch (e: Exception) {
                 Snackbar.make(activityView, getString(R.string.cannot_locate_heathstone_install), Snackbar.LENGTH_LONG).show()

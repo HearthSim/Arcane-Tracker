@@ -52,3 +52,9 @@ FilePrinting=True
 ConsolePrinting=False
 ScreenPrinting=False
 Verbose=True
+[Decks]
+LogLevel=9
+FilePrinting=True
+ConsolePrinting=False
+ScreenPrinting=False
+Verbose=True
