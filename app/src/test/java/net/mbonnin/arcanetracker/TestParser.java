@@ -198,7 +198,7 @@ public class TestParser {
         }
 
         InterruptedListener listener = new InterruptedListener();
-        runParser("/spectator.log", listener);
+        runParser("/continuation.log", listener);
 
         /*
          * the first game is a continuation game and should not be detected
