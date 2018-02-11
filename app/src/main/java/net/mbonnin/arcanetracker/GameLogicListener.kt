@@ -190,7 +190,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
 
                     val uploadRequest = UploadRequest()
                     uploadRequest.match_start = gameStart
-                    uploadRequest.build = 20022
+                    uploadRequest.build = ArcaneTrackerApplication.get().hearthstoneBuild
                     uploadRequest.spectator_mode = game.spectator
                     uploadRequest.friendly_player = game.player.entity.PlayerID
                     uploadRequest.game_type = game.bnetGameType.intValue

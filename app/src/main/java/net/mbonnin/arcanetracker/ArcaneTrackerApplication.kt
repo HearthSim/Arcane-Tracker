@@ -17,6 +17,7 @@ import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.LruCache
 import com.squareup.picasso.Picasso
 import io.paperdb.Paper
+import net.mbonnin.arcanetracker.MainActivity.Companion.HEARTHSTONE_PACKAGE_ID
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.mbonnin.arcanetracker.parser.*
 import net.mbonnin.hsmodel.Card
@@ -146,7 +147,7 @@ class ArcaneTrackerApplication : MultiDexApplication() {
 
         MainService.start()
 
-        packageManager.getPackageInfo("com.blizzard.wtcg.hearthstone", 0)?.let {
+        packageManager.getPackageInfo(HEARTHSTONE_PACKAGE_ID, 0)?.let {
             val c = it.versionName.split(".")
             try {
                 hearthstoneBuild = c[c.size - 1].toInt()
