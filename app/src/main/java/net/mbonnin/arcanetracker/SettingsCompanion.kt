@@ -511,8 +511,8 @@ class SettingsCompanion(internal var settingsView: View) {
                         mHsReplayState.userNameLoading = true
                     } else if (lce.data != null) {
                         mHsReplayState.userNameLoading = false
-                        if (lce.data.user != null && lce.data.user.username != null) {
-                            mHsReplayState.userName = lce.data.user.username
+                        if (lce.data.user != null && lce.data.user!!.username != null) {
+                            mHsReplayState.userName = lce.data.user!!.username
                         }
                     } else if (lce.error != null) {
                         mHsReplayState.userNameLoading = false
@@ -531,7 +531,7 @@ class SettingsCompanion(internal var settingsView: View) {
         var claimUrlLoading: Boolean = false
     }
 
-    private fun handleTokenLce(lce: Lce<String>) {
+    private fun handleTokenLce(lce: net.mbonnin.arcanetracker.hsreplay.model.Lce<String>) {
         if (lce.isLoading) {
             mHsReplayState.tokenLoading = true
         } else if (lce.error != null) {
@@ -574,7 +574,7 @@ class SettingsCompanion(internal var settingsView: View) {
                 mHsReplayCompanion2!!.setText(Utils.getString(R.string.hsReplayEnable)) { v ->
                     HSReplay.get()
                             .createToken()
-                            .subscribe(Action1<Lce<String>> { this.handleTokenLce(it) })
+                            .subscribe({ this.handleTokenLce(it) })
                 }
             }
         } else {
@@ -608,14 +608,14 @@ class SettingsCompanion(internal var settingsView: View) {
                 mHsReplayCompanion1!!.setText(Utils.getString(R.string.hsReplayClaim)) { v ->
                     HSReplay.get()
                             .claimUrl
-                            .subscribe(Action1<Lce<String>> { this.handleClaimUrlLce(it) })
+                            .subscribe({ this.handleClaimUrlLce(it) })
                 }
 
             }
         }
     }
 
-    private fun handleClaimUrlLce(lce: Lce<String>) {
+    private fun handleClaimUrlLce(lce: net.mbonnin.arcanetracker.hsreplay.model.Lce<String>) {
         if (lce.isLoading) {
             mHsReplayState.claimUrlLoading = true
         } else if (lce.error != null) {

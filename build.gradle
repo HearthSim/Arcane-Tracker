@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.2.0'
+    ext.kotlin_version = '1.2.21'
     ext.android_gradle_plugin_version = "3.0.1"
     repositories {
         google()
@@ -53,7 +53,8 @@ allprojects {
             junit                  : 'junit:junit:4.12',
             espresso               : 'com.android.support.test.espresso:espresso-core:3.0.1',
             test_runner            : 'com.android.support.test:runner:1.0.1',
-            test_rules             : 'com.android.support.test:rules:1.0.1'
+            test_rules             : 'com.android.support.test:rules:1.0.1',
+            ktx                    : 'androidx.core:core-ktx:0.1'
     ]
 
     ext.atConfig = [

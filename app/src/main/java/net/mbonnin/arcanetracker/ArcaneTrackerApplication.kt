@@ -136,6 +136,10 @@ class ArcaneTrackerApplication : MultiDexApplication() {
          */
         LogReader("Power.log", powerParser, true)
 
+        HSReplay.testData = Utils.isAppDebuggable
+        HSReplay.userAgent = (ArcaneTrackerApplication.context.getPackageName() + "/" + BuildConfig.VERSION_NAME
+                + "; Android " + Build.VERSION.RELEASE + ";")
+        HSReplay.context = this
         HSReplay.get()
 
         CardRenderer.get()

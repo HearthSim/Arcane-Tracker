@@ -8,6 +8,7 @@
       <module fileurl="file://$PROJECT_DIR$/detector/detector.iml" filepath="$PROJECT_DIR$/detector/detector.iml" />
       <module fileurl="file://$PROJECT_DIR$/extra/extra.iml" filepath="$PROJECT_DIR$/extra/extra.iml" />
       <module fileurl="file://$PROJECT_DIR$/hsmodel/hsmodel.iml" filepath="$PROJECT_DIR$/hsmodel/hsmodel.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hsreplay/hsreplay.iml" filepath="$PROJECT_DIR$/hsreplay/hsreplay.iml" />
     </modules>
   </component>
 </project>

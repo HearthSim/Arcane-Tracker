@@ -2,12 +2,15 @@ package net.mbonnin.arcanetracker
 
 import android.os.Bundle
 import android.os.Handler
+import android.widget.Toast
 import com.google.firebase.analytics.FirebaseAnalytics
 import net.mbonnin.arcanetracker.detector.FORMAT_STANDARD
 import net.mbonnin.arcanetracker.detector.FORMAT_WILD
 import net.mbonnin.arcanetracker.detector.MODE_CASUAL
 import net.mbonnin.arcanetracker.detector.MODE_RANKED
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
+import net.mbonnin.arcanetracker.hsreplay.model.UploadRequest
+import net.mbonnin.arcanetracker.model.GameSummary
 import net.mbonnin.arcanetracker.parser.Entity
 import net.mbonnin.arcanetracker.parser.Game
 import net.mbonnin.arcanetracker.parser.GameLogic
@@ -16,6 +19,9 @@ import net.mbonnin.arcanetracker.trackobot.Trackobot
 import net.mbonnin.arcanetracker.trackobot.model.CardPlay
 import net.mbonnin.arcanetracker.trackobot.model.Result
 import net.mbonnin.arcanetracker.trackobot.model.ResultData
+import rx.Single
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import timber.log.Timber
 import java.util.*
 
@@ -170,7 +176,46 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         val runnable = object : Runnable {
             override fun run() {
                 if (mGameOver) {
-                    HSReplay.get().uploadGame(gameStart, currentGame, gameStr)
+                    val summary = GameSummary()
+                    val game = currentGame!!
+                    summary.coin = game.getPlayer().hasCoin
+                    summary.win = game.victory
+                    summary.hero = game.player.classIndex()
+                    summary.opponentHero = game.opponent.classIndex()
+                    summary.date = Utils.ISO8601DATEFORMAT.format(Date())
+                    summary.deckName = MainViewCompanion.getPlayerCompanion().deck.name
+                    summary.bnetGameType = game.bnetGameType.intValue
+
+                    GameSummary.addFirst(summary)
+
+                    val uploadRequest = UploadRequest()
+                    uploadRequest.match_start = gameStart
+                    uploadRequest.build = 20022
+                    uploadRequest.spectator_mode = game.spectator
+                    uploadRequest.friendly_player = game.player.entity.PlayerID
+                    uploadRequest.game_type = game.bnetGameType.intValue
+                    if (game.rank > 0) {
+                        if (uploadRequest.friendly_player == "1") {
+                            uploadRequest.player1.rank = game.rank
+                        } else {
+                            uploadRequest.player2.rank = game.rank
+                        }
+                    }
+
+                    HSReplay.get().uploadGame(uploadRequest, gameStr)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe({
+                                if (it.data != null) {
+                                    summary.hsreplayUrl = it.data
+                                    GameSummary.sync()
+                                    Timber.d("hsreplay upload success")
+                                    Toast.makeText(ArcaneTrackerApplication.context, ArcaneTrackerApplication.context.getString(R.string.hsreplaySuccess), Toast.LENGTH_LONG).show()
+                                } else if (it.error != null) {
+                                    Timber.d(it.error)
+                                    Toast.makeText(ArcaneTrackerApplication.context, ArcaneTrackerApplication.context.getString(R.string.hsreplayError), Toast.LENGTH_LONG).show()
+                                }
+                            })
                 } else if (System.currentTimeMillis() - startTime < 30000) {
                     mHandler.postDelayed(this, 1000)
                 } else {

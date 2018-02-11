@@ -8,16 +8,17 @@ import android.view.ViewGroup;
 import net.mbonnin.arcanetracker.model.GameSummary;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GameAdapter extends RecyclerView.Adapter {
 
-    private final ArrayList<GameSummary> mGameList;
+    private final List<GameSummary> mGameList;
     private Listener mListener;
 
     public interface Listener {
         void onClick(GameSummary summary);
     }
-    public GameAdapter(ArrayList<GameSummary> gameList) {
+    public GameAdapter(List<GameSummary> gameList) {
         mGameList = gameList;
     }
 

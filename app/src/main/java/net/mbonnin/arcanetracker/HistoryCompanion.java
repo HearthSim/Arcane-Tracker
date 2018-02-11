@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import net.mbonnin.arcanetracker.hsreplay.HSReplay;
+import net.mbonnin.arcanetracker.model.GameSummary;
 
 public class HistoryCompanion {
     public HistoryCompanion(View view) {
@@ -20,7 +21,7 @@ public class HistoryCompanion {
         TextView historyEmpty = view.findViewById(R.id.historyEmpty);
         Button eraseHistory = view.findViewById(R.id.eraseHistory);
 
-        GameAdapter adapter = new GameAdapter(HSReplay.Companion.get().getGameSummary());
+        GameAdapter adapter = new GameAdapter(GameSummary.getGameSummary());
         adapter.setOnclickListener(summary -> {
             if (summary.hsreplayUrl == null) {
                 Context context = view.getContext();
@@ -41,7 +42,7 @@ public class HistoryCompanion {
         historyEmpty.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
 
         eraseHistory.setOnClickListener(v -> {
-            HSReplay.Companion.get().eraseGameSummary();
+            GameSummary.eraseGameSummary();
             adapter.notifyDataSetChanged();
             historyEmpty.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
         });

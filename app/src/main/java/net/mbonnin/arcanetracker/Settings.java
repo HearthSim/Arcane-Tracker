@@ -17,8 +17,6 @@ public class Settings {
     public static final String DRAWER_WIDTH = "DRAWER_WIDTH";
     public static final String BUTTON_WIDTH = "BUTTON_WIDTH";
     public static final String LOCALE = "LOCALE";
-    public static final String HSREPLAY_TOKEN = "HSREPLAY_TOKEN";
-    public static final String HSREPLAY = "HSREPLAY";
     public static final boolean DEFAULT_HSREPLAY = false;
     public static final String CARDSDB_VERSION = "CARDSDB_VERSION";
     public static final String LANGUAGE = "LANGUAGE";

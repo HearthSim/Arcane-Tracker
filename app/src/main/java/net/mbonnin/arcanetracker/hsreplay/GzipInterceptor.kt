@@ -7,7 +7,9 @@ import okhttp3.Response
 import okio.BufferedSink
 import okio.GzipSink
 import okio.Okio
+import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.io.OutputStream
 
 
 /** This interceptor compresses the HTTP request body. Many webservers can't handle this!  */
@@ -19,29 +21,20 @@ internal class GzipInterceptor : Interceptor {
             return chain.proceed(originalRequest)
         }
 
+        val outputStream = ByteArrayOutputStream()
+        val sink = Okio.buffer(Okio.sink(outputStream))
+        val gzipSink = Okio.buffer(GzipSink(sink))
+        originalRequest.body()!!.writeTo(gzipSink)
+        gzipSink.flush()
+        gzipSink.close()
+
+        val newBody = RequestBody.create(MediaType.parse("text/plain"),
+                outputStream.toByteArray())
+
         val compressedRequest = originalRequest.newBuilder()
                 .header("Content-Encoding", "gzip")
-                .method(originalRequest.method(), gzip(originalRequest.body()!!))
+                .method(originalRequest.method(), newBody)
                 .build()
         return chain.proceed(compressedRequest)
-    }
-
-    private fun gzip(body: RequestBody): RequestBody {
-        return object : RequestBody() {
-            override fun contentType(): MediaType {
-                return body.contentType()!!
-            }
-
-            override fun contentLength(): Long {
-                return -1 // We don't know the compressed length in advance!
-            }
-
-            @Throws(IOException::class)
-            override fun writeTo(sink: BufferedSink) {
-                val gzipSink = Okio.buffer(GzipSink(sink))
-                body.writeTo(gzipSink)
-                gzipSink.close()
-            }
-        }
     }
 }
