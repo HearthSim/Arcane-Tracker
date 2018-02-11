@@ -7,6 +7,7 @@ package net.mbonnin.arcanetracker.parser
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.parser.power.*
 import net.mbonnin.arcanetracker.parser.power.BlockTag.TYPE_TRIGGER
+import net.mbonnin.hsmodel.Card
 import net.mbonnin.hsmodel.CardId
 import net.mbonnin.hsmodel.Rarity
 import net.mbonnin.hsmodel.Type
@@ -489,63 +490,70 @@ class GameLogic private constructor() {
 
         if (BlockTag.TYPE_POWER == blockTag.BlockType) {
 
-            when (blockEntity.CardID) {
-                CardId.GANG_UP, CardId.RECYCLE, CardId.SHADOWCASTER, CardId.MANIC_SOULCASTER -> guessedId = mGame!!.findEntitySafe(blockTag.Target).CardID
-                CardId.BENEATH_THE_GROUNDS -> guessedId = CardId.NERUBIAN_AMBUSH
-                CardId.IRON_JUGGERNAUT -> guessedId = CardId.BURROWING_MINE
-                CardId.FORGOTTEN_TORCH -> guessedId = CardId.ROARING_TORCH
-                CardId.CURSE_OF_RAFAAM -> guessedId = CardId.CURSED
-                CardId.ANCIENT_SHADE -> guessedId = CardId.ANCIENT_CURSE
-                CardId.EXCAVATED_EVIL -> guessedId = CardId.EXCAVATED_EVIL
-                CardId.ELISE_STARSEEKER -> guessedId = CardId.MAP_TO_THE_GOLDEN_MONKEY
-                CardId.MAP_TO_THE_GOLDEN_MONKEY -> guessedId = CardId.GOLDEN_MONKEY
-                CardId.DOOMCALLER -> guessedId = CardId.CTHUN
-                CardId.JADE_IDOL -> guessedId = CardId.JADE_IDOL
-                CardId.FLAME_GEYSER, CardId.FIRE_FLY -> guessedId = CardId.FLAME_ELEMENTAL
-                CardId.STEAM_SURGER -> guessedId = CardId.FLAME_GEYSER
-                CardId.RAZORPETAL_VOLLEY, CardId.RAZORPETAL_LASHER -> guessedId = CardId.RAZORPETAL
-                CardId.MUKLA_TYRANT_OF_THE_VALE, CardId.KING_MUKLA -> guessedId = CardId.BANANAS
-                CardId.JUNGLE_GIANTS -> guessedId = CardId.BARNABUS_THE_STOMPER
-                CardId.THE_MARSH_QUEEN -> guessedId = CardId.QUEEN_CARNASSA
-                CardId.OPEN_THE_WAYGATE -> guessedId = CardId.TIME_WARP
-                CardId.THE_LAST_KALEIDOSAUR -> guessedId = CardId.GALVADON
-                CardId.AWAKEN_THE_MAKERS -> guessedId = CardId.AMARA_WARDEN_OF_HOPE
-                CardId.THE_CAVERNS_BELOW -> guessedId = CardId.CRYSTAL_CORE
-                CardId.UNITE_THE_MURLOCS -> guessedId = CardId.MEGAFIN
-                CardId.LAKKARI_SACRIFICE -> guessedId = CardId.NETHER_PORTAL
-                CardId.FIRE_PLUMES_HEART -> guessedId = CardId.SULFURAS
-                CardId.GHASTLY_CONJURER -> guessedId = CardId.MIRROR_IMAGE
-                CardId.EXPLORE_UNGORO -> guessedId = CardId.CHOOSE_YOUR_PATH
-                CardId.ELISE_THE_TRAILBLAZER -> guessedId = CardId.UNGORO_PACK
+            // battlecry or active effect
+            guessedId = when (blockEntity.CardID) {
+                CardId.GANG_UP, CardId.RECYCLE, CardId.SHADOWCASTER, CardId.MANIC_SOULCASTER ->  mGame!!.findEntitySafe(blockTag.Target).CardID
+                CardId.BENEATH_THE_GROUNDS -> CardId.NERUBIAN_AMBUSH
+                CardId.IRON_JUGGERNAUT -> CardId.BURROWING_MINE
+                CardId.FORGOTTEN_TORCH -> CardId.ROARING_TORCH
+                CardId.CURSE_OF_RAFAAM -> CardId.CURSED
+                CardId.ANCIENT_SHADE -> CardId.ANCIENT_CURSE
+                CardId.EXCAVATED_EVIL -> CardId.EXCAVATED_EVIL
+                CardId.ELISE_STARSEEKER -> CardId.MAP_TO_THE_GOLDEN_MONKEY
+                CardId.MAP_TO_THE_GOLDEN_MONKEY -> CardId.GOLDEN_MONKEY
+                CardId.DOOMCALLER -> CardId.CTHUN
+                CardId.JADE_IDOL -> CardId.JADE_IDOL
+                CardId.FLAME_GEYSER, CardId.FIRE_FLY -> CardId.FLAME_ELEMENTAL
+                CardId.STEAM_SURGER -> CardId.FLAME_GEYSER
+                CardId.RAZORPETAL_VOLLEY, CardId.RAZORPETAL_LASHER -> CardId.RAZORPETAL
+                CardId.MUKLA_TYRANT_OF_THE_VALE, CardId.KING_MUKLA -> CardId.BANANAS
+                CardId.JUNGLE_GIANTS -> CardId.BARNABUS_THE_STOMPER
+                CardId.THE_MARSH_QUEEN -> CardId.QUEEN_CARNASSA
+                CardId.OPEN_THE_WAYGATE -> CardId.TIME_WARP
+                CardId.THE_LAST_KALEIDOSAUR -> CardId.GALVADON
+                CardId.AWAKEN_THE_MAKERS -> CardId.AMARA_WARDEN_OF_HOPE
+                CardId.THE_CAVERNS_BELOW -> CardId.CRYSTAL_CORE
+                CardId.UNITE_THE_MURLOCS -> CardId.MEGAFIN
+                CardId.LAKKARI_SACRIFICE -> CardId.NETHER_PORTAL
+                CardId.FIRE_PLUMES_HEART -> CardId.SULFURAS
+                CardId.GHASTLY_CONJURER -> CardId.MIRROR_IMAGE
+                CardId.EXPLORE_UNGORO -> CardId.CHOOSE_YOUR_PATH
+                CardId.ELISE_THE_TRAILBLAZER -> CardId.UNGORO_PACK
+                CardId.FALDOREI_STRIDER -> CardId.SPIDER_AMBUSH
+                CardId.DECK_OF_WONDERS -> CardId.SCROLL_OF_WONDER
+                else -> null
             }
         } else if (TYPE_TRIGGER == blockTag.BlockType) {
-            when (blockEntity.CardID) {
-                CardId.PYROS -> guessedId = CardId.PYROS1
-                CardId.PYROS1 -> guessedId = CardId.PYROS2
-                CardId.WHITE_EYES -> guessedId = CardId.THE_STORM_GUARDIAN
-                CardId.DEADLY_FORK -> guessedId = CardId.SHARP_FORK
-                CardId.BURGLY_BULLY -> guessedId = CardId.THE_COIN
-                CardId.IGNEOUS_ELEMENTAL -> guessedId = CardId.FLAME_ELEMENTAL
-                CardId.RHONIN -> guessedId = CardId.ARCANE_MISSILES
-                CardId.FROZEN_CLONE -> for (parent in stack) {
-                    if (BlockTag.TYPE_PLAY == parent.BlockType) {
-                        guessedId = mGame!!.findEntitySafe(parent.Entity).CardID
-                        break
-                    }
-                }
-                CardId.BONE_BARON -> guessedId = CardId.SKELETON
-                CardId.WEASEL_TUNNELER -> guessedId = CardId.WEASEL_TUNNELER
-                CardId.RAPTOR_HATCHLING -> guessedId = CardId.RAPTOR_PATRIARCH
-                CardId.DIREHORN_HATCHLING -> guessedId = CardId.DIREHORN_MATRIARCH
-                CardId.MANA_BIND -> for (parent in stack) {
-                    if (BlockTag.TYPE_PLAY == parent.BlockType) {
-                        guessedId = mGame!!.findEntitySafe(parent.Entity).CardID
-                        break
-                    }
-                }
-                CardId.ARCHMAGE_ANTONIDAS -> guessedId = CardId.FIREBALL
+
+            // deathrattle or passive effect
+            guessedId = when (blockEntity.CardID) {
+                CardId.PYROS -> CardId.PYROS1
+                CardId.PYROS1 -> CardId.PYROS2
+                CardId.WHITE_EYES -> CardId.THE_STORM_GUARDIAN
+                CardId.DEADLY_FORK -> CardId.SHARP_FORK
+                CardId.BURGLY_BULLY -> CardId.THE_COIN
+                CardId.IGNEOUS_ELEMENTAL -> CardId.FLAME_ELEMENTAL
+                CardId.RHONIN -> CardId.ARCANE_MISSILES
+                CardId.FROZEN_CLONE -> stack.filter { BlockTag.TYPE_PLAY == it.BlockType }.firstOrNull()?.let { mGame!!.findEntitySafe(it.Entity).CardID }
+                CardId.BONE_BARON -> CardId.SKELETON
+                CardId.WEASEL_TUNNELER -> CardId.WEASEL_TUNNELER
+                CardId.RAPTOR_HATCHLING -> CardId.RAPTOR_PATRIARCH
+                CardId.DIREHORN_HATCHLING -> CardId.DIREHORN_MATRIARCH
+                CardId.MANA_BIND -> stack.filter { BlockTag.TYPE_PLAY == it.BlockType }.firstOrNull()?.let { mGame!!.findEntitySafe(it.Entity).CardID }
+                CardId.ARCHMAGE_ANTONIDAS -> CardId.FIREBALL
+                CardId.HOARDING_DRAGON -> CardId.COIN
+                CardId.ASTRAL_TIGER -> CardId.ASTRAL_TIGER
+                CardId.DRYGULCH_JAILOR -> CardId.SILVER_HAND_RECRUIT
+                CardId.GILDED_GARGOYLE -> CardId.COIN
+                CardId.RIN_THE_FIRST_DISCIPLE -> CardId.THE_FIRST_SEAL
+                CardId.THE_FIRST_SEAL -> CardId.THE_SECOND_SEAL
+                CardId.THE_THIRD_SEAL -> CardId.THE_FOURTH_SEAL
+                CardId.THE_FOURTH_SEAL -> CardId.THE_FINAL_SEAL
+                CardId.THE_FINAL_SEAL -> CardId.AZARI_THE_DEVOURER
+                else -> null
             }
         }
+
         if (!Utils.isEmpty(guessedId)) {
             entity.setCardId(guessedId)
         }
