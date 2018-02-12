@@ -71,7 +71,7 @@ public class DeckCompanion {
             winLoss.setVisibility(GONE);
 
 
-            recyclerView.setAdapter(Controller.get().getOpponentAdapter());
+            recyclerView.setAdapter(Controller.Companion.get().getOpponentAdapter());
             setDeck(DeckList.getOpponentDeck());
         } else {
             new EditButtonCompanion(settings);
@@ -95,7 +95,7 @@ public class DeckCompanion {
                 PaperDb.INSTANCE.write(KEY_LAST_USED_DECK_ID, deck.id);
             }
 
-            recyclerView.setAdapter(Controller.get().getPlayerAdapter());
+            recyclerView.setAdapter(Controller.Companion.get().getPlayerAdapter());
             setDeck(deck);
         }
 
@@ -142,7 +142,7 @@ public class DeckCompanion {
 
                 mViewManager.addCenteredView(view2);
             });
-            Controller.get().setPlayerDeck(deck.cards);
+            Controller.Companion.get().setPlayerDeck(deck.cards);
         }
         deck.checkClassIndex();
 
