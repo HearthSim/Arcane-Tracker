@@ -120,30 +120,36 @@ class DeckEntryHolder extends RecyclerView.ViewHolder implements View.OnTouchLis
             cost.setText(costInt + "");
             cost.setVisibility(View.VISIBLE);
         } else {
-            cost.setVisibility(View.INVISIBLE);
+            cost.setVisibility(View.GONE);
         }
         name.setText(card.name);
         count.setVisibility(GONE);
-        gift.setVisibility(GONE);
 
         resetImageView();
 
-        deckEntry = entry;
         if (c > 0) {
             overlay.setBackgroundColor(Color.TRANSPARENT);
-
-            if (entry.gift) {
-                gift.setVisibility(View.VISIBLE);
-            } else if (Rarity.LEGENDARY.equals(card.rarity)) {
-                count.setVisibility(View.VISIBLE);
-                count.setText("\u2605");
-            } else if (c > 1){
-                count.setVisibility(View.VISIBLE);
-                count.setText(c + "");
-            }
         } else {
             overlay.setBackgroundColor(Color.argb(150, 0, 0, 0));
         }
+
+        if (entry.gift) {
+            gift.setVisibility(View.VISIBLE);
+        } else {
+            gift.setVisibility(GONE);
+        }
+
+        if (c > 1){
+            count.setVisibility(View.VISIBLE);
+            count.setText(c + "");
+        } else if (c == 1 && Rarity.LEGENDARY.equals(card.rarity)) {
+            count.setVisibility(View.VISIBLE);
+            count.setText("\u2605");
+        } else {
+            count.setVisibility(GONE);
+        }
+
+        deckEntry = entry;
     }
 
     @Override

@@ -119,54 +119,37 @@ class Controller : GameLogic.Listener {
             }
         }
 
-        /*
-         * Sort and merge
-         */
-        Collections.sort(entityList) { a, b ->
-            var ret = Utils.compareNullSafe(a.extra.tmpCard.cost, b.extra.tmpCard.cost)
+        val deckEntryItemMap = mutableMapOf<Pair<String, Boolean>, DeckEntryItem>()
 
-            if (ret != 0) {
-                return@sort ret
-            }
+        entityList.forEach { entity ->
+            val deckEntryItem = deckEntryItemMap.getOrPut(entity.extra.tmpCard.id to entity.extra.tmpIsGift, {
+                val deckEntryItem = DeckEntryItem()
+                deckEntryItem.card = entity.extra.tmpCard
+                deckEntryItem.gift = entity.extra.tmpIsGift
+                deckEntryItem
+            })
 
-            ret = a.extra.tmpCard.name.compareTo(b.extra.tmpCard.name)
-            if (ret != 0) {
-                return@sort ret
-            }
-
-            val aGift = if (a.extra.tmpIsGift) 1 else 0
-            val bGift = if (b.extra.tmpIsGift) 1 else 0
-
-            bGift - aGift
-        }
-
-        val deckEntryItemList = entityList.fold(mutableListOf<DeckEntryItem>()) { list, entity ->
-            var deckEntry: DeckEntryItem
-            if (list.size == 0) {
-                deckEntry = DeckEntryItem()
-                list.add(deckEntry)
-            } else {
-                deckEntry = list.get(list.size - 1)
-                if (entity.extra.tmpCard !== deckEntry.card) {
-                    deckEntry = DeckEntryItem()
-                    list.add(deckEntry)
-                }
-            }
-            deckEntry.entityList.add(entity)
+            deckEntryItem.entityList.add(entity)
             if (increasesCount(entity)) {
-                deckEntry.count++
+                deckEntryItem.count++
             }
-            deckEntry.card = entity.extra.tmpCard
-            deckEntry.gift = entity.extra.tmpIsGift
-
-            list
         }
+
+        val deckEntryItemList = deckEntryItemMap.values.sortedWith(Comparator { a, b ->
+            val ret = Utils.compareNullSafe(a.card.cost, b.card.cost)
+
+            if (ret != 0) {
+                return@Comparator ret
+            }
+
+             a.card.name.compareTo(b.card.name)
+        })
 
         /*
          * sort the entity list
          */
         for (deckEntryItem in deckEntryItemList) {
-            Collections.sort(deckEntryItem.entityList) { a, b -> a.extra.drawTurn - b.extra.drawTurn }
+            deckEntryItem.entityList.sortedWith(Comparator { a, b -> a.extra.drawTurn - b.extra.drawTurn })
         }
 
         val itemList = ArrayList<Any>()

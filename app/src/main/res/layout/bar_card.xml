@@ -1,68 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="50dp"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <ImageView
         android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/gradient"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/cost"
+        android:layout_width="20dp"
+        android:layout_height="0dp"
+        android:background="#003380"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:maxLines="1"
+        android:textColor="#fff"
+        tools:text="9"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/cost"
-            android:layout_width="20dp"
-            android:layout_height="match_parent"
-            android:background="#003380"
-            android:gravity="center"
-            android:maxLines="1"
-            android:textColor="#fff" />
-
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:ellipsize="none"
-            android:requiresFadingEdge="horizontal"
-            android:fadingEdgeLength="8dp"
-            android:gravity="center_vertical|left"
-            android:maxLines="1"
-            android:paddingLeft="2dp"
-            android:singleLine="true"
-            android:textColor="#fff" />
-
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:ellipsize="none"
+        android:fadingEdgeLength="8dp"
+        android:gravity="center_vertical|left"
+        android:paddingLeft="2dp"
+        android:requiresFadingEdge="horizontal"
+        android:singleLine="true"
+        tools:text="Voidwalker"
+        android:textColor="#fff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/gift"
+        app:layout_constraintLeft_toRightOf="@+id/cost"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
-            <TextView
-                android:id="@+id/count"
-                android:layout_width="20dp"
-                android:layout_height="match_parent"
-                android:background="#404040"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:maxLines="1"
-                android:textColor="#ff9933" />
+    <TextView
+        android:id="@+id/count"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="20dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="#404040"
+        android:gravity="center"
+        tools:text="2"
+        android:maxLines="1"
+        android:textColor="#ff9933" />
 
-            <ImageView
-                android:id="@+id/gift"
-                android:layout_width="20dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:src="@drawable/ic_card_giftcard_black_24dp"
-                android:tint="#fff" />
-        </FrameLayout>
-
-    </LinearLayout>
-</FrameLayout>
+    <ImageView
+        android:id="@+id/gift"
+        android:layout_width="20dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        app:layout_constraintRight_toLeftOf="@+id/count"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:src="@drawable/ic_card_giftcard_black_24dp"
+        android:tint="#fff" />
+</android.support.constraint.ConstraintLayout>
