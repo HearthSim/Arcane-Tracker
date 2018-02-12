@@ -274,7 +274,8 @@ class Controller : GameLogic.Listener {
                     && Entity.ZONE_SETASIDE != e.tags[Entity.KEY_ZONE]
                     && Type.ENCHANTMENT != e.tags[Entity.KEY_CARDTYPE]
                     && Type.HERO != e.tags[Entity.KEY_CARDTYPE]
-                    && Type.HERO_POWER != e.tags[Entity.KEY_CARDTYPE])
+                    && Type.HERO_POWER != e.tags[Entity.KEY_CARDTYPE]
+                    && "PLAYER" != e.tags[Entity.KEY_CARDTYPE])
         }
 
         list.addAll(entityListToItemList(allEntities, { e -> true }))
