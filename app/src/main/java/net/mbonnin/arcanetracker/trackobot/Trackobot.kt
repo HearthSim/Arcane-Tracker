@@ -170,7 +170,7 @@ class Trackobot {
                 message = context.getString(R.string.trackobotError)
             }
 
-            Toast.makeText(ArcaneTrackerApplication.context, message, Toast.LENGTH_LONG).show()
+            Toaster.show(message)
             Utils.reportNonFatal(e)
         }
     }

@@ -2,7 +2,6 @@ package net.mbonnin.arcanetracker
 
 import android.os.Bundle
 import android.os.Handler
-import android.widget.Toast
 import com.google.firebase.analytics.FirebaseAnalytics
 import net.mbonnin.arcanetracker.detector.FORMAT_STANDARD
 import net.mbonnin.arcanetracker.detector.FORMAT_WILD
@@ -214,10 +213,10 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                                     summary.hsreplayUrl = it.data
                                     GameSummary.sync()
                                     Timber.d("hsreplay upload success")
-                                    Toast.makeText(ArcaneTrackerApplication.context, ArcaneTrackerApplication.context.getString(R.string.hsreplaySuccess), Toast.LENGTH_LONG).show()
+                                    Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplaySuccess))
                                 } else if (it.error != null) {
                                     Timber.d(it.error)
-                                    Toast.makeText(ArcaneTrackerApplication.context, ArcaneTrackerApplication.context.getString(R.string.hsreplayError), Toast.LENGTH_LONG).show()
+                                    Toaster.show( ArcaneTrackerApplication.context.getString(R.string.hsreplayError))
                                 }
                             })
                 } else if (System.currentTimeMillis() - startTime < 30000) {
