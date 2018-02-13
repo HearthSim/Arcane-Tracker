@@ -19,7 +19,6 @@ import net.mbonnin.arcanetracker.trackobot.Trackobot
 import net.mbonnin.arcanetracker.trackobot.model.CardPlay
 import net.mbonnin.arcanetracker.trackobot.model.Result
 import net.mbonnin.arcanetracker.trackobot.model.ResultData
-import rx.Single
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import timber.log.Timber
@@ -200,6 +199,11 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                         } else {
                             uploadRequest.player2.rank = game.rank
                         }
+                    }
+
+                    if (game.spectator) {
+                        // do not send spectator games to hsreplay
+                        return
                     }
 
                     HSReplay.get().uploadGame(uploadRequest, gameStr)
