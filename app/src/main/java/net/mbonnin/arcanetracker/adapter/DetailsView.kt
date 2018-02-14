@@ -165,15 +165,7 @@ class DetailsView(context: Context) : LinearLayout(context) {
             }
         }
 
-        val i = 0
-        var horizontalLayout: LinearLayout? = null
         for (deckEntryItem in list) {
-            if (i % 2 == 0) {
-                horizontalLayout = LinearLayout(context)
-                horizontalLayout.orientation = LinearLayout.HORIZONTAL
-                //verticalLayout.addView(horizontalLayout, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(30)));
-            }
-
             val view = LayoutInflater.from(context).inflate(R.layout.bar_card, null)
             val barTemplate = LayoutInflater.from(context).inflate(R.layout.bar_template, null) as ViewGroup
             val params = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
@@ -182,7 +174,7 @@ class DetailsView(context: Context) : LinearLayout(context) {
             val holder = DeckEntryHolder(barTemplate)
             holder.bind(deckEntryItem)
 
-            verticalLayout.addView(barTemplate, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+            verticalLayout.addView(barTemplate, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(30)))
         }
     }
 
