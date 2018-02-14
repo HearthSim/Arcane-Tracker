@@ -162,7 +162,7 @@ class ArcaneTrackerApplication : MultiDexApplication() {
     }
 
     private fun initCardJson() {
-        val jsonName = Language.getCurrentLanguage().jsonName
+        val jsonName = Language.currentLanguage.jsonName
 
         val injectedCards = ArrayList<Card>()
 

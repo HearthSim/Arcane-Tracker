@@ -137,7 +137,7 @@ object Utils {
     }
 
     fun getCardUrl(id: String): String {
-        return "card://" + Language.getCurrentLanguage().key + "/" + id
+        return "card://" + Language.currentLanguage.key + "/" + id
     }
 
     fun exitApp() {
