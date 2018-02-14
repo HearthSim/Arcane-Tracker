@@ -127,7 +127,12 @@ class Controller : GameLogic.Listener {
                     unknownCards++
                 } else {
                     // each unknown gift card gets its own line
-                    deckEntryItemList.add(DeckEntryItem(card = entity.extra.tmpCard, gift = entity.extra.tmpIsGift))
+                    val deckEntryItem = DeckEntryItem(card = entity.extra.tmpCard, gift = entity.extra.tmpIsGift)
+                    deckEntryItem.entityList.add(entity)
+                    if (increasesCount(entity)) {
+                        deckEntryItem.count++
+                    }
+                    deckEntryItemList.add(deckEntryItem)
                 }
                 iterator.remove()
             }
