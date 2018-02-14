@@ -107,8 +107,8 @@ class DeckEntryHolder extends RecyclerView.ViewHolder implements View.OnTouchLis
 
 
     public void bind(DeckEntryItem entry) {
-        this.card = entry.card;
-        int c = entry.count;
+        this.card = entry.getCard();
+        int c = entry.getCount();
 
         Picasso.with(itemView.getContext())
                 .load("bar://" + card.id)
@@ -133,7 +133,7 @@ class DeckEntryHolder extends RecyclerView.ViewHolder implements View.OnTouchLis
             overlay.setBackgroundColor(Color.argb(150, 0, 0, 0));
         }
 
-        if (entry.gift) {
+        if (entry.getGift()) {
             gift.setVisibility(View.VISIBLE);
         } else {
             gift.setVisibility(GONE);

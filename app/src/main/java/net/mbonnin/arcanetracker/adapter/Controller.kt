@@ -36,19 +36,23 @@ class Controller : GameLogic.Listener {
 
             list.add(HeaderItem(context.getString(R.string.hand) + " (" + entities.size + ")"))
             for (entity in entities) {
-                val deckEntry = DeckEntryItem()
-                if (TextUtils.isEmpty(entity.CardID) || entity.extra.hide) {
+                val card = if (TextUtils.isEmpty(entity.CardID) || entity.extra.hide) {
                     val builder = StringBuilder()
                     builder.append("#").append(GameLogic.gameTurnToHumanTurn(entity.extra.drawTurn))
                     if (entity.extra.mulliganed) {
                         builder.append(" (M)")
                     }
-                    deckEntry.card = CardUtil.unknown(builder.toString())
+                    CardUtil.unknown(builder.toString())
                 } else {
-                    deckEntry.card = entity.card
+                    entity.card
                 }
-                deckEntry.gift = !entity.extra.hide && entity.extra.tmpIsGift
-                deckEntry.count = 1
+
+                val deckEntry = DeckEntryItem(
+                        card = card,
+                        gift = !entity.extra.hide && entity.extra.tmpIsGift,
+                        count = 1
+                )
+
                 val clone = entity.clone()
                 if (entity.extra.hide) {
                     clone.extra.createdBy = null
@@ -69,20 +73,22 @@ class Controller : GameLogic.Listener {
         Collections.sort(entities) { a, b -> compareNullSafe(a.tags[Entity.KEY_ZONE_POSITION], b.tags[Entity.KEY_ZONE_POSITION]) }
 
         for (entity in entities) {
-            val deckEntry = DeckEntryItem()
-            if (TextUtils.isEmpty(entity.CardID)) {
+            val card = if (TextUtils.isEmpty(entity.CardID)) {
                 val clazz = entity.tags[Entity.KEY_CLASS]
 
                 if (clazz != null) {
-                    deckEntry.card = CardUtil.secret(clazz)
+                    CardUtil.secret(clazz)
                 } else {
-                    deckEntry.card = CardUtil.secret("MAGE")
+                    CardUtil.secret("MAGE")
                 }
             } else {
-                deckEntry.card = entity.card
+                entity.card
             }
-            deckEntry.gift = entity.extra.tmpIsGift
-            deckEntry.count = 1
+            val deckEntry = DeckEntryItem(
+                    card = card,
+                    gift = entity.extra.tmpIsGift,
+                    count = 1
+                    )
 
             val clone = entity.clone()
             clone.card = deckEntry.card
@@ -107,26 +113,31 @@ class Controller : GameLogic.Listener {
 
     private fun entityListToItemList(entityList: EntityList, increasesCount: (Entity) -> Boolean): ArrayList<Any> {
         /*
-         * remove and count the really unknown cards
+         * remove and count the unknown cards
          */
         var unknownCards = 0
-        val it = entityList.iterator()
-        while (it.hasNext()) {
-            val entity = it.next()
-            if (!entity.extra.tmpIsGift && entity.extra.tmpCard === CardUtil.UNKNOWN) {
-                it.remove()
-                unknownCards++
+        val iterator = entityList.iterator()
+
+        val deckEntryItemList = mutableListOf<DeckEntryItem>()
+
+        while (iterator.hasNext()) {
+            val entity = iterator.next()
+            if (entity.extra.tmpCard === CardUtil.UNKNOWN) {
+                if (!entity.extra.tmpIsGift) {
+                    unknownCards++
+                } else {
+                    // each unknown gift card gets its own line
+                    deckEntryItemList.add(DeckEntryItem(card = entity.extra.tmpCard, gift = entity.extra.tmpIsGift))
+                }
+                iterator.remove()
             }
         }
 
+        // entityList now only contains know cards, which we are going to bucket by cardID/gift pair
         val deckEntryItemMap = mutableMapOf<Pair<String, Boolean>, DeckEntryItem>()
-
         entityList.forEach { entity ->
             val deckEntryItem = deckEntryItemMap.getOrPut(entity.extra.tmpCard.id to entity.extra.tmpIsGift, {
-                val deckEntryItem = DeckEntryItem()
-                deckEntryItem.card = entity.extra.tmpCard
-                deckEntryItem.gift = entity.extra.tmpIsGift
-                deckEntryItem
+                DeckEntryItem(card = entity.extra.tmpCard, gift = entity.extra.tmpIsGift)
             })
 
             deckEntryItem.entityList.add(entity)
@@ -135,14 +146,22 @@ class Controller : GameLogic.Listener {
             }
         }
 
-        val deckEntryItemList = deckEntryItemMap.values.sortedWith(Comparator { a, b ->
-            val ret = Utils.compareNullSafe(a.card.cost, b.card.cost)
+        deckEntryItemList.addAll(deckEntryItemMap.values)
+
+        deckEntryItemList.sortWith(Comparator { a, b ->
+            var ret = Utils.compareNullSafe(a.card?.cost, b.card?.cost)
 
             if (ret != 0) {
                 return@Comparator ret
             }
 
-             a.card.name.compareTo(b.card.name)
+            ret = Utils.compareNullSafe(a.card?.name, b.card?.name)
+
+            if (ret != 0) {
+                return@Comparator ret
+            }
+
+            Utils.compareNullSafe(b.gift, a.gift)
         })
 
         /*
@@ -334,9 +353,10 @@ class Controller : GameLogic.Listener {
             var unknown = Deck.MAX_CARDS
 
             for ((key, value) in cardMap) {
-                val deckEntry = DeckEntryItem()
-                deckEntry.card = CardUtil.getCard(key)
-                deckEntry.count = value
+                val deckEntry = DeckEntryItem(
+                        card = CardUtil.getCard(key),
+                        count = value)
+
                 list.add(deckEntry)
                 unknown -= deckEntry.count
             }
@@ -345,7 +365,7 @@ class Controller : GameLogic.Listener {
                 val da = a as DeckEntryItem
                 val db = b as DeckEntryItem
 
-                Utils.compareNullSafe(da.card.cost, db.card.cost)
+                Utils.compareNullSafe(da.card?.cost, db.card?.cost)
             }
 
             if (unknown > 0) {

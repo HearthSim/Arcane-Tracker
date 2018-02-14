@@ -179,8 +179,7 @@ class DetailsView(context: Context) : LinearLayout(context) {
     }
 
     private fun addSecret(list: MutableList<DeckEntryItem>, cardId: String, condition: Boolean) {
-        val deckEntryItem = DeckEntryItem()
-        deckEntryItem.card = CardUtil.getCard(cardId)
+        val deckEntryItem = DeckEntryItem(card = CardUtil.getCard(cardId))
         deckEntryItem.count = if (condition) 0 else 1
 
         when (GameLogicListener.get().currentGame?.bnetGameType) {

@@ -88,8 +88,20 @@ object Utils {
         Timber.w(df.format(c.time) + s)
     }
 
-    fun compareNullSafe(a: Int?, b: Int?): Int {
-        return (a?:0) - (b?:0)
+    fun <T: Comparable<T>> compareNullSafe(a: T?, b: T?): Int {
+        if (a == null) {
+            if (b == null) {
+                return 0
+            } else {
+                return -1
+            }
+        } else {
+            if (b == null) {
+                return 1
+            } else {
+                return a.compareTo(b)
+            }
+        }
     }
 
     fun reportNonFatal(e: Throwable) {
