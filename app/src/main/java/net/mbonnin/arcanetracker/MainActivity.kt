@@ -174,6 +174,21 @@ class MainActivity : AppCompatActivity() {
                 Utils.reportNonFatal(Exception("cannot locate hearthstone install directory", e))
             }
 
+            try {
+                packageManager.getPackageInfo(HEARTHSTONE_PACKAGE_ID, 0)?.let {
+                    val c = it.versionName.split(".")
+                    try {
+                        ArcaneTrackerApplication.get().hearthstoneBuild = c[c.size - 1].toInt()
+                    } catch (e: Exception) {
+                        Timber.e("cannot parse hearthstone version ${it.versionName}")
+                    }
+
+                    Timber.d("hearthstone build: ${ArcaneTrackerApplication.get().hearthstoneBuild}")
+                }
+            } catch (e: Exception) {
+                Timber.d("Cannot find Hearthstone build number")
+            }
+
             startActivity(launchIntent)
             finish()
 
