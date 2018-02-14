@@ -13,9 +13,9 @@ repositories {
     jcenter()
 }
 dependencies {
-    implementation dep.kotlin_stdlib
-    implementation dep.moshi
-    implementation dep.moshi_kotlin
+    implementation Libs.kotlin_stdlib
+    implementation Libs.moshi
+    implementation Libs.moshi_kotlin
 }
 
 compileKotlin {

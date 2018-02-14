@@ -7,11 +7,11 @@ repositories {
 }
 
 android {
-    compileSdkVersion atConfig.compileSdkVersion
-    buildToolsVersion atConfig.buildToolsVersion
+    compileSdkVersion Versions.compileSdkVersion
+    buildToolsVersion Versions.buildToolsVersion
     defaultConfig {
-        minSdkVersion atConfig.minSdkVersion
-        targetSdkVersion atConfig.targetSdkVersion
+        minSdkVersion Versions.minSdkVersion
+        targetSdkVersion Versions.targetSdkVersion
         versionCode 1
         versionName "0.01"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -25,20 +25,20 @@ android {
 }
 
 dependencies {
-    implementation dep.kotlin_stdlib
-    implementation dep.gson
-    implementation dep.timber
-    implementation dep.moshi
-    implementation dep.moshi_kotlin
+    implementation Libs.kotlin_stdlib
+    implementation Libs.gson
+    implementation Libs.timber
+    implementation Libs.moshi
+    implementation Libs.moshi_kotlin
 
     compile(project(":hsmodel"))
 
-    testImplementation dep.junit
-    testImplementation 'ar.com.hjg:pngj:2.1.0'
+    testImplementation Libs.junit
+    testImplementation Libs.pngj
 
-    androidTestCompile dep.test_runner
-    androidTestCompile dep.test_rules
-    androidTestCompile dep.espresso
-    androidTestImplementation dep.okhttp
+    androidTestCompile Libs.test_runner
+    androidTestCompile Libs.test_rules
+    androidTestCompile Libs.espresso
+    androidTestImplementation Libs.okhttp
 }
 

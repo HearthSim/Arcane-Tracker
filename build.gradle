@@ -1,6 +1,4 @@
 buildscript {
-    ext.kotlin_version = '1.2.21'
-    ext.android_gradle_plugin_version = "3.0.1"
     repositories {
         google()
         jcenter()
@@ -8,14 +6,11 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:$android_gradle_plugin_version"
+        classpath "com.android.tools.build:gradle:$Versions.androidPlugin"
         classpath 'com.google.gms:google-services:3.1.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$Versions.kotlin"
     }
 }
-
-def playServicesVersion = '11.6.0'
-def supportLibVersion = '27.0.1'
 
 allprojects {
 
@@ -27,40 +22,4 @@ allprojects {
             url "https://dl.bintray.com/mbonnin/default/"
         }
     }
-
-    ext.dep = [
-            support_v4             : "com.android.support:support-v4:$supportLibVersion",
-            appcompat_v7           : "com.android.support:appcompat-v7:$supportLibVersion",
-            design                 : "com.android.support:design:$supportLibVersion",
-            recyclerview_v7        : "com.android.support:recyclerview-v7:$supportLibVersion",
-            cardview_v7            : "com.android.support:cardview-v7:$supportLibVersion",
-
-            play_auth              : "com.google.android.gms:play-services-auth:$playServicesVersion",
-            play_firebase_core     : "com.google.firebase:firebase-core:$playServicesVersion",
-            play_firebase_crash    : "com.google.firebase:firebase-crash:$playServicesVersion",
-            play_firebase_messaging: "com.google.firebase:firebase-messaging:$playServicesVersion",
-
-            gson                   : 'com.google.code.gson:gson:2.8.2',
-            okhttp                 : 'com.squareup.okhttp3:okhttp:3.9.0',
-            moshi                  : 'com.squareup.moshi:moshi:1.5.0',
-            moshi_kotlin           : 'com.squareup.moshi:moshi-kotlin:1.5.0',
-            timber                 : 'com.jakewharton.timber:timber:4.5.1',
-            kotlin_stdlib          : "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version",
-            kotlin_reflect         : "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version",
-            rxjava2                : 'io.reactivex.rxjava2:rxjava:2.1.6',
-            rxkotlin               : "io.reactivex:rxkotlin:1.0.0",
-
-            junit                  : 'junit:junit:4.12',
-            espresso               : 'com.android.support.test.espresso:espresso-core:3.0.1',
-            test_runner            : 'com.android.support.test:runner:1.0.1',
-            test_rules             : 'com.android.support.test:rules:1.0.1',
-            ktx                    : 'androidx.core:core-ktx:0.1'
-    ]
-
-    ext.atConfig = [
-            minSdkVersion    : 16,
-            targetSdkVersion : 26,
-            compileSdkVersion: 26,
-            buildToolsVersion: '26.0.2',
-    ]
 }
