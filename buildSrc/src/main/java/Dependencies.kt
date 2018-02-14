@@ -10,7 +10,7 @@ object Versions {
 
 object Libs {
     const val playServicesVersion = "11.6.0"
-    const val supportLibVersion = "27.0.1"
+    const val supportLibVersion = "27.0.2"
 
     const val support_v4 = "com.android.support:support-v4:$supportLibVersion"
     const val appcompat_v7 = "com.android.support:appcompat-v7:$supportLibVersion"
@@ -47,7 +47,6 @@ object Libs {
     const val pngj = "ar.com.hjg:pngj:2.1.0"
     const val kotlinPoet = "com.squareup:kotlinpoet:0.5.0"
     const val okhttp = "com.squareup.okhttp3:okhttp:3.9.1"
-
 
     const val multidex = "com.android.support:multidex:1.0.2"
     const val picassoDownloader = "com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0"

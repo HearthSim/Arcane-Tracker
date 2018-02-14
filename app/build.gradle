@@ -125,15 +125,16 @@ dependencies {
     implementation Libs.multidex
     implementation Libs.picassoDownloader
     implementation Libs.picasso
-
+    implementation Libs.retrofitGson
     implementation Libs.ktx
+
     kapt Libs.dataBindingCompiler
     implementation project(":detector")
 
     testImplementation Libs.junit
-    androidTestImplementation "com.android.support.test:runner:1.0.1"
-    androidTestImplementation "com.android.support.test:rules:1.0.1"
-    androidTestImplementation "com.android.support:multidex:1.0.2"
+    androidTestImplementation Libs.test_runner
+    androidTestImplementation Libs.test_rules
+    androidTestImplementation Libs.multidex
     androidTestImplementation(Libs.espresso, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
