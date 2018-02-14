@@ -149,19 +149,19 @@ class Controller : GameLogic.Listener {
         deckEntryItemList.addAll(deckEntryItemMap.values)
 
         deckEntryItemList.sortWith(Comparator { a, b ->
-            var ret = Utils.compareNullSafe(a.card?.cost, b.card?.cost)
+            var ret = Utils.compareNullSafe(a.card.cost, b.card.cost)
 
             if (ret != 0) {
                 return@Comparator ret
             }
 
-            ret = Utils.compareNullSafe(a.card?.name, b.card?.name)
+            ret = Utils.compareNullSafe(a.card.name, b.card.name)
 
             if (ret != 0) {
                 return@Comparator ret
             }
 
-            Utils.compareNullSafe(b.gift, a.gift)
+            Utils.compareNullSafe(a.gift, b.gift)
         })
 
         /*
@@ -365,7 +365,7 @@ class Controller : GameLogic.Listener {
                 val da = a as DeckEntryItem
                 val db = b as DeckEntryItem
 
-                Utils.compareNullSafe(da.card?.cost, db.card?.cost)
+                Utils.compareNullSafe(da.card.cost, db.card.cost)
             }
 
             if (unknown > 0) {
