@@ -55,8 +55,8 @@ public class MainService extends Service {
 
         Notification notification = new NotificationCompat.Builder(this, ArcaneTrackerApplication.Companion.getNOTIFICATION_CHANNEL_ID())
                 .setContentText(getString(R.string.arcane_tracker_running))
-                .addAction(R.drawable.ic_close_black_24dp, "QUIT", stopPendingIntent)
-                .addAction(R.drawable.ic_settings_black_24dp, "Settings", settingsPendingIntent)
+                .addAction(R.drawable.ic_close_black_24dp, getString(R.string.quit), stopPendingIntent)
+                .addAction(R.drawable.ic_settings_black_24dp, getString(R.string.settings), settingsPendingIntent)
                 .setSmallIcon(R.drawable.ic_notification_icon)
                 .build();
 

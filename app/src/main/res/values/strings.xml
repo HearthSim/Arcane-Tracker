@@ -194,4 +194,5 @@
     <string name="rankDetection">Rank detection</string>
     <string name="passwordHint">password</string>
     <string name="usernameHint">username</string>
+    <string name="notifQuit">QUIT</string>
 </resources>
