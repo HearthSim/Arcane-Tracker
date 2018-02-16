@@ -42,7 +42,7 @@
     <string name="decribeYourProblem">Per favore descrivi qui il tuo problema</string>
     <string name="delete">cancella</string>
     <string name="deleteConfirm">Sei sicuro che vuoi cancellare questo mazzo ?</string>
-    <string name="deleteDeck">Mazzo Cancellato</string>
+    <string name="deleteDeck">Cancella mazzo</string>
     <string name="diedTurn">Eliminata al turno: %d</string>
     <string name="dinosize">Dinosaurizzazione Arcane Tracker !!! - %s</string>
     <string name="dinosize_purchased">Dinosaurizzazione in corso… 🥚</string>
@@ -63,7 +63,7 @@
     <string name="hand">Mano</string>
     <string name="helpUs">Aiuto di Arcane Tracker</string>
     <string name="hi_there">Qui Li\' !</string>
-    <string name="history">Game history</string>
+    <string name="history">Storico Partite</string>
     <string name="historyEmpty">Il tuo storico e\' vuoto. Le partite verranno visualizzate qui dopo averle giocate.</string>
     <string name="holy_light">Luce Sacra- %s</string>
     <string name="holy_light_purchased">Grazie per la luce sacra. 🙏</string>
@@ -92,7 +92,7 @@
     <string name="linkAccount">Collegamento account esistente</string>
     <string name="loss">PERSO</string>
     <string name="mulliganed">M</string>
-    <string name="newDeck">Nuvo mazzo</string>
+    <string name="newDeck">Nuovo mazzo</string>
     <string name="next">nuovo</string>
     <string name="no">No</string>
     <string name="noBrowserFound">Browser esterno non trovato per aprire l\'url. Per favore installa Chrome o un altro browser.</string>
@@ -105,7 +105,7 @@
     <string name="opponentsDeck">Mazzo dell\'avversario</string>
     <string name="or">o</string>
     <string name="overlay_explanation">Occorre abilitare il permessi per l\'overlay per mostrare Arcane tracker. Puoi farlo nelle impostazioni del tuo telefono.</string>
-    <string name="overlayOpacity">Opacita\' dell'\overlay</string>
+    <string name="overlayOpacity">Opacita\' dell\'overlay</string>
     <string name="password">Password:</string>
     <string name="permissions">Arcane Tracker ha bvisogno di spazio e dei permessi di overlay rispettivaemnte per monitorare la partita e apparire in overlay.</string>
     <string name="play">Gioca !</string>
