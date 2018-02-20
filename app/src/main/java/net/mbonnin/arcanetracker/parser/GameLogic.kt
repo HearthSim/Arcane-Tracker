@@ -7,7 +7,6 @@ package net.mbonnin.arcanetracker.parser
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.parser.power.*
 import net.mbonnin.arcanetracker.parser.power.BlockTag.TYPE_TRIGGER
-import net.mbonnin.hsmodel.Card
 import net.mbonnin.hsmodel.CardId
 import net.mbonnin.hsmodel.Rarity
 import net.mbonnin.hsmodel.Type
@@ -550,6 +549,7 @@ class GameLogic private constructor() {
                 CardId.THE_THIRD_SEAL -> CardId.THE_FOURTH_SEAL
                 CardId.THE_FOURTH_SEAL -> CardId.THE_FINAL_SEAL
                 CardId.THE_FINAL_SEAL -> CardId.AZARI_THE_DEVOURER
+                CardId.MALORNE -> CardId.MALORNE
                 else -> null
             }
         }
