@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <resources>
     <string name="_default">Default</string>
     <string name="app_name">Arcane Tracker</string>
@@ -104,10 +104,10 @@
     <string name="openInBrowser">Apri il profilo (external browser)</string>
     <string name="opponentsDeck">Mazzo dell\'avversario</string>
     <string name="or">o</string>
-    <string name="overlay_explanation">Occorre abilitare il permessi per l\'overlay per mostrare Arcane tracker. Puoi farlo nelle impostazioni del tuo telefono.</string>
-    <string name="overlayOpacity">Opacita\' dell\'overlay</string>
+    <string name="overlay_explanation">Occorre abilitare il permessi per la sovrapposizione per mostrare Arcane tracker. Puoi farlo nelle impostazioni del tuo telefono.</string>
+    <string name="overlayOpacity">Opacita\' della sovrapposizione</string>
     <string name="password">Password:</string>
-    <string name="permissions">Arcane Tracker ha bvisogno di spazio e dei permessi di overlay rispettivaemnte per monitorare la partita e apparire in overlay.</string>
+    <string name="permissions">Arcane Tracker ha bisogno di spazio e dei permessi di sovrapposizione rispettivamente per monitorare la partita e apparire in sovrapposizione.</string>
     <string name="play">Gioca !</string>
     <string name="played">Giocata</string>
     <string name="playedTurn">Giocata al turno: %d</string>
@@ -163,7 +163,7 @@
     <string name="welcome">Benevenuto in Arcane Tracker !</string>
     <string name="whatsNew">Cosa c\'e\' di nuovo</string>
     <string name="win">Vittoria</string>
-    <string name="xiaomi_explanation">Sembra che tu stia giocando su un dispositivo Xiaomi. Questi dispositivi gestiscono le autorizzazioni di overlay in un modo non standard e potrebbe essere necessario abilitare manualmente le autorizzazioni di overlay nelle impostazioni del telefono.</string>
+    <string name="xiaomi_explanation">Sembra che tu stia giocando su un dispositivo Xiaomi. Questi dispositivi gestiscono le autorizzazioni di sovrapposizione in un modo non standard e potrebbe essere necessario abilitare manualmente le autorizzazioni di sovrapposizione nelle impostazioni del telefono.</string>
     <string name="yes">Si\'</string>
     <string name="yourDeck">Il tuo Mazzo</string>
     <string name="allCards">Tutte le Carte</string>
