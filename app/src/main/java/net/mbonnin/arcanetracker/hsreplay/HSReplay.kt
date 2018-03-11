@@ -2,13 +2,9 @@ package net.mbonnin.arcanetracker.hsreplay
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
-import android.content.res.Resources
-import android.os.Build
 import android.preference.PreferenceManager
 import androidx.content.edit
 import com.google.gson.Gson
-import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.hsreplay.model.Lce
 import net.mbonnin.arcanetracker.hsreplay.model.Token
 import net.mbonnin.arcanetracker.hsreplay.model.TokenRequest
@@ -32,16 +28,14 @@ class HSReplay {
     private var mToken: String? = null
     private val mService: Service
 
-    val claimUrl: Observable<Lce<String>>
-        get() = service().createClaim()
+    fun claimUrl(): Observable<Lce<String>> = service().createClaim()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { claimResult -> Lce.data(claimResult.full_url!!) }
                 .startWith(Lce.loading())
                 .onErrorReturn({ Lce.error(it) })
 
-    val user: Observable<Lce<Token>>
-        get() = service().getToken(mToken)
+    fun user(): Observable<Lce<Token>> = service().getToken(mToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map<Lce<Token>>({ Lce.data(it) })
@@ -80,7 +74,7 @@ class HSReplay {
                 .onErrorReturn { Lce.error(it) }
     }
 
-    fun putToS3(putUrl: String?, gameStr: String) {
+    private fun putToS3(putUrl: String?, gameStr: String) {
 
         if (putUrl == null) {
             throw Exception("no put_url")
@@ -137,7 +131,7 @@ class HSReplay {
     }
 
 
-    fun service(): Service {
+    private fun service(): Service {
         return mService
     }
 

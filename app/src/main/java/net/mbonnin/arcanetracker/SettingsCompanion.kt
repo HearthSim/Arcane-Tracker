@@ -505,7 +505,7 @@ class SettingsCompanion(internal var settingsView: View) {
     }
 
     private fun checkUserName() {
-        HSReplay.get().user
+        HSReplay.get().user()
                 .subscribe { lce ->
                     if (lce.isLoading) {
                         mHsReplayState.userNameLoading = true
@@ -607,7 +607,7 @@ class SettingsCompanion(internal var settingsView: View) {
             } else {
                 mHsReplayCompanion1!!.setText(Utils.getString(R.string.hsReplayClaim)) { v ->
                     HSReplay.get()
-                            .claimUrl
+                            .claimUrl()
                             .subscribe({ this.handleClaimUrlLce(it) })
                 }
 
