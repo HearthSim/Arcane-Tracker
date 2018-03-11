@@ -205,20 +205,22 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                         return
                     }
 
-                    HSReplay.get().uploadGame(uploadRequest, gameStr)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe({
-                                if (it.data != null) {
-                                    summary.hsreplayUrl = it.data
-                                    GameSummary.sync()
-                                    Timber.d("hsreplay upload success")
-                                    Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplaySuccess))
-                                } else if (it.error != null) {
-                                    Timber.d(it.error)
-                                    Toaster.show( ArcaneTrackerApplication.context.getString(R.string.hsreplayError))
-                                }
-                            })
+                    if (HSReplay.get().token() != null) {
+                        HSReplay.get().uploadGame(uploadRequest, gameStr)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe({
+                                    if (it.data != null) {
+                                        summary.hsreplayUrl = it.data
+                                        GameSummary.sync()
+                                        Timber.d("hsreplay upload success")
+                                        Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplaySuccess))
+                                    } else if (it.error != null) {
+                                        Timber.d(it.error)
+                                        Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplayError))
+                                    }
+                                })
+                    }
                 } else if (System.currentTimeMillis() - startTime < 30000) {
                     mHandler.postDelayed(this, 1000)
                 } else {
