@@ -1,5 +1,8 @@
 package net.mbonnin.arcanetracker.parser
 
+import android.Manifest
+import android.content.pm.PackageManager
+import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.QuitDetector
 import net.mbonnin.arcanetracker.Utils
 import timber.log.Timber
@@ -39,11 +42,17 @@ class LogReader @JvmOverloads constructor(private val mLog: String, val mLineCon
             try {
                 myReader = MyVeryOwnReader(file)
             } catch (ignored: FileNotFoundException) {
-                /*
-                 * if the file does not exist, there is no previous data to read
-                 */
-                previousDataConsumed()
-                mSkipPreviousData = false
+                if (mSkipPreviousData) {
+
+                    if (ArcaneTrackerApplication.get().checkCallingOrSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ArcaneTrackerApplication.get().checkCallingOrSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        // we don't have permissions to read external storage yet
+                    } else {
+                        // if the file does not exist, there is no previous data to read
+                        // this prevents a small race where we could miss the first bytes of data
+                        previousDataConsumed()
+                        mSkipPreviousData = false
+                    }
+                }
 
                 //e.printStackTrace();
                 try {
