@@ -151,7 +151,7 @@ class LogReader @JvmOverloads constructor(private val mLog: String, val mLineCon
     companion object {
 
         private fun getSeconds(time: String): Int {
-            val a = time.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val a = time.split(":")
             if (a.size < 3) {
                 Timber.e("bad time" + time)
                 return 0
@@ -179,7 +179,7 @@ class LogReader @JvmOverloads constructor(private val mLog: String, val mLineCon
             val logLine = LogLine()
 
             //D 19:48:03.8108410 GameState.DebugPrintPower() -     Player EntityID=3 PlayerID=2 GameAccountId=redacted
-            val s = line.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val s = line.split(" ")
             if (s.size < 3) {
                 Timber.e("invalid line: %s", line)
                 return null
