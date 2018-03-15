@@ -59,7 +59,7 @@ class EditableItemAdapter : ItemAdapter() {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder? {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val holder = super.onCreateViewHolder(parent, viewType)
 
         if (viewType == ItemAdapter.TYPE_DECK_ENTRY) {
