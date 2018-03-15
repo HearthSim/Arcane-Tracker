@@ -21,3 +21,4 @@ app/google-services.json
 /buildSrc/build
 /hsmodel/build
 /.idea/*
+/*/build
