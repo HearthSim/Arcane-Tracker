@@ -243,7 +243,9 @@ class Controller : GameLogic.Listener {
     private fun update() {
         if (mGame == null) {
             playerAdapter.setList(getCardMapList(if (mPlayerCardMap != null) mPlayerCardMap!! else HashMap<String, Int>()))
-            opponentAdapter.setList(getCardMapList(HashMap()))
+            val list = getCardMapList(HashMap())
+
+            opponentAdapter.setList(list)
         } else {
             /*
              * all the code below uses tmpCard and tmpIsGift so that it can change them without messing up the internal game state
