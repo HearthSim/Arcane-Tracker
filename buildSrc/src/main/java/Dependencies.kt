@@ -3,7 +3,7 @@ object Versions {
     const val targetSdkVersion = 26
     const val compileSdkVersion = 26
     const val buildToolsVersion = "26.0.2"
-    const val kotlin = "1.2.21"
+    const val kotlin = "1.2.30"
     const val androidPlugin = "3.0.1"
 
 }
@@ -19,8 +19,9 @@ object Libs {
     const val cardview_v7 = "com.android.support:cardview-v7:$supportLibVersion"
     const val play_auth = "com.google.android.gms:play-services-auth:$playServicesVersion"
     const val play_firebase_core = "com.google.firebase:firebase-core:$playServicesVersion"
-    const val play_firebase_crash = "com.google.firebase:firebase-crash:$playServicesVersion"
     const val play_firebase_messaging = "com.google.firebase:firebase-messaging:$playServicesVersion"
+
+    const val crashlytics = "com.crashlytics.sdk.android:crashlytics:2.9.1"
     const val gson = "com.google.code.gson:gson:2.8.2"
     const val moshi = "com.squareup.moshi:moshi:1.5.0"
     const val moshi_kotlin = "com.squareup.moshi:moshi-kotlin:1.5.0"

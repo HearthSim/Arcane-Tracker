@@ -5,6 +5,7 @@ plugins {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'io.fabric'
 
 static def extraFile(filename) {
     "../extra/app/" + filename
@@ -119,7 +120,6 @@ dependencies {
 
     implementation Libs.play_auth
     implementation Libs.play_firebase_core
-    implementation Libs.play_firebase_crash
     implementation Libs.play_firebase_messaging
 
     implementation Libs.multidex
@@ -127,6 +127,7 @@ dependencies {
     implementation Libs.picasso
     implementation Libs.retrofitGson
     implementation Libs.ktx
+    implementation Libs.crashlytics
 
     kapt Libs.dataBindingCompiler
     implementation project(":detector")

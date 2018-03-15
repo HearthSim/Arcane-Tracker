@@ -14,7 +14,7 @@ import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.WindowManager
 import android.widget.Toast
-import com.google.firebase.crash.FirebaseCrash
+import com.crashlytics.android.Crashlytics
 import rx.Completable
 import rx.android.schedulers.AndroidSchedulers
 import timber.log.Timber
@@ -106,7 +106,7 @@ object Utils {
 
     fun reportNonFatal(e: Throwable) {
         Timber.w(e)
-        FirebaseCrash.report(e)
+        Crashlytics.logException(e);
     }
 
     fun cardMapTotal(map: HashMap<String, Int>): Int {
