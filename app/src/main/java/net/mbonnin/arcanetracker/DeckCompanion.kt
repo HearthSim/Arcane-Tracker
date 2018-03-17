@@ -1,5 +1,6 @@
 package net.mbonnin.arcanetracker
 
+import android.content.Intent
 import android.graphics.Color
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -15,6 +16,7 @@ import timber.log.Timber
 open class DeckCompanion(v: View) {
     internal var settings: View
     internal var winLoss: TextView
+    internal lateinit var nodeck: View
     var deckName: TextView
 
     protected val recyclerView: RecyclerView
@@ -34,9 +36,15 @@ open class DeckCompanion(v: View) {
 
             background.setBackgroundDrawable(Utils.getDrawableForClassIndex(value.classIndex))
             deckName.text = value.name
+
+            update()
         }
     private val background: ImageView
 
+    private fun update() {
+        nodeck.visibility = if (deck != null) View.GONE else View.VISIBLE
+
+    }
     init {
         mViewManager = ViewManager.get()
 
@@ -50,6 +58,15 @@ open class DeckCompanion(v: View) {
         deckName = v.findViewById(R.id.deckName)
         background = v.findViewById(R.id.background)
         recyclerView = v.findViewById(R.id.recyclerView)
+        nodeck = v.findViewById(R.id.nodeck)
+
+        v.findViewById<View>(R.id.button).setOnClickListener{
+            val intent = Intent()
+            intent.setClass(ArcaneTrackerApplication.context, DonateActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+            ArcaneTrackerApplication.context.startActivity(intent)
+        }
 
         mParams = ViewManager.Params()
         mParams.x = 0

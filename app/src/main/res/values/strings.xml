@@ -195,4 +195,7 @@
     <string name="passwordHint">password</string>
     <string name="usernameHint">username</string>
     <string name="notifQuit">QUIT</string>
+    <string name="supportAT">Support Arcane Tracker</string>
+    <string name="your_deck_will_appear">Your deck will appear here once you start a game</string>
+    <string name="opponent_deck_will_appear">Your opponent deck will appear here once you start a game</string>
 </resources>
