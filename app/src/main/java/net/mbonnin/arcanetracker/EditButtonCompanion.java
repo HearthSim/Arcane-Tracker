@@ -41,7 +41,7 @@ public class EditButtonCompanion {
             DeckListAdapter adapter = new DeckListAdapter();
             adapter.setOnDeckSelectedListener(deck -> {
                 mViewManager.removeView(deckListView);
-                MainViewCompanion.Companion.getPlayerCompanion().setDeck(deck);
+                MainViewCompanion.Companion.getLegacyCompanion().setDeck(deck);
             });
             recyclerView.setAdapter(adapter);
 
@@ -63,7 +63,7 @@ public class EditButtonCompanion {
         view.findViewById(R.id.editDeck).setOnClickListener(v2 -> {
             mViewManager.removeView(view);
 
-            DeckEditorView.show(MainViewCompanion.Companion.getPlayerCompanion().getDeck());
+            DeckEditorView.show(MainViewCompanion.Companion.getLegacyCompanion().getDeck());
         });
 
         view.findViewById(R.id.deleteDeck).setOnClickListener(v2 -> {
@@ -71,7 +71,7 @@ public class EditButtonCompanion {
             View view2 = LayoutInflater.from(v2.getContext()).inflate(R.layout.delete_confirmation_view, null);
             view2.findViewById(R.id.deleteButton).setOnClickListener(v3 -> {
                 mViewManager.removeView(view2);
-                DeckList.deleteDeck(MainViewCompanion.Companion.getPlayerCompanion().getDeck());
+                DeckList.deleteDeck(MainViewCompanion.Companion.getLegacyCompanion().getDeck());
                 ArrayList<Deck> list = DeckList.get();
                 Deck newDeck;
 
@@ -80,7 +80,7 @@ public class EditButtonCompanion {
                 } else {
                     newDeck = DeckList.createDeck(Card.CLASS_INDEX_WARRIOR);
                 }
-                MainViewCompanion.Companion.getPlayerCompanion().setDeck(newDeck);
+                MainViewCompanion.Companion.getLegacyCompanion().setDeck(newDeck);
             });
             view2.findViewById(R.id.cancelButton).setOnClickListener(v3 -> {
                 mViewManager.removeView(view2);
@@ -91,7 +91,7 @@ public class EditButtonCompanion {
         view.findViewById(R.id.renameDeck).setOnClickListener(v2 -> {
             mViewManager.removeView(view);
 
-            Deck deck = MainViewCompanion.Companion.getPlayerCompanion().getDeck();
+            Deck deck = MainViewCompanion.Companion.getLegacyCompanion().getDeck();
             if (deck.isArena()) {
                 Toast.makeText(view.getContext(), "Sorry, you cannot rename the Arena deck !", Toast.LENGTH_LONG).show();
                 return;
@@ -102,7 +102,7 @@ public class EditButtonCompanion {
             view2.findViewById(R.id.renameButton).setOnClickListener(v3 -> {
                 mViewManager.removeView(view2);
                 deck.name = ((EditText) (view2.findViewById(R.id.editText))).getText().toString();
-                MainViewCompanion.Companion.getPlayerCompanion().setDeck(deck);
+                MainViewCompanion.Companion.getLegacyCompanion().setDeck(deck);
                 DeckList.save();
 
             });
@@ -141,7 +141,7 @@ public class EditButtonCompanion {
             if (deck != null) {
                 mViewManager.removeView(view);
                 DeckList.addDeck(deck);
-                MainViewCompanion.Companion.getPlayerCompanion().setDeck(deck);
+                MainViewCompanion.Companion.getLegacyCompanion().setDeck(deck);
             } else {
                 Toast.makeText(context, Utils.INSTANCE.getString(R.string.cannotParseDeckstring), Toast.LENGTH_LONG).show();
             }

@@ -20,7 +20,7 @@ class DecksParser: LogReader.LineConsumer {
             if (lineList.size == 3) {
                 val deck = DeckString.parse(lineList.joinToString("\n"))
                 if (deck != null) {
-                    //MainViewCompanion.getPlayerCompanion().deck = deck
+                    //MainViewCompanion.getLegacyCompanion().deck = deck
                 }
             }
         }

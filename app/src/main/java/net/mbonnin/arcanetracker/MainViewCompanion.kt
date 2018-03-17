@@ -29,6 +29,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
     private val mViewManager: ViewManager
 
     private val playerView: View
+    private val legacyView: View
     private val opponentView: View
 
     private val handlesView = LayoutInflater.from(v.context).inflate(R.layout.handles_view, null) as HandlesView
@@ -130,8 +131,9 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
         mAnimator.addUpdateListener(this)
         mAnimator.addListener(this)
         frameLayout = v.findViewById(R.id.frameLayout)
-        playerView = v.findViewById(R.id.playerView)
+        legacyView = v.findViewById(R.id.legacyView)
         opponentView = v.findViewById(R.id.opponentView)
+        playerView = v.findViewById(R.id.playerView)
         shadow = v.findViewById(R.id.shadow)
 
         mWidth = Settings.get(Settings.DRAWER_WIDTH, 0)
@@ -147,8 +149,9 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
         mParams.w = 0
         mParams.h = mViewManager.height
 
-        sPlayerCompanion = DeckCompanion(playerView, false)
+        sLegacyCompanion = DeckCompanion(playerView, false)
         sOpponentCompanion = DeckCompanion(opponentView, true)
+        sPlayerCompanion = DeckCompanion(opponentView, false)
 
         handlesView.setListener(mHandlesViewTouchListener)
 
@@ -313,15 +316,13 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
 
     fun setState(newState: Int, newOpen: Boolean) {
         if (newOpen) {
+            opponentView.visibility = View.GONE
+            playerView.visibility = View.GONE
+            legacyView.visibility = View.GONE
             when (newState) {
-                STATE_PLAYER -> {
-                    opponentView.visibility = View.GONE
-                    playerView.visibility = View.VISIBLE
-                }
-                STATE_OPPONENT -> {
-                    opponentView.visibility = View.VISIBLE
-                    playerView.visibility = View.GONE
-                }
+                STATE_PLAYER -> playerView.visibility = View.VISIBLE
+                STATE_OPPONENT -> opponentView.visibility = View.VISIBLE
+                STATE_LEGACY -> legacyView.visibility = View.VISIBLE
             }
         }
 
@@ -391,6 +392,11 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
             mViewManager.addModalView(view, params)
         }
 
+        handleView = v.findViewById(R.id.legacyHandle)
+        drawable = v.context.resources.getDrawable(R.drawable.ic_library_books_white_24dp)
+        handleView.init(drawable, v.context.resources.getColor(R.color.gray))
+        handleView.setOnClickListener(ClickListener(STATE_LEGACY))
+
         handleView = v.findViewById(R.id.opponentHandle)
         drawable = v.context.resources.getDrawable(R.drawable.icon_white)
         handleView.init(drawable, v.context.resources.getColor(R.color.opponentColor))
@@ -404,23 +410,32 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
 
     companion object {
         private var sOpponentCompanion: DeckCompanion? = null
+        private var sLegacyCompanion: DeckCompanion? = null
         private var sPlayerCompanion: DeckCompanion? = null
 
         internal val STATE_PLAYER = 0
         internal val STATE_OPPONENT = 1
+        internal val STATE_LEGACY = 2
+
         private val HANDLES_MOVEMENT_X = 1
         private val HANDLES_MOVEMENT_Y = 2
 
-        val playerCompanion: DeckCompanion
+        val legacyCompanion: DeckCompanion
             get() {
                 MainViewCompanion.get()
-                return sPlayerCompanion!!
+                return sLegacyCompanion!!
             }
 
         val opponentCompanion: DeckCompanion
             get() {
                 MainViewCompanion.get()
                 return sOpponentCompanion!!
+            }
+
+        val playerCompanion: DeckCompanion
+            get() {
+                MainViewCompanion.get()
+                return sPlayerCompanion!!
             }
 
         private var sMainCompanion: MainViewCompanion? = null

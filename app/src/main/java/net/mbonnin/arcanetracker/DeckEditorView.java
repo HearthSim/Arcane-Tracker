@@ -182,7 +182,7 @@ public class DeckEditorView extends RelativeLayout {
             DeckList.save();
             DeckList.saveArena();
             //DeckList.getPlayerGameDeck().clear();
-            MainViewCompanion.Companion.getPlayerCompanion().setDeck(deck);
+            MainViewCompanion.Companion.getLegacyCompanion().setDeck(deck);
             ViewManager.get().removeView(this);
         });
     }

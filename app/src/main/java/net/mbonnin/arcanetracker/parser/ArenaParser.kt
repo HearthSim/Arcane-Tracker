@@ -95,7 +95,7 @@ class ArenaParser : LogReader.LineConsumer {
 
         Timber.d("setArenaHero %d", classIndex)
 
-        MainViewCompanion.playerCompanion.deck = deck
+        MainViewCompanion.legacyCompanion.deck = deck
 
         Controller.resetAll()
 

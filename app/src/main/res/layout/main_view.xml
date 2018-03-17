@@ -13,6 +13,12 @@
 
 
         <include
+            android:id="@+id/legacyView"
+            layout="@layout/deck_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <include
             android:id="@+id/playerView"
             layout="@layout/deck_view"
             android:layout_width="match_parent"
