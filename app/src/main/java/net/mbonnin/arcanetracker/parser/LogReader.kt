@@ -143,7 +143,7 @@ class LogReader @JvmOverloads constructor(private val mLog: String, val mLineCon
 
     class LogLine {
         var level: String? = null
-        var line: String? = null
+        lateinit var line: String
         var method: String? = null
         var seconds: Int = 0
     }
