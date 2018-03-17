@@ -175,14 +175,15 @@ class LogReader @JvmOverloads constructor(private val mLog: String, val mLineCon
             return String.format("%02d:%02d:%02d", hours, min, seconds)
         }
 
-        val PATTERN = Pattern.compile("([^ ]) +([^ ]*) +([^ ]*) +(.*)")
+        val PATTERN_WITH_METHOD = Pattern.compile("([^ ]) +([^ ]*) +([^ ]*) +(.*)")
+        val PATTERN =  Pattern.compile("([^ ]) +([^ ]*) +(.*)")
 
-        fun parseLine(line: String): LogLine? {
+        fun parseLineWithMethod(line: String): LogLine? {
             val logLine = LogLine()
 
             //D 19:48:03.8108410 GameState.DebugPrintPower() -     Player EntityID=3 PlayerID=2 GameAccountId=redacted
 
-            val matcher = PATTERN.matcher(line)
+            val matcher = PATTERN_WITH_METHOD.matcher(line)
 
             if (!matcher.matches()) {
                 Timber.e("invalid line: %s", line)
@@ -200,11 +201,37 @@ class LogReader @JvmOverloads constructor(private val mLog: String, val mLineCon
             logLine.method = matcher.group(3)
 
             val remaining = matcher.group(4)
-            logLine.line = if (remaining.startsWith("- ")) {
-                remaining.substring(2)
-            } else {
-                remaining
+            if (!remaining.startsWith("- ")) {
+                Timber.e("missing '-': %s", line)
+                return null
             }
+
+            logLine.line = remaining.substring(2)
+            return logLine
+        }
+
+        fun parseLine(line: String): LogLine? {
+            val logLine = LogLine()
+
+            //I 21:35:38.5792300 # Deck ID: 1384195626
+
+            val matcher = PATTERN.matcher(line)
+
+            if (!matcher.matches()) {
+                Timber.e("invalid line: %s", line)
+                return null
+            }
+
+            logLine.level = matcher.group(1)
+            try {
+                logLine.seconds = getSeconds(matcher.group(2))
+            } catch (e: NumberFormatException) {
+                Timber.e("bad time: %s", line)
+                return null
+            }
+
+            logLine.line = matcher.group(3)
+
             return logLine
         }
     }

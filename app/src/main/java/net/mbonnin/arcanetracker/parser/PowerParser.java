@@ -72,7 +72,7 @@ public class PowerParser implements LogReader.LineConsumer {
             return;
         }
 
-        LogReader.LogLine logLine = LogReader.Companion.parseLine(rawLine);
+        LogReader.LogLine logLine = LogReader.Companion.parseLineWithMethod(rawLine);
         if (logLine == null) {
             return;
         }

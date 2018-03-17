@@ -106,7 +106,7 @@ class ArenaParser : LogReader.LineConsumer {
         val deck = DeckList.getArenaDeck()
         deck.addCard(cardId, 1)
 
-        Controller.get().setPlayerDeck(deck.cards)
+        Controller.get().setLegacyCardMap(deck.cards)
 
         DeckList.saveArena()
     }

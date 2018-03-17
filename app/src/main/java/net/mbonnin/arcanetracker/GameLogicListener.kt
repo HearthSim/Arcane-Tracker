@@ -88,7 +88,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
 
         Timber.w("gameOver  %s [mode %s] [user %s]", if (currentGame!!.victory) "victory" else "lost", mode, Trackobot.get().currentUser())
 
-        val deck = MainViewCompanion.legacyCompanion.deck
+        val deck = MainViewCompanion.legacyCompanion.deck!!
 
         addKnownCardsToDeck(currentGame!!, deck)
 
@@ -181,7 +181,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                     summary.hero = game.player.classIndex()
                     summary.opponentHero = game.opponent.classIndex()
                     summary.date = Utils.ISO8601DATEFORMAT.format(Date())
-                    summary.deckName = MainViewCompanion.legacyCompanion.deck.name
+                    summary.deckName = MainViewCompanion.legacyCompanion.deck?.name
                     summary.bnetGameType = game.bnetGameType.intValue
 
                     GameSummary.addFirst(summary)
@@ -237,7 +237,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         private var sGameLogicListener: GameLogicListener? = null
 
         private fun activateBestDeck(classIndex: Int, initialCards: HashMap<String, Int>): Deck {
-            val deck = MainViewCompanion.legacyCompanion.deck
+            val deck = MainViewCompanion.legacyCompanion.deck!!
             if (deckScore(deck, classIndex, initialCards) != -1) {
                 // the current deck works fine
                 return deck

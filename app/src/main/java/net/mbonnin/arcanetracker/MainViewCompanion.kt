@@ -149,9 +149,9 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
         mParams.w = 0
         mParams.h = mViewManager.height
 
-        sLegacyCompanion = DeckCompanion(playerView, false)
-        sOpponentCompanion = DeckCompanion(opponentView, true)
-        sPlayerCompanion = DeckCompanion(opponentView, false)
+        sLegacyCompanion = LegacyDeckCompanion(legacyView)
+        sOpponentCompanion = OpponentDeckCompanion(opponentView)
+        sPlayerCompanion = PlayerDeckCompanion(playerView)
 
         handlesView.setListener(mHandlesViewTouchListener)
 
@@ -393,7 +393,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
         }
 
         handleView = v.findViewById(R.id.legacyHandle)
-        drawable = v.context.resources.getDrawable(R.drawable.ic_library_books_white_24dp)
+        drawable = v.context.resources.getDrawable(R.drawable.box)
         handleView.init(drawable, v.context.resources.getColor(R.color.gray))
         handleView.setOnClickListener(ClickListener(STATE_LEGACY))
 
@@ -413,9 +413,9 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
         private var sLegacyCompanion: DeckCompanion? = null
         private var sPlayerCompanion: DeckCompanion? = null
 
-        internal val STATE_PLAYER = 0
-        internal val STATE_OPPONENT = 1
-        internal val STATE_LEGACY = 2
+        val STATE_PLAYER = 0
+        val STATE_OPPONENT = 1
+        val STATE_LEGACY = 2
 
         private val HANDLES_MOVEMENT_X = 1
         private val HANDLES_MOVEMENT_Y = 2

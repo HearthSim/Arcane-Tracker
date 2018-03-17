@@ -15,9 +15,12 @@ import java.util.*
 class Controller : GameLogic.Listener {
 
 
+    val legacyAdapter: ItemAdapter
     val playerAdapter: ItemAdapter
-    private val mHandler: Handler
     val opponentAdapter: ItemAdapter
+
+    private val mHandler: Handler
+    protected var mLegacyCardMap: HashMap<String, Int>? = null
     protected var mPlayerCardMap: HashMap<String, Int>? = null
     private var mGame: Game? = null
     private var mPlayerId: String? = null
@@ -99,14 +102,22 @@ class Controller : GameLogic.Listener {
         return list
     }
 
+
     init {
-        playerAdapter = ItemAdapter()
+        legacyAdapter = ItemAdapter()
         opponentAdapter = ItemAdapter()
+        playerAdapter = ItemAdapter()
+
         GameLogic.get().addListener(this)
         mHandler = Handler()
     }
 
-    fun setPlayerDeck(cardMap: HashMap<String, Int>) {
+    fun setLegacyCardMap(cardMap: HashMap<String, Int>) {
+        mLegacyCardMap = cardMap
+        update()
+    }
+
+    fun setPlayerCardMap(cardMap: HashMap<String, Int>) {
         mPlayerCardMap = cardMap
         update()
     }
@@ -192,14 +203,14 @@ class Controller : GameLogic.Listener {
      *
      * what needs to be handled is hemet, maybe others ?
      */
-    private fun assignCardsFromDeck() {
+    private fun assignCardsFromDeck(cardMap: HashMap<String, Int>) {
         val originalDeckEntityList = mGame!!.getEntityList { entity -> mPlayerId == entity.extra.originalController }
         val cardIdsFromDeck = ArrayList<String>()
 
         /*
          * build a list of all the ids in mDeck
          */
-        for ((key, value) in mPlayerCardMap!!) {
+        for ((key, value) in cardMap) {
             for (i in 0 until value) {
                 cardIdsFromDeck.add(key)
             }
@@ -242,7 +253,7 @@ class Controller : GameLogic.Listener {
 
     private fun update() {
         if (mGame == null) {
-            playerAdapter.setList(getCardMapList(if (mPlayerCardMap != null) mPlayerCardMap!! else HashMap<String, Int>()))
+            legacyAdapter.setList(getCardMapList(if (mLegacyCardMap != null) mLegacyCardMap!! else HashMap<String, Int>()))
             val list = getCardMapList(HashMap())
 
             opponentAdapter.setList(list)
@@ -260,7 +271,9 @@ class Controller : GameLogic.Listener {
                 }
             }
 
-            updatePlayer()
+            legacyAdapter.setList(getPlayerList(mLegacyCardMap))
+            playerAdapter.setList(getPlayerList(mPlayerCardMap))
+
             updateOpponent()
         }
     }
@@ -292,13 +305,13 @@ class Controller : GameLogic.Listener {
         opponentAdapter.setList(list)
     }
 
-    private fun updatePlayer() {
+    private fun getPlayerList(cardMap: HashMap<String, Int>?): ArrayList<Any> {
         val list = ArrayList<Any>()
 
         list.add(HeaderItem(Utils.getString(R.string.deck)))
 
-        if (mPlayerCardMap != null) {
-            assignCardsFromDeck()
+        if (cardMap != null) {
+            assignCardsFromDeck(cardMap!!)
         }
 
         val entityList = mGame!!.getEntityList { entity -> mPlayerId == entity.extra.originalController }
@@ -316,7 +329,7 @@ class Controller : GameLogic.Listener {
 
         list.addAll(entityListToItemList(entityList, { entity -> Entity.ZONE_DECK == entity.tags.get(Entity.KEY_ZONE) }))
 
-        playerAdapter.setList(list)
+        return list
     }
 
 
