@@ -9,6 +9,7 @@ import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
+import java.util.regex.Pattern
 
 class LogReader @JvmOverloads constructor(private val mLog: String, val mLineConsumer: LineConsumer, private var mSkipPreviousData: Boolean = false) : Runnable {
     private var mPreviousDataRead = false
@@ -149,7 +150,6 @@ class LogReader @JvmOverloads constructor(private val mLog: String, val mLineCon
     }
 
     companion object {
-
         private fun getSeconds(time: String): Int {
             val a = time.split(":")
             if (a.size < 3) {
@@ -175,44 +175,36 @@ class LogReader @JvmOverloads constructor(private val mLog: String, val mLineCon
             return String.format("%02d:%02d:%02d", hours, min, seconds)
         }
 
+        val PATTERN = Pattern.compile("([^ ]) +([^ ]*) +([^ ]*) +(.*)")
+
         fun parseLine(line: String): LogLine? {
             val logLine = LogLine()
 
             //D 19:48:03.8108410 GameState.DebugPrintPower() -     Player EntityID=3 PlayerID=2 GameAccountId=redacted
-            val s = line.split(" ")
-            if (s.size < 3) {
+
+            val matcher = PATTERN.matcher(line)
+
+            if (!matcher.matches()) {
                 Timber.e("invalid line: %s", line)
                 return null
             }
 
-            logLine.level = s[0]
+            logLine.level = matcher.group(1)
             try {
-                logLine.seconds = getSeconds(s[1])
+                logLine.seconds = getSeconds(matcher.group(2))
             } catch (e: NumberFormatException) {
                 Timber.e("bad time: %s", line)
                 return null
             }
 
-            logLine.method = s[2]
+            logLine.method = matcher.group(3)
 
-            if (s.size == 3) {
-                logLine.line = ""
-                return logLine
+            val remaining = matcher.group(4)
+            logLine.line = if (remaining.startsWith("- ")) {
+                remaining.substring(2)
             } else {
-                if ("-" != s[3]) {
-                    Timber.e("missing -: %s", line)
-                    return null
-                }
+                remaining
             }
-
-            val start = line.indexOf("-")
-            if (start >= line.length - 2) {
-                Timber.e("empty line: %s", line)
-                return null
-            }
-            logLine.line = line.substring(start + 2)
-
-
             return logLine
         }
     }
