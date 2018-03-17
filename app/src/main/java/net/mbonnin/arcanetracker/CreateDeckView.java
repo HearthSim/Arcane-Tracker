@@ -49,7 +49,7 @@ public class CreateDeckView extends CardView {
             Deck deck = DeckList.createDeck(adapter.getSelectedClassIndex());
             deck.name = name;
 
-            MainViewCompanion.getPlayerCompanion().setDeck(deck);
+            MainViewCompanion.Companion.getPlayerCompanion().setDeck(deck);
 
             ViewManager viewManager = ViewManager.get();
 

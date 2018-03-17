@@ -5,6 +5,12 @@
     android:layout_height="wrap_content">
 
     <net.mbonnin.arcanetracker.HandleView
+        android:id="@+id/legacyHandle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp" />
+
+    <net.mbonnin.arcanetracker.HandleView
         android:id="@+id/settingsHandle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

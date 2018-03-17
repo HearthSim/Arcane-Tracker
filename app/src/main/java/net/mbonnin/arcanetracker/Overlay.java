@@ -21,8 +21,8 @@ public class Overlay {
     }
 
     public void show() {
-        MainViewCompanion.get().setState(MainViewCompanion.STATE_PLAYER, false);
-        MainViewCompanion.get().show(true);
+        MainViewCompanion.Companion.get().setState(MainViewCompanion.Companion.getSTATE_PLAYER(), false);
+        MainViewCompanion.Companion.get().show(true);
 
         Context context = ArcaneTrackerApplication.Companion.getContext();
 

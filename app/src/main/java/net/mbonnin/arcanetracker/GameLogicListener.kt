@@ -31,7 +31,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
     override fun gameStarted(game: Game) {
         Timber.w("gameStarted")
 
-        var deck = MainViewCompanion.getPlayerCompanion().deck
+        var deck = MainViewCompanion.playerCompanion.deck
         if (Settings.get(Settings.AUTO_SELECT_DECK, true)) {
             if (LoadingScreenParser.MODE_DRAFT == LoadingScreenParser.get().gameplayMode) {
                 deck = DeckList.getArenaDeck()
@@ -53,11 +53,11 @@ class GameLogicListener private constructor() : GameLogic.Listener {
             }
         }
 
-        MainViewCompanion.getPlayerCompanion().deck = deck
+        MainViewCompanion.playerCompanion.deck = deck
 
         DeckList.getOpponentDeck().clear()
         DeckList.getOpponentDeck().classIndex = game.getOpponent().classIndex()
-        MainViewCompanion.getOpponentCompanion().deck = DeckList.getOpponentDeck()
+        MainViewCompanion.opponentCompanion.deck = DeckList.getOpponentDeck()
 
         currentGame = game
         mGameOver = false
@@ -88,7 +88,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
 
         Timber.w("gameOver  %s [mode %s] [user %s]", if (currentGame!!.victory) "victory" else "lost", mode, Trackobot.get().currentUser())
 
-        val deck = MainViewCompanion.getPlayerCompanion().deck
+        val deck = MainViewCompanion.playerCompanion.deck
 
         addKnownCardsToDeck(currentGame!!, deck)
 
@@ -97,7 +97,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         } else {
             deck.losses++
         }
-        MainViewCompanion.getPlayerCompanion().deck = deck
+        MainViewCompanion.playerCompanion.deck = deck
 
         if (DeckList.ARENA_DECK_ID == deck.id) {
             DeckList.saveArena()
@@ -181,7 +181,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                     summary.hero = game.player.classIndex()
                     summary.opponentHero = game.opponent.classIndex()
                     summary.date = Utils.ISO8601DATEFORMAT.format(Date())
-                    summary.deckName = MainViewCompanion.getPlayerCompanion().deck.name
+                    summary.deckName = MainViewCompanion.playerCompanion.deck.name
                     summary.bnetGameType = game.bnetGameType.intValue
 
                     GameSummary.addFirst(summary)
@@ -237,7 +237,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         private var sGameLogicListener: GameLogicListener? = null
 
         private fun activateBestDeck(classIndex: Int, initialCards: HashMap<String, Int>): Deck {
-            val deck = MainViewCompanion.getPlayerCompanion().deck
+            val deck = MainViewCompanion.playerCompanion.deck
             if (deckScore(deck, classIndex, initialCards) != -1) {
                 // the current deck works fine
                 return deck

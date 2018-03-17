@@ -134,7 +134,7 @@ public class DeckCompanion {
 
                     DeckList.saveDeck(deck);
 
-                    MainViewCompanion.getPlayerCompanion().setDeck(deck);
+                    MainViewCompanion.Companion.getPlayerCompanion().setDeck(deck);
                 });
                 view2.findViewById(R.id.cancel).setOnClickListener(v3 -> {
                     mViewManager.removeView(view2);
