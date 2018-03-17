@@ -396,6 +396,9 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
         drawable = v.context.resources.getDrawable(R.drawable.box)
         handleView.init(drawable, v.context.resources.getColor(R.color.gray))
         handleView.setOnClickListener(ClickListener(STATE_LEGACY))
+        if (!hasValidDeck()) {
+            handleView.visibility = View.GONE
+        }
 
         handleView = v.findViewById(R.id.opponentHandle)
         drawable = v.context.resources.getDrawable(R.drawable.icon_white)
@@ -406,6 +409,16 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
         drawable = v.context.resources.getDrawable(R.drawable.icon_white)
         handleView.init(drawable, v.context.resources.getColor(R.color.colorPrimary))
         handleView.setOnClickListener(ClickListener(STATE_PLAYER))
+    }
+
+    private fun hasValidDeck(): Boolean {
+        for (deck in DeckList.get()) {
+            if (deck.cardCount > 0 && !deck.isArena) {
+                return true
+            }
+        }
+
+        return false
     }
 
     companion object {
