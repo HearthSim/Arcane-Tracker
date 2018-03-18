@@ -125,7 +125,7 @@ class SettingsCompanion(internal var settingsView: View) {
     }
 
     private fun onTrackobotUrl(url: Url) {
-        ViewManager.get().removeView(settingsView)
+        ViewManager.Companion.get().removeView(settingsView)
 
         Utils.openLink(url.url)
     }
@@ -300,7 +300,7 @@ class SettingsCompanion(internal var settingsView: View) {
 
         val feedbackButton = view.findViewById<Button>(R.id.feedBackButton)
         feedbackButton.setOnClickListener { v ->
-            ViewManager.get().removeView(settingsView)
+            ViewManager.Companion.get().removeView(settingsView)
 
             val arrayUri = ArrayList<Uri>()
             FileTree.get().sync()
@@ -388,11 +388,11 @@ class SettingsCompanion(internal var settingsView: View) {
 
         var selectedPosition = 0
         var i = 1
-        val l = Settings.get(Settings.LANGUAGE, null)
+        val l = Settings.get(Settings.LANGUAGE, "")
         adapter.add(context.getString(R.string._default))
         for (language in Language.allLanguages) {
             adapter.add(language.friendlyName)
-            if (l != null && language.key == l) {
+            if (l != "" && language.key == l) {
                 selectedPosition = i
             }
             i++
@@ -403,10 +403,9 @@ class SettingsCompanion(internal var settingsView: View) {
         firstTime = true
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val newKey = if (position == 0) null else Language.allLanguages[position - 1].key
-                val oldKey = Settings.get(Settings.LANGUAGE, null)
-                val areSame = if (newKey == null) oldKey == null else newKey == oldKey
-                if (!firstTime && !areSame) {
+                val newKey = if (position == 0) "" else Language.allLanguages[position - 1].key
+                val oldKey = Settings.get(Settings.LANGUAGE, "")
+                if (!firstTime && newKey != oldKey) {
                     Settings.set(Settings.LANGUAGE, newKey)
 
                     showRestartDialog()
@@ -482,7 +481,7 @@ class SettingsCompanion(internal var settingsView: View) {
 
         val licensesButton = view.findViewById<Button>(R.id.licenses)
         licensesButton.setOnClickListener { v ->
-            ViewManager.get().removeView(settingsView)
+            ViewManager.Companion.get().removeView(settingsView)
 
             val intent = Intent()
             intent.setClass(context, LicensesActivity::class.java)
@@ -493,15 +492,15 @@ class SettingsCompanion(internal var settingsView: View) {
 
     private fun showRestartDialog() {
         val view2 = LayoutInflater.from(settingsView.context).inflate(R.layout.please_restart, null)
-        view2.findViewById<View>(R.id.ok).setOnClickListener { v3 -> ViewManager.get().removeView(view2) }
+        view2.findViewById<View>(R.id.ok).setOnClickListener { v3 -> ViewManager.Companion.get().removeView(view2) }
 
         val params = ViewManager.Params()
-        params.w = (ViewManager.get().width * 0.6f).toInt()
-        params.h = ViewManager.get().height / 2
-        params.x = (ViewManager.get().width - params.w) / 2
-        params.y = ViewManager.get().height / 4
+        params.w = (ViewManager.Companion.get().width * 0.6f).toInt()
+        params.h = ViewManager.Companion.get().height / 2
+        params.x = (ViewManager.Companion.get().width - params.w) / 2
+        params.y = ViewManager.Companion.get().height / 4
 
-        ViewManager.get().addModalView(view2, params)
+        ViewManager.Companion.get().addModalView(view2, params)
     }
 
     private fun checkUserName() {
@@ -597,7 +596,7 @@ class SettingsCompanion(internal var settingsView: View) {
                 mHsReplayCompanion1!!.setLoading()
             } else if (mHsReplayState.userName != null) {
                 mHsReplayCompanion1!!.setText(Utils.getString(R.string.openInBrowser)) { v ->
-                    ViewManager.get().removeView(settingsView)
+                    ViewManager.Companion.get().removeView(settingsView)
 
                     val i = Intent(Intent.ACTION_VIEW)
                     i.data = Uri.parse("https://hsreplay.net/games/mine/")
@@ -625,7 +624,7 @@ class SettingsCompanion(internal var settingsView: View) {
         } else if (lce.data != null) {
             mHsReplayState.claimUrlLoading = false
 
-            ViewManager.get().removeView(settingsView)
+            ViewManager.Companion.get().removeView(settingsView)
 
             Utils.openLink(lce.data)
         }
@@ -652,7 +651,7 @@ class SettingsCompanion(internal var settingsView: View) {
 
         fun show() {
             val context = ArcaneTrackerApplication.context
-            val viewManager = ViewManager.get()
+            val viewManager = ViewManager.Companion.get()
             val view2 = LayoutInflater.from(context).inflate(R.layout.settings_view, null)
 
             SettingsCompanion(view2)

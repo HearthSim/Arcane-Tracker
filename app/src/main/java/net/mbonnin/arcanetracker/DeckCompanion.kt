@@ -46,7 +46,7 @@ open class DeckCompanion(v: View) {
 
     }
     init {
-        mViewManager = ViewManager.get()
+        mViewManager = ViewManager.Companion.get()
 
         Timber.d("screen: " + mViewManager.width + "x" + mViewManager.height)
 

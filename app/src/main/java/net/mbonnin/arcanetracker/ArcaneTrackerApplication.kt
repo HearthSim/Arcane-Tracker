@@ -75,19 +75,6 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         Timber.d("sizeInInches=" + sizeInInches)
         mHasTabletLayout = sizeInInches >= 8
 
-        val langKey = Settings.get(Settings.LANGUAGE, null)
-        Timber.d("langKey=" + langKey)
-        if (false) {
-            /*
-             * XXX: this somehow does not work sometimes
-             */
-            val res = context!!.resources
-            val dm = res.displayMetrics
-            val conf = res.configuration
-            conf.locale = Locale(langKey)
-            res.updateConfiguration(conf, dm)
-        }
-
         Utils.logWithDate("ArcaneTrackerApplication.onCreate() + version=" + BuildConfig.VERSION_CODE)
 
         Paper.init(this)

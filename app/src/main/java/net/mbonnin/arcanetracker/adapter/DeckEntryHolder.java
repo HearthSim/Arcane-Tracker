@@ -66,27 +66,27 @@ class DeckEntryHolder extends RecyclerView.ViewHolder implements View.OnTouchLis
             /*
              * bitmap might be null if the card comes from the Hand
              */
-            detailsView.configure(bitmap, deckEntry, (int) (ViewManager.get().getHeight()/1.5f));
+            detailsView.configure(bitmap, deckEntry, (int) (ViewManager.Companion.get().getHeight()/1.5f));
 
             ViewManager.Params params = new ViewManager.Params();
 
             int measureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
             detailsView.measure(measureSpec, measureSpec);
-            if (detailsView.getMeasuredHeight() >= ViewManager.get().getHeight()) {
+            if (detailsView.getMeasuredHeight() >= ViewManager.Companion.get().getHeight()) {
                 detailsView.setTopMargin(0);
                 detailsView.measure(measureSpec, measureSpec);
             }
-            params.w = detailsView.getMeasuredWidth();
-            params.h = detailsView.getMeasuredHeight();
+            params.setW(detailsView.getMeasuredWidth());
+            params.setH(detailsView.getMeasuredHeight());
 
-            params.x = (int) (downX + Utils.INSTANCE.dpToPx(40));
-            params.y = (int) (downY - params.h / 2);
-            if (params.y < 0) {
-                params.y = 0;
-            } else if (params.y + params.h > ViewManager.get().getHeight()) {
-                params.y = ViewManager.get().getHeight() - params.h;
+            params.setX((int) (downX + Utils.INSTANCE.dpToPx(40)));
+            params.setY((int) (downY - params.getH() / 2));
+            if (params.getY() < 0) {
+                params.setY(0);
+            } else if (params.getY() + params.getH() > ViewManager.Companion.get().getHeight()) {
+                params.setY(ViewManager.Companion.get().getHeight() - params.getH());
             }
-            ViewManager.get().addModalView(detailsView, params);
+            ViewManager.Companion.get().addModalView(detailsView, params);
         }
 
     }
@@ -186,7 +186,7 @@ class DeckEntryHolder extends RecyclerView.ViewHolder implements View.OnTouchLis
 
     private void resetImageView() {
         if (detailsView != null) {
-            ViewManager.get().removeView(detailsView);
+            ViewManager.Companion.get().removeView(detailsView);
             detailsView = null;
         }
         mHandler.removeCallbacksAndMessages(null);

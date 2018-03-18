@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import net.mbonnin.arcanetracker.hsreplay.HSReplay;
 import net.mbonnin.arcanetracker.model.GameSummary;
 
 public class HistoryCompanion {
@@ -28,7 +27,7 @@ public class HistoryCompanion {
                 Toast.makeText(context, context.getString(R.string.could_not_find_replay), Toast.LENGTH_LONG).show();
                 return;
             }
-            ViewManager.get().removeView(view);
+            ViewManager.Companion.get().removeView(view);
             Intent i = new Intent();
             i.setAction(Intent.ACTION_VIEW);
             i.setData(Uri.parse(summary.hsreplayUrl));
@@ -50,16 +49,16 @@ public class HistoryCompanion {
 
     public static void show() {
         Context context = ArcaneTrackerApplication.Companion.getContext();
-        ViewManager viewManager = ViewManager.get();
+        ViewManager viewManager = ViewManager.Companion.get();
         View view = LayoutInflater.from(context).inflate(R.layout.history_view, null);
 
         new HistoryCompanion(view);
 
         ViewManager.Params params = new ViewManager.Params();
-        params.x = viewManager.getWidth() / 4;
-        params.y = viewManager.getHeight() / 16;
-        params.w = viewManager.getWidth() / 2;
-        params.h = 7 * viewManager.getHeight() / 8;
+        params.setX(ViewManager.Companion.get().getWidth() / 4);
+        params.setY(ViewManager.Companion.get().getHeight() / 16);
+        params.setW(ViewManager.Companion.get().getWidth() / 2);
+        params.setH(7 * ViewManager.Companion.get().getHeight() / 8);
 
         viewManager.addModalAndFocusableView(view, params);
 

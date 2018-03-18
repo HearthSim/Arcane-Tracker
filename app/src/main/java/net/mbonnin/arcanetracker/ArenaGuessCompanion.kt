@@ -13,8 +13,8 @@ object ArenaGuessCompanion {
         views[index]?.setCardId(cardId, playerClass)
 
         val params = ViewManager.Params()
-        val w = ViewManager.get().width
-        val h = ViewManager.get().height
+        val w = ViewManager.Companion.get().width
+        val h = ViewManager.Companion.get().height
 
         val measureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         views[index]?.measure(measureSpec, measureSpec)
@@ -24,12 +24,12 @@ object ArenaGuessCompanion {
         params.w = views[index]?.measuredWidth!!
         params.h = views[index]?.measuredHeight!!
 
-        ViewManager.get().addView(views[index], params)
+        ViewManager.Companion.get().addView(views[index]!!, params)
     }
 
     fun hide(index: Int) {
         if (views[index] != null) {
-            ViewManager.get().removeView(views[index])
+            ViewManager.Companion.get().removeView(views[index]!!)
             views[index] = null
         }
     }

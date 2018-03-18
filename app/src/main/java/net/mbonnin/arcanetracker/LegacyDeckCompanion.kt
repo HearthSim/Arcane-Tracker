@@ -44,7 +44,7 @@ class LegacyDeckCompanion(v: View) : DeckCompanion(v) {
                         value.losses = 0
                     }
 
-                    DeckList.saveDeck(deck)
+                    DeckList.saveDeck(value)
 
                     MainViewCompanion.legacyCompanion.deck = deck
                 }

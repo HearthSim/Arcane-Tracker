@@ -7,4 +7,5 @@
     <color name="black">#000000</color>
     <color name="gray">#a0a0a0</color>
     <color name="transparent">#00000000</color>
+    <color name="amber">#FFC107</color>
 </resources>

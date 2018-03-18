@@ -15,10 +15,6 @@ import net.mbonnin.hsmodel.Card;
 
 import java.util.ArrayList;
 
-/**
- * Created by martin on 10/25/16.
- */
-
 public class EditButtonCompanion {
 
     private ViewManager mViewManager = null;
@@ -52,10 +48,10 @@ public class EditButtonCompanion {
                 h = mViewManager.getHeight();
             }
             ViewManager.Params params = new ViewManager.Params();
-            params.x = a[0] + v.getWidth() - recyclerView.getMeasuredWidth();
-            params.y = a[1] + v.getHeight() / 2 - h;
-            params.w = deckListView.getMeasuredWidth();
-            params.h = h;
+            params.setX(a[0] + v.getWidth() - recyclerView.getMeasuredWidth());
+            params.setY(a[1] + v.getHeight() / 2 - h);
+            params.setW(deckListView.getMeasuredWidth());
+            params.setH(h);
 
             mViewManager.addModalView(deckListView, params);
         });
@@ -85,7 +81,7 @@ public class EditButtonCompanion {
             view2.findViewById(R.id.cancelButton).setOnClickListener(v3 -> {
                 mViewManager.removeView(view2);
             });
-            mViewManager.addCenteredView(view2);
+            mViewManager.addCenteredView(view2, true);
         });
 
         view.findViewById(R.id.renameDeck).setOnClickListener(v2 -> {
@@ -109,7 +105,7 @@ public class EditButtonCompanion {
             view2.findViewById(R.id.cancelButton).setOnClickListener(v3 -> {
                 mViewManager.removeView(view2);
             });
-            mViewManager.addCenteredView(view2);
+            mViewManager.addCenteredView(view2, true);
         });
 
         view.findViewById(R.id.createDeck).setOnClickListener(v2 -> {
@@ -119,10 +115,10 @@ public class EditButtonCompanion {
         });
 
         ViewManager.Params params = new ViewManager.Params();
-        params.x = a[0];
-        params.y = a[1] + v.getHeight() / 2 - view.getMeasuredHeight();
-        params.w = view.getMeasuredWidth();
-        params.h = view.getMeasuredHeight();
+        params.setX(a[0]);
+        params.setY(a[1] + v.getHeight() / 2 - view.getMeasuredHeight());
+        params.setW(view.getMeasuredWidth());
+        params.setH(view.getMeasuredHeight());
 
         mViewManager.addModalView(view, params);
     };
@@ -153,12 +149,12 @@ public class EditButtonCompanion {
         });
 
         ViewManager.Params params = new ViewManager.Params();
-        ViewManager viewManager = ViewManager.get();
+        ViewManager viewManager = ViewManager.Companion.get();
 
-        params.x = viewManager.getWidth() / 8;
-        params.y = viewManager.getHeight() / 16;
-        params.w = 3 * viewManager.getWidth() / 4;
-        params.h = 7 * viewManager.getHeight() / 8;
+        params.setX(ViewManager.Companion.get().getWidth() / 8);
+        params.setY(ViewManager.Companion.get().getHeight() / 16);
+        params.setW(3 * ViewManager.Companion.get().getWidth() / 4);
+        params.setH(7 * ViewManager.Companion.get().getHeight() / 8);
 
         mViewManager.addModalAndFocusableView(view, params);
     }
@@ -185,16 +181,16 @@ public class EditButtonCompanion {
         view2.measure(wMeasureSpec, wMeasureSpec);
 
         ViewManager.Params params = new ViewManager.Params();
-        params.x = mViewManager.getWidth() / 4;
-        params.y = mViewManager.getHeight() / 16;
-        params.w = mViewManager.getWidth() / 2;
-        params.h = 7 * mViewManager.getHeight() / 8;
+        params.setX(mViewManager.getWidth() / 4);
+        params.setY(mViewManager.getHeight() / 16);
+        params.setW(mViewManager.getWidth() / 2);
+        params.setH(7 * mViewManager.getHeight() / 8);
 
         mViewManager.addModalAndFocusableView(view2, params);
     }
 
     public EditButtonCompanion(View editButton) {
-        mViewManager = ViewManager.get();
+        mViewManager = ViewManager.Companion.get();
 
         editButton.setOnClickListener(mOnEditClickListener);
     }

@@ -183,7 +183,7 @@ public class DeckEditorView extends RelativeLayout {
             DeckList.INSTANCE.saveArena();
             //DeckList.getPlayerGameDeck().clear();
             MainViewCompanion.Companion.getLegacyCompanion().setDeck(deck);
-            ViewManager.get().removeView(this);
+            ViewManager.Companion.get().removeView(this);
         });
     }
 
@@ -191,12 +191,12 @@ public class DeckEditorView extends RelativeLayout {
         Context context = ArcaneTrackerApplication.Companion.getContext();
         DeckEditorView deckEditorView = DeckEditorView.build(context);
 
-        ViewManager viewManager = ViewManager.get();
+        ViewManager viewManager = ViewManager.Companion.get();
         ViewManager.Params params = new ViewManager.Params();
-        params.x = 0;
-        params.y = 0;
-        params.w = viewManager.getUsableWidth();
-        params.h = viewManager.getUsableHeight();
+        params.setX(0);
+        params.setY(0);
+        params.setW(ViewManager.Companion.get().getUsableWidth());
+        params.setH(ViewManager.Companion.get().getUsableHeight());
 
         deckEditorView.setDeck(deck);
         viewManager.addModalAndFocusableView(deckEditorView, params);

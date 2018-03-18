@@ -1,11 +1,8 @@
 package net.mbonnin.arcanetracker;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewConfiguration;
 import android.widget.LinearLayout;
 
 public class HandlesView extends LinearLayout {
@@ -24,13 +21,14 @@ public class HandlesView extends LinearLayout {
 
     private void init() {
         mParams = new ViewManager.Params();
+        setClipChildren(false);
     }
 
     public void show(boolean show) {
         if (show) {
-            ViewManager.get().addView(this, mParams);
+            ViewManager.Companion.get().addView(this, mParams);
         } else {
-            ViewManager.get().removeView(this);
+            ViewManager.Companion.get().removeView(this);
         }
     }
 
@@ -59,6 +57,6 @@ public class HandlesView extends LinearLayout {
     }
 
     public void update() {
-        ViewManager.get().updateView(this, mParams);
+        ViewManager.Companion.get().updateView(this, mParams);
     }
 }

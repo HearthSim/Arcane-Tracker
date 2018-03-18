@@ -51,17 +51,17 @@ public class CreateDeckView extends CardView {
 
             MainViewCompanion.Companion.getLegacyCompanion().setDeck(deck);
 
-            ViewManager viewManager = ViewManager.get();
+            ViewManager viewManager = ViewManager.Companion.get();
 
             viewManager.removeView(CreateDeckView.this);
 
             DeckEditorView deckEditorView = DeckEditorView.build(getContext());
             deckEditorView.setDeck(deck);
             ViewManager.Params params = new ViewManager.Params();
-            params.x = 0;
-            params.y = 0;
-            params.w = viewManager.getWidth();
-            params.h = viewManager.getHeight();
+            params.setX(0);
+            params.setY(0);
+            params.setW(viewManager.getWidth());
+            params.setH(viewManager.getHeight());
             viewManager.addView(deckEditorView, params);
 
         });

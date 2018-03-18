@@ -32,7 +32,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
     private val legacyView: View
     private val opponentView: View
 
-    private val handlesView = LayoutInflater.from(v.context).inflate(R.layout.handles_view, null) as HandlesView
+    val handlesView = LayoutInflater.from(v.context).inflate(R.layout.handles_view, null) as HandlesView
 
     private val mAnimator: ValueAnimator
 
@@ -123,7 +123,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
 
     init {
         mainView = v
-        mViewManager = ViewManager.get()
+        mViewManager = ViewManager.Companion.get()
 
         mHandler = Handler()
 
@@ -167,7 +167,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
         handlesView.params.w = handlesView.measuredWidth
         handlesView.params.h = handlesView.measuredHeight
         handlesView.params.x = mPadding
-        handlesView.params.y = ViewManager.get().height - handlesView.params.h - Utils.dpToPx(50)
+        handlesView.params.y = ViewManager.Companion.get().height - handlesView.params.h - Utils.dpToPx(50)
         configureHandles(handlesView)
 
         setState(STATE_PLAYER, false)
@@ -320,9 +320,18 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
             playerView.visibility = View.GONE
             legacyView.visibility = View.GONE
             when (newState) {
-                STATE_PLAYER -> playerView.visibility = View.VISIBLE
-                STATE_OPPONENT -> opponentView.visibility = View.VISIBLE
-                STATE_LEGACY -> legacyView.visibility = View.VISIBLE
+                STATE_PLAYER -> {
+                    playerView.visibility = View.VISIBLE
+                    Onboarding.playerHandleClicked()
+                }
+                STATE_OPPONENT -> {
+                    opponentView.visibility = View.VISIBLE
+                    Onboarding.opponentHandleClicked()
+                }
+                STATE_LEGACY -> {
+                    legacyView.visibility = View.VISIBLE
+                    Onboarding.legacyHandleClicked()
+                }
             }
         }
 

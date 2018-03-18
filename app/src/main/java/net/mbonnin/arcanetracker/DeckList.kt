@@ -59,7 +59,7 @@ object DeckList {
         save()
     }
 
-    internal fun get(): ArrayList<Deck> {
+    fun get(): ArrayList<Deck> {
         if (sList == null) {
             sList = PaperDb.read<ArrayList<Deck>>(KEY_LIST)
         }
@@ -94,6 +94,6 @@ object DeckList {
             }
         }
 
-        return false
+        return true
     }
 }

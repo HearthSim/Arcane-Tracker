@@ -26,18 +26,18 @@ public class Overlay {
 
         Context context = ArcaneTrackerApplication.Companion.getContext();
 
-        int previousVersion = Settings.get(Settings.VERSION, 0);
-        Settings.set(Settings.VERSION, BuildConfig.VERSION_CODE);
+        int previousVersion = Settings.INSTANCE.get(Settings.INSTANCE.getVERSION(), 0);
+        Settings.INSTANCE.set(Settings.INSTANCE.getVERSION(), BuildConfig.VERSION_CODE);
 
-        if (Settings.get(Settings.SHOW_CHANGELOG, true)
+        if (Settings.INSTANCE.get(Settings.INSTANCE.getSHOW_CHANGELOG(), true)
                 && previousVersion > 0
                 && previousVersion < BuildConfig.VERSION_CODE) {
             View view = LayoutInflater.from(context).inflate(R.layout.whats_new, null);
             ViewManager.Params params = new ViewManager.Params();
-            params.x = ViewManager.get().getWidth() / 4;
-            params.y = ViewManager.get().getHeight() / 16;
-            params.w = ViewManager.get().getWidth() / 2;
-            params.h = 7 * ViewManager.get().getHeight() / 8;
+            params.setX(ViewManager.Companion.get().getWidth() / 4);
+            params.setY(ViewManager.Companion.get().getHeight() / 16);
+            params.setW(ViewManager.Companion.get().getWidth() / 2);
+            params.setH(7 * ViewManager.Companion.get().getHeight() / 8);
 
             CheckBox checkBox = view.findViewById(R.id.checkbox);
             checkBox.setChecked(true);
@@ -82,15 +82,17 @@ public class Overlay {
             }
             if (foundChangelog > 0) {
                 view.findViewById(R.id.ok).setOnClickListener(unused -> {
-                    ViewManager.get().removeView(view);
-                    Settings.set(Settings.SHOW_CHANGELOG, checkBox.isChecked());
+                    ViewManager.Companion.get().removeView(view);
+                    Settings.INSTANCE.set(Settings.INSTANCE.getSHOW_CHANGELOG(), checkBox.isChecked());
                 });
-                ViewManager.get().addModalView(view, params);
+                ViewManager.Companion.get().addModalView(view, params);
             }
         }
+
+        Onboarding.INSTANCE.start();
     }
 
     public void hide() {
-        ViewManager.get().removeAllViews();
+        ViewManager.Companion.get().removeAllViews();
     }
 }
