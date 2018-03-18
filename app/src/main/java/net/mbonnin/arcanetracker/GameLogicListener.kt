@@ -36,7 +36,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         var deck = MainViewCompanion.legacyCompanion.deck
         if (Settings.get(Settings.AUTO_SELECT_DECK, true)) {
             if (LoadingScreenParser.MODE_DRAFT == LoadingScreenParser.get().gameplayMode) {
-                deck = DeckList.getArenaDeck()
+                deck = DeckList.arenaDeck
                 Timber.w("useArena deck")
             } else {
                 val classIndex = game.getPlayer().classIndex()
@@ -57,9 +57,9 @@ class GameLogicListener private constructor() : GameLogic.Listener {
 
         MainViewCompanion.legacyCompanion.deck = deck
 
-        DeckList.getOpponentDeck().clear()
-        DeckList.getOpponentDeck().classIndex = game.getOpponent().classIndex()
-        MainViewCompanion.opponentCompanion.deck = DeckList.getOpponentDeck()
+        DeckList.opponentDeck.clear()
+        DeckList.opponentDeck.classIndex = game.getOpponent().classIndex()
+        MainViewCompanion.opponentCompanion.deck = DeckList.opponentDeck
 
         currentGame = game
         mGameOver = false
@@ -93,7 +93,9 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         val legacyDeck = MainViewCompanion.legacyCompanion.deck
 
         if (legacyDeck != null) {
-            addKnownCardsToDeck(currentGame!!, legacyDeck)
+            if (DeckList.hasValidDeck()) {
+                addKnownCardsToDeck(currentGame!!, legacyDeck)
+            }
 
             if (currentGame!!.victory) {
                 legacyDeck.wins++

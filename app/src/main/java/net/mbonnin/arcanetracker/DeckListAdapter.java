@@ -36,10 +36,10 @@ public class DeckListAdapter extends RecyclerView.Adapter {
         View view = holder.itemView;
 
         Deck deck;
-        if (position >= DeckList.get().size()) {
-            deck = DeckList.getArenaDeck();
+        if (position >= DeckList.INSTANCE.get().size()) {
+            deck = DeckList.INSTANCE.getArenaDeck();
         } else {
-            deck = DeckList.get().get(position);
+            deck = DeckList.INSTANCE.get().get(position);
         }
 
         view.setOnClickListener(v -> onDeckSelectedListener.onClick(deck));
@@ -50,6 +50,6 @@ public class DeckListAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return DeckList.get().size() + 1;
+        return DeckList.INSTANCE.get().size() + 1;
     }
 }

@@ -179,8 +179,8 @@ public class DeckEditorView extends RelativeLayout {
         close.setOnClickListener(v -> editText.setText(""));
 
         button.setOnClickListener(v -> {
-            DeckList.save();
-            DeckList.saveArena();
+            DeckList.INSTANCE.save();
+            DeckList.INSTANCE.saveArena();
             //DeckList.getPlayerGameDeck().clear();
             MainViewCompanion.Companion.getLegacyCompanion().setDeck(deck);
             ViewManager.get().removeView(this);

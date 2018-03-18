@@ -71,14 +71,14 @@ public class EditButtonCompanion {
             View view2 = LayoutInflater.from(v2.getContext()).inflate(R.layout.delete_confirmation_view, null);
             view2.findViewById(R.id.deleteButton).setOnClickListener(v3 -> {
                 mViewManager.removeView(view2);
-                DeckList.deleteDeck(MainViewCompanion.Companion.getLegacyCompanion().getDeck());
-                ArrayList<Deck> list = DeckList.get();
+                DeckList.INSTANCE.deleteDeck(MainViewCompanion.Companion.getLegacyCompanion().getDeck());
+                ArrayList<Deck> list = DeckList.INSTANCE.get();
                 Deck newDeck;
 
                 if (!list.isEmpty()) {
                     newDeck = list.get(0);
                 } else {
-                    newDeck = DeckList.createDeck(Card.CLASS_INDEX_WARRIOR);
+                    newDeck = DeckList.INSTANCE.createDeck(Card.CLASS_INDEX_WARRIOR);
                 }
                 MainViewCompanion.Companion.getLegacyCompanion().setDeck(newDeck);
             });
@@ -103,7 +103,7 @@ public class EditButtonCompanion {
                 mViewManager.removeView(view2);
                 deck.name = ((EditText) (view2.findViewById(R.id.editText))).getText().toString();
                 MainViewCompanion.Companion.getLegacyCompanion().setDeck(deck);
-                DeckList.save();
+                DeckList.INSTANCE.save();
 
             });
             view2.findViewById(R.id.cancelButton).setOnClickListener(v3 -> {
@@ -140,7 +140,7 @@ public class EditButtonCompanion {
             Deck deck = DeckString.INSTANCE.parse(binding.editText.getText().toString());
             if (deck != null) {
                 mViewManager.removeView(view);
-                DeckList.addDeck(deck);
+                DeckList.INSTANCE.addDeck(deck);
                 MainViewCompanion.Companion.getLegacyCompanion().setDeck(deck);
             } else {
                 Toast.makeText(context, Utils.INSTANCE.getString(R.string.cannotParseDeckstring), Toast.LENGTH_LONG).show();

@@ -68,7 +68,7 @@ class LegacyDeckCompanion(v: View) : DeckCompanion(v) {
                 }
             }
             if (deck == null && lastUsedId == DeckList.ARENA_DECK_ID) {
-                deck = DeckList.getArenaDeck()
+                deck = DeckList.arenaDeck
             }
         }
 

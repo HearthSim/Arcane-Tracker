@@ -89,7 +89,7 @@ class ArenaParser : LogReader.LineConsumer {
     }
 
     private fun setArenaHero(classIndex: Int) {
-        val deck = DeckList.getArenaDeck()
+        val deck = DeckList.arenaDeck
         deck.clear()
         deck.classIndex = classIndex
 
@@ -103,7 +103,7 @@ class ArenaParser : LogReader.LineConsumer {
     }
 
     private fun newArenaCard(cardId: String) {
-        val deck = DeckList.getArenaDeck()
+        val deck = DeckList.arenaDeck
         deck.addCard(cardId, 1)
 
         Controller.get().setLegacyCardMap(deck.cards)
