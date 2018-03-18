@@ -198,11 +198,8 @@ public class TestParser {
         }
 
         InterruptedListener listener = new InterruptedListener();
-        runParser("/continuation.log", listener);
+        runParser("/spectator.log", listener);
 
-        /*
-         * the first game is a continuation game and should not be detected
-         */
         Assert.assertTrue(listener.gameOverCount == 1);
     }
 

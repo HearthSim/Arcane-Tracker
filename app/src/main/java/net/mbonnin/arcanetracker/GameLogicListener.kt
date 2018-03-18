@@ -215,7 +215,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                         game.spectator -> return // do not send spectator games to hsreplay
                     }
 
-                    when (game.bnetGameType) {
+                    /*when (game.bnetGameType) {
                         BnetGameType.BGT_ARENA,
                         BnetGameType.BGT_CASUAL_STANDARD_NEWBIE,
                         BnetGameType.BGT_CASUAL_WILD,
@@ -225,7 +225,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                         BnetGameType.BGT_RANKED_WILD,
                         BnetGameType.BGT_VS_AI -> Unit // Note that this will never happen because there's just one GOLD_REWARD_STATE in AI mode
                         else -> return // do not send strange games to HSReplay
-                    }
+                    }*/
 
                     summary.coin = game.getPlayer().hasCoin
                     summary.win = game.victory
