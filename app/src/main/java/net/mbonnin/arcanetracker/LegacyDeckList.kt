@@ -2,7 +2,8 @@ package net.mbonnin.arcanetracker
 
 import java.util.*
 
-object LegacyDeckList {
+object LegacyDeckList : DeckList {
+
     val ARENA_DECK_ID = "ARENA_DECK_ID"
     private var sList: ArrayList<Deck>? = null
     internal val KEY_LIST = "list"
@@ -92,4 +93,13 @@ object LegacyDeckList {
 
         return true
     }
+
+    override fun getAllDecks(): List<Deck> {
+        val list = get().toMutableList()
+
+        list.add(arenaDeck)
+
+        return list
+    }
+
 }

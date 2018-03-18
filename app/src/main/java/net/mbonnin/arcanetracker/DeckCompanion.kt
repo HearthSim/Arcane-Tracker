@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import timber.log.Timber
@@ -14,7 +15,7 @@ import timber.log.Timber
  */
 
 open class DeckCompanion(v: View) {
-    internal var settings: View
+    internal var settings: ImageButton
     internal var winLoss: TextView
     internal lateinit var nodeck: View
     var deckName: TextView

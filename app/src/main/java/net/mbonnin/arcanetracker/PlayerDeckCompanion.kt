@@ -2,6 +2,7 @@ package net.mbonnin.arcanetracker
 
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.widget.NumberPicker
 import android.widget.TextView
 import io.reactivex.Observable
@@ -15,7 +16,8 @@ import net.mbonnin.arcanetracker.room.RDeck
 class PlayerDeckCompanion(v: View) : DeckCompanion(v) {
     init {
         recyclerView.adapter = Controller.get().playerAdapter
-        settings.visibility = View.GONE
+        settings.setImageResource(R.drawable.ic_compare_arrows_black_24dp)
+        settings.visibility = GONE
 
         (v.findViewById<TextView>(R.id.text)).setText(v.context.getString(R.string.your_deck_will_appear))
     }

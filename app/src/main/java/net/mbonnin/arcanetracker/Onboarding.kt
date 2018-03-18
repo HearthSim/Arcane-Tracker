@@ -94,7 +94,7 @@ object Onboarding {
 
     private fun finishOnboarding() {
 
-
+        Settings.set(Settings.ONBOARDING_FINISHED, true)
     }
 
     fun updateTranslation() {

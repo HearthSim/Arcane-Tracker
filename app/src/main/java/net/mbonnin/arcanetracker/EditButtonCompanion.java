@@ -28,33 +28,8 @@ public class EditButtonCompanion {
         int a[] = new int[2];
         v.getLocationOnScreen(a);
 
-        view.findViewById(R.id.changeDeck).setOnClickListener(v2 -> {
-            mViewManager.removeView(view);
+        new ChangeDeckCompanion(view.findViewById(R.id.changeDeck), v, () -> {mViewManager.removeView(view); return null;});
 
-            View deckListView = LayoutInflater.from(v2.getContext()).inflate(R.layout.decklist_view, null);
-            RecyclerView recyclerView = deckListView.findViewById(R.id.recyclerView);
-            recyclerView.setLayoutManager(new LinearLayoutManager(v2.getContext()));
-            DeckListAdapter adapter = new DeckListAdapter();
-            adapter.setOnDeckSelectedListener(deck -> {
-                mViewManager.removeView(deckListView);
-                MainViewCompanion.Companion.getLegacyCompanion().setDeck(deck);
-            });
-            recyclerView.setAdapter(adapter);
-
-            deckListView.measure(wMeasureSpec, wMeasureSpec);
-
-            int h = deckListView.getMeasuredHeight();
-            if (h > mViewManager.getHeight()) {
-                h = mViewManager.getHeight();
-            }
-            ViewManager.Params params = new ViewManager.Params();
-            params.setX(a[0] + v.getWidth() - recyclerView.getMeasuredWidth());
-            params.setY(a[1] + v.getHeight() / 2 - h);
-            params.setW(deckListView.getMeasuredWidth());
-            params.setH(h);
-
-            mViewManager.addModalView(deckListView, params);
-        });
 
         view.findViewById(R.id.editDeck).setOnClickListener(v2 -> {
             mViewManager.removeView(view);

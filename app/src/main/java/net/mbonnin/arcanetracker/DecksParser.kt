@@ -8,14 +8,23 @@ class DecksParser: LogReader.LineConsumer {
     val lineList = mutableListOf<String>()
     val handler = Handler()
     var isArena = false
+    var readingDeckList = false
 
     override fun onLine(rawLine: String) {
-        if (rawLine.contains("Finding Game With Deck:")) {
+        if (rawLine.contains("Deck Contents Received:")) {
+            lineList.clear()
+            readingDeckList = true
+            handler.post {
+                LogsDeckList.clear()
+            }
+        } else if (rawLine.contains("Finding Game With Deck:")) {
             lineList.clear()
             isArena = false
+            readingDeckList = false
         } else if (rawLine.contains("Starting Arena Game With Deck")) {
             lineList.clear()
             isArena = true
+            readingDeckList = false
         } else if (lineList.size < 3) {
             val logLine = LogReader.parseLine(rawLine)
             if (logLine != null) {
@@ -31,9 +40,17 @@ class DecksParser: LogReader.LineConsumer {
                         deck.name = ArcaneTrackerApplication.get().getString(R.string.arenaDeck)
                     }
                     handler.post{
-                        MainViewCompanion.playerCompanion.deck = deck
+                        if (readingDeckList) {
+                            LogsDeckList.addDeck(deck)
+                            if (MainViewCompanion.playerCompanion.deck == null) {
+                                MainViewCompanion.playerCompanion.deck = deck
+                            }
+                        } else {
+                            MainViewCompanion.playerCompanion.deck = deck
+                        }
                     }
                 }
+                lineList.clear()
             }
         }
     }
