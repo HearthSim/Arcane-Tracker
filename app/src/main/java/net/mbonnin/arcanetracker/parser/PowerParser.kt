@@ -64,239 +64,262 @@ class PowerParser(private val mTagConsumer: (Tag) -> Unit, private val mRawGameC
         }
 
         if (logLine.method!!.startsWith("GameState.DebugPrintGame()")) {
-            var m: Matcher
-
-            m = BUILD_NUMBER.matcher(line)
-            if (m.matches()) {
-                mTagConsumer(BuildNumberTag(m.group(1)))
-                return
-            }
-
-            m = GAME_TYPE.matcher(line)
-            if (m.matches()) {
-                mTagConsumer(GameTypeTag(m.group(1)))
-                return
-            }
-
-            m = FORMAT_TYPE.matcher(line)
-            if (m.matches()) {
-                mTagConsumer(FormatTypeTag(m.group(1)))
-                return
-            }
-
-            m = SCENARIO_ID.matcher(line)
-            if (m.matches()) {
-                mTagConsumer(ScenarioIdTag(m.group(1)))
-                return
-            }
-
-            m = PLAYER_MAPPING.matcher(line)
-            if (m.matches()) {
-                mTagConsumer(PlayerMappingTag(m.group(1), m.group(2)))
-                return
-            }
-
-            return
+            handleDebugPrintGame(line)
+        } else if (logLine.method!!.startsWith("GameState.DebugPrintPower()")) {
+            handleDebugPrintPower(line)
         }
 
-        if (logLine.method!!.startsWith("GameState.DebugPrintPower()")) {
+        if (rawBuilder != null) {
+            rawBuilder!!.append(rawLine)
+            rawBuilder!!.append('\n')
 
-            Timber.v(rawLine)
+            if (rawLine.contains("GOLD_REWARD_STATE")) {
+                rawGoldRewardStateCount++
+                if (rawGoldRewardStateCount == 2) {
+                    val gameStr = rawBuilder!!.toString()
+                    Timber.w("GOLD_REWARD_STATE finished")
 
-            var m: Matcher
-            var newTag: Tag? = null
+                    mRawGameConsumer(gameStr, rawMatchStart!!)
 
-            if ("TAG_CHANGE Entity=GameEntity tag=STEP value=FINAL_GAMEOVER" == line) {
-                /*
-                 *  it could happen that the game is stopped in the middle of a block
-                 */
-                if (mBlockTagStack.size > 0) {
-                    Timber.d("Ended in the middle of a block")
-                    if (mCurrentTag != null) {
-                        mBlockTagStack[mBlockTagStack.size - 1].children.add(mCurrentTag)
-                    }
-                    mTagConsumer(mBlockTagStack[0])
-                    mBlockTagStack.clear()
-                    mCurrentTag = null
+                    rawBuilder = null
                 }
-
             }
+        }
+    }
 
+    private fun handleDebugPrintPower(line: String) {
 
-            tagLoop@ while (true) {
-                if ("CREATE_GAME" == line) {
-                    /*
-                     * reset any previous state in case there are 2 CREATE_GAME in a row
-                     */
-                    mCurrentTag = null
-                    mBlockTagStack.clear()
+        Timber.v(line)
 
-                    newTag = CreateGameTag()
-                    break@tagLoop
+        var m: Matcher
+        var newTag: Tag? = null
+
+        if ("TAG_CHANGE Entity=GameEntity tag=STEP value=FINAL_GAMEOVER" == line) {
+            /*
+             *  it could happen that the game is stopped in the middle of a block
+             */
+            if (mBlockTagStack.size > 0) {
+                Timber.d("Ended in the middle of a block")
+                if (mCurrentTag != null) {
+                    mBlockTagStack[mBlockTagStack.size - 1].children.add(mCurrentTag)
                 }
+                mTagConsumer(mBlockTagStack[0])
+                mBlockTagStack.clear()
+                mCurrentTag = null
+            }
+        }
 
-                m = FULL_ENTITY.matcher(line)
-                if (m.matches()) {
-                    val tag = FullEntityTag()
-                    tag.ID = getEntityIdFromNameOrId(m.group(1))
-                    tag.CardID = m.group(2)
+        tagLoop@ while (true) {
+            if ("CREATE_GAME" == line) {
+                /*
+                 * reset any previous state in case there are 2 CREATE_GAME in a row
+                 */
+                mCurrentTag = null
+                mBlockTagStack.clear()
 
-                    newTag = tag
-                    break@tagLoop
-                }
+                rawBuilder = StringBuilder()
+                rawMatchStart = Utils.ISO8601DATEFORMAT.format(Date())
 
-                m = TAG_CHANGE.matcher(line)
-                if (m.matches()) {
-                    val tag = TagChangeTag()
-                    tag.ID = getEntityIdFromNameOrId(m.group(1))
-                    tag.tag = m.group(2)
-                    tag.value = m.group(3)
+                rawGoldRewardStateCount = 0
 
-                    newTag = tag
-                    break@tagLoop
-                }
 
-                m = SHOW_ENTITY.matcher(line)
-                if (m.matches()) {
-                    val tag = ShowEntityTag()
-                    tag.Entity = getEntityIdFromNameOrId(m.group(1))
-                    tag.CardID = m.group(2)
-
-                    newTag = tag
-                    break@tagLoop
-                }
-
-                m = HIDE_ENTITY.matcher(line)
-                if (m.matches()) {
-                    val tag = HideEntityTag()
-                    tag.Entity = getEntityIdFromNameOrId(m.group(1))
-                    tag.tag = m.group(2)
-                    tag.value = m.group(3)
-
-                    newTag = tag
-                    break@tagLoop
-                }
-
-                m = META_DATA.matcher(line)
-                if (m.matches()) {
-                    val tag = MetaDataTag()
-                    tag.Meta = m.group(1)
-                    tag.Data = m.group(2)
-
-                    newTag = tag
-                    break@tagLoop
-                }
-
+                newTag = CreateGameTag()
                 break@tagLoop
             }
 
-
-            if (newTag != null) {
-                openNewTag(newTag)
-                return
-            }
-
-            m = BLOCK_START_PATTERN.matcher(line)
+            m = FULL_ENTITY.matcher(line)
             if (m.matches()) {
-                val tag = BlockTag()
-                tag.BlockType = m.group(1)
-                tag.Entity = getEntityIdFromNameOrId(m.group(2))
-                tag.EffectCardId = m.group(3)
-                tag.EffectIndex = m.group(4)
-                tag.Target = getEntityIdFromNameOrId(m.group(5))
-                tag.SubOption = m.group(6)
-                m = BLOCK_START_CONTINUATION_PATTERN.matcher(m.group(6))
-                if (m.matches()) {
-                    tag.SubOption = m.group(1)
-                    tag.TriggerKeyword = m.group(2)
-                }
+                val tag = FullEntityTag()
+                tag.ID = getEntityIdFromNameOrId(m.group(1))
+                tag.CardID = m.group(2)
 
-                openNewTag(null)
-
-                if (mBlockTagStack.size > 0) {
-                    mBlockTagStack[mBlockTagStack.size - 1].children.add(tag)
-                }
-                mBlockTagStack.add(tag)
-                return
+                newTag = tag
+                break@tagLoop
             }
 
-            m = BLOCK_END_PATTERN.matcher(line)
+            m = TAG_CHANGE.matcher(line)
             if (m.matches()) {
-                openNewTag(null)
-                if (mBlockTagStack.size > 0) {
-                    val blockTag = mBlockTagStack.removeAt(mBlockTagStack.size - 1)
-                    if (mBlockTagStack.size == 0) {
-                        mTagConsumer(blockTag)
-                    }
-                } else {
-                    Timber.e("BLOCK_END without BLOCK_START")
-                }
-                return
+                val tag = TagChangeTag()
+                tag.ID = getEntityIdFromNameOrId(m.group(1))
+                tag.tag = m.group(2)
+                tag.value = m.group(3)
+
+                newTag = tag
+                break@tagLoop
             }
 
+            m = SHOW_ENTITY.matcher(line)
+            if (m.matches()) {
+                val tag = ShowEntityTag()
+                tag.Entity = getEntityIdFromNameOrId(m.group(1))
+                tag.CardID = m.group(2)
 
-            contentLoop@ while (true) {
-                m = GameEntityPattern.matcher(line)
-                if (m.matches()) {
-                    val tag = GameEntityTag()
-                    tag.EntityID = getEntityIdFromNameOrId(m.group(1))
+                newTag = tag
+                break@tagLoop
+            }
 
-                    if (mCurrentTag is CreateGameTag) {
-                        (mCurrentTag as CreateGameTag).gameEntity = tag
-                    }
-                    break@contentLoop
+            m = HIDE_ENTITY.matcher(line)
+            if (m.matches()) {
+                val tag = HideEntityTag()
+                tag.Entity = getEntityIdFromNameOrId(m.group(1))
+                tag.tag = m.group(2)
+                tag.value = m.group(3)
+
+                newTag = tag
+                break@tagLoop
+            }
+
+            m = META_DATA.matcher(line)
+            if (m.matches()) {
+                val tag = MetaDataTag()
+                tag.Meta = m.group(1)
+                tag.Data = m.group(2)
+
+                newTag = tag
+                break@tagLoop
+            }
+
+            break@tagLoop
+        }
+
+
+        if (newTag != null) {
+            openNewTag(newTag)
+            return
+        }
+
+        m = BLOCK_START_PATTERN.matcher(line)
+        if (m.matches()) {
+            val tag = BlockTag()
+            tag.BlockType = m.group(1)
+            tag.Entity = getEntityIdFromNameOrId(m.group(2))
+            tag.EffectCardId = m.group(3)
+            tag.EffectIndex = m.group(4)
+            tag.Target = getEntityIdFromNameOrId(m.group(5))
+            tag.SubOption = m.group(6)
+            m = BLOCK_START_CONTINUATION_PATTERN.matcher(m.group(6))
+            if (m.matches()) {
+                tag.SubOption = m.group(1)
+                tag.TriggerKeyword = m.group(2)
+            }
+
+            openNewTag(null)
+
+            if (mBlockTagStack.size > 0) {
+                mBlockTagStack[mBlockTagStack.size - 1].children.add(tag)
+            }
+            mBlockTagStack.add(tag)
+            return
+        }
+
+        m = BLOCK_END_PATTERN.matcher(line)
+        if (m.matches()) {
+            openNewTag(null)
+            if (mBlockTagStack.size > 0) {
+                val blockTag = mBlockTagStack.removeAt(mBlockTagStack.size - 1)
+                if (mBlockTagStack.size == 0) {
+                    mTagConsumer(blockTag)
                 }
+            } else {
+                Timber.e("BLOCK_END without BLOCK_START")
+            }
+            return
+        }
 
-                m = PlayerEntityPattern.matcher(line)
-                if (m.matches()) {
-                    val tag = PlayerTag()
-                    tag.EntityID = getEntityIdFromNameOrId(m.group(1))
-                    tag.PlayerID = m.group(2)
 
-                    if (mCurrentTag is CreateGameTag) {
-                        (mCurrentTag as CreateGameTag).playerList.add(tag)
-                    }
-                    break@contentLoop
+        contentLoop@ while (true) {
+            m = GameEntityPattern.matcher(line)
+            if (m.matches()) {
+                val tag = GameEntityTag()
+                tag.EntityID = getEntityIdFromNameOrId(m.group(1))
+
+                if (mCurrentTag is CreateGameTag) {
+                    (mCurrentTag as CreateGameTag).gameEntity = tag
                 }
-
-                m = TAG.matcher(line)
-                if (m.matches()) {
-                    val key = m.group(1)
-                    val value = m.group(2)
-
-                    if (mCurrentTag is CreateGameTag) {
-                        if ((mCurrentTag as CreateGameTag).playerList.size > 0) {
-                            (mCurrentTag as CreateGameTag).playerList[(mCurrentTag as CreateGameTag).playerList.size - 1].tags[key] = value
-                        } else if ((mCurrentTag as CreateGameTag).gameEntity != null) {
-                            (mCurrentTag as CreateGameTag).gameEntity.tags[key] = value
-                        } else {
-                            Timber.e("wrong tag=")
-                        }
-                    } else if (mCurrentTag is ShowEntityTag) {
-                        (mCurrentTag as ShowEntityTag).tags[key] = value
-                    } else if (mCurrentTag is FullEntityTag) {
-                        (mCurrentTag as FullEntityTag).tags[key] = value
-                    } else {
-                        Timber.e("got tag= outside of valid tag")
-                    }
-                    break@contentLoop
-                }
-
-                m = INFO.matcher(line)
-                if (m.matches()) {
-                    if (mCurrentTag is MetaDataTag) {
-                        (mCurrentTag as MetaDataTag).Info.add(getEntityIdFromNameOrId(m.group(1)))
-                    }
-                    break@contentLoop
-                }
-
                 break@contentLoop
             }
 
-            return
+            m = PlayerEntityPattern.matcher(line)
+            if (m.matches()) {
+                val tag = PlayerTag()
+                tag.EntityID = getEntityIdFromNameOrId(m.group(1))
+                tag.PlayerID = m.group(2)
 
+                if (mCurrentTag is CreateGameTag) {
+                    (mCurrentTag as CreateGameTag).playerList.add(tag)
+                }
+                break@contentLoop
+            }
+
+            m = TAG.matcher(line)
+            if (m.matches()) {
+                val key = m.group(1)
+                val value = m.group(2)
+
+                if (mCurrentTag is CreateGameTag) {
+                    if ((mCurrentTag as CreateGameTag).playerList.size > 0) {
+                        (mCurrentTag as CreateGameTag).playerList[(mCurrentTag as CreateGameTag).playerList.size - 1].tags[key] = value
+                    } else if ((mCurrentTag as CreateGameTag).gameEntity != null) {
+                        (mCurrentTag as CreateGameTag).gameEntity.tags[key] = value
+                    } else {
+                        Timber.e("wrong tag=")
+                    }
+                } else if (mCurrentTag is ShowEntityTag) {
+                    (mCurrentTag as ShowEntityTag).tags[key] = value
+                } else if (mCurrentTag is FullEntityTag) {
+                    (mCurrentTag as FullEntityTag).tags[key] = value
+                } else {
+                    Timber.e("got tag= outside of valid tag")
+                }
+                break@contentLoop
+            }
+
+            m = INFO.matcher(line)
+            if (m.matches()) {
+                if (mCurrentTag is MetaDataTag) {
+                    (mCurrentTag as MetaDataTag).Info.add(getEntityIdFromNameOrId(m.group(1)))
+                }
+                break@contentLoop
+            }
+
+            break@contentLoop
         }
     }
+
+    private fun handleDebugPrintGame(line: String) {
+        var m: Matcher
+
+        m = BUILD_NUMBER.matcher(line)
+        if (m.matches()) {
+            mTagConsumer(BuildNumberTag(m.group(1)))
+            return
+        }
+
+        m = GAME_TYPE.matcher(line)
+        if (m.matches()) {
+            mTagConsumer(GameTypeTag(m.group(1)))
+            return
+        }
+
+        m = FORMAT_TYPE.matcher(line)
+        if (m.matches()) {
+            mTagConsumer(FormatTypeTag(m.group(1)))
+            return
+        }
+
+        m = SCENARIO_ID.matcher(line)
+        if (m.matches()) {
+            mTagConsumer(ScenarioIdTag(m.group(1)))
+            return
+        }
+
+        m = PLAYER_MAPPING.matcher(line)
+        if (m.matches()) {
+            mTagConsumer(PlayerMappingTag(m.group(1), m.group(2)))
+            return
+        }
+    }
+
 
     private fun openNewTag(newTag: Tag?) {
         if (mCurrentTag != null) {
@@ -311,35 +334,6 @@ class PowerParser(private val mTagConsumer: (Tag) -> Unit, private val mRawGameC
 
     override fun onPreviousDataRead() {
         mReadingPreviousData = false
-    }
-
-    private fun handleGameStateLine(rawLine: String) {
-        if (rawLine.contains("CREATE_GAME")) {
-            rawBuilder = StringBuilder()
-            rawMatchStart = Utils.ISO8601DATEFORMAT.format(Date())
-
-            Timber.w("$rawMatchStart - CREATE GAME: $rawLine")
-            rawGoldRewardStateCount = 0
-        }
-
-        if (rawBuilder == null) {
-            return
-        }
-
-        rawBuilder!!.append(rawLine)
-        rawBuilder!!.append('\n')
-
-        if (rawLine.contains("GOLD_REWARD_STATE")) {
-            rawGoldRewardStateCount++
-            if (rawGoldRewardStateCount == 2) {
-                val gameStr = rawBuilder!!.toString()
-                Timber.w("GOLD_REWARD_STATE finished")
-
-                mRawGameConsumer(gameStr, rawMatchStart!!)
-
-                rawBuilder = null
-            }
-        }
     }
 
     private fun getEntityIdFromNameOrId(nameOrId: String): String? {

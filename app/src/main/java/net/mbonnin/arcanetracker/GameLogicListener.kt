@@ -24,7 +24,6 @@ import java.util.*
 class GameLogicListener private constructor() : GameLogic.Listener {
     private val mHandler: Handler
     var currentGame: Game? = null
-    private var mGameOver: Boolean = false
 
     override fun gameStarted(game: Game) {
         Timber.w("gameStarted")
@@ -58,7 +57,6 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         MainViewCompanion.opponentCompanion.deck = LegacyDeckList.opponentDeck
 
         currentGame = game
-        mGameOver = false
 
         currentGame!!.rank = FMRHolder.rank
     }
@@ -134,8 +132,6 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         bundle.putString(EventParams.GAME_TYPE.value, currentGame!!.gameType)
         bundle.putString(EventParams.FORMAT_TYPE.value, currentGame!!.formatType)
         FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("game_ended", bundle)
-
-        mGameOver = true
     }
 
     private fun updateCounter(id: String, victory: Boolean) {
@@ -186,85 +182,74 @@ class GameLogicListener private constructor() : GameLogic.Listener {
     }
 
     fun uploadGame(gameStr: String, gameStart: String) {
-        val startTime = System.currentTimeMillis()
+        val summary = GameSummary()
+        val game = currentGame
 
-        val runnable = object : Runnable {
-            override fun run() {
-                if (mGameOver) {
-                    val summary = GameSummary()
-                    val game = currentGame!!
+        if (game == null) {
+            return
+        } else if (game.spectator) {
+            return
+        }
 
-                    Timber.d("ready to send hsreplay %s", game.gameType)
-                    when {
-                        game.spectator -> return // do not send spectator games to hsreplay
-                    }
+        Timber.d("ready to send hsreplay %s", game.gameType)
 
-                    /*when (game.bnetGameType) {
-                        BnetGameType.BGT_ARENA,
-                        BnetGameType.BGT_CASUAL_STANDARD_NEWBIE,
-                        BnetGameType.BGT_CASUAL_WILD,
-                        BnetGameType.BGT_CASUAL_STANDARD_NORMAL,
-                        BnetGameType.BGT_FRIENDS,
-                        BnetGameType.BGT_RANKED_STANDARD,
-                        BnetGameType.BGT_RANKED_WILD,
-                        BnetGameType.BGT_VS_AI -> Unit // Note that this will never happen because there's just one GOLD_REWARD_STATE in AI mode
-                        else -> return // do not send strange games to HSReplay
-                    }*/
+        /*when (game.bnetGameType) {
+            BnetGameType.BGT_ARENA,
+            BnetGameType.BGT_CASUAL_STANDARD_NEWBIE,
+            BnetGameType.BGT_CASUAL_WILD,
+            BnetGameType.BGT_CASUAL_STANDARD_NORMAL,
+            BnetGameType.BGT_FRIENDS,
+            BnetGameType.BGT_RANKED_STANDARD,
+            BnetGameType.BGT_RANKED_WILD,
+            BnetGameType.BGT_VS_AI -> Unit // Note that this will never happen because there's just one GOLD_REWARD_STATE in AI mode
+            else -> return // do not send strange games to HSReplay
+        }*/
 
-                    summary.coin = game.getPlayer().hasCoin
-                    summary.win = game.victory
-                    summary.hero = game.player.classIndex()
-                    summary.opponentHero = game.opponent.classIndex()
-                    summary.date = Utils.ISO8601DATEFORMAT.format(Date())
-                    summary.deckName = MainViewCompanion.playerCompanion.deck?.name
+        summary.coin = game.getPlayer().hasCoin
+        summary.win = game.victory
+        summary.hero = game.player.classIndex()
+        summary.opponentHero = game.opponent.classIndex()
+        summary.date = Utils.ISO8601DATEFORMAT.format(Date())
+        summary.deckName = MainViewCompanion.playerCompanion.deck?.name
 
-                    GameSummary.addFirst(summary)
+        GameSummary.addFirst(summary)
 
-                    val uploadRequest = UploadRequest()
-                    uploadRequest.match_start = gameStart
-                    uploadRequest.build = ArcaneTrackerApplication.get().hearthstoneBuild
-                    uploadRequest.spectator_mode = game.spectator
-                    uploadRequest.friendly_player = game.player.entity.PlayerID
-                    uploadRequest.game_type = fromGameAndFormat(game.gameType, game.formatType).intValue
+        val uploadRequest = UploadRequest()
+        uploadRequest.match_start = gameStart
+        uploadRequest.build = ArcaneTrackerApplication.get().hearthstoneBuild
+        uploadRequest.spectator_mode = game.spectator
+        uploadRequest.friendly_player = game.player.entity.PlayerID
+        uploadRequest.game_type = fromGameAndFormat(game.gameType, game.formatType).intValue
 
-                    val player = if (uploadRequest.friendly_player == "1") uploadRequest.player1 else uploadRequest.player2
+        val player = if (uploadRequest.friendly_player == "1") uploadRequest.player1 else uploadRequest.player2
 
-                    if (game.rank > 0) {
-                        player.rank = game.rank
-                    }
-                    MainViewCompanion.playerCompanion.deck?.let {
-                        it.cards.forEach{
-                            for (i in 0 until it.value) {
-                                player.deck.add(it.key)
-                            }
-                        }
-                    }
-
-                    if (HSReplay.get().token() != null) {
-                        HSReplay.get().uploadGame(uploadRequest, gameStr)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe({
-                                    if (it.data != null) {
-                                        summary.hsreplayUrl = it.data
-                                        GameSummary.sync()
-                                        Timber.d("hsreplay upload success")
-                                        Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplaySuccess))
-                                    } else if (it.error != null) {
-                                        Timber.d(it.error)
-                                        Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplayError))
-                                    }
-                                })
-                    }
-                } else if (System.currentTimeMillis() - startTime < 30000) {
-                    mHandler.postDelayed(this, 1000)
-                } else {
-                    Timber.e("timeout waiting for PowerState to finish")
+        if (game.rank > 0) {
+            player.rank = game.rank
+        }
+        MainViewCompanion.playerCompanion.deck?.let {
+            it.cards.forEach {
+                for (i in 0 until it.value) {
+                    player.deck.add(it.key)
                 }
             }
         }
 
-        runnable.run()
+        if (HSReplay.get().token() != null) {
+            HSReplay.get().uploadGame(uploadRequest, gameStr)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        if (it.data != null) {
+                            summary.hsreplayUrl = it.data
+                            GameSummary.sync()
+                            Timber.d("hsreplay upload success")
+                            Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplaySuccess))
+                        } else if (it.error != null) {
+                            Timber.d(it.error)
+                            Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplayError))
+                        }
+                    })
+        }
     }
 
     companion object {
