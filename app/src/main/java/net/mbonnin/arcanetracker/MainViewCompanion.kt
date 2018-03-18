@@ -279,6 +279,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
         mainView.translationX = (-mWidth + mX!!).toFloat()
         handlesView.params.x = mX!! + mPadding
         handlesView.update()
+        Onboarding.updateTranslation()
     }
 
     override fun onAnimationStart(animation: Animator) {
@@ -405,7 +406,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
         drawable = v.context.resources.getDrawable(R.drawable.box)
         handleView.init(drawable, v.context.resources.getColor(R.color.gray))
         handleView.setOnClickListener(ClickListener(STATE_LEGACY))
-        if (!DeckList.hasValidDeck()) {
+        if (!LegacyDeckList.hasValidDeck()) {
             handleView.visibility = View.GONE
         }
 

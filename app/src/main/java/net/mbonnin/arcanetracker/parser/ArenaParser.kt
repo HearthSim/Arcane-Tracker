@@ -2,7 +2,7 @@ package net.mbonnin.arcanetracker.parser
 
 import android.os.Handler
 import net.mbonnin.arcanetracker.CardUtil
-import net.mbonnin.arcanetracker.DeckList
+import net.mbonnin.arcanetracker.LegacyDeckList
 import net.mbonnin.arcanetracker.MainViewCompanion
 import net.mbonnin.arcanetracker.adapter.Controller
 import net.mbonnin.arcanetracker.heroIdToClassIndex
@@ -89,7 +89,7 @@ class ArenaParser : LogReader.LineConsumer {
     }
 
     private fun setArenaHero(classIndex: Int) {
-        val deck = DeckList.arenaDeck
+        val deck = LegacyDeckList.arenaDeck
         deck.clear()
         deck.classIndex = classIndex
 
@@ -99,16 +99,16 @@ class ArenaParser : LogReader.LineConsumer {
 
         Controller.resetAll()
 
-        DeckList.saveArena()
+        LegacyDeckList.saveArena()
     }
 
     private fun newArenaCard(cardId: String) {
-        val deck = DeckList.arenaDeck
+        val deck = LegacyDeckList.arenaDeck
         deck.addCard(cardId, 1)
 
         Controller.get().setLegacyCardMap(deck.cards)
 
-        DeckList.saveArena()
+        LegacyDeckList.saveArena()
     }
 
     private fun newArenaRun() {

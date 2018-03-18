@@ -64,7 +64,7 @@ object ScreenCaptureHolder {
             }
 
             if (shouldDetectArena()) {
-                val index = DeckList.arenaDeck.classIndex
+                val index = LegacyDeckList.arenaDeck.classIndex
                 val playerClass = getPlayerClass(index)
                 val arenaResults = mDetector.detectArena(bbImage, playerClass)
                 ArenaGuessHolder.setArena(arenaResults, playerClass)
@@ -95,7 +95,7 @@ object ScreenCaptureHolder {
 
     fun shouldDetectArena(): Boolean {
 
-        val index = DeckList.arenaDeck.classIndex
+        val index = LegacyDeckList.arenaDeck.classIndex
         return LoadingScreenParser.MODE_DRAFT == LoadingScreenParser.get().mode
                 && ArenaParser.DRAFT_MODE_DRAFTING == ArenaParser.get().draftMode
                 && index >= 0

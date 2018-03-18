@@ -46,7 +46,7 @@ public class CreateDeckView extends CardView {
                 return;
             }
 
-            Deck deck = DeckList.INSTANCE.createDeck(adapter.getSelectedClassIndex());
+            Deck deck = LegacyDeckList.INSTANCE.createDeck(adapter.getSelectedClassIndex());
             deck.name = name;
 
             MainViewCompanion.Companion.getLegacyCompanion().setDeck(deck);

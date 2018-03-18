@@ -71,7 +71,7 @@ object Onboarding {
         opponentPopup = null
         getHandleView(R.id.opponentHandle).glow(false)
 
-        if (DeckList.hasValidDeck()) {
+        if (LegacyDeckList.hasValidDeck()) {
             handler.postDelayed ({
                 legacyPopup = displayPopup(getHandleView(R.id.legacyHandle), R.string.onboarding_legacy)
             }, 300)
@@ -95,5 +95,33 @@ object Onboarding {
     private fun finishOnboarding() {
 
 
+    }
+
+    fun updateTranslation() {
+        playerPopup?.let {updateX(it, R.id.playerHandle)}
+        opponentPopup?.let {updateX(it, R.id.opponentHandle)}
+        legacyPopup?.let {updateX(it, R.id.legacyHandle)}
+    }
+
+    private fun updateX(view: View, handleResId: Int) {
+        val handleView = getHandleView(handleResId)
+
+        val params = ViewManager.Params()
+        val outLocation = IntArray(2)
+        handleView.getLocationOnScreen(outLocation)
+
+        params.w = view.measuredWidth
+        params.h = view.measuredHeight
+        
+        params.x = outLocation[0] + handleView.getWidth() + Utils.dpToPx(20)
+        params.y = (outLocation[1] - params.h / 2)
+        if (params.y < 0) {
+            params.y = 0
+        } else if (params.y + params.h > ViewManager.Companion.get().height) {
+            params.y = ViewManager.Companion.get().height - params.h
+        }
+
+
+        ViewManager.get().updateView(view, params)
     }
 }

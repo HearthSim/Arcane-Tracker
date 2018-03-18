@@ -36,7 +36,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         var deck = MainViewCompanion.legacyCompanion.deck
         if (Settings.get(Settings.AUTO_SELECT_DECK, true)) {
             if (LoadingScreenParser.MODE_DRAFT == LoadingScreenParser.get().gameplayMode) {
-                deck = DeckList.arenaDeck
+                deck = LegacyDeckList.arenaDeck
                 Timber.w("useArena deck")
             } else {
                 val classIndex = game.getPlayer().classIndex()
@@ -57,9 +57,9 @@ class GameLogicListener private constructor() : GameLogic.Listener {
 
         MainViewCompanion.legacyCompanion.deck = deck
 
-        DeckList.opponentDeck.clear()
-        DeckList.opponentDeck.classIndex = game.getOpponent().classIndex()
-        MainViewCompanion.opponentCompanion.deck = DeckList.opponentDeck
+        LegacyDeckList.opponentDeck.clear()
+        LegacyDeckList.opponentDeck.classIndex = game.getOpponent().classIndex()
+        MainViewCompanion.opponentCompanion.deck = LegacyDeckList.opponentDeck
 
         currentGame = game
         mGameOver = false
@@ -93,7 +93,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         val legacyDeck = MainViewCompanion.legacyCompanion.deck
 
         if (legacyDeck != null) {
-            if (DeckList.hasValidDeck()) {
+            if (LegacyDeckList.hasValidDeck()) {
                 addKnownCardsToDeck(currentGame!!, legacyDeck)
             }
 
@@ -104,10 +104,10 @@ class GameLogicListener private constructor() : GameLogic.Listener {
             }
             MainViewCompanion.legacyCompanion.deck = legacyDeck
 
-            if (DeckList.ARENA_DECK_ID == legacyDeck.id) {
-                DeckList.saveArena()
+            if (LegacyDeckList.ARENA_DECK_ID == legacyDeck.id) {
+                LegacyDeckList.saveArena()
             } else {
-                DeckList.save()
+                LegacyDeckList.save()
             }
 
         }
@@ -187,7 +187,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                     deck.cards.put(cardId, found)
                 }
             }
-            DeckList.save()
+            LegacyDeckList.save()
         }
 
     }
@@ -279,17 +279,17 @@ class GameLogicListener private constructor() : GameLogic.Listener {
 
             // sort the deck list by descending number of cards. We'll try to get the one with the most cards.
             val index = ArrayList<Int>()
-            for (i in 0 until DeckList.get().size) {
+            for (i in 0 until LegacyDeckList.get().size) {
                 index.add(i)
             }
 
-            Collections.sort(index) { a, b -> DeckList.get()[b!!].cardCount - DeckList.get()[a!!].cardCount }
+            Collections.sort(index) { a, b -> LegacyDeckList.get()[b!!].cardCount - LegacyDeckList.get()[a!!].cardCount }
 
             var maxScore = -1
             var bestDeck: Deck? = null
 
             for (i in index) {
-                val candidateDeck = DeckList.get()[i]
+                val candidateDeck = LegacyDeckList.get()[i]
 
                 val score = deckScore(candidateDeck, classIndex, initialCards)
 
@@ -304,7 +304,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                 /*
              * No good candidate, create a new deck
              */
-                bestDeck = DeckList.createDeck(classIndex)
+                bestDeck = LegacyDeckList.createDeck(classIndex)
             }
 
             return bestDeck!!

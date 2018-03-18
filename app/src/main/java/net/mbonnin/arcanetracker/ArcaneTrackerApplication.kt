@@ -123,7 +123,7 @@ class ArcaneTrackerApplication : MultiDexApplication() {
          */
         LogReader("Power.log", powerParser, true)
 
-        LogReader("Decks.log", DecksParser.get(), true)
+        LogReader("Decks.log", DecksParser.get(), false)
 
         HSReplay.testData = Utils.isAppDebuggable
         HSReplay.userAgent = (ArcaneTrackerApplication.context.getPackageName() + "/" + BuildConfig.VERSION_NAME

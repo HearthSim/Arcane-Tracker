@@ -44,7 +44,7 @@ class LegacyDeckCompanion(v: View) : DeckCompanion(v) {
                         value.losses = 0
                     }
 
-                    DeckList.saveDeck(value)
+                    LegacyDeckList.saveDeck(value)
 
                     MainViewCompanion.legacyCompanion.deck = deck
                 }
@@ -61,19 +61,19 @@ class LegacyDeckCompanion(v: View) : DeckCompanion(v) {
 
         var deck: Deck? = null
         if (lastUsedId != null) {
-            for (deck2 in DeckList.get()) {
+            for (deck2 in LegacyDeckList.get()) {
                 if (deck2.id == lastUsedId) {
                     deck = deck2
                     break
                 }
             }
-            if (deck == null && lastUsedId == DeckList.ARENA_DECK_ID) {
-                deck = DeckList.arenaDeck
+            if (deck == null && lastUsedId == LegacyDeckList.ARENA_DECK_ID) {
+                deck = LegacyDeckList.arenaDeck
             }
         }
 
         if (deck == null) {
-            deck = DeckList.createDeck(Card.CLASS_INDEX_WARRIOR)
+            deck = LegacyDeckList.createDeck(Card.CLASS_INDEX_WARRIOR)
             PaperDb.write(KEY_LAST_USED_DECK_ID, deck!!.id)
         }
 

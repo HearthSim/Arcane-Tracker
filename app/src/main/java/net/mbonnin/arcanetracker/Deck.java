@@ -24,7 +24,7 @@ public class Deck {
     private transient WeakReference<Listener> mListenerRef;
 
     public boolean isArena() {
-        return DeckList.INSTANCE.getARENA_DECK_ID().equals(id);
+        return LegacyDeckList.INSTANCE.getARENA_DECK_ID().equals(id);
     }
 
     public void checkClassIndex() {

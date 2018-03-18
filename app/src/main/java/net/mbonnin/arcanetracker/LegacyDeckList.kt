@@ -2,11 +2,7 @@ package net.mbonnin.arcanetracker
 
 import java.util.*
 
-/**
- * Created by martin on 10/20/16.
- */
-
-object DeckList {
+object LegacyDeckList {
     val ARENA_DECK_ID = "ARENA_DECK_ID"
     private var sList: ArrayList<Deck>? = null
     internal val KEY_LIST = "list"
