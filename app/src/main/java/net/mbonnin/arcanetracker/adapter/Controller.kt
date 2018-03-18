@@ -254,8 +254,9 @@ class Controller : GameLogic.Listener {
     private fun update() {
         if (mGame == null) {
             legacyAdapter.setList(getCardMapList(if (mLegacyCardMap != null) mLegacyCardMap!! else HashMap<String, Int>()))
-            val list = getCardMapList(HashMap())
+            playerAdapter.setList(getCardMapList(if (mPlayerCardMap != null) mPlayerCardMap!! else HashMap<String, Int>()))
 
+            val list = getCardMapList(HashMap())
             opponentAdapter.setList(list)
         } else {
             /*

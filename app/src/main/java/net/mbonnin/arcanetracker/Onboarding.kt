@@ -20,6 +20,7 @@ object Onboarding {
         }
 
         handler.postDelayed ({
+            playerPopup?.let { ViewManager.get().removeView(it) }
             playerPopup = displayPopup(getHandleView(R.id.playerHandle), R.string.onoboarding_player)
         }, 300)
     }
@@ -58,6 +59,7 @@ object Onboarding {
         getHandleView(R.id.playerHandle).glow(false)
 
         handler.postDelayed ({
+            opponentPopup?.let { ViewManager.get().removeView(it) }
             opponentPopup = displayPopup(getHandleView(R.id.opponentHandle), R.string.onboarding_opponent)
         }, 300)
     }
@@ -73,6 +75,7 @@ object Onboarding {
 
         if (LegacyDeckList.hasValidDeck()) {
             handler.postDelayed ({
+                legacyPopup?.let { ViewManager.get().removeView(it) }
                 legacyPopup = displayPopup(getHandleView(R.id.legacyHandle), R.string.onboarding_legacy)
             }, 300)
         } else {
