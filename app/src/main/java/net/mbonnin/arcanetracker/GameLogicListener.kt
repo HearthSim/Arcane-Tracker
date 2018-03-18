@@ -204,18 +204,35 @@ class GameLogicListener private constructor() : GameLogic.Listener {
     fun uploadGame(gameStr: String, gameStart: String) {
         val startTime = System.currentTimeMillis()
 
-        Timber.d("ready to send hsreplay")
         val runnable = object : Runnable {
             override fun run() {
                 if (mGameOver) {
                     val summary = GameSummary()
                     val game = currentGame!!
+
+                    Timber.d("ready to send hsreplay %s", game.bnetGameType.name)
+                    when {
+                        game.spectator -> return // do not send spectator games to hsreplay
+                    }
+
+                    when (game.bnetGameType) {
+                        BnetGameType.BGT_ARENA,
+                        BnetGameType.BGT_CASUAL_STANDARD_NEWBIE,
+                        BnetGameType.BGT_CASUAL_WILD,
+                        BnetGameType.BGT_CASUAL_STANDARD_NORMAL,
+                        BnetGameType.BGT_FRIENDS,
+                        BnetGameType.BGT_RANKED_STANDARD,
+                        BnetGameType.BGT_RANKED_WILD,
+                        BnetGameType.BGT_VS_AI -> Unit // Note that this will never happen because there's just one GOLD_REWARD_STATE in AI mode
+                        else -> return // do not send strange games to HSReplay
+                    }
+
                     summary.coin = game.getPlayer().hasCoin
                     summary.win = game.victory
                     summary.hero = game.player.classIndex()
                     summary.opponentHero = game.opponent.classIndex()
                     summary.date = Utils.ISO8601DATEFORMAT.format(Date())
-                    summary.deckName = MainViewCompanion.legacyCompanion.deck?.name
+                    summary.deckName = MainViewCompanion.playerCompanion.deck?.name
                     summary.bnetGameType = game.bnetGameType.intValue
 
                     GameSummary.addFirst(summary)
@@ -226,17 +243,18 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                     uploadRequest.spectator_mode = game.spectator
                     uploadRequest.friendly_player = game.player.entity.PlayerID
                     uploadRequest.game_type = game.bnetGameType.intValue
-                    if (game.rank > 0) {
-                        if (uploadRequest.friendly_player == "1") {
-                            uploadRequest.player1.rank = game.rank
-                        } else {
-                            uploadRequest.player2.rank = game.rank
-                        }
-                    }
 
-                    if (game.spectator) {
-                        // do not send spectator games to hsreplay
-                        return
+                    val player = if (uploadRequest.friendly_player == "1") uploadRequest.player1 else uploadRequest.player2
+
+                    if (game.rank > 0) {
+                        player.rank = game.rank
+                    }
+                    MainViewCompanion.playerCompanion.deck?.let {
+                        it.cards.forEach{
+                            for (i in 0 until it.value) {
+                                player.deck.add(it.key)
+                            }
+                        }
                     }
 
                     if (HSReplay.get().token() != null) {
