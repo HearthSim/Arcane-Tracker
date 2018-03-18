@@ -14,6 +14,8 @@ import net.mbonnin.arcanetracker.parser.Entity
 import net.mbonnin.arcanetracker.parser.Game
 import net.mbonnin.arcanetracker.parser.GameLogic
 import net.mbonnin.arcanetracker.parser.LoadingScreenParser
+import net.mbonnin.arcanetracker.room.RDatabaseSingleton
+import net.mbonnin.arcanetracker.room.RDeck
 import net.mbonnin.arcanetracker.trackobot.Trackobot
 import net.mbonnin.arcanetracker.trackobot.model.CardPlay
 import net.mbonnin.arcanetracker.trackobot.model.Result
@@ -88,22 +90,31 @@ class GameLogicListener private constructor() : GameLogic.Listener {
 
         Timber.w("gameOver  %s [mode %s] [user %s]", if (currentGame!!.victory) "victory" else "lost", mode, Trackobot.get().currentUser())
 
-        val deck = MainViewCompanion.legacyCompanion.deck!!
+        val legacyDeck = MainViewCompanion.legacyCompanion.deck
 
-        addKnownCardsToDeck(currentGame!!, deck)
+        if (legacyDeck != null) {
+            addKnownCardsToDeck(currentGame!!, legacyDeck)
 
-        if (currentGame!!.victory) {
-            deck.wins++
-        } else {
-            deck.losses++
+            if (currentGame!!.victory) {
+                legacyDeck.wins++
+            } else {
+                legacyDeck.losses++
+            }
+            MainViewCompanion.legacyCompanion.deck = legacyDeck
+
+            if (DeckList.ARENA_DECK_ID == legacyDeck.id) {
+                DeckList.saveArena()
+            } else {
+                DeckList.save()
+            }
+
         }
-        MainViewCompanion.legacyCompanion.deck = deck
 
-        if (DeckList.ARENA_DECK_ID == deck.id) {
-            DeckList.saveArena()
-        } else {
-            DeckList.save()
+        val playerDeck = MainViewCompanion.playerCompanion.deck
+        if (playerDeck != null) {
+            updateCounter(playerDeck.id, currentGame!!.victory)
         }
+
 
         if ((Utils.isAppDebuggable || LoadingScreenParser.MODE_DRAFT == mode || LoadingScreenParser.MODE_TOURNAMENT == mode) && Trackobot.get().currentUser() != null) {
             val resultData = ResultData()
@@ -139,6 +150,27 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("game_ended", bundle)
 
         mGameOver = true
+    }
+
+    private fun updateCounter(id: String, victory: Boolean) {
+        RDatabaseSingleton.instance.deckDao().findById(id)
+                .onErrorReturn {
+                    val rdeck = RDeck()
+                    rdeck.id = id
+                    rdeck
+                }
+                .firstOrError()
+                .map {
+                    if (victory) {
+                        it.wins++
+                    } else {
+                        it.losses++
+                    }
+
+                    RDatabaseSingleton.instance.deckDao().insert(it)
+                }
+                .subscribeOn(io.reactivex.schedulers.Schedulers.io())
+                .subscribe()
     }
 
     private fun addKnownCardsToDeck(game: Game, deck: Deck) {

@@ -111,8 +111,9 @@ dependencies {
     implementation Libs.timber
     implementation Libs.annimonStream
 
-    implementation Libs.rxJava2
+    implementation Libs.rxjava2
     implementation Libs.rxAndroid
+    implementation Libs.rxAndroid2
     implementation Libs.rxKotlin
     implementation Libs.retrofit
     implementation Libs.gson
@@ -128,6 +129,10 @@ dependencies {
     implementation Libs.retrofitGson
     implementation Libs.ktx
     implementation Libs.crashlytics
+    implementation Libs.room
+    implementation Libs.rxRoom
+
+    kapt Libs.roomProcessor
 
     kapt Libs.dataBindingCompiler
     implementation project(":detector")

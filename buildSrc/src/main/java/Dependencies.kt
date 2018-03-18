@@ -39,8 +39,8 @@ object Libs {
     const val paperDb = "io.paperdb:paperdb:2.6"
     const val annimonStream = "com.annimon:stream:1.1.9"
     const val dataBindingCompiler = "com.android.databinding:compiler:${Versions.androidPlugin}"
-    const val rxJava2 = "io.reactivex.rxjava2:rxjava:2.1.8"
     const val rxAndroid = "io.reactivex:rxandroid:1.2.1"
+    const val rxAndroid2 = "io.reactivex.rxjava2:rxandroid:2.0.2"
     const val rxKotlin = "io.reactivex:rxkotlin:1.0.0"
     const val retrofit = "com.squareup.retrofit2:retrofit:2.4.0"
     const val retrofitGson = "com.squareup.retrofit2:converter-gson:2.4.0"
@@ -52,5 +52,8 @@ object Libs {
     const val multidex = "com.android.support:multidex:1.0.3"
     const val picassoDownloader = "com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0"
     const val picasso = "com.squareup.picasso:picasso:2.5.2"
+    const val room = "android.arch.persistence.room:runtime:1.0.0"
+    const val rxRoom = "android.arch.persistence.room:rxjava2:1.0.0"
+    const val roomProcessor = "android.arch.persistence.room:compiler:1.0.0"
 
 }
