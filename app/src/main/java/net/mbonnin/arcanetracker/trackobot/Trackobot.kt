@@ -269,13 +269,13 @@ class Trackobot {
             return getPlayerClass(classIndex).toLowerCase()
         }
 
-        fun getMode(bnetGameType: BnetGameType): String {
-            when (bnetGameType) {
-                BnetGameType.BGT_ARENA -> return "arena"
-                BnetGameType.BGT_CASUAL_STANDARD_NORMAL, BnetGameType.BGT_CASUAL_WILD -> return "ranked"
-                BnetGameType.BGT_RANKED_STANDARD, BnetGameType.BGT_RANKED_WILD -> return "ranked"
-                BnetGameType.BGT_VS_AI -> return "practice"
-                else -> return "ranked"
+        fun getMode(gameType: String, formatType: String): String {
+            return when (gameType) {
+                GameType.GT_ARENA.name -> "arena"
+                GameType.GT_VS_AI.name -> "practice"
+                GameType.GT_CASUAL.name -> "ranked"
+                GameType.GT_RANKED.name -> "ranked"
+                else -> "ranked"
             }
         }
     }

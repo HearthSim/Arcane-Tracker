@@ -182,11 +182,15 @@ class DetailsView(context: Context) : LinearLayout(context) {
         val deckEntryItem = DeckEntryItem(card = CardUtil.getCard(cardId))
         deckEntryItem.count = if (condition) 0 else 1
 
-        when (GameLogicListener.get().currentGame?.bnetGameType) {
-            BnetGameType.BGT_RANKED_STANDARD,
-            BnetGameType.BGT_CASUAL_STANDARD_NORMAL,
-            BnetGameType.BGT_ARENA -> if (deckEntryItem.card.isStandard()) list.add(deckEntryItem)
-            else -> list.add(deckEntryItem)
+        val formatType = GameLogicListener.get().currentGame?.formatType
+        val isGameStandard = formatType == FormatType.FT_STANDARD.name
+
+        if (isGameStandard) {
+            if (deckEntryItem.card.isStandard()) {
+                list.add(deckEntryItem)
+            }
+        } else {
+            list.add(deckEntryItem)
         }
     }
 }

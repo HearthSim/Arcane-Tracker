@@ -1,5 +1,6 @@
 package net.mbonnin.arcanetracker
 
 enum class EventParams(val value: String) {
-    BNET_GAME_TYPE("bnet_game_type")
+    GAME_TYPE("game_type"),
+    FORMAT_TYPE("format_type")
 }

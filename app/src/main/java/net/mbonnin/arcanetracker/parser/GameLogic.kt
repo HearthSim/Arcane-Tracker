@@ -29,7 +29,7 @@ class GameLogic private constructor() {
 
     fun handleRootTag(tag: Tag) {
         //Timber.d("handle tag: " + tag);
-        when(tag) {
+        when (tag) {
             is CreateGameTag -> handleCreateGameTag(tag)
             is SpectatorTag -> spectator = tag.spectator
         }
@@ -107,7 +107,8 @@ class GameLogic private constructor() {
                      */
                     if (Type.MINION == playedEntity.tags[Entity.KEY_CARDTYPE]) {
                         secretEntity.extra.otherPlayerPlayedMinion = true
-                        if (getMinionsOnBoardForController(playedEntity.tags[Entity.KEY_CONTROLLER]?:"").size >= 3) {
+                        if (getMinionsOnBoardForController(playedEntity.tags[Entity.KEY_CONTROLLER]
+                                        ?: "").size >= 3) {
                             secretEntity.extra.otherPlayerPlayedMinionWithThreeOnBoardAlready = true
                         }
                     } else if (Type.SPELL == playedEntity.tags[Entity.KEY_CARDTYPE]) {
@@ -143,40 +144,66 @@ class GameLogic private constructor() {
                     }
                 }
             }
-
         }
     }
 
 
     private fun handleTagRecursive(tag: Tag) {
-        if (tag is TagChangeTag) {
-            handleTagChange(tag)
-        } else if (tag is FullEntityTag) {
-            handleFullEntityTag(tag)
-        } else if (tag is BlockTag) {
-            handleBlockTag(tag)
-            for (child in tag.children) {
-                handleTagRecursive(child)
+        when (tag) {
+            is TagChangeTag -> handleTagChange(tag)
+            is FullEntityTag -> handleFullEntityTag(tag)
+            is BlockTag -> {
+                handleBlockTag(tag)
+                for (child in tag.children) {
+                    handleTagRecursive(child)
+                }
             }
-        } else if (tag is ShowEntityTag) {
-            handleShowEntityTag(tag)
+            is ShowEntityTag -> handleShowEntityTag(tag)
+            is BuildNumberTag -> mGame!!.buildNumber = tag.buildNumber
+            is GameTypeTag -> mGame!!.gameType = tag.gameType
+            is FormatTypeTag -> mGame!!.formatType = tag.formatType
+            is ScenarioIdTag -> mGame!!.scenarioId = tag.scenarioId
+            is PlayerMappingTag -> handlePlayerMapping(tag)
         }
     }
 
+    private fun handlePlayerMapping(tag: PlayerMappingTag) {
+        val player = mGame!!.playerMap[tag.playerId]
+        if (player == null) {
+            Timber.e("Cannot find player Id '%s'", tag.playerId)
+            return
+        }
+
+        var battleTagEntity = mGame!!.entityMap[tag.playerName]
+        if (battleTagEntity != null) {
+            /**
+             * merge all tags
+             */
+            player.entity.tags.putAll(battleTagEntity.tags)
+        }
+
+        Timber.w(tag.playerName + " now points to entity " + player.entity.EntityID)
+
+        player.battleTag = tag.playerName
+
+        /*
+         * make the battleTag point to the same entity..
+         */
+        mGame!!.entityMap.put(tag.playerName, player.entity)
+    }
+
     private fun handleTagRecursive2(tag: Tag) {
-        if (tag is TagChangeTag) {
-            handleTagChange2(tag)
-        } else if (tag is FullEntityTag) {
-            handleFullEntityTag2(tag)
-        } else if (tag is BlockTag) {
-            handleBlockTag2(tag)
-            for (child in tag.children) {
-                handleTagRecursive2(child)
+        when (tag) {
+            is TagChangeTag -> handleTagChange2(tag)
+            is FullEntityTag -> handleFullEntityTag2(tag)
+            is BlockTag -> {
+                handleBlockTag2(tag)
+                for (child in tag.children) {
+                    handleTagRecursive2(child)
+                }
             }
-        } else if (tag is ShowEntityTag) {
-            handleShowEntityTag2(tag)
-        } else if (tag is MetaDataTag) {
-            handleMetaDataTag2(tag)
+            is ShowEntityTag -> handleShowEntityTag2(tag)
+            is MetaDataTag -> handleMetaDataTag2(tag)
         }
     }
 
@@ -426,30 +453,6 @@ class GameLogic private constructor() {
         player2.isOpponent = !player1.isOpponent
         player2.hasCoin = !player1.hasCoin
 
-        /*
-         * now try to match a battle tag with a player
-         */
-        for (battleTag in mGame!!.battleTags) {
-            val battleTagEntity = mGame!!.entityMap[battleTag]
-            val playsFirst = battleTagEntity!!.tags[Entity.KEY_FIRST_PLAYER]
-            val player: Player
-
-            if ("1" == playsFirst) {
-                player = if (player1.hasCoin) player2 else player1
-            } else {
-                player = if (player1.hasCoin) player1 else player2
-            }
-
-            player.entity.tags.putAll(battleTagEntity.tags)
-            player.battleTag = battleTag
-
-            /*
-             * make the battleTag point to the same entity..
-             */
-            Timber.w(battleTag + " now points to entity " + player.entity.EntityID)
-            mGame!!.entityMap.put(battleTag, player.entity)
-        }
-
         mGame!!.player = if (player1.isOpponent) player2 else player1
         mGame!!.opponent = if (player1.isOpponent) player1 else player2
     }
@@ -491,7 +494,7 @@ class GameLogic private constructor() {
 
             // battlecry or active effect
             guessedId = when (blockEntity.CardID) {
-                CardId.GANG_UP, CardId.RECYCLE, CardId.SHADOWCASTER, CardId.MANIC_SOULCASTER ->  mGame!!.findEntitySafe(blockTag.Target).CardID
+                CardId.GANG_UP, CardId.RECYCLE, CardId.SHADOWCASTER, CardId.MANIC_SOULCASTER -> mGame!!.findEntitySafe(blockTag.Target).CardID
                 CardId.BENEATH_THE_GROUNDS -> CardId.NERUBIAN_AMBUSH
                 CardId.IRON_JUGGERNAUT -> CardId.BURROWING_MINE
                 CardId.FORGOTTEN_TORCH -> CardId.ROARING_TORCH

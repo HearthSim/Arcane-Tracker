@@ -20,7 +20,7 @@ class PowerParser(private val mTagConsumer: (Tag) -> Unit, private val mRawGameC
     private val GameEntityPattern = Pattern.compile("GameEntity EntityID=(.*)")
     private val PlayerEntityPattern = Pattern.compile("Player EntityID=(.*) PlayerID=(.*) GameAccountId=(.*)")
 
-    private val FULL_ENTITY = Pattern.compile("FULL_ENTITY - Updating (.*) CardID=(.*)")
+    private val FULL_ENTITY = Pattern.compile("FULL_ENTITY - Creating ID=(.*) CardID=(.*)")
     private val TAG_CHANGE = Pattern.compile("TAG_CHANGE Entity=(.*) tag=(.*) value=(.*)")
     private val SHOW_ENTITY = Pattern.compile("SHOW_ENTITY - Updating Entity=(.*) CardID=(.*)")
 
@@ -28,6 +28,12 @@ class PowerParser(private val mTagConsumer: (Tag) -> Unit, private val mRawGameC
     private val TAG = Pattern.compile("tag=(.*) value=(.*)")
     private val META_DATA = Pattern.compile("META_DATA - Meta=(.*) Data=(.*) Info=(.*)")
     private val INFO = Pattern.compile("Info\\[[0-9]*\\] = (.*)")
+
+    private val BUILD_NUMBER = Pattern.compile("BuildNumber=(.*)")
+    private val GAME_TYPE = Pattern.compile("GameType=(.*)")
+    private val FORMAT_TYPE = Pattern.compile("FormatType=(.*)")
+    private val SCENARIO_ID = Pattern.compile("ScenarioID=(.*)")
+    private val PLAYER_MAPPING = Pattern.compile("PlayerID=(.*), PlayerName=(.*)")
 
     private var rawBuilder: StringBuilder? = null
     private var rawMatchStart: String? = null
@@ -48,31 +54,54 @@ class PowerParser(private val mTagConsumer: (Tag) -> Unit, private val mRawGameC
 
         val logLine = LogReader.parseLineWithMethod(rawLine) ?: return
 
-        var line = logLine.line
+        val line = logLine.line.trim()
         if (mReadingPreviousData) {
             return
         }
 
-        if (logLine.method!!.startsWith("GameState")) {
-            handleGameStateLine(rawLine)
-        } else if (logLine.method!!.startsWith("PowerTaskList.DebugPrintPower()")) {
+        if (!logLine.method!!.startsWith("GameState")) {
+            return
+        }
+
+        if (logLine.method!!.startsWith("GameState.DebugPrintGame()")) {
+            var m: Matcher
+
+            m = BUILD_NUMBER.matcher(line)
+            if (m.matches()) {
+                mTagConsumer(BuildNumberTag(m.group(1)))
+                return
+            }
+
+            m = GAME_TYPE.matcher(line)
+            if (m.matches()) {
+                mTagConsumer(GameTypeTag(m.group(1)))
+                return
+            }
+
+            m = FORMAT_TYPE.matcher(line)
+            if (m.matches()) {
+                mTagConsumer(FormatTypeTag(m.group(1)))
+                return
+            }
+
+            m = SCENARIO_ID.matcher(line)
+            if (m.matches()) {
+                mTagConsumer(ScenarioIdTag(m.group(1)))
+                return
+            }
+
+            m = PLAYER_MAPPING.matcher(line)
+            if (m.matches()) {
+                mTagConsumer(PlayerMappingTag(m.group(1), m.group(2)))
+                return
+            }
+
+            return
+        }
+
+        if (logLine.method!!.startsWith("GameState.DebugPrintPower()")) {
 
             Timber.v(rawLine)
-
-            var spaces = 0
-            while (spaces < line.length && line[spaces] == ' ') {
-                spaces++
-            }
-
-            if (spaces == line.length) {
-                Timber.e("empty line: $line")
-                return
-            } else if (spaces % 4 != 0) {
-                Timber.e("bad indentation: $line")
-                return
-            }
-
-            line = line.substring(spaces).trim { it <= ' ' }
 
             var m: Matcher
             var newTag: Tag? = null
@@ -206,7 +235,7 @@ class PowerParser(private val mTagConsumer: (Tag) -> Unit, private val mRawGameC
             }
 
 
-            contentLoop@while(true) {
+            contentLoop@ while (true) {
                 m = GameEntityPattern.matcher(line)
                 if (m.matches()) {
                     val tag = GameEntityTag()
@@ -263,6 +292,8 @@ class PowerParser(private val mTagConsumer: (Tag) -> Unit, private val mRawGameC
 
                 break@contentLoop
             }
+
+            return
 
         }
     }

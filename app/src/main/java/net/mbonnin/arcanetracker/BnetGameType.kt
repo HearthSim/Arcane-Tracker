@@ -38,5 +38,28 @@ enum class BnetGameType(val intValue: Int) {
     BGT_FSG_BRAWL_VS_FRIEND(40),
     BGT_FSG_BRAWL_PVP(41),
     BGT_FSG_BRAWL_1P_VERSUS_AI(42),
-    BGT_FSG_BRAWL_2P_COOP(43),
+    BGT_FSG_BRAWL_2P_COOP(43)
+}
+
+fun fromGameAndFormat(gameType: String, format: String): BnetGameType {
+    return when(gameType) {
+        GameType.GT_ARENA.name -> BnetGameType.BGT_ARENA
+        GameType.GT_TAVERNBRAWL.name -> BnetGameType.BGT_TAVERNBRAWL_1P_VERSUS_AI
+        GameType.GT_VS_AI.name -> BnetGameType.BGT_VS_AI
+        GameType.GT_CASUAL.name -> {
+            when(format) {
+                FormatType.FT_STANDARD.name -> BnetGameType.BGT_CASUAL_STANDARD_NORMAL
+                FormatType.FT_WILD.name -> BnetGameType.BGT_CASUAL_WILD
+                else -> BnetGameType.BGT_UNKNOWN
+            }
+        }
+        GameType.GT_RANKED.name -> {
+            when(format) {
+                FormatType.FT_STANDARD.name -> BnetGameType.BGT_RANKED_STANDARD
+                FormatType.FT_WILD.name -> BnetGameType.BGT_RANKED_WILD
+                else -> BnetGameType.BGT_UNKNOWN
+            }
+        }
+        else -> BnetGameType.BGT_UNKNOWN
+    }
 }

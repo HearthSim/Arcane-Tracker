@@ -3,10 +3,6 @@ package net.mbonnin.arcanetracker
 import android.os.Bundle
 import android.os.Handler
 import com.google.firebase.analytics.FirebaseAnalytics
-import net.mbonnin.arcanetracker.detector.FORMAT_STANDARD
-import net.mbonnin.arcanetracker.detector.FORMAT_WILD
-import net.mbonnin.arcanetracker.detector.MODE_CASUAL
-import net.mbonnin.arcanetracker.detector.MODE_RANKED
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.mbonnin.arcanetracker.hsreplay.model.UploadRequest
 import net.mbonnin.arcanetracker.model.GameSummary
@@ -64,31 +60,18 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         currentGame = game
         mGameOver = false
 
-        if (LoadingScreenParser.get().gameplayMode == LoadingScreenParser.MODE_DRAFT) {
-            currentGame!!.bnetGameType = BnetGameType.BGT_ARENA
-        } else if (LoadingScreenParser.get().gameplayMode == LoadingScreenParser.MODE_TAVERN_BRAWL) {
-            currentGame!!.bnetGameType = BnetGameType.BGT_TAVERNBRAWL_1P_VERSUS_AI
-        } else if (LoadingScreenParser.get().gameplayMode == LoadingScreenParser.MODE_ADVENTURE) {
-            currentGame!!.bnetGameType = BnetGameType.BGT_VS_AI
-        } else if (FMRHolder.mode == MODE_RANKED && FMRHolder.format == FORMAT_STANDARD) {
-            currentGame!!.bnetGameType = BnetGameType.BGT_RANKED_STANDARD
-            currentGame!!.rank = FMRHolder.rank
-        } else if (FMRHolder.mode == MODE_RANKED && FMRHolder.format == FORMAT_WILD) {
-            currentGame!!.bnetGameType = BnetGameType.BGT_RANKED_WILD
-            currentGame!!.rank = FMRHolder.rank
-        } else if (FMRHolder.mode == MODE_CASUAL && FMRHolder.format == FORMAT_STANDARD) {
-            currentGame!!.bnetGameType = BnetGameType.BGT_CASUAL_STANDARD_NORMAL
-        } else if (FMRHolder.mode == MODE_CASUAL && FMRHolder.format == FORMAT_WILD) {
-            currentGame!!.bnetGameType = BnetGameType.BGT_CASUAL_WILD
-        } else {
-            currentGame!!.bnetGameType = BnetGameType.BGT_UNKNOWN
-        }
+        currentGame!!.rank = FMRHolder.rank
     }
 
     override fun gameOver() {
         val mode = LoadingScreenParser.get().gameplayMode
 
-        Timber.w("gameOver  %s [mode %s] [user %s]", if (currentGame!!.victory) "victory" else "lost", mode, Trackobot.get().currentUser())
+        Timber.w("gameOver  %s [gameType %s][formatType %s][mode %s] [user %s]",
+                if (currentGame!!.victory) "victory" else "lost",
+                currentGame!!.gameType,
+                currentGame!!.formatType,
+                mode,
+                Trackobot.get().currentUser())
 
         val legacyDeck = MainViewCompanion.legacyCompanion.deck
 
@@ -123,7 +106,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
             resultData.result = Result()
             resultData.result.coin = currentGame!!.getPlayer().hasCoin
             resultData.result.win = currentGame!!.victory
-            resultData.result.mode = Trackobot.getMode(currentGame!!.bnetGameType)
+            resultData.result.mode = Trackobot.getMode(currentGame!!.gameType, currentGame!!.formatType)
             if (currentGame!!.rank >= 0) {
                 resultData.result.rank = currentGame!!.rank
             }
@@ -148,7 +131,8 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         FileTree.get().sync()
 
         val bundle = Bundle()
-        bundle.putString(EventParams.BNET_GAME_TYPE.value, currentGame!!.bnetGameType.name)
+        bundle.putString(EventParams.GAME_TYPE.value, currentGame!!.gameType)
+        bundle.putString(EventParams.FORMAT_TYPE.value, currentGame!!.formatType)
         FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("game_ended", bundle)
 
         mGameOver = true
@@ -210,7 +194,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                     val summary = GameSummary()
                     val game = currentGame!!
 
-                    Timber.d("ready to send hsreplay %s", game.bnetGameType.name)
+                    Timber.d("ready to send hsreplay %s", game.gameType)
                     when {
                         game.spectator -> return // do not send spectator games to hsreplay
                     }
@@ -233,7 +217,6 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                     summary.opponentHero = game.opponent.classIndex()
                     summary.date = Utils.ISO8601DATEFORMAT.format(Date())
                     summary.deckName = MainViewCompanion.playerCompanion.deck?.name
-                    summary.bnetGameType = game.bnetGameType.intValue
 
                     GameSummary.addFirst(summary)
 
@@ -242,7 +225,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                     uploadRequest.build = ArcaneTrackerApplication.get().hearthstoneBuild
                     uploadRequest.spectator_mode = game.spectator
                     uploadRequest.friendly_player = game.player.entity.PlayerID
-                    uploadRequest.game_type = game.bnetGameType.intValue
+                    uploadRequest.game_type = fromGameAndFormat(game.gameType, game.formatType).intValue
 
                     val player = if (uploadRequest.friendly_player == "1") uploadRequest.player1 else uploadRequest.player2
 
