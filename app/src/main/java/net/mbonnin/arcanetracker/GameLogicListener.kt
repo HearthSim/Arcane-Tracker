@@ -209,6 +209,11 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         if (game.rank > 0) {
             player.rank = game.rank
         }
+
+        MainViewCompanion.playerCompanion.deck?.id?.toLongOrNull() ?.let {
+            player.deck_id = it
+        }
+
         MainViewCompanion.playerCompanion.deck?.let {
             it.cards.forEach {
                 for (i in 0 until it.value) {
