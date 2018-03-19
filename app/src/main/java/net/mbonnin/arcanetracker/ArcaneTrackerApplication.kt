@@ -127,7 +127,6 @@ class ArcaneTrackerApplication : MultiDexApplication() {
 
         LogReader("Decks.log", DecksParser.get(), false)
 
-        HSReplay.testData = Utils.isAppDebuggable
         HSReplay.userAgent = (ArcaneTrackerApplication.context.getPackageName() + "/" + BuildConfig.VERSION_NAME
                 + "; Android " + Build.VERSION.RELEASE + ";")
         HSReplay.context = this
