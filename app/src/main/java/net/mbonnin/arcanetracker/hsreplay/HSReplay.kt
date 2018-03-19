@@ -26,16 +26,16 @@ import java.io.IOException
 class HSReplay {
     private val mS3Client: OkHttpClient
     private var mToken: String? = null
-    private val mService: Service
+    private val mLegacyService: LegacyService
 
-    fun claimUrl(): Observable<Lce<String>> = service().createClaim()
+    fun claimUrl(): Observable<Lce<String>> = legacyService().createClaim()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { claimResult -> Lce.data(claimResult.full_url!!) }
                 .startWith(Lce.loading())
                 .onErrorReturn({ Lce.error(it) })
 
-    fun user(): Observable<Lce<Token>> = service().getToken(mToken)
+    fun user(): Observable<Lce<Token>> = legacyService().getToken(mToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map<Lce<Token>>({ Lce.data(it) })
@@ -61,7 +61,7 @@ class HSReplay {
 
         Timber.w("doUploadGame")
 
-        return service().createUpload("https://upload.hsreplay.net/api/v1/replay/upload/request", uploadRequest)
+        return legacyService().createUpload("https://upload.hsreplay.net/api/v1/replay/upload/request", uploadRequest)
                 .toSingle()
                 .map {
                     Timber.w("url is " + it.url)
@@ -98,7 +98,7 @@ class HSReplay {
     }
 
     init {
-        val client = OkHttpClient.Builder()
+        val legacyClient = OkHttpClient.Builder()
                 .addInterceptor { chain ->
                     var request = chain.request()
 
@@ -113,14 +113,18 @@ class HSReplay {
                     chain.proceed(request)
                 }.build()
 
-        val retrofit = Retrofit.Builder()
+        mLegacyService = Retrofit.Builder()
                 .baseUrl("https://hsreplay.net/api/v1/")
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
                 .addConverterFactory(GsonConverterFactory.create(Gson()))
-                .client(client)
+                .client(legacyClient)
+                .build()
+                .create(LegacyService::class.java)
+
+        val oauthOkHttpClient = OkHttpClient.Builder()
+                .addInterceptor(OauthInterceptor())
                 .build()
 
-        mService = retrofit.create(Service::class.java)
 
         mS3Client = OkHttpClient.Builder()
                 .addInterceptor(GzipInterceptor())
@@ -131,8 +135,8 @@ class HSReplay {
     }
 
 
-    private fun service(): Service {
-        return mService
+    private fun legacyService(): LegacyService {
+        return mLegacyService
     }
 
     fun token(): String? {
@@ -142,7 +146,7 @@ class HSReplay {
     fun createToken(): Observable<Lce<String>> {
         val tokenRequest = TokenRequest()
 
-        return service().createToken(tokenRequest)
+        return legacyService().createToken(tokenRequest)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { token ->

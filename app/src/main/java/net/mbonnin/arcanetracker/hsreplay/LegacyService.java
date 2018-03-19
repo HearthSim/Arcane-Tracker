@@ -13,7 +13,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Url;
 import rx.Observable;
 
-public interface Service {
+public interface LegacyService {
     @POST("tokens/")
     Observable<Token> createToken(@Body TokenRequest tokenRequest);
 
