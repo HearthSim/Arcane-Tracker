@@ -5,13 +5,13 @@ import android.view.View
 import android.view.View.GONE
 import android.widget.NumberPicker
 import android.widget.TextView
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import net.mbonnin.arcanetracker.adapter.Controller
-import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RDeck
+import net.mbonnin.arcanetracker.room.WLCounter
+import timber.log.Timber
 
 class PlayerDeckCompanion(v: View) : DeckCompanion(v) {
     init {
@@ -23,6 +23,7 @@ class PlayerDeckCompanion(v: View) : DeckCompanion(v) {
     }
 
     var disposable: Disposable? = null
+    var rdeck: RDeck? = null
 
     override var deck: Deck?
         get() = super.deck
@@ -35,15 +36,14 @@ class PlayerDeckCompanion(v: View) : DeckCompanion(v) {
 
             disposable?.dispose()
 
-            disposable = RDatabaseSingleton.instance.deckDao().findById(value.id)
-                    .onErrorReturn {
-                        val rdeck = RDeck()
-                        rdeck.id = value.id
-                        rdeck
-                    }
+            Timber.d("setDeck")
+
+            disposable = WLCounter.watch(value.id)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe { rdeck ->
+                        Timber.d("setText")
+                        this.rdeck = rdeck
                         winLoss.text = rdeck.wins.toString() + " - " + rdeck.losses.toString()
                     }
 
@@ -54,23 +54,15 @@ class PlayerDeckCompanion(v: View) : DeckCompanion(v) {
                 val win = view2.findViewById<NumberPicker>(R.id.win)
                 win.minValue = 0
                 win.maxValue = 999
-                win.value = value.wins
+                rdeck?.wins?.let { win.value = it }
                 val losses = view2.findViewById<NumberPicker>(R.id.loss)
                 losses.minValue = 0
                 losses.maxValue = 999
-                losses.value = value.losses
+                rdeck?.losses?.let { losses.value = it }
                 view2.findViewById<View>(R.id.ok).setOnClickListener { v3 ->
                     mViewManager.removeView(view2)
 
-                    val rdeck2 = RDeck()
-                    rdeck2.id = value.id
-                    rdeck2.wins = win.value
-                    rdeck2.losses = losses.value
-
-                    Observable.fromCallable {
-                        RDatabaseSingleton.instance.deckDao().insert(rdeck2)
-                    }.subscribeOn(Schedulers.io())
-                            .subscribe()
+                    WLCounter.set(value.id, win.value, losses.value)
                 }
                 view2.findViewById<View>(R.id.cancel).setOnClickListener { v3 -> mViewManager.removeView(view2) }
 

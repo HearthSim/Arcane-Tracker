@@ -10,8 +10,7 @@ import net.mbonnin.arcanetracker.parser.Entity
 import net.mbonnin.arcanetracker.parser.Game
 import net.mbonnin.arcanetracker.parser.GameLogic
 import net.mbonnin.arcanetracker.parser.LoadingScreenParser
-import net.mbonnin.arcanetracker.room.RDatabaseSingleton
-import net.mbonnin.arcanetracker.room.RDeck
+import net.mbonnin.arcanetracker.room.WLCounter
 import net.mbonnin.arcanetracker.trackobot.Trackobot
 import net.mbonnin.arcanetracker.trackobot.model.CardPlay
 import net.mbonnin.arcanetracker.trackobot.model.Result
@@ -135,24 +134,8 @@ class GameLogicListener private constructor() : GameLogic.Listener {
     }
 
     private fun updateCounter(id: String, victory: Boolean) {
-        RDatabaseSingleton.instance.deckDao().findById(id)
-                .onErrorReturn {
-                    val rdeck = RDeck()
-                    rdeck.id = id
-                    rdeck
-                }
-                .firstOrError()
-                .map {
-                    if (victory) {
-                        it.wins++
-                    } else {
-                        it.losses++
-                    }
-
-                    RDatabaseSingleton.instance.deckDao().insert(it)
-                }
-                .subscribeOn(io.reactivex.schedulers.Schedulers.io())
-                .subscribe()
+        val winsIncrement = if (victory) 1 else 0
+        WLCounter.increment(id, winsIncrement, 1 - winsIncrement)
     }
 
     private fun addKnownCardsToDeck(game: Game, deck: Deck) {

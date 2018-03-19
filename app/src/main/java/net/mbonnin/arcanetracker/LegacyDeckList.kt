@@ -91,7 +91,7 @@ object LegacyDeckList : DeckList {
             }
         }
 
-        return true
+        return false
     }
 
     override fun getAllDecks(): List<Deck> {

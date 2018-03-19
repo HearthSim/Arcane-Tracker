@@ -6,13 +6,13 @@ import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 
 
 @Entity
-class RDeck {
+data class RDeck(
     @PrimaryKey
-    var id: String = ""
+    var id: String = "",
 
-    var wins: Int = 0
+    var wins: Int = 0,
     var losses: Int = 0
-}
+)
 
 @Database(entities = arrayOf(RDeck::class), version = 1)
 abstract class RDatabase : RoomDatabase() {
@@ -31,7 +31,7 @@ interface RDeckDao {
     fun insert(rDeck: RDeck)
 
     @Query("SELECT * FROM rdeck WHERE id = :id LIMIT 1")
-    fun findById(id: String): Flowable<RDeck>
+    fun findById(id: String): Flowable<List<RDeck>>
 
     @Delete
     fun delete(rDeck: RDeck)
