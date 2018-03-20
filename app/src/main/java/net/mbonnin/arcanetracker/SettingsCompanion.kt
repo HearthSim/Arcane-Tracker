@@ -1,5 +1,6 @@
 package net.mbonnin.arcanetracker
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -16,14 +17,14 @@ import android.widget.*
 import com.google.firebase.analytics.FirebaseAnalytics
 import net.mbonnin.arcanetracker.detector.ByteBufferImage
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
+import net.mbonnin.arcanetracker.hsreplay.model.Lce
+import net.mbonnin.arcanetracker.hsreplay.model.Token
 import net.mbonnin.arcanetracker.trackobot.Trackobot
 import net.mbonnin.arcanetracker.trackobot.Url
 import net.mbonnin.arcanetracker.trackobot.User
 import rx.Completable
-import rx.Observer
 import rx.Single
 import rx.android.schedulers.AndroidSchedulers
-import rx.functions.Action1
 import rx.schedulers.Schedulers
 import timber.log.Timber
 import java.io.File
@@ -60,18 +61,6 @@ class SettingsCompanion(internal var settingsView: View) {
         override fun onStopTrackingTouch(seekBar: SeekBar) {
 
         }
-    }
-
-    internal var mSignupObserver: Observer<User> = object : Observer<User> {
-        override fun onCompleted() {
-
-        }
-
-        override fun onError(e: Throwable) {
-            Timber.e(e)
-        }
-
-        override fun onNext(user: User) {}
     }
 
     private val mSigninButtonClicked = View.OnClickListener {
@@ -289,6 +278,7 @@ class SettingsCompanion(internal var settingsView: View) {
         return file
     }
 
+    @SuppressLint("NewApi")
     private fun init() {
         val view = settingsView
         val context = ArcaneTrackerApplication.context
@@ -388,7 +378,7 @@ class SettingsCompanion(internal var settingsView: View) {
 
         var selectedPosition = 0
         var i = 1
-        val l = Settings.get(Settings.LANGUAGE, "")
+        val l = Settings.getString(Settings.LANGUAGE, "")
         adapter.add(context.getString(R.string._default))
         for (language in Language.allLanguages) {
             adapter.add(language.friendlyName)
@@ -404,7 +394,7 @@ class SettingsCompanion(internal var settingsView: View) {
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val newKey = if (position == 0) "" else Language.allLanguages[position - 1].key
-                val oldKey = Settings.get(Settings.LANGUAGE, "")
+                val oldKey = Settings.getString(Settings.LANGUAGE, "")
                 if (!firstTime && newKey != oldKey) {
                     Settings.set(Settings.LANGUAGE, newKey)
 
@@ -505,21 +495,7 @@ class SettingsCompanion(internal var settingsView: View) {
 
     private fun checkUserName() {
         HSReplay.get().user()
-                .subscribe { lce ->
-                    if (lce.isLoading) {
-                        mHsReplayState.userNameLoading = true
-                    } else if (lce.data != null) {
-                        mHsReplayState.userNameLoading = false
-                        if (lce.data.user != null && lce.data.user!!.username != null) {
-                            mHsReplayState.userName = lce.data.user!!.username
-                        }
-                    } else if (lce.error != null) {
-                        mHsReplayState.userNameLoading = false
-                        Utils.reportNonFatal(Exception("HsReplay username error", lce.error))
-                        Toast.makeText(settingsView.context, Utils.getString(R.string.hsReplayUsernameError), Toast.LENGTH_LONG).show()
-                    }
-                    updateHsReplay()
-                }
+                .subscribe { handleUserLce(it)}
     }
 
     internal class HsReplayState {
@@ -527,7 +503,22 @@ class SettingsCompanion(internal var settingsView: View) {
         var tokenLoading: Boolean = false
         var userName: String? = null
         var userNameLoading: Boolean = false
-        var claimUrlLoading: Boolean = false
+    }
+
+    private fun handleUserLce(lce: Lce<Token>) {
+        if (lce.isLoading) {
+            mHsReplayState.userNameLoading = true
+        } else if (lce.data != null) {
+            mHsReplayState.userNameLoading = false
+            if (lce.data.user != null && lce.data.user!!.username != null) {
+                mHsReplayState.userName = lce.data.user!!.username
+            }
+        } else if (lce.error != null) {
+            mHsReplayState.userNameLoading = false
+            Utils.reportNonFatal(Exception("HsReplay username error", lce.error))
+            Toast.makeText(settingsView.context, Utils.getString(R.string.hsReplayUsernameError), Toast.LENGTH_LONG).show()
+        }
+        updateHsReplay()
     }
 
     private fun handleTokenLce(lce: net.mbonnin.arcanetracker.hsreplay.model.Lce<String>) {
@@ -592,7 +583,7 @@ class SettingsCompanion(internal var settingsView: View) {
             mHsReplayCompanion1!!.view().visibility = GONE
         } else {
             mHsReplayCompanion1!!.view().visibility = VISIBLE
-            if (mHsReplayState.userNameLoading || mHsReplayState.claimUrlLoading) {
+            if (mHsReplayState.userNameLoading) {
                 mHsReplayCompanion1!!.setLoading()
             } else if (mHsReplayState.userName != null) {
                 mHsReplayCompanion1!!.setText(Utils.getString(R.string.openInBrowser)) { v ->
@@ -605,31 +596,15 @@ class SettingsCompanion(internal var settingsView: View) {
                 }
             } else {
                 mHsReplayCompanion1!!.setText(Utils.getString(R.string.hsReplayClaim)) { v ->
+                    ViewManager.Companion.get().removeView(settingsView)
+
                     HSReplay.get()
-                            .claimUrl()
-                            .subscribe({ this.handleClaimUrlLce(it) })
+                            .claimTokenOauth()
+                            .subscribe()
                 }
 
             }
         }
-    }
-
-    private fun handleClaimUrlLce(lce: net.mbonnin.arcanetracker.hsreplay.model.Lce<String>) {
-        if (lce.isLoading) {
-            mHsReplayState.claimUrlLoading = true
-        } else if (lce.error != null) {
-            mHsReplayState.claimUrlLoading = false
-            Toast.makeText(ArcaneTrackerApplication.context, Utils.getString(R.string.hsReplayClaimFailed), Toast.LENGTH_LONG).show()
-            Utils.reportNonFatal(Exception("HSReplay claim url", lce.error))
-        } else if (lce.data != null) {
-            mHsReplayState.claimUrlLoading = false
-
-            ViewManager.Companion.get().removeView(settingsView)
-
-            Utils.openLink(lce.data)
-        }
-
-        updateHsReplay()
     }
 
     companion object {

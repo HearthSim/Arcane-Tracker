@@ -29,6 +29,8 @@ object Settings {
     val SCREEN_CAPTURE_RATIONALE_SHOWN = "SCREEN_CAPTURE_RATIONALE_SHOWN"
     val QUIT_TIMEOUT = "QUIT_TIMEOUT"
     val ONBOARDING_FINISHED = "ONBOARDING_FINISHED"
+    val HSREPLAY_OAUTH_REFRESH_TOKEN = "HSREPLAY_OAUTH_REFRESH_TOKEN"
+    val HSREPLAY_OAUTH_ACCESS_TOKEN = "HSREPLAY_OAUTH_ACCESS_TOKEN"
 
     private val preferences: SharedPreferences
         get() = PreferenceManager.getDefaultSharedPreferences(ArcaneTrackerApplication.context)
@@ -41,7 +43,7 @@ object Settings {
         return preferences.getInt(key, defaultValue)
     }
 
-    operator fun get(key: String, defaultValue: String): String? {
+    fun getString(key: String, defaultValue: String?): String? {
         return preferences.getString(key, defaultValue)
     }
 

@@ -17,7 +17,7 @@ class Language(var friendlyName: String, var jsonName: String, var key: String) 
 
     val currentLanguage: Language
         get() {
-            var l: String? = Settings.get(Settings.LANGUAGE, "")
+            var l: String? = Settings.getString(Settings.LANGUAGE, "")
 
             if (l == "") {
                 val locale = Locale.getDefault().language.toLowerCase()

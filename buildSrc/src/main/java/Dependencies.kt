@@ -47,7 +47,7 @@ object Libs {
     const val retrofitRx = "com.squareup.retrofit2:adapter-rxjava:2.4.0"
     const val pngj = "ar.com.hjg:pngj:2.1.0"
     const val kotlinPoet = "com.squareup:kotlinpoet:0.5.0"
-    const val okhttp = "com.squareup.okhttp3:okhttp:3.9.1"
+    const val okhttp = "com.squareup.okhttp3:okhttp:3.9.0"
 
     const val multidex = "com.android.support:multidex:1.0.3"
     const val picassoDownloader = "com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0"
