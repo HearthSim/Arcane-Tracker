@@ -530,6 +530,8 @@ class SettingsCompanion(internal var settingsView: View) {
             Utils.reportNonFatal(Exception("HsReplay token error", lce.error))
             Toast.makeText(settingsView.context, Utils.getString(R.string.hsReplayTokenError), Toast.LENGTH_LONG).show()
         } else {
+            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("hsreplay_enable", null)
+
             mHsReplayState.tokenLoading = false
             mHsReplayState.token = lce.data
         }
@@ -572,6 +574,9 @@ class SettingsCompanion(internal var settingsView: View) {
             mHsReplayCompanion2!!.setText(Utils.getString(R.string.hsReplayDisable)) { v ->
                 mHsReplayState.userName = null
                 mHsReplayState.token = null
+
+                FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("hsreplay_disable", null)
+
                 HSReplay.get().unlink()
                 updateHsReplay()
             }
@@ -620,6 +625,8 @@ class SettingsCompanion(internal var settingsView: View) {
             Utils.reportNonFatal(Exception("HSReplay claim url", lce.error))
         } else if (lce.data != null) {
             mHsReplayState.claimUrlLoading = false
+
+            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("hsreplay_claimurl_opened", null)
 
             ViewManager.Companion.get().removeView(settingsView)
 
