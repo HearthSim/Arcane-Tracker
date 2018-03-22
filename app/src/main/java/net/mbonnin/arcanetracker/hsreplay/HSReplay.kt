@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.preference.PreferenceManager
 import androidx.content.edit
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
+import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.hsreplay.model.Lce
 import net.mbonnin.arcanetracker.hsreplay.model.Token
 import net.mbonnin.arcanetracker.hsreplay.model.TokenRequest
@@ -65,6 +67,7 @@ class HSReplay {
         }
 
         Timber.w("doUploadGame")
+        FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("hsreplay_upload", null)
 
         return legacyService().createUpload("https://upload.hsreplay.net/api/v1/replay/upload/request", uploadRequest)
                 .toSingle()

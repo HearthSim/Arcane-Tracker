@@ -122,6 +122,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
 
             resultData.result.card_history = history
 
+            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("trackobot_upload", null)
             Trackobot.get().sendResult(resultData)
         }
 
@@ -130,6 +131,8 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         val bundle = Bundle()
         bundle.putString(EventParams.GAME_TYPE.value, currentGame!!.gameType)
         bundle.putString(EventParams.FORMAT_TYPE.value, currentGame!!.formatType)
+        bundle.putString(EventParams.TRACK_O_BOT.value,  (Trackobot.get().currentUser() != null).toString())
+        bundle.putString(EventParams.HSREPLAY.value,  (HSReplay.get().token() != null).toString())
         FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("game_ended", bundle)
     }
 

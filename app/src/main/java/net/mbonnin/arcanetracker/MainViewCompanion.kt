@@ -9,6 +9,7 @@ import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.widget.TextView
+import com.google.firebase.analytics.FirebaseAnalytics
 import timber.log.Timber
 
 class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener {
@@ -155,13 +156,8 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
 
         handlesView.setListener(mHandlesViewTouchListener)
 
-        mButtonWidth = Settings.get(Settings.BUTTON_WIDTH, 0)
-        if (mButtonWidth < minButtonWidth || mButtonWidth >= maxButtonWidth) {
-            val dp = if (Utils.is7InchesOrHigher) 50 else 30
-            mButtonWidth = Utils.dpToPx(dp)
-        }
 
-        val wMeasureSpec = View.MeasureSpec.makeMeasureSpec(mButtonWidth, View.MeasureSpec.EXACTLY)
+        val wMeasureSpec = View.MeasureSpec.makeMeasureSpec(buttonWidth, View.MeasureSpec.EXACTLY)
         val hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         handlesView.measure(wMeasureSpec, hMeasureSpec)
         handlesView.params.w = handlesView.measuredWidth
@@ -213,11 +209,20 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
         }
 
     var buttonWidth: Int
-        get() = mButtonWidth
+        get() {
+            var w = Settings.get(Settings.BUTTON_WIDTH, 0) + Utils.dpToPx(8) // when adding the tutorial, I made the button slightly smaller than what they used to be
+            if (w < minButtonWidth || w >= maxButtonWidth) {
+                val dp = if (Utils.is7InchesOrHigher) 50 else 38
+                w = Utils.dpToPx(dp)
+            }
+
+            return w
+        }
+
         set(width) {
-            Settings.set(Settings.BUTTON_WIDTH, width)
-            mButtonWidth = width
-            val wMeasureSpec = View.MeasureSpec.makeMeasureSpec(mButtonWidth, View.MeasureSpec.EXACTLY)
+            Settings.set(Settings.BUTTON_WIDTH, width  - Utils.dpToPx(8))
+
+            val wMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
             val hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
             handlesView.measure(wMeasureSpec, hMeasureSpec)
 
@@ -323,14 +328,20 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
             when (newState) {
                 STATE_PLAYER -> {
                     playerView.visibility = View.VISIBLE
+                    FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("state_player", null)
+
                     Onboarding.playerHandleClicked()
                 }
                 STATE_OPPONENT -> {
                     opponentView.visibility = View.VISIBLE
+                    FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("state_opponent", null)
+
                     Onboarding.opponentHandleClicked()
                 }
                 STATE_LEGACY -> {
                     legacyView.visibility = View.VISIBLE
+                    FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("state_opponent", null)
+
                     Onboarding.legacyHandleClicked()
                 }
             }
@@ -366,10 +377,16 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
 
             view.findViewById<View>(R.id.settings).setOnClickListener { v3 ->
                 mViewManager.removeView(view)
+
+                FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("menu_settings", null)
+
                 SettingsCompanion.show()
             }
             view.findViewById<View>(R.id.hsReplayHistory).setOnClickListener { v3 ->
                 mViewManager.removeView(view)
+
+                FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("menu_history", null)
+
                 HistoryCompanion.show()
             }
             val donateView = view.findViewById<View>(R.id.donate)
@@ -379,6 +396,8 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
                     val intent = Intent()
                     intent.setClass(ArcaneTrackerApplication.context, DonateActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+                    FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("menu_donate", null)
 
                     ArcaneTrackerApplication.context.startActivity(intent)
                 }
