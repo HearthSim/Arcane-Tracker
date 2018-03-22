@@ -503,6 +503,7 @@ class SettingsCompanion(internal var settingsView: View) {
         var tokenLoading: Boolean = false
         var userName: String? = null
         var userNameLoading: Boolean = false
+        var claimUrlLoading: Boolean = false
     }
 
     private fun handleUserLce(lce: Lce<Token>) {
@@ -583,7 +584,7 @@ class SettingsCompanion(internal var settingsView: View) {
             mHsReplayCompanion1!!.view().visibility = GONE
         } else {
             mHsReplayCompanion1!!.view().visibility = VISIBLE
-            if (mHsReplayState.userNameLoading) {
+            if (mHsReplayState.userNameLoading || mHsReplayState.claimUrlLoading) {
                 mHsReplayCompanion1!!.setLoading()
             } else if (mHsReplayState.userName != null) {
                 mHsReplayCompanion1!!.setText(Utils.getString(R.string.openInBrowser)) { v ->
@@ -599,12 +600,33 @@ class SettingsCompanion(internal var settingsView: View) {
                     ViewManager.Companion.get().removeView(settingsView)
 
                     HSReplay.get()
-                            .claimTokenOauth()
-                            .subscribe()
+                            .claimUrl()
+                            .subscribe({ this.handleClaimUrlLce(it) })
+//                    HSReplay.get()
+//                            .claimTokenOauth()
+//                            .subscribe()
                 }
 
             }
         }
+    }
+
+    private fun handleClaimUrlLce(lce: net.mbonnin.arcanetracker.hsreplay.model.Lce<String>) {
+        if (lce.isLoading) {
+            mHsReplayState.claimUrlLoading = true
+        } else if (lce.error != null) {
+            mHsReplayState.claimUrlLoading = false
+            Toast.makeText(ArcaneTrackerApplication.context, Utils.getString(R.string.hsReplayClaimFailed), Toast.LENGTH_LONG).show()
+            Utils.reportNonFatal(Exception("HSReplay claim url", lce.error))
+        } else if (lce.data != null) {
+            mHsReplayState.claimUrlLoading = false
+
+            ViewManager.Companion.get().removeView(settingsView)
+
+            Utils.openLink(lce.data)
+        }
+
+        updateHsReplay()
     }
 
     companion object {
