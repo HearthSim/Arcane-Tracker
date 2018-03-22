@@ -137,7 +137,7 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         MainService.start()
 
         FirebaseAnalytics.getInstance(this).setUserProperty(FirebaseConstants.SCREEN_CAPTURE_ENABLED.name.toLowerCase(),
-                java.lang.Boolean.toString(Settings.get(Settings.SCREEN_CAPTURE_ENABLED, false)))
+                Settings.get(Settings.SCREEN_CAPTURE_ENABLED, false).toString())
     }
 
     private fun initCardJson() {

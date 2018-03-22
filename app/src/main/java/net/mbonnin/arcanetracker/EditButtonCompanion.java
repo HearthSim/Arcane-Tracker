@@ -3,12 +3,12 @@ package net.mbonnin.arcanetracker;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import net.mbonnin.arcanetracker.databinding.ImportDeckstringBinding;
 import net.mbonnin.hsmodel.Card;
@@ -28,16 +28,25 @@ public class EditButtonCompanion {
         int a[] = new int[2];
         v.getLocationOnScreen(a);
 
-        new ChangeDeckCompanion(view.findViewById(R.id.changeDeck), v, () -> {mViewManager.removeView(view); return null;});
+        new ChangeDeckCompanion(view.findViewById(R.id.changeDeck), v, () -> {
+            mViewManager.removeView(view);
+            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.Companion.getContext()).logEvent("edit_change", null);
+            return null;
+        });
 
 
         view.findViewById(R.id.editDeck).setOnClickListener(v2 -> {
             mViewManager.removeView(view);
 
+            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.Companion.getContext()).logEvent("edit_edit", null);
+
             DeckEditorView.show(MainViewCompanion.Companion.getLegacyCompanion().getDeck());
         });
 
         view.findViewById(R.id.deleteDeck).setOnClickListener(v2 -> {
+
+            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.Companion.getContext()).logEvent("edit_delete", null);
+
             mViewManager.removeView(view);
             View view2 = LayoutInflater.from(v2.getContext()).inflate(R.layout.delete_confirmation_view, null);
             view2.findViewById(R.id.deleteButton).setOnClickListener(v3 -> {
@@ -45,6 +54,7 @@ public class EditButtonCompanion {
                 LegacyDeckList.INSTANCE.deleteDeck(MainViewCompanion.Companion.getLegacyCompanion().getDeck());
                 ArrayList<Deck> list = LegacyDeckList.INSTANCE.get();
                 Deck newDeck;
+
 
                 if (!list.isEmpty()) {
                     newDeck = list.get(0);
@@ -61,6 +71,8 @@ public class EditButtonCompanion {
 
         view.findViewById(R.id.renameDeck).setOnClickListener(v2 -> {
             mViewManager.removeView(view);
+
+            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.Companion.getContext()).logEvent("edit_rename", null);
 
             Deck deck = MainViewCompanion.Companion.getLegacyCompanion().getDeck();
             if (deck.isArena()) {
@@ -85,6 +97,8 @@ public class EditButtonCompanion {
 
         view.findViewById(R.id.createDeck).setOnClickListener(v2 -> {
             mViewManager.removeView(view);
+
+            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.Companion.getContext()).logEvent("edit_create", null);
 
             newDeckClicked(view.getContext());
         });
