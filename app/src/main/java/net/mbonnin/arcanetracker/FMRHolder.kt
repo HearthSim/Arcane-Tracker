@@ -1,6 +1,5 @@
 package net.mbonnin.arcanetracker
 
-import android.widget.Toast
 import net.mbonnin.arcanetracker.Utils.runOnMainThread
 import net.mbonnin.arcanetracker.detector.*
 import timber.log.Timber
@@ -42,6 +41,8 @@ object FMRHolder {
 
 
     private fun displayToast(toast: String) {
-        runOnMainThread({ Toast.makeText(ArcaneTrackerApplication.context, toast, Toast.LENGTH_SHORT).show() })
+        runOnMainThread({
+            Toaster.show(toast)
+        })
     }
 }
