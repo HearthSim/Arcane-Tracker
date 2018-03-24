@@ -13,20 +13,26 @@ import java.util.concurrent.TimeUnit
  */
 object Toaster {
     val queue = LinkedList<String>()
+    val lock = Object()
+
     init {
         Observable.timer(5, TimeUnit.SECONDS)
                 .repeat()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    if (!queue.isEmpty()) {
-                        val message = queue.removeFirst()
-                        Toast.makeText(ArcaneTrackerApplication.context, message, Toast.LENGTH_LONG).show()
+                    synchronized(lock) {
+                        if (!queue.isEmpty()) {
+                            val message = queue.removeFirst()
+                            Toast.makeText(ArcaneTrackerApplication.context, message, Toast.LENGTH_LONG).show()
+                        }
                     }
-        }
+                }
     }
 
     fun show(message: String) {
-        Timber.d("queue $message")
-        queue.addLast(message)
+        synchronized(lock) {
+            Timber.d("queue $message")
+            queue.addLast(message)
+        }
     }
 }

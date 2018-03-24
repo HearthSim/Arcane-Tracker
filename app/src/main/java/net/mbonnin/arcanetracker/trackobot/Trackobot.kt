@@ -143,7 +143,7 @@ class Trackobot {
     private fun handleResponse(lce: Lce<ResultData>) {
         if (lce.data != null) {
             val context = ArcaneTrackerApplication.context
-            Toast.makeText(ArcaneTrackerApplication.context, context.getString(R.string.trackobotSuccess), Toast.LENGTH_LONG).show()
+            Toaster.show(context.getString(R.string.trackobotSuccess))
             Timber.d("trackobot upload success")
         } else if (lce.error != null) {
             val e = lce.error
