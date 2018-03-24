@@ -9,4 +9,5 @@ class UploadRequest {
     var player1 = HSPlayer()
     var player2 = HSPlayer()
     var spectator_mode: Boolean = false
+    var format: String? = null
 }
