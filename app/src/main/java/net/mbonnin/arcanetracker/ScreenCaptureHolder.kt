@@ -49,7 +49,7 @@ object ScreenCaptureHolder {
     val imageConsumer = object : ScreenCapture.Consumer {
         override fun accept(bbImage: ByteBufferImage) {
             if (shouldDetectRank()) {
-                val rank = mDetector.detectRank(bbImage)
+                val rank = mDetector.detectPlayerRank(bbImage)
                 if (rank != RANK_UNKNOWN) {
                     FMRHolder.rank = rank
                 }

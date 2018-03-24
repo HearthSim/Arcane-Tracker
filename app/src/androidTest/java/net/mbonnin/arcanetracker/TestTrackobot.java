@@ -5,6 +5,7 @@ import android.support.test.InstrumentationRegistry;
 import junit.framework.Assert;
 
 import net.mbonnin.arcanetracker.trackobot.Trackobot;
+import net.mbonnin.arcanetracker.trackobot.User;
 import net.mbonnin.arcanetracker.trackobot.model.Result;
 import net.mbonnin.arcanetracker.trackobot.model.ResultData;
 

@@ -59,13 +59,33 @@ class Detector(var context: Context) {
 
         RRectFactory(isTablet)
     }
-    val rankMinimum = OneSecondMinimum(threshold = 50.0, tag = "rank")
 
-
-    fun detectRank(byteBufferImage: ByteBufferImage): Int {
-        return rankMinimum.detect(byteBufferImage,
-                rectFactory.rankRect(byteBufferImage),
+    fun detectPlayerRank(byteBufferImage: ByteBufferImage): Int {
+        val matchResult = Detector.matchImage(byteBufferImage,
+                rectFactory.playerRankRect(byteBufferImage),
+                Detector.Companion::extractHaar,
+                Detector.Companion::euclidianDistance,
                 generatedData.RANKS)
+
+        if (matchResult.distance < 50.0) {
+            return matchResult.bestIndex
+        } else {
+            return INDEX_UNKNOWN
+        }
+    }
+
+    fun detectOpponentRank(byteBufferImage: ByteBufferImage): Int {
+        val matchResult = Detector.matchImage(byteBufferImage,
+                rectFactory.opponentRankRect(byteBufferImage),
+                Detector.Companion::extractHaar,
+                Detector.Companion::euclidianDistance,
+                generatedData.RANKS)
+
+        if (matchResult.distance < 50.0) {
+            return matchResult.bestIndex
+        } else {
+            return INDEX_UNKNOWN
+        }
     }
 
     private lateinit var cardByType: Array<List<Card>>
