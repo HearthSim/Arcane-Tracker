@@ -1,7 +1,9 @@
 package net.mbonnin.arcanetracker.detector
 
 import android.content.Context
+import android.util.DisplayMetrics
 import android.util.Log
+import android.view.WindowManager
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
 import net.mbonnin.hsmodel.Card
@@ -9,6 +11,7 @@ import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.PlayerClass
 import net.mbonnin.hsmodel.Type
 import okio.Okio
+import timber.log.Timber
 import java.nio.ByteBuffer
 import java.util.*
 import kotlin.reflect.KFunction2
@@ -28,18 +31,6 @@ class ArenaResult(var cardId: String = "", var distance: Double = 0.0)
 const val INDEX_UNKNOWN = -1
 const val RANK_UNKNOWN = INDEX_UNKNOWN
 
-const val FORMAT_UNKNOWN = INDEX_UNKNOWN
-const val FORMAT_WILD = 0
-const val FORMAT_STANDARD = 1
-
-const val MODE_UNKNOWN = INDEX_UNKNOWN
-private const val MODE_CASUAL_STANDARD = 0
-private const val MODE_CASUAL_WILD = 1
-private const val MODE_RANKED_STANDARD = 2
-private const val MODE_RANKED_WILD = 3
-const val MODE_CASUAL = 4
-const val MODE_RANKED = 5
-
 class Detector(var context: Context) {
     private val moshi = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
@@ -53,55 +44,33 @@ class Detector(var context: Context) {
         }!! // <= not really sure if moshi can return null values since it usually throws exceptions
     }
 
-    private val arena_rects by lazy {
-        arrayOf(rectFactory!!.ARENA_MINIONS, rectFactory!!.ARENA_SPELLS, rectFactory!!.ARENA_WEAPONS)
-    }
-
     var lastPlayerClass: String? = "?"
-    val generatedData = decode<FormatModeRankData>("/format_mode_rank_data.json", FormatModeRankData::class.java)
-    var rectFactory: RRectFactory? = null
-    val rankMinimum = OneSecondMinimum(threshold = 50.0, tag = "rank")
-    // mode uses the glowing blue area that is subject to a bit more variation
-    val modeMinimum = OneSecondMinimum(threshold = 50.0, tag = "mode")
-    val formatMinimum = OneSecondMinimum(threshold = 50.0, tag = "format")
+    val generatedData = decode<RankData>("/rank_data.json", RankData::class.java)
+    val rectFactory by lazy {
+        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val display = wm.defaultDisplay
+        val dm = DisplayMetrics()
+        display.getMetrics(dm)
 
-    private fun ensureRectFactory(byteBufferImage: ByteBufferImage) {
-        if (rectFactory == null) {
-            rectFactory = RRectFactory(byteBufferImage.w, byteBufferImage.h, context)
-        }
+        // This may have the status/nav bars so it might be slightly wrong
+        val diagonal = Math.hypot(display.width.toDouble() / dm.xdpi, display.height.toDouble() / dm.ydpi).toFloat()
+        Timber.d("diagonal=" + diagonal)
+        val isTablet = diagonal >= 8
+
+        RRectFactory(isTablet)
     }
+    val rankMinimum = OneSecondMinimum(threshold = 50.0, tag = "rank")
+
 
     fun detectRank(byteBufferImage: ByteBufferImage): Int {
-        ensureRectFactory(byteBufferImage)
         return rankMinimum.detect(byteBufferImage,
-                rectFactory!!.RANK,
+                rectFactory.rankRect(byteBufferImage),
                 generatedData.RANKS)
-    }
-
-    fun detectFormat(byteBufferImage: ByteBufferImage): Int {
-        ensureRectFactory(byteBufferImage)
-        return formatMinimum.detect(byteBufferImage,
-                rectFactory!!.FORMAT,
-                generatedData.FORMATS)
-    }
-
-    fun detectMode(byteBufferImage: ByteBufferImage): Int {
-        ensureRectFactory(byteBufferImage)
-        val index = modeMinimum.detect(byteBufferImage,
-                rectFactory!!.MODE,
-                if (rectFactory!!.isTablet) generatedData.MODES_TABLET else generatedData.MODES)
-
-        when (index) {
-            MODE_CASUAL_STANDARD, MODE_CASUAL_WILD -> return MODE_CASUAL
-            MODE_RANKED_STANDARD, MODE_RANKED_WILD -> return MODE_RANKED
-            else -> return MODE_UNKNOWN
-        }
     }
 
     private lateinit var cardByType: Array<List<Card>>
 
     fun detectArena(byteBufferImage: ByteBufferImage, playerClass: String?): Array<ArenaResult> {
-        ensureRectFactory(byteBufferImage)
         val arenaResults = Array<ArenaResult>(3, { ArenaResult("", Double.MAX_VALUE) })
 
         if (playerClass != lastPlayerClass) {
@@ -123,8 +92,10 @@ class Detector(var context: Context) {
             )
         }
 
-        for (position in 0 until 3) {
 
+        val arena_rects = arrayOf(rectFactory.arenaMinionRectArray(), rectFactory.arenaSpellRectArray(), rectFactory.arenaWeaponRectArray())
+
+        for (position in 0 until 3) {
             var minDistance = Double.MAX_VALUE
             var bestId = ""
             for (type in 0 until 3) {
@@ -210,22 +181,6 @@ class Detector(var context: Context) {
             sb.append(features.map { String.format("%3.2f", it) }.joinToString(" "))
             sb.append("]")
             return sb.toString()
-        }
-
-        fun formatString(format: Int): String {
-            return when (format) {
-                FORMAT_WILD -> "WILD"
-                FORMAT_STANDARD -> "STANDARD"
-                else -> "UNKNOWN"
-            }
-        }
-
-        fun formatMode(mode: Int): String {
-            return when (mode) {
-                MODE_CASUAL -> "MODE_CASUAL"
-                MODE_RANKED -> "MODE_RANKED"
-                else -> "UNKNOWN"
-            }
         }
 
         val NAME_TO_CARD_ID by lazy {

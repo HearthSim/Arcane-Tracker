@@ -1,100 +1,14 @@
 package net.mbonnin.arcanetracker.detector
 
-import android.content.Context
-import android.util.DisplayMetrics
-import android.view.WindowManager
 import timber.log.Timber
+import java.nio.ByteOrder
 
-class RRectFactory(val screenWidth: Int, val screenHeight: Int, val isTablet: Boolean) {
-
-    constructor(screenWidth: Int, screenHeight: Int, context: Context): this(screenWidth, screenHeight, getIsTablet(screenWidth, screenHeight, context))
-
-
-    private fun isNexus9Like() = isTablet && screenWidth == 2048 && screenHeight == 1536
-    private fun isPixelLike() = !isTablet && screenWidth == 1920 && screenHeight == 1080
-
-    val ARENA_MINIONS by lazy {
-        when {
-            isPixelLike() -> ARENA_MINIONS_PIXEL
-            else -> ARENA_MINIONS_PIXEL.map(this::scalePhone).toTypedArray()
-        }
-    }
-
-    val ARENA_SPELLS by lazy {
-        when {
-            isPixelLike() -> ARENA_SPELLS_PIXEL
-            else -> ARENA_SPELLS_PIXEL.map(this::scalePhone).toTypedArray()
-        }
-    }
-
-    val ARENA_WEAPONS by lazy {
-        when {
-            isPixelLike() -> ARENA_WEAPONS_PIXEL
-            else -> ARENA_WEAPONS_PIXEL.map(this::scalePhone).toTypedArray()
-        }
-    }
-    val FORMAT by lazy {
-        when {
-            isNexus9Like() -> FORMAT_NEXUS9
-            isPixelLike() -> FORMAT_PIXEL
-            isTablet -> scaleTablet(FORMAT_NEXUS9)
-            else -> scalePhone(FORMAT_PIXEL)
-        }
-    }
-
-    val RANK by lazy {
-        when {
-            isNexus9Like() -> RANK_NEXUS9
-            isPixelLike() -> RANK_PIXEL
-            isTablet -> scaleTablet(RANK_NEXUS9)
-            else -> scalePhone(RANK_PIXEL)
-        }
-    }
-
-    val MODE by lazy {
-        when {
-            isNexus9Like() -> MODE_NEXUS9
-            isPixelLike() -> MODE_PIXEL
-            isTablet -> scaleTablet(MODE_NEXUS9)
-            else -> scalePhone(MODE_PIXEL)
-        }
-    }
-
-    private fun scalePhone(rRect: RRect): RRect {
-        return scale(rRect, 1920.0, 1080.0)
-    }
-
-    private fun scaleTablet(rRect: RRect): RRect {
-        return scale(rRect, 2048.0, 1536.0)
-    }
-
-    private fun scale(rRect: RRect, refWidth: Double, refHeight: Double): RRect {
-        val scaledWidth: Double
-        val scaledHeight: Double
-
-        if (screenWidth.toDouble()/screenHeight > refWidth/refHeight) {
-            scaledHeight = screenHeight.toDouble()
-            scaledWidth = refWidth * scaledHeight/refHeight
-        } else {
-            scaledWidth = screenWidth.toDouble()
-            scaledHeight = scaledWidth * refHeight / refWidth
-        }
-
-        val r1 = rRect.scale(scaledWidth/refWidth, scaledHeight/refHeight);
-
-        return r1.translate((screenWidth - scaledWidth) / 2, (screenHeight - scaledHeight)/2)
-    }
-
+class RRectFactory(val isTablet:Boolean) {
 
     companion object {
-        val FORMAT_PIXEL = RRect(1754.0, 32.0, 138.0, 98.0)
-        val FORMAT_NEXUS9 = RRect(1609.0, 39.0, 96.0, 73.0)
 
-        val RANK_PIXEL = RRect(820.0, 424.0, 230.0, 102.0)
+        val RANK_PIXEL = RRect(820.0, 424.0, 230.0, 102.0).scale(1.0/1080, 1.0/1080)
         val RANK_NEXUS9 = RRect(1730.0, 201.0, 110.0, 46.0)
-
-        val MODE_PIXEL = RRect(1270.0, 256.0, 140.0, 32.0)
-        val MODE_NEXUS9 = RRect(1432.0, 400.0, 160.0, 34.0)
 
         val ARENA_MINIONS_PIXEL = arrayOf(
                 RRect(324.0, 258.0, 208.0, 208.0),
@@ -113,18 +27,55 @@ class RRectFactory(val screenWidth: Int, val screenHeight: Int, val isTablet: Bo
                 RRect(870.0, 270.0, 173.0, 173.0),
                 RRect(1391.0, 270.0, 173.0, 173.0)
         )
+    }
 
-        fun getIsTablet(screenWidth: Int, screenHeight: Int, context: Context): Boolean  {
-            val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-            val display = wm.defaultDisplay
-            val dm = DisplayMetrics()
-            display.getMetrics(dm)
+    fun rankRect(bbImage: ByteBufferImage): RRect {
+        return transformRect(bbImage, if (isTablet) RANK_NEXUS9 else RANK_PIXEL)
+    }
 
-            // we don't retrieve the screenWidth and screenHeight from the displayMnager as it may have the status/nav bars
-            val diagonal = Math.hypot(screenWidth.toDouble() / dm.xdpi, screenHeight.toDouble() / dm.ydpi).toFloat()
+    fun transformRect(bbImage: ByteBufferImage, rRect: RRect): RRect {
+        if (!isTablet) {
+            bbImage.buffer.order(ByteOrder.BIG_ENDIAN)
+            val intBuffer = bbImage.buffer.asIntBuffer()
 
-            Timber.d("diagonal=" + diagonal)
-            return diagonal >= 8
+            var left = 0
+            while (left < bbImage.w && intBuffer[left].and(0xffffff00.toInt()) == 0){
+                left++
+            }
+
+            var right = bbImage.w - 1
+            while (right >= 0 && intBuffer[right].and(0xffffff00.toInt()) == 0){
+                right --
+            }
+            right++
+
+            Timber.d("left: $left, right: $right, ratio: ${(right - left) / bbImage.h} ")
+
+            if (right - left <= 0) {
+                Timber.e("black image ?")
+                return RRect(0.0, 0.0, bbImage.w.toDouble(), bbImage.h.toDouble())
+            }
+
+            val scale = bbImage.h.toDouble()
+
+            val rect = rRect.scale(scale, scale).translate(left.toDouble(), 0.0)
+
+            Timber.d("rect=%dx%d, %dx%d", rect.x.toInt(), rect.y.toInt(), rect.w.toInt(), rect.h.toInt())
+            return rect
+        } else {
+            return RRect(0.0, 0.0, bbImage.w.toDouble(), bbImage.h.toDouble())
         }
+    }
+
+    fun arenaMinionRectArray(): Array<RRect> {
+        return ARENA_MINIONS_PIXEL
+    }
+
+    fun arenaSpellRectArray(): Array<RRect> {
+        return ARENA_SPELLS_PIXEL
+    }
+
+    fun arenaWeaponRectArray(): Array<RRect> {
+        return ARENA_WEAPONS_PIXEL
     }
 }

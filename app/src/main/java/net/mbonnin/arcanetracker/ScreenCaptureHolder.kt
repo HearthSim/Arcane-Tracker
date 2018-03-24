@@ -6,7 +6,9 @@ import android.media.projection.MediaProjection
 import android.os.Build
 import android.os.Handler
 import android.support.annotation.RequiresApi
-import net.mbonnin.arcanetracker.detector.*
+import net.mbonnin.arcanetracker.detector.ByteBufferImage
+import net.mbonnin.arcanetracker.detector.Detector
+import net.mbonnin.arcanetracker.detector.RANK_UNKNOWN
 import net.mbonnin.arcanetracker.parser.ArenaParser
 import net.mbonnin.arcanetracker.parser.LoadingScreenParser
 import net.mbonnin.hsmodel.Card
@@ -22,7 +24,7 @@ object ScreenCaptureHolder {
         @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
         override fun run() {
             if (!screenCaptureStarting) {
-                if ((shouldDetectMode() || shouldDetectArena())
+                if ((shouldDetectRank() || shouldDetectArena())
                         && Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true)) {
                     if (screenCapture == null) {
                         screenCaptureStarting = true
@@ -46,20 +48,10 @@ object ScreenCaptureHolder {
 
     val imageConsumer = object : ScreenCapture.Consumer {
         override fun accept(bbImage: ByteBufferImage) {
-            if (shouldDetectMode()) {
-                val format = mDetector.detectFormat(bbImage)
-                if (format != FORMAT_UNKNOWN) {
-                    FMRHolder.format = format
-                }
-                val mode = mDetector.detectMode(bbImage)
-                if (mode != MODE_UNKNOWN) {
-                    FMRHolder.mode = mode
-                    if (mode == MODE_RANKED) {
-                        val rank = mDetector.detectRank(bbImage)
-                        if (rank != RANK_UNKNOWN) {
-                            FMRHolder.rank = rank
-                        }
-                    }
+            if (shouldDetectRank()) {
+                val rank = mDetector.detectRank(bbImage)
+                if (rank != RANK_UNKNOWN) {
+                    FMRHolder.rank = rank
                 }
             }
 
@@ -89,8 +81,13 @@ object ScreenCaptureHolder {
         Settings.set(Settings.SCREEN_CAPTURE_ENABLED, false)
     }
 
-    fun shouldDetectMode(): Boolean {
+    fun shouldDetectRank(): Boolean {
         return LoadingScreenParser.MODE_TOURNAMENT == LoadingScreenParser.get().mode
+
+        val game = GameLogicListener.get().currentGame
+        return game != null
+                && game.gameType == GameType.GT_RANKED.name
+                && !game.isStarted
     }
 
     fun shouldDetectArena(): Boolean {
