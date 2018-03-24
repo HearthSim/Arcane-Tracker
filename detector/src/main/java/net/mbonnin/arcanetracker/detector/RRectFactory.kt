@@ -63,7 +63,7 @@ class RRectFactory(val isTablet: Boolean) {
                     87.0 * bbImage.h / 1440.0)
         } else {
             return RRect(left + 15 * bbImage.h / 1200.0,
-                    56.0 * bbImage.h / 1200.0,
+                    1015.0 * bbImage.h / 1200.0,
                     87 * bbImage.h / 1200.0,
                     37.0 * bbImage.h / 1200.0)
         }
@@ -77,10 +77,9 @@ class RRectFactory(val isTablet: Boolean) {
                     87.0 * bbImage.h / 1440.0)
         } else {
             return RRect(left + 15 * bbImage.h / 1200.0,
-                    1015.0 * bbImage.h / 1200.0,
+                    56.0 * bbImage.h / 1200.0,
                     87 * bbImage.h / 1200.0,
                     37.0 * bbImage.h / 1200.0)
-
         }
     }
 
