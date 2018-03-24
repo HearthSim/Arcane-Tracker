@@ -201,4 +201,6 @@
     <string name="onoboarding_player">Click the blue button to view your deck.\nYour deck is automatically detected from the Hearthstone logs.</string>
     <string name="onboarding_opponent">Click the red button to view the cards played by your opponent.</string>
     <string name="onboarding_legacy">Your previous decks have been archived and will be removed in a future version of Arcane Tracker.\nMake sure to back them up if needed !</string>
+    <string name="your_rank">Your rank: %d</string>
+    <string name="opponent_rank">Opponent rank: %d</string>
 </resources>

@@ -6,16 +6,20 @@ import android.media.projection.MediaProjection
 import android.os.Build
 import android.os.Handler
 import android.support.annotation.RequiresApi
+import net.mbonnin.arcanetracker.ScreenCaptureHolder.imageConsumer
+import net.mbonnin.arcanetracker.ScreenCaptureHolder.runnable
+import net.mbonnin.arcanetracker.ScreenCaptureHolder.screenCaptureStarting
 import net.mbonnin.arcanetracker.detector.ByteBufferImage
 import net.mbonnin.arcanetracker.detector.Detector
 import net.mbonnin.arcanetracker.detector.RANK_UNKNOWN
 import net.mbonnin.arcanetracker.parser.ArenaParser
+import net.mbonnin.arcanetracker.parser.Entity
 import net.mbonnin.arcanetracker.parser.LoadingScreenParser
 import net.mbonnin.hsmodel.Card
 
 object ScreenCaptureHolder {
     @SuppressLint("StaticFieldLeak")
-    private val mDetector = Detector(ArcaneTrackerApplication.get())
+    private val mDetector = Detector(ArcaneTrackerApplication.get(), Utils.is7InchesOrHigher)
     val handler = Handler()
     var screenCaptureStarting = false
     private var screenCapture: ScreenCapture? = null
@@ -48,11 +52,14 @@ object ScreenCaptureHolder {
 
     val imageConsumer = object : ScreenCapture.Consumer {
         override fun accept(bbImage: ByteBufferImage) {
+            mDetector.prepareImage(bbImage)
+
             if (shouldDetectRank()) {
-                val rank = mDetector.detectPlayerRank(bbImage)
-                if (rank != RANK_UNKNOWN) {
-                    FMRHolder.rank = rank
-                }
+                val playerRank = mDetector.detectPlayerRank(bbImage)
+                val opponentRank = mDetector.detectOpponentRank(bbImage)
+
+
+                FMRHolder.registerRanks(playerRank, opponentRank)
             }
 
             if (shouldDetectArena()) {
@@ -82,16 +89,13 @@ object ScreenCaptureHolder {
     }
 
     fun shouldDetectRank(): Boolean {
-        return LoadingScreenParser.MODE_TOURNAMENT == LoadingScreenParser.get().mode
-
         val game = GameLogicListener.get().currentGame
         return game != null
+                && game.gameEntity.tags[Entity.KEY_STEP] == Entity.STEP_BEGIN_MULLIGAN
                 && game.gameType == GameType.GT_RANKED.name
-                && !game.isStarted
     }
 
     fun shouldDetectArena(): Boolean {
-
         val index = LegacyDeckList.arenaDeck.classIndex
         return LoadingScreenParser.MODE_DRAFT == LoadingScreenParser.get().mode
                 && ArenaParser.DRAFT_MODE_DRAFTING == ArenaParser.get().draftMode

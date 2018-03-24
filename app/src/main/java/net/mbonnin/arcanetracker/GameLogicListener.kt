@@ -3,6 +3,8 @@ package net.mbonnin.arcanetracker
 import android.os.Bundle
 import android.os.Handler
 import com.google.firebase.analytics.FirebaseAnalytics
+import net.mbonnin.arcanetracker.FMRHolder.playerRank
+import net.mbonnin.arcanetracker.detector.RANK_UNKNOWN
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.mbonnin.arcanetracker.hsreplay.model.UploadRequest
 import net.mbonnin.arcanetracker.model.GameSummary
@@ -56,8 +58,6 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         MainViewCompanion.opponentCompanion.deck = LegacyDeckList.opponentDeck
 
         currentGame = game
-
-        currentGame!!.rank = FMRHolder.rank
     }
 
     override fun gameOver() {
@@ -104,8 +104,10 @@ class GameLogicListener private constructor() : GameLogic.Listener {
             resultData.result.coin = currentGame!!.getPlayer().hasCoin
             resultData.result.win = currentGame!!.victory
             resultData.result.mode = Trackobot.getMode(currentGame!!.gameType, currentGame!!.formatType)
-            if (currentGame!!.rank >= 0) {
-                resultData.result.rank = currentGame!!.rank
+
+            val playerRank = FMRHolder.playerRank
+            if (playerRank != RANK_UNKNOWN) {
+                resultData.result.rank = playerRank
             }
             resultData.result.hero = Trackobot.getHero(currentGame!!.player.classIndex())
             resultData.result.opponent = Trackobot.getHero(currentGame!!.opponent.classIndex())
@@ -208,9 +210,16 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         uploadRequest.game_type = fromGameAndFormat(game.gameType, game.formatType).intValue
 
         val player = if (uploadRequest.friendly_player == "1") uploadRequest.player1 else uploadRequest.player2
+        val opponent = if (uploadRequest.friendly_player == "1") uploadRequest.player2 else uploadRequest.player1
 
-        if (game.rank > 0) {
-            player.rank = game.rank
+        val playerRank = FMRHolder.playerRank
+        if (playerRank != RANK_UNKNOWN) {
+            player.rank = playerRank
+        }
+
+        val opponentRank = FMRHolder.opponentRank
+        if (opponentRank != RANK_UNKNOWN) {
+            opponent.rank = opponentRank
         }
 
         MainViewCompanion.playerCompanion.deck?.id?.toLongOrNull() ?.let {

@@ -31,7 +31,7 @@ class ArenaResult(var cardId: String = "", var distance: Double = 0.0)
 const val INDEX_UNKNOWN = -1
 const val RANK_UNKNOWN = INDEX_UNKNOWN
 
-class Detector(var context: Context) {
+class Detector(var context: Context, val isTablet: Boolean) {
     private val moshi = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
             .build()
@@ -46,18 +46,10 @@ class Detector(var context: Context) {
 
     var lastPlayerClass: String? = "?"
     val generatedData = decode<RankData>("/rank_data.json", RankData::class.java)
-    val rectFactory by lazy {
-        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        val display = wm.defaultDisplay
-        val dm = DisplayMetrics()
-        display.getMetrics(dm)
+    val rectFactory = RRectFactory(isTablet)
 
-        // This may have the status/nav bars so it might be slightly wrong
-        val diagonal = Math.hypot(display.width.toDouble() / dm.xdpi, display.height.toDouble() / dm.ydpi).toFloat()
-        Timber.d("diagonal=" + diagonal)
-        val isTablet = diagonal >= 8
-
-        RRectFactory(isTablet)
+    fun prepareImage(bbImage: ByteBufferImage) {
+        rectFactory.prepareImage(bbImage)
     }
 
     fun detectPlayerRank(byteBufferImage: ByteBufferImage): Int {

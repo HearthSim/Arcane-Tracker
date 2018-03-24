@@ -5,14 +5,11 @@ import java.nio.ByteOrder
 
 class RRectFactory(val isTablet: Boolean) {
 
+    var left = 0
+    var right = 0
+
     companion object {
-
-        val PLAYER_RANK_PIXEL2 = RRect(2461.0, 1230.0, 202.0, 89.0).scale(1.0 / 1440, 1.0 / 1440)
-        val RANK_OPPONENT_PIXEL_2XL = RRect(2461.0, 1230.0, 202.0, 89.0).scale(1.0 / 1440, 1.0 / 1440)
-
-        val RANK_NEXUS9 = RRect(1730.0, 201.0, 110.0, 46.0)
-
-        val ARENA_MINIONS_PIXEL = arrayOf(
+                val ARENA_MINIONS_PIXEL = arrayOf(
                 RRect(324.0, 258.0, 208.0, 208.0),
                 RRect(844.0, 258.0, 208.0, 208.0),
                 RRect(1364.0, 258.0, 208.0, 208.0)
@@ -31,17 +28,17 @@ class RRectFactory(val isTablet: Boolean) {
         )
     }
 
-    fun playerRankRect(bbImage: ByteBufferImage): RRect {
+    fun prepareImage(bbImage: ByteBufferImage) {
         val intBuffer = bbImage.buffer.asIntBuffer()
 
         val mask = if (bbImage.buffer.order() == ByteOrder.BIG_ENDIAN) 0xffffff00 else 0x00ffffff
 
-        var left = 0
+        left = 0
         while (left < bbImage.w && intBuffer[left].and(mask.toInt()) == 0) {
             left++
         }
 
-        var right = bbImage.w - 1
+        right = bbImage.w - 1
         while (right >= 0 && intBuffer[right].and(mask.toInt()) == 0) {
             right--
         }
@@ -50,47 +47,41 @@ class RRectFactory(val isTablet: Boolean) {
         Timber.d("left: $left, right: $right, ratio: ${(right - left) / bbImage.h} ")
 
         if (right - left <= 0) {
+            left = 0
+            right = bbImage.w
             Timber.e("black image ?")
-            return RRect(0.0, 0.0, bbImage.w.toDouble(), bbImage.h.toDouble())
         }
+    }
 
-        val y = 1231.0 * bbImage.h / 1440.0
-        val h = 87.0 * bbImage.h / 1440.0
-        val x = right - 216 * bbImage.h / 1440.0
-        val w = 198 * bbImage.h / 1440.0
-
-        return RRect(x, y, w, h)
+    fun playerRankRect(bbImage: ByteBufferImage): RRect {
+        if (!isTablet) {
+            // The hearthstone window doesn't always have the same aspect ratio (1.85 on pixel 2 XL, 1.77 on galaxy S8)
+            // so we do everything relative to the height
+            return RRect(right - 216 * bbImage.h / 1440.0,
+                    1231.0 * bbImage.h / 1440.0,
+                    198 * bbImage.h / 1440.0,
+                    87.0 * bbImage.h / 1440.0)
+        } else {
+            return RRect(left + 15 * bbImage.h / 1200.0,
+                    56.0 * bbImage.h / 1200.0,
+                    87 * bbImage.h / 1200.0,
+                    37.0 * bbImage.h / 1200.0)
+        }
     }
 
     fun opponentRankRect(bbImage: ByteBufferImage): RRect {
-        val intBuffer = bbImage.buffer.asIntBuffer()
+        if (!isTablet) {
+            return RRect(left + 35 * bbImage.h / 1440.0,
+                    1231.0 * bbImage.h / 1440.0,
+                    198 * bbImage.h / 1440.0,
+                    87.0 * bbImage.h / 1440.0)
+        } else {
+            return RRect(left + 15 * bbImage.h / 1200.0,
+                    1015.0 * bbImage.h / 1200.0,
+                    87 * bbImage.h / 1200.0,
+                    37.0 * bbImage.h / 1200.0)
 
-        val mask = if (bbImage.buffer.order() == ByteOrder.BIG_ENDIAN) 0xffffff00 else 0x00ffffff
-
-        var left = 0
-        while (left < bbImage.w && intBuffer[left].and(mask.toInt()) == 0) {
-            left++
         }
-
-        var right = bbImage.w - 1
-        while (right >= 0 && intBuffer[right].and(mask.toInt()) == 0) {
-            right--
-        }
-        right++
-
-        Timber.d("left: $left, right: $right, ratio: ${(right - left) / bbImage.h} ")
-
-        if (right - left <= 0) {
-            Timber.e("black image ?")
-            return RRect(0.0, 0.0, bbImage.w.toDouble(), bbImage.h.toDouble())
-        }
-
-        val y = 1231.0 * bbImage.h / 1440.0
-        val h = 87.0 * bbImage.h / 1440.0
-        val x = left + 35 * bbImage.h / 1440.0
-        val w = 198 * bbImage.h / 1440.0
-
-        return RRect(x, y, w, h)
     }
 
     fun arenaMinionRectArray(): Array<RRect> {

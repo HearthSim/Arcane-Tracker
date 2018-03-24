@@ -24,7 +24,6 @@ public class Game {
     public boolean victory;
 
     public String lastPlayedCardId;
-    public int rank = -1;
     public boolean spectator;
     public String buildNumber;
     public String gameType;
