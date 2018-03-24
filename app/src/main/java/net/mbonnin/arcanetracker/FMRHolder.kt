@@ -43,7 +43,9 @@ object FMRHolder {
                 sb.append(ArcaneTrackerApplication.context.getString(R.string.opponent_rank, opponentRank))
             }
 
-            displayToast(sb.toString())
+            if (!sb.isBlank()) {
+                displayToast(sb.toString())
+            }
             Timber.d("playerRank=$playerRank opponentRank=$opponentRank")
         }
     }
