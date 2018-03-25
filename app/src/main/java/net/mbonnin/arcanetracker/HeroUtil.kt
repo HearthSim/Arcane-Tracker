@@ -1,5 +1,6 @@
 package net.mbonnin.arcanetracker
 
+import android.graphics.drawable.Drawable
 import net.mbonnin.hsmodel.PlayerClass.DRUID
 import net.mbonnin.hsmodel.PlayerClass.HUNTER
 import net.mbonnin.hsmodel.PlayerClass.MAGE
@@ -73,4 +74,10 @@ fun heroIdToClassIndex(heroId: String): Int {
     }
 
     return -1
+}
+
+object HeroUtil {
+    fun getDrawable(playerClass: String): Drawable {
+        return Utils.getDrawableForName(String.format("hero_%02d_round", getClassIndex(playerClass)))
+    }
 }

@@ -203,4 +203,10 @@
     <string name="onboarding_legacy">Your previous decks have been archived and will be removed in a future version of Arcane Tracker.\nMake sure to back them up if needed !</string>
     <string name="your_rank">Your rank: %d</string>
     <string name="opponent_rank">Opponent rank: %d</string>
+    <string name="yourDecks">Your decks</string>
+    <string name="select_deck">Please select a deck</string>
+    <string name="opponents">Opponents:</string>
+    <string name="won">Won</string>
+    <string name="lost">Lost</string>
+    <string name="winRate">Winrate</string>
 </resources>

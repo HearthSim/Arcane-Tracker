@@ -8,4 +8,6 @@
     <color name="gray">#a0a0a0</color>
     <color name="transparent">#00000000</color>
     <color name="amber">#FFC107</color>
+    <color name="dialogGray">#606060</color>
+    <color name="dialogText">#fff</color>
 </resources>

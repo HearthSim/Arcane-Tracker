@@ -43,6 +43,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".YourDecksActivity"
+            android:screenOrientation="userLandscape">
+        </activity>
+        <activity
             android:name=".LicensesActivity">
         </activity>
         <activity android:name=".DonateActivity"

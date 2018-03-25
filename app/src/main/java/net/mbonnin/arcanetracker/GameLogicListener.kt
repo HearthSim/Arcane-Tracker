@@ -3,20 +3,23 @@ package net.mbonnin.arcanetracker
 import android.os.Bundle
 import android.os.Handler
 import com.google.firebase.analytics.FirebaseAnalytics
-import net.mbonnin.arcanetracker.FMRHolder.playerRank
 import net.mbonnin.arcanetracker.detector.RANK_UNKNOWN
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
+import net.mbonnin.arcanetracker.hsreplay.model.Lce
 import net.mbonnin.arcanetracker.hsreplay.model.UploadRequest
 import net.mbonnin.arcanetracker.model.GameSummary
 import net.mbonnin.arcanetracker.parser.Entity
 import net.mbonnin.arcanetracker.parser.Game
 import net.mbonnin.arcanetracker.parser.GameLogic
 import net.mbonnin.arcanetracker.parser.LoadingScreenParser
+import net.mbonnin.arcanetracker.room.RDatabaseSingleton
+import net.mbonnin.arcanetracker.room.RGame
 import net.mbonnin.arcanetracker.room.WLCounter
 import net.mbonnin.arcanetracker.trackobot.Trackobot
 import net.mbonnin.arcanetracker.trackobot.model.CardPlay
 import net.mbonnin.arcanetracker.trackobot.model.Result
 import net.mbonnin.arcanetracker.trackobot.model.ResultData
+import rx.Single
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import timber.log.Timber
@@ -63,40 +66,55 @@ class GameLogicListener private constructor() : GameLogic.Listener {
     override fun gameOver() {
         val mode = LoadingScreenParser.get().gameplayMode
 
-        Timber.w("gameOver  %s [gameType %s][formatType %s][mode %s] [user %s]",
+        Timber.w("gameOver  %s [gameType %s][format_type %s][mode %s] [user %s]",
                 if (currentGame!!.victory) "victory" else "lost",
                 currentGame!!.gameType,
                 currentGame!!.formatType,
                 mode,
                 Trackobot.get().currentUser())
 
-        val legacyDeck = MainViewCompanion.legacyCompanion.deck
+        legacyAddCardsToDeck()
 
-        if (legacyDeck != null) {
-            if (LegacyDeckList.hasValidDeck()) {
-                addKnownCardsToDeck(currentGame!!, legacyDeck)
-            }
+        MainViewCompanion.playerCompanion.deck?.let { updateCounter(it.id, currentGame!!.victory) }
 
-            if (currentGame!!.victory) {
-                legacyDeck.wins++
-            } else {
-                legacyDeck.losses++
-            }
-            MainViewCompanion.legacyCompanion.deck = legacyDeck
+        sendTrackobotResult()
 
-            if (LegacyDeckList.ARENA_DECK_ID == legacyDeck.id) {
-                LegacyDeckList.saveArena()
-            } else {
-                LegacyDeckList.save()
-            }
+        FileTree.get().sync()
 
+        val bundle = Bundle()
+        bundle.putString(EventParams.GAME_TYPE.value, currentGame!!.gameType)
+        bundle.putString(EventParams.FORMAT_TYPE.value, currentGame!!.formatType)
+        bundle.putString(EventParams.TRACK_O_BOT.value, (Trackobot.get().currentUser() != null).toString())
+        bundle.putString(EventParams.HSREPLAY.value, (HSReplay.get().token() != null).toString())
+        FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("game_ended", bundle)
+    }
+
+    private fun saveRGame(game: Game): Single<Pair<Long, Boolean>> {
+        val deck = MainViewCompanion.playerCompanion.deck
+        if (deck == null) {
+            return Single.just(-1L to false)
         }
 
-        val playerDeck = MainViewCompanion.playerCompanion.deck
-        if (playerDeck != null) {
-            updateCounter(playerDeck.id, currentGame!!.victory)
-        }
+        val rgame = RGame(
+                deck_id = deck.id,
+                victory = game.victory,
+                coin = game.player.hasCoin,
+                player_class = game.player.playerClass(),
+                opponent_class = game.opponent.playerClass(),
+                date = System.currentTimeMillis(),
+                format_type = game.formatType,
+                game_type = game.gameType,
+                rank = FMRHolder.rank,
+                deck_name = deck.name
+        )
 
+        return Single.fromCallable {
+            RDatabaseSingleton.instance.gameDao().insert(rgame) to true
+        }
+    }
+
+    private fun sendTrackobotResult() {
+        val mode = LoadingScreenParser.get().gameplayMode
 
         if ((Utils.isAppDebuggable || LoadingScreenParser.MODE_DRAFT == mode || LoadingScreenParser.MODE_TOURNAMENT == mode) && Trackobot.get().currentUser() != null) {
             val resultData = ResultData()
@@ -127,15 +145,30 @@ class GameLogicListener private constructor() : GameLogic.Listener {
             FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("trackobot_upload", null)
             Trackobot.get().sendResult(resultData)
         }
+    }
 
-        FileTree.get().sync()
+    private fun legacyAddCardsToDeck() {
+        val legacyDeck = MainViewCompanion.legacyCompanion.deck
 
-        val bundle = Bundle()
-        bundle.putString(EventParams.GAME_TYPE.value, currentGame!!.gameType)
-        bundle.putString(EventParams.FORMAT_TYPE.value, currentGame!!.formatType)
-        bundle.putString(EventParams.TRACK_O_BOT.value,  (Trackobot.get().currentUser() != null).toString())
-        bundle.putString(EventParams.HSREPLAY.value,  (HSReplay.get().token() != null).toString())
-        FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("game_ended", bundle)
+        if (legacyDeck != null) {
+            if (LegacyDeckList.hasValidDeck()) {
+                addKnownCardsToDeck(currentGame!!, legacyDeck)
+            }
+
+            if (currentGame!!.victory) {
+                legacyDeck.wins++
+            } else {
+                legacyDeck.losses++
+            }
+            MainViewCompanion.legacyCompanion.deck = legacyDeck
+
+            if (LegacyDeckList.ARENA_DECK_ID == legacyDeck.id) {
+                LegacyDeckList.saveArena()
+            } else {
+                LegacyDeckList.save()
+            }
+
+        }
     }
 
     private fun updateCounter(id: String, victory: Boolean) {
@@ -223,7 +256,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
             opponent.rank = opponentRank
         }
 
-        MainViewCompanion.playerCompanion.deck?.id?.toLongOrNull() ?.let {
+        MainViewCompanion.playerCompanion.deck?.id?.toLongOrNull()?.let {
             player.deck_id = it
         }
 
@@ -235,22 +268,32 @@ class GameLogicListener private constructor() : GameLogic.Listener {
             }
         }
 
-        if (HSReplay.get().token() != null) {
+        val saveRGameSingle = saveRGame(game)
+
+        val hsReplaySinge = if (HSReplay.get().token() != null) {
             HSReplay.get().uploadGame(uploadRequest, gameStr)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        if (it.data != null) {
-                            summary.hsreplayUrl = it.data
-                            GameSummary.sync()
-                            Timber.d("hsreplay upload success")
-                            Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplaySuccess))
-                        } else if (it.error != null) {
-                            Timber.d(it.error)
-                            Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplayError))
-                        }
-                    })
+        } else {
+            Single.just(Lce.data(null))
         }
+
+        Single.zip(saveRGameSingle, hsReplaySinge) { insertResult, lce ->
+            if (lce.error != null) {
+                Timber.d(lce.error)
+                Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplayError))
+            } else {
+                summary.hsreplayUrl = lce.data
+                GameSummary.sync()
+
+                if (insertResult.second && lce.data != null) {
+                    RDatabaseSingleton.instance.gameDao().update(insertResult.first, lce.data)
+                }
+
+                Timber.d("hsreplay upload success")
+                Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplaySuccess))
+            }
+        }
+                .subscribeOn(Schedulers.io())
+                .subscribe()
     }
 
     companion object {
@@ -294,7 +337,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                 bestDeck = LegacyDeckList.createDeck(classIndex)
             }
 
-            return bestDeck!!
+            return bestDeck
         }
 
         /**

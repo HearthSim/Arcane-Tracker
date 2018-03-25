@@ -35,7 +35,7 @@ open class DeckCompanion(v: View) {
 
             value.checkClassIndex()
 
-            background.setBackgroundDrawable(Utils.getDrawableForClassIndex(value.classIndex))
+            background.setImageDrawable(Utils.getDrawableForClassIndex(value.classIndex))
             deckName.text = value.name
 
             update()

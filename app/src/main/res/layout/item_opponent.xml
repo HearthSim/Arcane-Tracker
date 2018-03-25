@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
+
+    <TextView
+        android:id="@+id/played"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:text="Played"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textColor="#fff"
+        android:fontFamily="@font/franklin_gothic"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/won"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:text="Won"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textColor="#fff"
+        android:fontFamily="@font/franklin_gothic"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/lost"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:text="Lost"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textColor="#fff"
+        android:fontFamily="@font/franklin_gothic"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/winRate"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:text="Winrate"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textColor="#fff"
+        android:fontFamily="@font/franklin_gothic"
+        android:layout_weight="1"/>
+
+</LinearLayout>
