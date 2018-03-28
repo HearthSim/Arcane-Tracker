@@ -13,7 +13,6 @@ static def extraFile(filename) {
 
 android {
     compileSdkVersion Versions.compileSdkVersion
-    buildToolsVersion Versions.buildToolsVersion
 
     lintOptions {
         disable 'MissingTranslation'
@@ -85,6 +84,7 @@ android {
         androidTest.java.srcDirs += 'src/androidTest/kotlin'
         androidTest.java.srcDirs += 'src/androidTest/java'
     }
+    buildToolsVersion '27.0.3'
 }
 
 repositories {
@@ -134,7 +134,6 @@ dependencies {
 
     kapt Libs.roomProcessor
 
-    kapt Libs.dataBindingCompiler
     implementation project(":detector")
 
     testImplementation Libs.junit

@@ -8,7 +8,6 @@ repositories {
 
 android {
     compileSdkVersion Versions.compileSdkVersion
-    buildToolsVersion Versions.buildToolsVersion
     defaultConfig {
         minSdkVersion Versions.minSdkVersion
         targetSdkVersion Versions.targetSdkVersion
@@ -22,6 +21,7 @@ android {
             path "CMakeLists.txt"
         }
     }
+    buildToolsVersion '27.0.3'
 }
 
 dependencies {

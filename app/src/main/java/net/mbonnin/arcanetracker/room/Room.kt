@@ -12,11 +12,14 @@ import net.mbonnin.arcanetracker.GameType
 
 @Entity
 data class RDeck(
-    @PrimaryKey
-    var id: String = "",
-
-    var wins: Int = 0,
-    var losses: Int = 0
+        @PrimaryKey
+        val id: String,
+        val name: String,
+        val deck_string: String,
+        val player_class: String,
+        val wins: Int = 0,
+        val losses: Int = 0,
+        val access: Long
 )
 
 @Entity
@@ -38,7 +41,7 @@ data class RGame(
 }
 
 
-@Database(entities = arrayOf(RDeck::class, RGame::class), version = 2)
+@Database(entities = arrayOf(RDeck::class, RGame::class), version = 3)
 abstract class RDatabase : RoomDatabase() {
     abstract fun deckDao(): RDeckDao
     abstract fun gameDao(): RGameDao
@@ -50,13 +53,14 @@ interface RDeckDao {
     fun getAll(): List<RDeck>
 
     @Update
-    fun update(rDeck: RDeck)
+    @Query("UPDATE rdeck SET name = :name, deck_string = :deck_string, access = :access WHERE id = :id")
+    fun updateNameAndContents(id: String, name: String, deck_string: String, access: Long)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.FAIL)
     fun insert(rDeck: RDeck)
 
     @Query("SELECT * FROM rdeck WHERE id = :id LIMIT 1")
-    fun findById(id: String): Flowable<List<RDeck>>
+    fun findById(id: String): Flowable<RDeck>
 
     @Delete
     fun delete(rDeck: RDeck)
@@ -75,8 +79,12 @@ interface RGameDao {
 
     @Query("SELECT COUNT(*) FROM rgame WHERE opponent_class = :opponent_class AND victory = 1")
     fun totalVictoriesAgainst(opponent_class: String): Maybe<Int>
+
+    @Query("SELECT SUM(victory) as won, SUM(case victory when 1 then 0 else 1 end) as lost FROM rgame where deck_id = :deck_id")
+    fun counter(deck_id: String): Flowable<Counter>
 }
 
+data class Counter(val won: Int, val lost: Int)
 
 object RDatabaseSingleton {
     val instance = Room.databaseBuilder(ArcaneTrackerApplication.get(), RDatabase::class.java, "db")
