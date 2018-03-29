@@ -3,6 +3,7 @@ package net.mbonnin.arcanetracker.room
 import android.arch.persistence.room.*
 import io.reactivex.Flowable
 import io.reactivex.Maybe
+import io.reactivex.Single
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 
 
@@ -45,7 +46,7 @@ abstract class RDatabase : RoomDatabase() {
 @Dao
 interface RDeckDao {
     @Query("SELECT * FROM rdeck")
-    fun getAll(): List<RDeck>
+    fun getAll(): Single<List<RDeck>>
 
     @Update
     @Query("UPDATE rdeck SET name = :name, deck_string = :deck_string, accessMillis = :accessMillis WHERE id = :id")
@@ -65,8 +66,12 @@ interface RDeckDao {
     @Query("SELECT * FROM rdeck WHERE id = :id LIMIT 1")
     fun findById(id: String): Flowable<RDeck>
 
+
     @Delete
     fun delete(rDeck: RDeck)
+
+    @Query("DELETE FROM rdeck WHERE id NOT IN (SELECT id FROM rdeck ORDER BY accessMillis DESC LIMIT 18)")
+    fun cleanup()
 }
 
 @Dao

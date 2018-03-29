@@ -13,6 +13,7 @@ import net.mbonnin.arcanetracker.adapter.ItemAdapter
 class YourDecksActivity : Activity() {
     lateinit var deckRecyclerView: RecyclerView
     lateinit var opponentRecyclerView: RecyclerView
+    val yourDecksAdapter = YourDecksAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,10 +36,10 @@ class YourDecksActivity : Activity() {
         findViewById<View>(R.id.selectDeck).visibility = if (deckId == null) VISIBLE else GONE
 
         if (deckId == null) {
-            deckRecyclerView.setAdapter(LogsDeckAdapter())
+            deckRecyclerView.setAdapter(yourDecksAdapter)
         } else {
             val itemAdapter = ItemAdapter()
-            val deck = LogsDeckList.get().filter { it.id == deckId }.firstOrNull()
+            val deck = yourDecksAdapter.list.filter { it.id == deckId }.firstOrNull()
 
             if (deck == null) {
                 return

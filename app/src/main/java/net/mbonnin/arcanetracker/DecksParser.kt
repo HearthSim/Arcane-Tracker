@@ -5,11 +5,24 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import net.mbonnin.arcanetracker.parser.LogReader
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RDeck
+import rx.schedulers.Schedulers
+import rx.subjects.PublishSubject
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 class DecksParser: LogReader.LineConsumer {
     var isArena = false
     val deckStringHelper = DeckStringHelper()
+    val subject = PublishSubject.create<Unit>()
+
+    init {
+        subject.debounce(5, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    Timber.d("cleanup DB")
+                    RDatabaseSingleton.instance.deckDao().cleanup()
+                }, Timber::e)
+    }
 
     override fun onLine(rawLine: String) {
         if (rawLine.contains("Deck Contents Received:")) {
@@ -49,6 +62,8 @@ class DecksParser: LogReader.LineConsumer {
                         } catch (e: Exception) {
                             RDatabaseSingleton.instance.deckDao().updateNameAndContents(rdeck.id, rdeck.name, rdeck.deck_string, rdeck.accessMillis)
                         }
+
+                        subject.onNext(Unit)
                     }
                 }
 
