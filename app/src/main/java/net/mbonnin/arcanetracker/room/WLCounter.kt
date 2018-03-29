@@ -3,6 +3,7 @@ package net.mbonnin.arcanetracker.room
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 
 object WLCounter {
     fun watch(id: String): Flowable<RDeck> {
@@ -11,24 +12,19 @@ object WLCounter {
 
 
     fun increment(id: String, wins: Int, losses: Int) {
-        watch(id)
-                .firstOrError()
-                .map {
-                    val rDeck = it.copy(wins = it.wins + wins,
-                            losses = it.losses + losses)
-
-                    RDatabaseSingleton.instance.deckDao().insert(rDeck)
-                }
+        Completable.fromAction {
+            RDatabaseSingleton.instance.deckDao().incrementWinsLosses(id, wins, losses)
+        }
                 .subscribeOn(Schedulers.io())
-                .subscribe()
+                .subscribe({}, Timber::e)
     }
 
     fun set(id: String, wins: Int, losses: Int) {
         Completable.fromAction {
-            RDatabaseSingleton.instance.deckDao().insert(RDeck(id, wins, losses))
+            RDatabaseSingleton.instance.deckDao().setWinsLosses(id, wins, losses)
         }
                 .subscribeOn(Schedulers.io())
-                .subscribe()
+                .subscribe({}, Timber::e)
 
     }
 }

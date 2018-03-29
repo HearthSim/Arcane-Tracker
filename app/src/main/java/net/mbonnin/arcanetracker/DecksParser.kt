@@ -47,7 +47,7 @@ class DecksParser: LogReader.LineConsumer {
                         try {
                             RDatabaseSingleton.instance.deckDao().insert(rdeck)
                         } catch (e: Exception) {
-                            RDatabaseSingleton.instance.deckDao().updateNameAndContents(rdeck.id, rdeck.name, rdeck.deck_string, rdeck.access)
+                            RDatabaseSingleton.instance.deckDao().updateNameAndContents(rdeck.id, rdeck.name, rdeck.deck_string, rdeck.accessMillis)
                         }
                     }
                 }
