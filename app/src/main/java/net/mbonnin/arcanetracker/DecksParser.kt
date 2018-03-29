@@ -1,56 +1,57 @@
 package net.mbonnin.arcanetracker
 
-import android.os.Handler
+import io.reactivex.Completable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import net.mbonnin.arcanetracker.parser.LogReader
+import net.mbonnin.arcanetracker.room.RDatabaseSingleton
+import net.mbonnin.arcanetracker.room.RDeck
 import timber.log.Timber
 
 class DecksParser: LogReader.LineConsumer {
-    val lineList = mutableListOf<String>()
-    val handler = Handler()
     var isArena = false
-    var readingDeckList = false
+    val deckStringHelper = DeckStringHelper()
 
     override fun onLine(rawLine: String) {
         if (rawLine.contains("Deck Contents Received:")) {
-            lineList.clear()
-            readingDeckList = true
-            handler.post {
-                LogsDeckList.clear()
-            }
-        } else if (rawLine.contains("Finding Game With Deck:")) {
-            lineList.clear()
             isArena = false
-            readingDeckList = false
+        } else if (rawLine.contains("Finding Game With Deck:")) {
+            isArena = false
         } else if (rawLine.contains("Starting Arena Game With Deck")) {
-            lineList.clear()
             isArena = true
-            readingDeckList = false
-        } else if (lineList.size < 3) {
+        } else {
             val logLine = LogReader.parseLine(rawLine)
             if (logLine != null) {
 
                 Timber.d(logLine.line)
 
-                lineList.add(logLine.line)
-            }
-            if (lineList.size == 3) {
-                val deck = DeckString.parse(lineList.joinToString("\n"))
-                if (deck != null) {
-                    if (isArena) {
-                        deck.name = ArcaneTrackerApplication.get().getString(R.string.arenaDeck)
-                    }
-                    handler.post{
-                        if (readingDeckList) {
-                            LogsDeckList.addDeck(deck)
-                            if (MainViewCompanion.playerCompanion.deck == null) {
-                                MainViewCompanion.playerCompanion.deck = deck
-                            }
+                val result = deckStringHelper.parseLine(logLine.line)
+
+                if (result != null && result.id != null) {
+                    val deck = DeckStringParser.parse(result.deckString)
+                    if (deck != null) {
+                        deck.id = result.id
+                        if (isArena) {
+                            deck.name = ArcaneTrackerApplication.get().getString(R.string.arenaDeck)
                         } else {
+                            deck.name = result.name
+                        }
+
+                        Completable.fromAction {
                             MainViewCompanion.playerCompanion.deck = deck
+                        }
+                                .subscribeOn(AndroidSchedulers.mainThread())
+                                .subscribe()
+
+                        val rdeck = RDeck(deck.id, deck.name, result.deckString)
+
+                        try {
+                            RDatabaseSingleton.instance.deckDao().insert(rdeck)
+                        } catch (e: Exception) {
+                            RDatabaseSingleton.instance.deckDao().updateNameAndContents(rdeck.id, rdeck.name, rdeck.deck_string, rdeck.access)
                         }
                     }
                 }
-                lineList.clear()
+
             }
         }
     }

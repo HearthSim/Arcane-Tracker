@@ -117,12 +117,12 @@ public class EditButtonCompanion {
         View view = binding.getRoot();
 
         String pasteData = getPasteData(context);
-        if (pasteData != null && DeckString.INSTANCE.parse(pasteData) != null) {
+        if (pasteData != null && DeckStringParser.INSTANCE.parse(pasteData) != null) {
             binding.editText.setText(pasteData);
         }
 
         binding.useDeckString.setOnClickListener(v -> {
-            Deck deck = DeckString.INSTANCE.parse(binding.editText.getText().toString());
+            Deck deck = DeckStringParser.INSTANCE.parse(binding.editText.getText().toString());
             if (deck != null) {
                 mViewManager.removeView(view);
                 LegacyDeckList.INSTANCE.addDeck(deck);

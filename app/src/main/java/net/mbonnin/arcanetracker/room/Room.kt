@@ -1,13 +1,9 @@
 package net.mbonnin.arcanetracker.room
 
-import android.arch.persistence.db.SupportSQLiteDatabase
 import android.arch.persistence.room.*
-import android.arch.persistence.room.migration.Migration
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
-import net.mbonnin.arcanetracker.BnetGameType
-import net.mbonnin.arcanetracker.GameType
 
 
 @Entity
@@ -16,10 +12,9 @@ data class RDeck(
         val id: String,
         val name: String,
         val deck_string: String,
-        val player_class: String,
         val wins: Int = 0,
         val losses: Int = 0,
-        val access: Long
+        val access: Long = System.currentTimeMillis()
 )
 
 @Entity
