@@ -55,7 +55,7 @@ class YourDecksActivity : Activity() {
 
     private fun setDeckId(deckId: String?) {
         _deckId = deckId
-        
+
         opponents.visibility = if (deckId == null) GONE else VISIBLE
         opponentRecyclerView.visibility = if (deckId == null) GONE else VISIBLE
         selectDeck.visibility = if (deckId == null) VISIBLE else GONE
@@ -79,7 +79,7 @@ class YourDecksActivity : Activity() {
             itemAdapter.setList(Controller.getCardMapList(deck.cards))
             deckRecyclerView.setAdapter(itemAdapter)
 
-            opponentRecyclerView.adapter = OpponentsAdapter()
+            opponentRecyclerView.adapter = OpponentsAdapter(deckId)
         }
     }
 }

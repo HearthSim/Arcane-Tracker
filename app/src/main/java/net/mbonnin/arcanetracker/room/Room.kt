@@ -79,13 +79,13 @@ interface RGameDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(rGame: RGame): Long
 
-    @Query("SELECT COUNT(*) FROM rgame WHERE opponent_class = :opponent_class")
-    fun totalPlayedAgainst(opponent_class: String): Maybe<Int>
+    @Query("SELECT COUNT(*) FROM rgame WHERE opponent_class = :opponent_class AND deck_id = :deck_id")
+    fun totalPlayedAgainst(deck_id: String, opponent_class: String): Maybe<Int>
 
-    @Query("SELECT COUNT(*) FROM rgame WHERE opponent_class = :opponent_class AND victory = 1")
-    fun totalVictoriesAgainst(opponent_class: String): Maybe<Int>
+    @Query("SELECT COUNT(*) FROM rgame WHERE opponent_class = :opponent_class AND deck_id = :deck_id AND victory = 1")
+    fun totalVictoriesAgainst(deck_id: String, opponent_class: String): Maybe<Int>
 
-    @Query("SELECT SUM(victory) as won, SUM(case victory when 1 then 0 else 1 end) as lost FROM rgame where deck_id = :deck_id")
+    @Query("SELECT SUM(victory) as won, SUM(case victory when 1 then 0 else 1 end) as lost FROM rgame WHERE deck_id = :deck_id")
     fun counter(deck_id: String): Flowable<Counter>
 }
 

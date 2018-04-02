@@ -16,7 +16,7 @@ import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.hsmodel.PlayerClass
 import timber.log.Timber
 
-class OpponentsAdapter : RecyclerView.Adapter<OpponentsAdapter.ViewHolder>() {
+class OpponentsAdapter(val deckId: String) : RecyclerView.Adapter<OpponentsAdapter.ViewHolder>() {
     val heroes = allHeroes().filter { it != PlayerClass.NEUTRAL }
 
     class Opponent(val playerClass: String, val total: Int, val won: Int)
@@ -27,8 +27,8 @@ class OpponentsAdapter : RecyclerView.Adapter<OpponentsAdapter.ViewHolder>() {
 
         val singleList = heroes.map {
             Single.zip(Single.just(it),
-                    RDatabaseSingleton.instance.gameDao().totalPlayedAgainst(it).toSingle().onErrorReturn { 0 },
-                    RDatabaseSingleton.instance.gameDao().totalVictoriesAgainst(it).toSingle().onErrorReturn { 0 },
+                    RDatabaseSingleton.instance.gameDao().totalPlayedAgainst(deckId, it).toSingle().onErrorReturn { 0 },
+                    RDatabaseSingleton.instance.gameDao().totalVictoriesAgainst(deckId, it).toSingle().onErrorReturn { 0 },
                     Function3<String, Int, Int, Opponent> { playerClass, total, won ->
                         Opponent(playerClass, total, won)
                     })
