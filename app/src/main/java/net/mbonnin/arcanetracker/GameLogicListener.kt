@@ -59,6 +59,18 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         LegacyDeckList.opponentDeck.classIndex = game.getOpponent().classIndex()
         MainViewCompanion.opponentCompanion.deck = LegacyDeckList.opponentDeck
 
+
+        when (game.gameType) {
+            GameType.GT_TAVERNBRAWL.name,
+            GameType.GT_VS_AI.name ->{
+                val emptyDeck = Deck()
+                emptyDeck.name = Utils.getString(R.string.deck)
+                emptyDeck.id = "rototo"
+                emptyDeck.classIndex = getClassIndex(game.player.playerClass())
+                MainViewCompanion.playerCompanion.deck = emptyDeck
+            }
+        }
+
         currentGame = game
     }
 

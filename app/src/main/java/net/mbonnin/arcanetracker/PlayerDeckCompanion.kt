@@ -9,7 +9,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import net.mbonnin.arcanetracker.adapter.Controller
-import net.mbonnin.arcanetracker.room.RDeck
 import net.mbonnin.arcanetracker.room.WLCounter
 import timber.log.Timber
 
@@ -23,7 +22,6 @@ class PlayerDeckCompanion(v: View) : DeckCompanion(v) {
     }
 
     var disposable: Disposable? = null
-    var rdeck: RDeck? = null
 
     override var deck: Deck?
         get() = super.deck
@@ -39,12 +37,12 @@ class PlayerDeckCompanion(v: View) : DeckCompanion(v) {
             Timber.d("setDeck")
 
             disposable = WLCounter.watch(value.id)
+                    .startWith(WLCounter(0, 0))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe { rdeck ->
+                    .subscribe { counter ->
                         Timber.d("setText")
-                        this.rdeck = rdeck
-                        winLoss.text = rdeck.wins.toString() + " - " + rdeck.losses.toString()
+                        winLoss.text = counter.wins.toString() + " - " + counter.losses.toString()
                     }
 
 
@@ -54,11 +52,10 @@ class PlayerDeckCompanion(v: View) : DeckCompanion(v) {
                 val win = view2.findViewById<NumberPicker>(R.id.win)
                 win.minValue = 0
                 win.maxValue = 999
-                rdeck?.wins?.let { win.value = it }
                 val losses = view2.findViewById<NumberPicker>(R.id.loss)
                 losses.minValue = 0
                 losses.maxValue = 999
-                rdeck?.losses?.let { losses.value = it }
+
                 view2.findViewById<View>(R.id.ok).setOnClickListener { v3 ->
                     mViewManager.removeView(view2)
 
