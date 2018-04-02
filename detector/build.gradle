@@ -31,14 +31,14 @@ dependencies {
     implementation Libs.moshi
     implementation Libs.moshi_kotlin
 
-    compile(project(":hsmodel"))
+    implementation(project(":hsmodel"))
 
     testImplementation Libs.junit
     testImplementation Libs.pngj
 
-    androidTestCompile Libs.test_runner
-    androidTestCompile Libs.test_rules
-    androidTestCompile Libs.espresso
+    androidTestImplementation Libs.test_runner
+    androidTestImplementation Libs.test_rules
+    androidTestImplementation Libs.espresso
     androidTestImplementation Libs.okhttp
 }
 
