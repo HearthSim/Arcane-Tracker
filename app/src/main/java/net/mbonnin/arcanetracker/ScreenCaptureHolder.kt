@@ -6,12 +6,8 @@ import android.media.projection.MediaProjection
 import android.os.Build
 import android.os.Handler
 import android.support.annotation.RequiresApi
-import net.mbonnin.arcanetracker.ScreenCaptureHolder.imageConsumer
-import net.mbonnin.arcanetracker.ScreenCaptureHolder.runnable
-import net.mbonnin.arcanetracker.ScreenCaptureHolder.screenCaptureStarting
 import net.mbonnin.arcanetracker.detector.ByteBufferImage
 import net.mbonnin.arcanetracker.detector.Detector
-import net.mbonnin.arcanetracker.detector.RANK_UNKNOWN
 import net.mbonnin.arcanetracker.parser.ArenaParser
 import net.mbonnin.arcanetracker.parser.Entity
 import net.mbonnin.arcanetracker.parser.LoadingScreenParser
@@ -58,8 +54,7 @@ object ScreenCaptureHolder {
                 val playerRank = mDetector.detectPlayerRank(bbImage)
                 val opponentRank = mDetector.detectOpponentRank(bbImage)
 
-
-                FMRHolder.registerRanks(playerRank, opponentRank)
+                RankHolder.registerRanks(playerRank, opponentRank)
             }
 
             if (shouldDetectArena()) {

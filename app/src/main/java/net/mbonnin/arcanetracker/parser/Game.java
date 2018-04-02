@@ -29,6 +29,8 @@ public class Game {
     public String gameType;
     public String formatType;
     public String scenarioId;
+    public int opponentRank;
+    public int playerRank;
 
     public Player getPlayer() {
         return player;

@@ -65,6 +65,11 @@ class GameLogicListener private constructor() : GameLogic.Listener {
     override fun gameOver() {
         val mode = LoadingScreenParser.get().gameplayMode
 
+        currentGame!!.playerRank = RankHolder.playerRank
+        currentGame!!.opponentRank = RankHolder.playerRank
+
+        RankHolder.reset()
+
         Timber.w("gameOver  %s [gameType %s][format_type %s][mode %s] [user %s]",
                 if (currentGame!!.victory) "victory" else "lost",
                 currentGame!!.gameType,
@@ -103,7 +108,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                 date = System.currentTimeMillis(),
                 format_type = game.formatType,
                 game_type = game.gameType,
-                rank = FMRHolder.rank,
+                rank = game.playerRank,
                 deck_name = deck.name
         )
 
@@ -122,7 +127,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
             resultData.result.win = currentGame!!.victory
             resultData.result.mode = Trackobot.getMode(currentGame!!.gameType)
 
-            val playerRank = FMRHolder.playerRank
+            val playerRank = RankHolder.playerRank
             if (playerRank != RANK_UNKNOWN) {
                 resultData.result.rank = playerRank
             }
@@ -245,12 +250,12 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         val player = if (uploadRequest.friendly_player == "1") uploadRequest.player1 else uploadRequest.player2
         val opponent = if (uploadRequest.friendly_player == "1") uploadRequest.player2 else uploadRequest.player1
 
-        val playerRank = FMRHolder.playerRank
+        val playerRank = RankHolder.playerRank
         if (playerRank != RANK_UNKNOWN) {
             player.rank = playerRank
         }
 
-        val opponentRank = FMRHolder.opponentRank
+        val opponentRank = RankHolder.opponentRank
         if (opponentRank != RANK_UNKNOWN) {
             opponent.rank = opponentRank
         }
