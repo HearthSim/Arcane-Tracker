@@ -523,6 +523,7 @@ class GameLogic private constructor() {
                 CardId.ELISE_THE_TRAILBLAZER -> CardId.UNGORO_PACK
                 CardId.FALDOREI_STRIDER -> CardId.SPIDER_AMBUSH
                 CardId.DECK_OF_WONDERS -> CardId.SCROLL_OF_WONDER
+                CardId.FERAL_GIBBERER -> CardId.FERAL_GIBBERER
                 else -> null
             }
         } else if (TYPE_TRIGGER == blockTag.BlockType) {
