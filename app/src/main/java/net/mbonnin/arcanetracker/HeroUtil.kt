@@ -78,6 +78,6 @@ fun heroIdToClassIndex(heroId: String): Int {
 
 object HeroUtil {
     fun getDrawable(playerClass: String): Drawable {
-        return Utils.getDrawableForName(String.format("hero_%02d_round", getClassIndex(playerClass)))
+        return Utils.getDrawableForName(String.format("hero_%02d_round", getClassIndex(playerClass) + 1))
     }
 }

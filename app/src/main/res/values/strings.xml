@@ -205,8 +205,11 @@
     <string name="opponent_rank">Opponent rank: %d</string>
     <string name="yourDecks">Your decks</string>
     <string name="select_deck">Please select a deck</string>
-    <string name="opponents">Opponents:</string>
+    <string name="opponents">Matchups:</string>
     <string name="won">Won</string>
     <string name="lost">Lost</string>
     <string name="winRate">Winrate</string>
+    <string name="na">N/A</string>
+    <string name="total">Total</string>
+    <string name="opponent">Opponent</string>
 </resources>

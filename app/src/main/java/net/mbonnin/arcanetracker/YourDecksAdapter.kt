@@ -32,6 +32,7 @@ class YourDecksAdapter : RecyclerView.Adapter<YourDecksAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_log_deck, parent, false)
+
         return ViewHolder(view)
     }
 
@@ -46,9 +47,25 @@ class YourDecksAdapter : RecyclerView.Adapter<YourDecksAdapter.ViewHolder>() {
         holder.deckName.setText(deck.name)
     }
 
-    class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    private var onDeckClicked: ((String) -> Unit)? = null
+
+    fun setOnClickListener(onDeckClicked: (String) -> Unit) {
+        this.onDeckClicked = onDeckClicked
+
+    }
+
+    inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val deckBackground = view.findViewById<ImageView>(R.id.deckBackground)
         val deckName = view.findViewById<TextView>(R.id.deckName)
+
+        init {
+            view.setOnClickListener {
+                val position = adapterPosition
+                if (position >= 0) {
+                    onDeckClicked?.invoke(list[position].id)
+                }
+            }
+        }
     }
 }
 
