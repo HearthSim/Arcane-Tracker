@@ -131,6 +131,8 @@ dependencies {
     implementation Libs.crashlytics
     implementation Libs.room
     implementation Libs.rxRoom
+    implementation Libs.stetho
+    implementation Libs.stethoOkhttp
 
     kapt Libs.roomProcessor
 

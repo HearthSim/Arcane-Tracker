@@ -55,5 +55,7 @@ object Libs {
     const val room = "android.arch.persistence.room:runtime:1.0.0"
     const val rxRoom = "android.arch.persistence.room:rxjava2:1.0.0"
     const val roomProcessor = "android.arch.persistence.room:compiler:1.0.0"
+    const val stetho =  "com.facebook.stetho:stetho:1.5.0"
+    const val stethoOkhttp = "com.facebook.stetho:stetho-okhttp3:1.5.0"
 
 }
