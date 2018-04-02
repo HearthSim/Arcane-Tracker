@@ -1,7 +1,6 @@
 package net.mbonnin.arcanetracker.trackobot
 
 import android.os.Environment
-import android.widget.Toast
 import com.google.gson.stream.MalformedJsonException
 import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.trackobot.model.HistoryList
@@ -9,7 +8,6 @@ import net.mbonnin.arcanetracker.trackobot.model.ResultData
 import okhttp3.Credentials
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava.HttpException
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import rx.Observable
@@ -152,7 +150,7 @@ class Trackobot {
             Timber.d("trackobot upload error")
 
             val context = ArcaneTrackerApplication.context
-            if (e is HttpException) {
+            if (e is retrofit2.HttpException) {
                 message = context.getString(R.string.trackobotHttpError, e.code())
             } else if (e is SocketTimeoutException) {
                 message = context.getString(R.string.trackobotTimeout)
@@ -269,7 +267,7 @@ class Trackobot {
             return getPlayerClass(classIndex).toLowerCase()
         }
 
-        fun getMode(gameType: String, formatType: String): String {
+        fun getMode(gameType: String): String {
             return when (gameType) {
                 GameType.GT_ARENA.name -> "arena"
                 GameType.GT_VS_AI.name -> "practice"

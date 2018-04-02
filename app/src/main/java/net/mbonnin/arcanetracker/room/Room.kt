@@ -48,15 +48,12 @@ interface RDeckDao {
     @Query("SELECT * FROM rdeck")
     fun getAll(): Single<List<RDeck>>
 
-    @Update
     @Query("UPDATE rdeck SET name = :name, deck_string = :deck_string, accessMillis = :accessMillis WHERE id = :id")
     fun updateNameAndContents(id: String, name: String, deck_string: String, accessMillis: Long)
 
-    @Update
     @Query("UPDATE rdeck SET wins = :wins, losses = :losses WHERE id = :id")
     fun setWinsLosses(id: String, wins:Int, losses: Int)
 
-    @Update
     @Query("UPDATE rdeck SET wins = wins + :wins, losses = losses + :losses WHERE id = :id")
     fun incrementWinsLosses(id: String, wins:Int, losses: Int)
 

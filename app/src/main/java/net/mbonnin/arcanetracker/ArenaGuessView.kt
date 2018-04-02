@@ -40,7 +40,7 @@ class ArenaGuessView : View {
 
     fun setCardId(cardId: String, playerClass: String) {
         this.cardId = cardId
-        this.cardName = CardUtil.getCard(cardId).name!!
+        this.cardName = CardUtil.getCard(cardId).name
 
         val card = CardUtil.getCard(cardId)
         card.scores?.let {

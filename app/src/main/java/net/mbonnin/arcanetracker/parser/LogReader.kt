@@ -165,16 +165,6 @@ class LogReader @JvmOverloads constructor(private val mLog: String, val mLineCon
             return sec
         }
 
-        private fun getTimeStr(seconds: Int): String {
-            var seconds = seconds
-            val hours = seconds / 3600
-            seconds = seconds % 3600
-            val min = seconds / 60
-            seconds = seconds % 60
-
-            return String.format("%02d:%02d:%02d", hours, min, seconds)
-        }
-
         val PATTERN_WITH_METHOD = Pattern.compile("([^ ]) +([^ ]*) +([^ ]*) +(.*)")
         val PATTERN =  Pattern.compile("([^ ]) +([^ ]*) +(.*)")
 

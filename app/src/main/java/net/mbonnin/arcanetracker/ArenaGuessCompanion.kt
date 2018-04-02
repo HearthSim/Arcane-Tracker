@@ -14,7 +14,6 @@ object ArenaGuessCompanion {
 
         val params = ViewManager.Params()
         val w = ViewManager.Companion.get().width
-        val h = ViewManager.Companion.get().height
 
         val measureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         views[index]?.measure(measureSpec, measureSpec)

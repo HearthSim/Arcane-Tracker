@@ -20,7 +20,6 @@ import net.mbonnin.arcanetracker.trackobot.model.CardPlay
 import net.mbonnin.arcanetracker.trackobot.model.Result
 import net.mbonnin.arcanetracker.trackobot.model.ResultData
 import rx.Single
-import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import timber.log.Timber
 import java.util.*
@@ -121,7 +120,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
             resultData.result = Result()
             resultData.result.coin = currentGame!!.getPlayer().hasCoin
             resultData.result.win = currentGame!!.victory
-            resultData.result.mode = Trackobot.getMode(currentGame!!.gameType, currentGame!!.formatType)
+            resultData.result.mode = Trackobot.getMode(currentGame!!.gameType)
 
             val playerRank = FMRHolder.playerRank
             if (playerRank != RANK_UNKNOWN) {

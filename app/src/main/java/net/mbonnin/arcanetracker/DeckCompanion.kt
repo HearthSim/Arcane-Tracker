@@ -15,9 +15,9 @@ import timber.log.Timber
  */
 
 open class DeckCompanion(v: View) {
-    internal var settings: ImageButton
-    internal var winLoss: TextView
-    internal lateinit var nodeck: View
+    internal val settings: ImageButton
+    internal val winLoss: TextView
+    internal val nodeck: View
     var deckName: TextView
 
     protected val recyclerView: RecyclerView

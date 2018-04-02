@@ -118,7 +118,6 @@ class ArcaneTrackerApplication : MultiDexApplication() {
             handler.post { GameLogic.get().handleRootTag(tag) }
         }, { gameStr, gameStart ->
             GameLogicListener.get().uploadGame(gameStr, gameStart)
-            null
         })
         /*
          * Power.log, we just want the incremental changes
