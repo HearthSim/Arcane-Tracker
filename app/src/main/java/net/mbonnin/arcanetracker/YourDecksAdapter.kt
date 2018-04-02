@@ -18,7 +18,9 @@ class YourDecksAdapter : RecyclerView.Adapter<YourDecksAdapter.ViewHolder>() {
         RDatabaseSingleton.instance.deckDao().getAll()
                 .subscribeOn(Schedulers.io())
                 .map {rdeckList  ->
-                    rdeckList.map { rDeck -> DeckStringParser.parse(rDeck.deck_string) }
+                    rdeckList.map { rDeck ->
+                        DeckMapper.fromRDeck(rDeck)
+                    }
                             .filterNotNull()
                 }
                 .observeOn(AndroidSchedulers.mainThread())
