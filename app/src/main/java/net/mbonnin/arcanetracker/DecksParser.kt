@@ -55,7 +55,10 @@ class DecksParser: LogReader.LineConsumer {
                                 .subscribeOn(AndroidSchedulers.mainThread())
                                 .subscribe()
 
-                        val rdeck = RDeck(deck.id, deck.name, result.deckString)
+                        val rdeck = RDeck(id = deck.id,
+                                name = deck.name,
+                                deck_string = result.deckString,
+                                arena = isArena)
 
                         try {
                             RDatabaseSingleton.instance.deckDao().insert(rdeck)

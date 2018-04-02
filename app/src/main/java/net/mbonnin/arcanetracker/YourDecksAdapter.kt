@@ -15,7 +15,7 @@ class YourDecksAdapter : RecyclerView.Adapter<YourDecksAdapter.ViewHolder>() {
     val list = mutableListOf<Deck>()
 
     init {
-        RDatabaseSingleton.instance.deckDao().getAll()
+        RDatabaseSingleton.instance.deckDao().getCollection()
                 .subscribeOn(Schedulers.io())
                 .map {rdeckList  ->
                     rdeckList.map { rDeck ->

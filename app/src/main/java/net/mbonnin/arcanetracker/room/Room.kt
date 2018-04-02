@@ -1,10 +1,13 @@
 package net.mbonnin.arcanetracker.room
 
+import android.arch.persistence.db.SupportSQLiteDatabase
 import android.arch.persistence.room.*
+import android.arch.persistence.room.migration.Migration
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
+import timber.log.Timber
 
 
 @Entity
@@ -15,6 +18,7 @@ data class RDeck(
         val deck_string: String,
         val wins: Int = 0,
         val losses: Int = 0,
+        val arena: Boolean = false,
         val accessMillis: Long = System.currentTimeMillis()
 )
 
@@ -37,7 +41,7 @@ data class RGame(
 }
 
 
-@Database(entities = arrayOf(RDeck::class, RGame::class), version = 3)
+@Database(entities = arrayOf(RDeck::class, RGame::class), version = 4)
 abstract class RDatabase : RoomDatabase() {
     abstract fun deckDao(): RDeckDao
     abstract fun gameDao(): RGameDao
@@ -45,8 +49,8 @@ abstract class RDatabase : RoomDatabase() {
 
 @Dao
 interface RDeckDao {
-    @Query("SELECT * FROM rdeck")
-    fun getAll(): Single<List<RDeck>>
+    @Query("SELECT * FROM rdeck WHERE arena = 0")
+    fun getCollection(): Single<List<RDeck>>
 
     @Query("UPDATE rdeck SET name = :name, deck_string = :deck_string, accessMillis = :accessMillis WHERE id = :id")
     fun updateNameAndContents(id: String, name: String, deck_string: String, accessMillis: Long)
@@ -63,11 +67,10 @@ interface RDeckDao {
     @Query("SELECT * FROM rdeck WHERE id = :id LIMIT 1")
     fun findById(id: String): Flowable<RDeck>
 
-
     @Delete
     fun delete(rDeck: RDeck)
 
-    @Query("DELETE FROM rdeck WHERE id NOT IN (SELECT id FROM rdeck ORDER BY accessMillis DESC LIMIT 18)")
+    @Query("DELETE FROM rdeck WHERE id NOT IN (SELECT id FROM rdeck WHERE arena = 0 ORDER BY accessMillis DESC LIMIT 18)")
     fun cleanup()
 }
 
@@ -93,6 +96,17 @@ data class Counter(val won: Int, val lost: Int)
 
 object RDatabaseSingleton {
     val instance = Room.databaseBuilder(ArcaneTrackerApplication.get(), RDatabase::class.java, "db")
+            .addMigrations(Migration3_4())
             .fallbackToDestructiveMigration()
             .build()
+}
+
+class Migration3_4: Migration(3, 4) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        try {
+            database.execSQL("ALTER TABLE rdeck ADD arena integer NOT NULL DEFAULT 0")
+        } catch (e: Exception) {
+            Timber.d(e)
+        }
+    }
 }
