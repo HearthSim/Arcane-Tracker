@@ -457,6 +457,10 @@ class SettingsCompanion(internal var settingsView: View) {
         autoAddCards.isChecked = Settings.get(Settings.AUTO_ADD_CARDS, true)
         autoAddCards.setOnCheckedChangeListener { buttonView, isChecked -> Settings.set(Settings.AUTO_ADD_CARDS, isChecked) }
 
+        val showLegacyDecks = view.findViewById<View>(R.id.legacyDecks) as CheckBox
+        showLegacyDecks.isChecked = Settings.get(Settings.SHOW_LEGACY_DECKS, false)
+        showLegacyDecks.setOnCheckedChangeListener { buttonView, isChecked -> c.handlesView.showLegacy(isChecked) }
+
         val hsReplay1 = view.findViewById<View>(R.id.hsReplayButton1)
         val hsReplay2 = view.findViewById<View>(R.id.hsReplayButton2)
 

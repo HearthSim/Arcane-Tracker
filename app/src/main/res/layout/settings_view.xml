@@ -231,6 +231,35 @@
                 android:text="@string/autoAddExplanation"
                 android:textColor="#808080"/>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/legacyTitle"
+                    android:textColor="#000"
+                    android:textSize="20dp"
+                    android:textStyle="bold"/>
+
+                <CheckBox
+                    android:id="@+id/legacyDecks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:text="@string/legacyDecksExplanation"
+                android:textColor="#808080"/>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

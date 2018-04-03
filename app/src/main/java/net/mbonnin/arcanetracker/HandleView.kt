@@ -158,7 +158,7 @@ class HandleView : View {
                 mLastX = mParams!!.x
                 mLastY = mParams!!.y
 
-                mViewManager!!.updateView(this, mParams!!)
+                mViewManager.updateView(this, mParams!!)
             }
         } else if (event.actionMasked == MotionEvent.ACTION_UP) {
             mPressed = false

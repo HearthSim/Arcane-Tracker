@@ -341,8 +341,6 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
                 STATE_LEGACY -> {
                     legacyView.visibility = View.VISIBLE
                     FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("state_opponent", null)
-
-                    Onboarding.legacyHandleClicked()
                 }
             }
         }
@@ -439,9 +437,6 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
         drawable = v.context.resources.getDrawable(R.drawable.box)
         handleView.init(drawable, v.context.resources.getColor(R.color.gray))
         handleView.setOnClickListener(ClickListener(STATE_LEGACY))
-        if (!LegacyDeckList.hasValidDeck()) {
-            handleView.visibility = View.GONE
-        }
 
         handleView = v.findViewById(R.id.opponentHandle)
         drawable = v.context.resources.getDrawable(R.drawable.icon_white)

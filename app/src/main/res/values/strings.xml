@@ -212,4 +212,6 @@
     <string name="na">N/A</string>
     <string name="total">Total</string>
     <string name="opponent">Opponent</string>
+    <string name="legacyTitle">Show archived decks</string>
+    <string name="legacyDecksExplanation">Arcane Tracker now detects deck automatically. If you previously used Arcane Tracker to manually create some decks, you can still access them by enabling this option.\nNote that this feature will be removed in a future Arcane Tracker update.</string>
 </resources>

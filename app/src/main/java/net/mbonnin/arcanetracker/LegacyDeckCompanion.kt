@@ -30,7 +30,7 @@ class LegacyDeckCompanion(v: View) : DeckCompanion(v) {
                 losses.minValue = 0
                 losses.maxValue = 999
                 losses.value = value.losses
-                view2.findViewById<View>(R.id.ok).setOnClickListener { v3 ->
+                view2.findViewById<View>(R.id.ok).setOnClickListener {
                     mViewManager.removeView(view2)
                     try {
                         value.wins = win.value
@@ -48,7 +48,7 @@ class LegacyDeckCompanion(v: View) : DeckCompanion(v) {
 
                     MainViewCompanion.legacyCompanion.deck = deck
                 }
-                view2.findViewById<View>(R.id.cancel).setOnClickListener { v3 -> mViewManager.removeView(view2) }
+                view2.findViewById<View>(R.id.cancel).setOnClickListener { mViewManager.removeView(view2) }
 
                 mViewManager.addCenteredView(view2)
             }

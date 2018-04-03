@@ -10,7 +10,6 @@ import android.widget.TextView
 object Onboarding {
     var playerPopup: View? = null
     var opponentPopup: View? = null
-    var legacyPopup: View? = null
 
     val handler = Handler()
 
@@ -73,27 +72,9 @@ object Onboarding {
         opponentPopup = null
         getHandleView(R.id.opponentHandle).glow(false)
 
-        if (LegacyDeckList.hasValidDeck()) {
-            handler.postDelayed ({
-                legacyPopup?.let { ViewManager.get().removeView(it) }
-                legacyPopup = displayPopup(getHandleView(R.id.legacyHandle), R.string.onboarding_legacy)
-            }, 300)
-        } else {
-            finishOnboarding()
-        }
-    }
-
-    fun legacyHandleClicked() {
-        if (legacyPopup == null) {
-            return
-        }
-
-        legacyPopup?.let { ViewManager.get().removeView(it) }
-        legacyPopup = null
-        getHandleView(R.id.legacyHandle).glow(false)
-
         finishOnboarding()
     }
+
 
     private fun finishOnboarding() {
 
@@ -103,7 +84,6 @@ object Onboarding {
     fun updateTranslation() {
         playerPopup?.let {updateX(it, R.id.playerHandle)}
         opponentPopup?.let {updateX(it, R.id.opponentHandle)}
-        legacyPopup?.let {updateX(it, R.id.legacyHandle)}
     }
 
     private fun updateX(view: View, handleResId: Int) {
