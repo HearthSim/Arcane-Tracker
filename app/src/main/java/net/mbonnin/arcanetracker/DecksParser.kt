@@ -27,6 +27,8 @@ class DecksParser: LogReader.LineConsumer {
     override fun onLine(rawLine: String) {
         if (rawLine.contains("Deck Contents Received:")) {
             isArena = false
+        } else if (rawLine.contains("Finished Editing Deck:")) {
+            isArena = false
         } else if (rawLine.contains("Finding Game With Deck:")) {
             isArena = false
         } else if (rawLine.contains("Starting Arena Game With Deck")) {
