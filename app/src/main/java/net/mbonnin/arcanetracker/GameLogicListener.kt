@@ -78,7 +78,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         val mode = LoadingScreenParser.get().gameplayMode
 
         currentGame!!.playerRank = RankHolder.playerRank
-        currentGame!!.opponentRank = RankHolder.playerRank
+        currentGame!!.opponentRank = RankHolder.opponentRank
 
         RankHolder.reset()
 
@@ -139,7 +139,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
             resultData.result.win = currentGame!!.victory
             resultData.result.mode = Trackobot.getMode(currentGame!!.gameType)
 
-            val playerRank = RankHolder.playerRank
+            val playerRank = currentGame!!.playerRank
             if (playerRank != RANK_UNKNOWN) {
                 resultData.result.rank = playerRank
             }
@@ -262,7 +262,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         val player = if (uploadRequest.friendly_player == "1") uploadRequest.player1 else uploadRequest.player2
         val opponent = if (uploadRequest.friendly_player == "1") uploadRequest.player2 else uploadRequest.player1
 
-        val playerRank = RankHolder.playerRank
+        val playerRank = game.playerRank
         if (playerRank != RANK_UNKNOWN) {
             player.rank = playerRank
         }
