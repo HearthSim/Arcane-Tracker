@@ -70,7 +70,7 @@ interface RDeckDao {
     @Delete
     fun delete(rDeck: RDeck)
 
-    @Query("DELETE FROM rdeck WHERE id NOT IN (SELECT id FROM rdeck WHERE arena = 0 ORDER BY accessMillis DESC LIMIT 18)")
+    @Query("DELETE FROM rdeck WHERE arena = 0 AND id NOT IN (SELECT id FROM rdeck WHERE arena = 0 ORDER BY accessMillis DESC LIMIT 18)")
     fun cleanup()
 }
 
