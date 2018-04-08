@@ -10,6 +10,7 @@ class Language(var friendlyName: String, var jsonName: String, var key: String) 
                 Language("Français", "frFR", "fr"),
                 Language("Español", "esES", "es"),
                 Language("Italiano", "itIT", "it"),
+                Language("Polish", "plPL", "pl"),
                 Language("Português", "ptBR", "pt"),
                 Language("Pусский", "ruRU", "ru"),
                 Language("한국의", "koKR", "ko"),
@@ -34,6 +35,8 @@ class Language(var friendlyName: String, var jsonName: String, var key: String) 
                     l = "zh"
                 } else if (locale.contains("es")) {
                     l = "es"
+                } else if (locale.contains("pl")) {
+                    l = "pl"
                 } else if (locale.contains("it")) {
                     l = "it"
                 } else {
