@@ -197,7 +197,7 @@
     <string name="notifQuit">Esci</string>
     <string name="supportAT">Supporta Arcane Tracker</string>
     <string name="your_deck_will_appear">Il tuo mazzo apparirà qui una volta che inizi una partita.</string>
-    <string name="opponent_deck_will_appear">Il mazzo del tuo avversario apparirà qui una volta che inizi una partita?</string>
+    <string name="opponent_deck_will_appear">Il mazzo del tuo avversario apparirà qui una volta che inizi una partita.</string>
     <string name="onoboarding_player">Fai clic sul pulsante blu per visualizzare il tuo mazzo.Il tuo mazzo viene rilevato automaticamente dai log di Hearthstone.</string>
     <string name="onboarding_opponent">Fai clic sul pulsante rosso per visualizzare le carte giocate dal tuo avversario.</string>
     <string name="onboarding_legacy">I tuoi mazzi precedenti sono stati archiviati e verranno rimossi nelle versioni futura di Arcane Tracker. Assicurati di eseguirne il backup se necessario!</string>
