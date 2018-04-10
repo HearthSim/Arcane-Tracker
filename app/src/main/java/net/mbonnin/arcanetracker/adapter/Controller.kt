@@ -259,19 +259,6 @@ class Controller : GameLogic.Listener {
             val list = getCardMapList(HashMap())
             opponentAdapter.setList(list)
         } else {
-            /*
-             * all the code below uses tmpCard and tmpIsGift so that it can change them without messing up the internal game state
-             */
-            val allEntities = mGame!!.getEntityList { entity -> true }
-            allEntities.forEach { entity ->
-                entity.extra.tmpIsGift = !TextUtils.isEmpty(entity.extra.createdBy)
-                if (entity.card != null) {
-                    entity.extra.tmpCard = entity.card
-                } else {
-                    entity.extra.tmpCard = CardUtil.UNKNOWN
-                }
-            }
-
             legacyAdapter.setList(getPlayerList(mLegacyCardMap))
             playerAdapter.setList(getPlayerList(mPlayerCardMap))
 
@@ -307,12 +294,25 @@ class Controller : GameLogic.Listener {
     }
 
     private fun getPlayerList(cardMap: HashMap<String, Int>?): ArrayList<Any> {
+        /*
+         * all the code below uses tmpCard and tmpIsGift so that it can change them without messing up the internal game state
+         */
+        val allEntities = mGame!!.getEntityList { entity -> true }
+        allEntities.forEach { entity ->
+            entity.extra.tmpIsGift = !TextUtils.isEmpty(entity.extra.createdBy)
+            if (entity.card != null) {
+                entity.extra.tmpCard = entity.card
+            } else {
+                entity.extra.tmpCard = CardUtil.UNKNOWN
+            }
+        }
+
         val list = ArrayList<Any>()
 
         list.add(HeaderItem(Utils.getString(R.string.deck)))
 
         if (cardMap != null) {
-            assignCardsFromDeck(cardMap!!)
+            assignCardsFromDeck(cardMap)
         }
 
         val entityList = mGame!!.getEntityList { entity -> mPlayerId == entity.extra.originalController }

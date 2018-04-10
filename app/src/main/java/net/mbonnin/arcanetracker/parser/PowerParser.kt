@@ -63,6 +63,8 @@ class PowerParser(private val mTagConsumer: (Tag) -> Unit, private val mRawGameC
             return
         }
 
+        Timber.v(line)
+
         if (logLine.method!!.startsWith("GameState.DebugPrintGame()")) {
             handleDebugPrintGame(line)
         } else if (logLine.method!!.startsWith("GameState.DebugPrintPower()")) {
@@ -88,9 +90,6 @@ class PowerParser(private val mTagConsumer: (Tag) -> Unit, private val mRawGameC
     }
 
     private fun handleDebugPrintPower(line: String) {
-
-        Timber.v(line)
-
         var m: Matcher
         var newTag: Tag? = null
 
