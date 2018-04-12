@@ -4,6 +4,8 @@ package net.mbonnin.hsmodel
 import kotlin.String
 
 object Race {
+  const val ALL: String = "ALL"
+
   const val BEAST: String = "BEAST"
 
   const val DEMON: String = "DEMON"

@@ -47,7 +47,12 @@ data class Card(
     }
 
     fun isStandard(): Boolean {
-        return setOf(Set.CORE, Set.EXPERT1, Set.OG, Set.KARA, Set.GANGS, Set.UNGORO, Set.ICECROWN, Set.LOOTAPALOOZA).contains(set)
+        return setOf(Set.CORE,
+                Set.EXPERT1,
+                Set.UNGORO,
+                Set.ICECROWN,
+                Set.LOOTAPALOOZA,
+                Set.GILNEAS).contains(set)
     }
 
 
