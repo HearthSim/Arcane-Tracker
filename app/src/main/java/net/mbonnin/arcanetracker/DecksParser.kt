@@ -48,7 +48,7 @@ class DecksParser: LogReader.LineConsumer {
                         if (isArena) {
                             deck.name = ArcaneTrackerApplication.get().getString(R.string.arenaDeck)
                         } else {
-                            deck.name = result.name
+                            deck.name = result.name ?: "?"
                         }
 
                         Completable.fromAction {
