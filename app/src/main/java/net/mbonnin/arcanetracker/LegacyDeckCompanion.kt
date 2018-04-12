@@ -74,7 +74,7 @@ class LegacyDeckCompanion(v: View) : DeckCompanion(v) {
 
         if (deck == null) {
             deck = LegacyDeckList.createDeck(Card.CLASS_INDEX_WARRIOR)
-            PaperDb.write(KEY_LAST_USED_DECK_ID, deck!!.id)
+            PaperDb.write(KEY_LAST_USED_DECK_ID, deck.id)
         }
 
         recyclerView.adapter = Controller.get().legacyAdapter

@@ -3418,8 +3418,6 @@ object CardId {
 
   const val CAULDRON_ELEMENTAL: String = "GIL_119"
 
-  const val __: String = "GILA_BOSS_66p"
-
   const val FERAL_SPIRIT: String = "EX1_248"
 
   const val NETHER_BREATH: String = "KARA_08_03"

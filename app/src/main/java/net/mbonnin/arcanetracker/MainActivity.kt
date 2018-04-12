@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
             button.text = getString(R.string.authorizeAndPlay)
         }
 
-        button.setOnClickListener { v -> tryToLaunchGame() }
+        button.setOnClickListener { _ -> tryToLaunchGame() }
 
         if (!showNextTime) {
             tryToLaunchGame()
@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity() {
                     AlertDialog.Builder(context)
                             .setTitle(getString(R.string.hi_there))
                             .setMessage(getString(R.string.overlay_explanation))
-                            .setPositiveButton(getString(R.string.ok)) { dialog, which -> dialog.dismiss() }
+                            .setPositiveButton(getString(R.string.ok)) { dialog, _ -> dialog.dismiss() }
                             .show()
                 }
 
@@ -133,8 +133,8 @@ class MainActivity : AppCompatActivity() {
             AlertDialog.Builder(context)
                     .setTitle(getString(R.string.hi_there))
                     .setMessage(getString(R.string.xiaomi_explanation))
-                    .setNeutralButton(getString(R.string.learn_more)) { dialog, which -> Utils.openLink("https://www.reddit.com/r/arcanetracker/comments/5nygi0/read_this_if_you_are_playing_on_a_xiaomi_device/") }
-                    .setPositiveButton(getString(R.string.gotIt)) { dialog, which ->
+                    .setNeutralButton(getString(R.string.learn_more)) { _, _ -> Utils.openLink("https://www.reddit.com/r/arcanetracker/comments/5nygi0/read_this_if_you_are_playing_on_a_xiaomi_device/") }
+                    .setPositiveButton(getString(R.string.gotIt)) { dialog, _ ->
                         dialog.dismiss()
                         Settings.set(Settings.SHOW_XIAOMI_WARNING, false)
                         tryToLaunchGame()
@@ -147,7 +147,7 @@ class MainActivity : AppCompatActivity() {
             AlertDialog.Builder(context)
                     .setTitle(getString(R.string.please_stop_hearthstone))
                     .setMessage(getString(R.string.stop_hearthstone_explanation))
-                    .setPositiveButton(getString(R.string.continue_)) { dialog, which ->
+                    .setPositiveButton(getString(R.string.continue_)) { dialog, _ ->
                         dialog.dismiss()
                         Settings.set(Settings.CHECK_IF_RUNNING, false)
                         tryToLaunchGame()

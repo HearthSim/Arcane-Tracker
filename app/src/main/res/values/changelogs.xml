@@ -14,4 +14,5 @@
     <string name="changelog_235">Bye bye Corridor Creeper… Cards have been nerfed.\nAdded italian support (Thanks Mariodm !).\nFixed some card names in hsreplay.net replays.\nSpecial handling of Hoarding Dragon, Deck of wonders and some K&amp;C cards.\nDisplay all gift cards on a single line.</string>
     <string name="changelog_237">New arena cards !\nImproved italian support (Thanks Mariodm and Silvano!).\nFixed a error message about HSReplay displayed even if you have not opted-in.</string>
     <string name="changelog_300">Automatic deck detection!</string>
+    <string name="changelog_303">The witchwood!\nPolish translations (Thanks Sarenka !).</string>
 </resources>

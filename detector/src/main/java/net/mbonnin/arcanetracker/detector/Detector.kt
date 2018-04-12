@@ -1,9 +1,7 @@
 package net.mbonnin.arcanetracker.detector
 
 import android.content.Context
-import android.util.DisplayMetrics
 import android.util.Log
-import android.view.WindowManager
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
 import net.mbonnin.hsmodel.Card
@@ -11,7 +9,6 @@ import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.PlayerClass
 import net.mbonnin.hsmodel.Type
 import okio.Okio
-import timber.log.Timber
 import java.nio.ByteBuffer
 import java.util.*
 import kotlin.reflect.KFunction2
@@ -198,8 +195,8 @@ class Detector(var context: Context, val isTablet: Boolean) {
         val NAME_TO_CARD_ID by lazy {
             val map = TreeMap<String, ArrayList<String>>()
 
-            CardJson.allCards().filter { it.name != null }.forEach({
-                val cardName = it.name!!
+            CardJson.allCards().forEach({
+                val cardName = it.name
                         .toUpperCase()
                         .replace(" ", "_")
                         .replace(Regex("[^A-Z_]"), "")
