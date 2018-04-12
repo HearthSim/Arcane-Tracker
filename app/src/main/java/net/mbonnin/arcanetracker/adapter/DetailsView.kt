@@ -133,6 +133,7 @@ class DetailsView(context: Context) : LinearLayout(context) {
                 addSecret(list, CardId.MISDIRECTION, entity.extra.selfHeroAttacked)
                 addSecret(list, CardId.VENOMSTRIKE_TRAP, entity.extra.selfMinionWasAttacked)
                 addSecret(list, CardId.WANDERING_MONSTER, entity.extra.selfHeroAttacked)
+                //addSecret(list, CardId.RAT_TRAP, entity.extra.otherPlayerPlayedMinion)
             }
             PlayerClass.MAGE -> {
                 addSecret(list, CardId.MIRROR_ENTITY, entity.extra.otherPlayerPlayedMinion)
@@ -157,6 +158,7 @@ class DetailsView(context: Context) : LinearLayout(context) {
                 addSecret(list, CardId.NOBLE_SACRIFICE, entity.extra.selfHeroAttacked || entity.extra.selfMinionWasAttacked)
                 addSecret(list, CardId.GETAWAY_KODO, entity.extra.selfPlayerMinionDied)
                 addSecret(list, CardId.EYE_FOR_AN_EYE, entity.extra.selfHeroAttacked)
+                //addSecret(list, CardId.HIDDEN_WISDOM, entity.extra.selfHeroAttacked)
             }
             PlayerClass.ROGUE -> {
                 addSecret(list, CardId.CHEAT_DEATH, entity.extra.selfPlayerMinionDied)

@@ -52,7 +52,8 @@ data class Card(
                 Set.UNGORO,
                 Set.ICECROWN,
                 Set.LOOTAPALOOZA,
-                Set.GILNEAS).contains(set)
+                Set.GILNEAS
+        ).contains(set)
     }
 
 

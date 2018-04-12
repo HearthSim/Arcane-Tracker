@@ -494,7 +494,16 @@ class GameLogic private constructor() {
 
             // battlecry or active effect
             guessedId = when (blockEntity.CardID) {
-                CardId.GANG_UP, CardId.RECYCLE, CardId.SHADOWCASTER, CardId.MANIC_SOULCASTER -> mGame!!.findEntitySafe(blockTag.Target).CardID
+                CardId.GANG_UP,
+                CardId.RECYCLE,
+                CardId.SHADOWCASTER,
+                CardId.MANIC_SOULCASTER,
+                CardId.DIRE_FRENZY,
+                CardId.BALEFUL_BANKER,
+                CardId.HOLY_WATER,
+                CardId.SPLINTERGRAFT -> mGame!!.findEntitySafe(blockTag.Target).CardID
+                //CardId.DOLLMASTER_DORIAN
+                CardId.WANTED -> CardId.COIN
                 CardId.BENEATH_THE_GROUNDS -> CardId.NERUBIAN_AMBUSH
                 CardId.IRON_JUGGERNAUT -> CardId.BURROWING_MINE
                 CardId.FORGOTTEN_TORCH -> CardId.ROARING_TORCH
