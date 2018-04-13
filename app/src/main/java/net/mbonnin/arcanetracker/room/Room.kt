@@ -5,7 +5,6 @@ import android.arch.persistence.room.*
 import android.arch.persistence.room.migration.Migration
 import io.reactivex.Flowable
 import io.reactivex.Maybe
-import io.reactivex.Single
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import timber.log.Timber
 
@@ -50,7 +49,7 @@ abstract class RDatabase : RoomDatabase() {
 @Dao
 interface RDeckDao {
     @Query("SELECT * FROM rdeck WHERE arena = 0")
-    fun getCollection(): Single<List<RDeck>>
+    fun getCollection(): Flowable<List<RDeck>>
 
     @Query("UPDATE rdeck SET name = :name, deck_string = :deck_string, accessMillis = :accessMillis WHERE id = :id")
     fun updateNameAndContents(id: String, name: String, deck_string: String, accessMillis: Long)
@@ -67,8 +66,8 @@ interface RDeckDao {
     @Query("SELECT * FROM rdeck WHERE id = :id LIMIT 1")
     fun findById(id: String): Flowable<RDeck>
 
-    @Delete
-    fun delete(rDeck: RDeck)
+    @Query("DELETE FROM rdeck WHERE id = :id")
+    fun delete(id: String)
 
     @Query("DELETE FROM rdeck WHERE arena = 0 AND id NOT IN (SELECT id FROM rdeck WHERE arena = 0 ORDER BY accessMillis DESC LIMIT 18)")
     fun cleanup()

@@ -40,7 +40,7 @@
     <string name="deck">Mazzo</string>
     <string name="deckName">Nome mazzo:</string>
     <string name="decribeYourProblem">Descrivi qui il tuo problema, per favore</string>
-    <string name="delete">cancella</string>
+    <string name="delete">Cancella</string>
     <string name="deleteConfirm">Sei sicuro di voler eliminarequesto mazzo ?</string>
     <string name="deleteDeck">Elimina mazzo</string>
     <string name="diedTurn">Eliminata al turno: %d</string>

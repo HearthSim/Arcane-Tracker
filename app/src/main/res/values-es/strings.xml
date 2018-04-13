@@ -32,7 +32,7 @@
   <string name="done">Hecho</string>
   <string name="deleteConfirm">¿Estás seguro de que quieres eliminar este mazo?</string>
   <string name="cancel">cancelar</string>
-  <string name="delete">eliminar</string>
+  <string name="delete">Eliminar</string>
   <string name="deleteDeck">Eliminar mazo</string>
   <string name="renameDeck">Renombrar mazo</string>
   <string name="resetCounter">Resetear contador victorias/derrotas</string>

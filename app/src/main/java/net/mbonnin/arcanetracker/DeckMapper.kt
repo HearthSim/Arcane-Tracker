@@ -6,9 +6,11 @@ object DeckMapper {
     fun fromRDeck(rdeck: RDeck): Deck? {
         val deck = DeckStringParser.parse(rdeck.deck_string)
         if (deck == null) {
-            return deck
+            return null
         }
 
+        deck.wins = rdeck.wins
+        deck.losses = rdeck.losses
         deck.name = rdeck.name
         deck.id = rdeck.id
         return deck

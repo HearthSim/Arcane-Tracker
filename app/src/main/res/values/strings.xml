@@ -40,7 +40,7 @@
     <string name="deck">Deck</string>
     <string name="deckName">Deck name:</string>
     <string name="decribeYourProblem">Please describe your problem here</string>
-    <string name="delete">delete</string>
+    <string name="delete">Delete</string>
     <string name="deleteConfirm">Are you sure you want to delete this deck ?</string>
     <string name="deleteDeck">Delete deck</string>
     <string name="diedTurn">Died turn: %d</string>

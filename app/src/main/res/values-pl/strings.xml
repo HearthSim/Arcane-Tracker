@@ -40,7 +40,7 @@
     <string name="deck">Talia</string>
     <string name="deckName">Nazwa talii:</string>
     <string name="decribeYourProblem">Proszę tu opisać problem</string>
-    <string name="delete">kasowanie</string>
+    <string name="delete">Kasowanie</string>
     <string name="deleteConfirm">Jesteś pewien, że chcesz skasować tę talię?</string>
     <string name="deleteDeck">Kasuj talie</string>
     <string name="diedTurn">Zginął w turze: %d</string>

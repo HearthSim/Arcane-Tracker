@@ -31,7 +31,7 @@
   <string name="done">Pronto</string>
   <string name="deleteConfirm">Voce tem certeza que quer deletar esse deck ?</string>
   <string name="cancel">cancelar</string>
-  <string name="delete">deletar</string>
+  <string name="delete">Deletar</string>
   <string name="deleteDeck">Deletar deck</string>
   <string name="renameDeck">Renomear deck</string>
   <string name="resetCounter">Resetar contador de Vitorias/Derrotas</string>
