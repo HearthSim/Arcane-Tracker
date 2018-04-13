@@ -25,6 +25,7 @@ class YourDecksAdapter : RecyclerView.Adapter<YourDecksAdapter.ViewHolder>() {
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe( {
+                    list.clear()
                     list.addAll(it)
                     notifyDataSetChanged()
                 }, Timber::e)
