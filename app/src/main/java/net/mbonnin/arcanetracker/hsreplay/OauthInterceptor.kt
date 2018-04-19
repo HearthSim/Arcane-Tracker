@@ -17,7 +17,6 @@ class OauthInterceptor : Interceptor {
 
             val requestBuilder = request.newBuilder()
 
-
             requestBuilder.header(HEADER_AUTHORIZATION, "Bearer ${accessToken!!}")
             request = requestBuilder.build()
 

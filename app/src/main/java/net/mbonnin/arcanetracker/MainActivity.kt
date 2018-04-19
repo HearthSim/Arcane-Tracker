@@ -190,7 +190,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             startActivity(hsIntent)
-            finish()
+            finishAndRemoveTaskIfPossible()
 
             Overlay.get().show()
 

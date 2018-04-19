@@ -24,7 +24,7 @@ class HsReplayCallbackActivity : Activity() {
 
         button.setText(R.string.backToGame)
         button.setOnClickListener {
-            finish()
+            finishAndRemoveTaskIfPossible()
             val hsIntent = packageManager.getLaunchIntentForPackage(MainActivity.HEARTHSTONE_PACKAGE_ID)
             if (hsIntent != null) {
                 startActivity(hsIntent)
@@ -32,6 +32,10 @@ class HsReplayCallbackActivity : Activity() {
         }
 
         val code = intent.data.getQueryParameter("code")
+
+        if (code.isNullOrEmpty()) {
+            finishAndRemoveTaskIfPossible()
+        }
 
         disposable = Completable.fromCallable {
             OauthInterceptor.exchangeCode(code)

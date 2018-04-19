@@ -54,7 +54,7 @@ class StartScreenCaptureActivity : AppCompatActivity() {
             if (resultCode == Activity.RESULT_OK) {
                 val projection = mProjectionManager!!.getMediaProjection(resultCode, data)
                 ScreenCaptureHolder.mediaProjectionCreated(projection)
-                finish()
+                finishAndRemoveTaskIfPossible()
             } else {
                 ScreenCaptureHolder.mediaProjectionAborted()
                 AlertDialog.Builder(this)
@@ -62,7 +62,7 @@ class StartScreenCaptureActivity : AppCompatActivity() {
                         .setMessage(getString(R.string.noScreenCapture))
                         .setPositiveButton(getString(R.string.ok)) { dialog, which -> dialog.dismiss() }
                         .show()
-                finish()
+                finishAndRemoveTaskIfPossible()
             }
         }
     }

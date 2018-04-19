@@ -19,3 +19,11 @@ fun Activity.makeFullscreen() {
 
     //    decorView.setBackgroundColor(Color.argb(140, 0, 0, 0))
 }
+
+fun Activity.finishAndRemoveTaskIfPossible() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        this.finishAndRemoveTask()
+    } else {
+        this.finish()
+    }
+}
