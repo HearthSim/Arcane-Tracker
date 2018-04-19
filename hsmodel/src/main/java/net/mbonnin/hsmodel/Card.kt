@@ -47,13 +47,8 @@ data class Card(
     }
 
     fun isStandard(): Boolean {
-        return setOf(Set.CORE,
-                Set.EXPERT1,
-                Set.UNGORO,
-                Set.ICECROWN,
-                Set.LOOTAPALOOZA,
-                Set.GILNEAS
-        ).contains(set)
+        return STANDARD_SETS.contains(set)
+                && !HALL_OF_FAME_CARDS.contains(id)
     }
 
 
@@ -72,6 +67,24 @@ data class Card(
         const val CLASS_INDEX_WARRIOR = 0
         const val CLASS_INDEX_NEUTRAL = 9
 
+        val STANDARD_SETS = setOf(Set.CORE,
+                Set.EXPERT1,
+                Set.UNGORO,
+                Set.ICECROWN,
+                Set.LOOTAPALOOZA,
+                Set.GILNEAS
+        )
+        val HALL_OF_FAME_CARDS = setOf(
+                CardId.ICE_BLOCK,
+                CardId.MOLTEN_GIANT,
+                CardId.COLDLIGHT_ORACLE,
+                CardId.AZURE_DRAKE,
+                CardId.SYLVANAS_WINDRUNNER,
+                CardId.RAGNAROS_THE_FIRELORD,
+                CardId.POWER_OVERWHELMING,
+                CardId.ICE_LANCE,
+                CardId.CONCEAL
+        )
         val UNDRAFTABLE_CARDS = setOf(CardId.VICIOUS_FLEDGLING,
                 // quests
                 CardId.JUNGLE_GIANTS,
