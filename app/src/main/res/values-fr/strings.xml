@@ -214,4 +214,7 @@
     <string name="opponent">Adversaire</string>
     <string name="legacyTitle">Deck archivés</string>
     <string name="legacyDecksExplanation">Avec la détéction automatique, vos anciens decks manuel ont été archivés. Cliquez ici pour les réactiver. Sauvegardez les dès que possible.</string>
+    <string name="hsReplayClaiming">Connection à votre compte HSReplay.net...</string>
+    <string name="hsReplayClaimSuccess">Vos replays sont désormais liés à votre compte !</string>
+    <string name="backToGame">Retour</string>
 </resources>
