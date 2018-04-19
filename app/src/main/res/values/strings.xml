@@ -214,4 +214,8 @@
     <string name="opponent">Opponent</string>
     <string name="legacyTitle">Show archived decks</string>
     <string name="legacyDecksExplanation">Arcane Tracker now detects deck automatically. If you previously used Arcane Tracker to manually create some decks, you can still access them by enabling this option.\nNote that this feature will be removed in a future Arcane Tracker update.</string>
+    <string name="hsReplayClaiming">Claiming your replays…</string>
+    <string name="hsReplayClaimSuccess">You have successfully claimed your replays, yay!\n</string>
+    <string name="backToGame">Back to game</string>
+
 </resources>

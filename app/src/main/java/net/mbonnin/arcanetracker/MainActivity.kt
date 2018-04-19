@@ -160,8 +160,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun launchGame() {
-        val launchIntent = packageManager.getLaunchIntentForPackage(HEARTHSTONE_PACKAGE_ID)
-        if (launchIntent != null) {
+        val hsIntent = packageManager.getLaunchIntentForPackage(HEARTHSTONE_PACKAGE_ID)
+        if (hsIntent != null) {
             Settings.set(Settings.SHOW_NEXT_TIME, checkbox!!.isChecked)
 
             try {
@@ -189,7 +189,7 @@ class MainActivity : AppCompatActivity() {
                 Timber.d("Cannot find Hearthstone build number")
             }
 
-            startActivity(launchIntent)
+            startActivity(hsIntent)
             finish()
 
             Overlay.get().show()

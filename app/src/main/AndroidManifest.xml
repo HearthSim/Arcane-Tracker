@@ -55,6 +55,15 @@
         <activity android:name=".StartScreenCaptureActivity"
                   android:theme="@style/Theme.Transparent"
             />
+        <activity android:name=".HsReplayCallbackActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="arcanetracker" android:host="callback" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".SettingsActivity"
             android:launchMode="singleTask" />

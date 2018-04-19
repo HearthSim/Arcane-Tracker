@@ -45,6 +45,7 @@ object Libs {
     const val retrofit = "com.squareup.retrofit2:retrofit:2.4.0"
     const val retrofitGson = "com.squareup.retrofit2:converter-gson:2.4.0"
     const val retrofitRx = "com.squareup.retrofit2:adapter-rxjava:2.4.0"
+    const val retrofitRx2 = "com.squareup.retrofit2:adapter-rxjava2:2.4.0"
     const val pngj = "ar.com.hjg:pngj:2.1.0"
     const val kotlinPoet = "com.squareup:kotlinpoet:0.5.0"
     const val okhttp = "com.squareup.okhttp3:okhttp:3.9.0"

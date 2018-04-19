@@ -17,6 +17,7 @@ import android.widget.*
 import com.google.firebase.analytics.FirebaseAnalytics
 import net.mbonnin.arcanetracker.detector.ByteBufferImage
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
+import net.mbonnin.arcanetracker.hsreplay.OauthInterceptor
 import net.mbonnin.arcanetracker.hsreplay.model.Lce
 import net.mbonnin.arcanetracker.hsreplay.model.Token
 import net.mbonnin.arcanetracker.trackobot.Trackobot
@@ -608,14 +609,8 @@ class SettingsCompanion(internal var settingsView: View) {
                 mHsReplayCompanion1!!.setText(Utils.getString(R.string.hsReplayClaim)) { v ->
                     ViewManager.Companion.get().removeView(settingsView)
 
-                    HSReplay.get()
-                            .claimUrl()
-                            .subscribe({ this.handleClaimUrlLce(it) })
-//                    HSReplay.get()
-//                            .claimTokenOauth()
-//                            .subscribe()
+                    OauthInterceptor.startOauth()
                 }
-
             }
         }
     }

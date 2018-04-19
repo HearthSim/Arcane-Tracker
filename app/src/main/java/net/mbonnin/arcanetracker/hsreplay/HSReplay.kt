@@ -6,6 +6,7 @@ import android.preference.PreferenceManager
 import androidx.content.edit
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
+import io.reactivex.Completable
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.hsreplay.model.Lce
 import net.mbonnin.arcanetracker.hsreplay.model.Token
@@ -14,6 +15,7 @@ import net.mbonnin.arcanetracker.hsreplay.model.UploadRequest
 import okhttp3.*
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import rx.Observable
 import rx.Single
@@ -28,19 +30,12 @@ class HSReplay {
     private var mOauthervice: OauthService
     private val mLegacyService: LegacyService
 
-    fun claimUrl(): Observable<Lce<String>> = legacyService().createClaim()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map { claimResult -> Lce.data(claimResult.full_url!!) }
-                .startWith(Lce.loading())
-                .onErrorReturn({ Lce.error(it) })
+    fun claimTokenOauth(): Completable {
+        val str = "{\"token\": \"$mLegacyToken\"}"
+        return mOauthervice.claimToken(RequestBody.create(MediaType.parse("application/json"), str))
+                .ignoreElements()
+    }
 
-    fun claimTokenOauth(): Observable<Lce<Boolean>> = mOauthervice.claimToken("{\"token\": $mLegacyToken}")
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .map { Lce.data(true) }
-            .startWith(Lce.loading())
-            .onErrorReturn({ Lce.error(it) })
 
     fun user(): Observable<Lce<Token>> = legacyService().getToken(mLegacyToken)
                 .subscribeOn(Schedulers.io())
@@ -140,7 +135,7 @@ class HSReplay {
 
         mOauthervice = Retrofit.Builder()
                 .baseUrl("https://api.hsreplay.net/v1/")
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(io.reactivex.schedulers.Schedulers.io()))
                 .addConverterFactory(GsonConverterFactory.create(Gson()))
                 .client(oauthOkHttpClient)
                 .build()
