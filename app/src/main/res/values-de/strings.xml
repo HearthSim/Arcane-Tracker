@@ -184,7 +184,7 @@
     <string name="priest">Priester</string>
     <string name="neutral">Neutral</string>
     <string name="ossLicenses">Software Lizenzen</string>
-    <string name="copyright">Arcane Tracker © 2017\nDiese App steht nicht in Verbindung mit Blizzard Entertainment.</string>
+    <string name="copyright">Arcane Tracker © 2018\nDiese App steht nicht in Verbindung mit Blizzard Entertainment.</string>
     <string name="about">Über</string>
     <string name="quitTimeout">Inaktivität:</string>
     <string name="quitTimeoutExplanation">Arcane Tracker kann unglücklicherweise nicht erkennen, ob Hearthstone beendet wurde. Diese Einstellung beendet Arcane Tracker falls dein Gerät im Hochformat ist und Hearthstone für eine bestimmte Zeit nichts in die Logs geschrieben hat.</string>

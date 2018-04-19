@@ -184,7 +184,7 @@
     <string name="priest">Priest</string>
     <string name="neutral">Neutral</string>
     <string name="ossLicenses">Software licenses</string>
-    <string name="copyright">Arcane Tracker © 2017\nThis app is not affiliated with Blizzard Entertainment.</string>
+    <string name="copyright">Arcane Tracker © 2018\nThis app is not affiliated with Blizzard Entertainment.</string>
     <string name="about">About</string>
     <string name="quitTimeout">Inactivity timeout:</string>
     <string name="quitTimeoutExplanation">Arcane tracker can unfortunately not detect when Hearthstone is closed. This setting will close Arcane Tracker if your phone is in portrait mode and Hearthstone has not written logs for the given time.</string>

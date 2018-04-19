@@ -184,7 +184,7 @@
     <string name="priest">Prêtre</string>
     <string name="neutral">Neutre</string>
     <string name="ossLicenses">Licenses logicielles</string>
-    <string name="copyright">Arcane Tracker © 2017\nCette appli n\'est pas à affiliée à Blizzard Entertainment.</string>
+    <string name="copyright">Arcane Tracker © 2018\nCette appli n\'est pas à affiliée à Blizzard Entertainment.</string>
     <string name="about">A propos</string>
     <string name="quitTimeout">Fermeture automatique</string>
     <string name="quitTimeoutExplanation">Hélas Arcane Tracker ne peut pas détecter lorsque vous quittez Hearthstone. Avec ce réglage, vous pouvez configurer le délai d\'inactivité après lequel Arcane Tracker se fermera automatiquement.</string>
