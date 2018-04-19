@@ -69,7 +69,7 @@ class DetailsView(context: Context) : LinearLayout(context) {
                 builder.append("\n")
             }
             if (!TextUtils.isEmpty(entity.extra.createdBy)) {
-                builder.append(context.getString(R.string.createdBy, CardUtil.getCard(entity.extra.createdBy).name))
+                builder.append(context.getString(R.string.createdBy, CardUtil.getCard(entity.extra.createdBy!!).name))
             }
 
             if (Entity.ZONE_SECRET == entity.tags[Entity.KEY_ZONE] && TextUtils.isEmpty(entity.CardID)) {

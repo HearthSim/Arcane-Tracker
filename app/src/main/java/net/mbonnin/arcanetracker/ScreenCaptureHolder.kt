@@ -86,7 +86,7 @@ object ScreenCaptureHolder {
     fun shouldDetectRank(): Boolean {
         val game = GameLogicListener.get().currentGame
         return game != null
-                && game.gameEntity.tags[Entity.KEY_STEP] == Entity.STEP_BEGIN_MULLIGAN
+                && game.gameEntity!!.tags[Entity.KEY_STEP] == Entity.STEP_BEGIN_MULLIGAN
                 && game.gameType == GameType.GT_RANKED.name
     }
 

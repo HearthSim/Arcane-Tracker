@@ -4,6 +4,7 @@ package net.mbonnin.arcanetracker.parser
  * Created by martin on 11/11/16.
  */
 
+import com.annimon.stream.function.Predicate
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.parser.power.*
 import net.mbonnin.arcanetracker.parser.power.BlockTag.TYPE_TRIGGER
@@ -21,11 +22,11 @@ class GameLogic private constructor() {
     private var mLastTag: Boolean = false
     private var spectator = false
 
-    private/*
-         * don't factor in the epic secret which are all quests for now
-         */ val secretEntityList: EntityList
-        get() = mGame!!.getEntityList { e -> Entity.ZONE_SECRET == e.tags[Entity.KEY_ZONE] }
-                .filter { e -> Rarity.LEGENDARY != e.tags[Entity.KEY_RARITY] }
+    private fun secretEntityList(): EntityList {
+        return mGame!!
+                .getEntityList { e -> Entity.ZONE_SECRET == e.tags[Entity.KEY_ZONE] }
+                .filter (Predicate{ e -> Rarity.LEGENDARY != e.tags[Entity.KEY_RARITY] }) // LEGENDARY secrets are actually quests
+    }
 
     fun handleRootTag(tag: Tag) {
         //Timber.d("handle tag: " + tag);
@@ -46,7 +47,7 @@ class GameLogic private constructor() {
 
             if (mLastTag) {
                 if (mGame!!.isStarted) {
-                    mGame!!.victory = Entity.PLAYSTATE_WON == mGame!!.player.entity.tags[Entity.KEY_PLAYSTATE]
+                    mGame!!.victory = Entity.PLAYSTATE_WON == mGame!!.player!!.entity!!.tags[Entity.KEY_PLAYSTATE]
                     for (listener in mListenerList) {
                         listener.gameOver()
                     }
@@ -82,7 +83,7 @@ class GameLogic private constructor() {
 
         if (BlockTag.TYPE_PLAY == tag.BlockType) {
             val playedEntity = mGame!!.findEntitySafe(tag.Entity)
-            if (playedEntity.CardID == null) {
+            if (playedEntity!!.CardID == null) {
                 Timber.e("no CardID for play")
                 return
             }
@@ -98,8 +99,7 @@ class GameLogic private constructor() {
             /*
              * secret detector
              */
-            val secretEntityList = secretEntityList
-            for (secretEntity in secretEntityList) {
+            for (secretEntity in secretEntityList()) {
                 if (!Utils.equalsNullSafe(secretEntity.tags[Entity.KEY_CONTROLLER], playedEntity.tags[Entity.KEY_CONTROLLER]) && !Utils.isEmpty(playedEntity.CardID)) {
                     /*
                      * it can happen that we don't know the id of the played entity, for an example if the player has a secret and its opponent plays one
@@ -130,15 +130,14 @@ class GameLogic private constructor() {
              */
             val targetEntity = mGame!!.findEntitySafe(tag.Target)
 
-            val secretEntityList = secretEntityList
-            for (secretEntity in secretEntityList) {
-                if (Utils.equalsNullSafe(secretEntity.tags[Entity.KEY_CONTROLLER], targetEntity.tags[Entity.KEY_CONTROLLER])) {
+            for (secretEntity in secretEntityList()) {
+                if (Utils.equalsNullSafe(secretEntity.tags[Entity.KEY_CONTROLLER], targetEntity!!.tags[Entity.KEY_CONTROLLER])) {
                     if (Type.MINION == targetEntity.tags[Entity.KEY_CARDTYPE]) {
                         secretEntity.extra.selfMinionWasAttacked = true
                     } else if (Type.HERO == targetEntity.tags[Entity.KEY_CARDTYPE]) {
                         secretEntity.extra.selfHeroAttacked = true
                         val attackerEntity = mGame!!.findEntitySafe(tag.Entity)
-                        if (Type.MINION == attackerEntity.tags[Entity.KEY_CARDTYPE]) {
+                        if (Type.MINION == attackerEntity!!.tags[Entity.KEY_CARDTYPE]) {
                             secretEntity.extra.selfHeroAttackedByMinion = true
                         }
                     }
@@ -174,22 +173,22 @@ class GameLogic private constructor() {
             return
         }
 
-        var battleTagEntity = mGame!!.entityMap[tag.playerName]
+        val battleTagEntity = mGame!!.entityMap[tag.playerName]
         if (battleTagEntity != null) {
             /**
              * merge all tags
              */
-            player.entity.tags.putAll(battleTagEntity.tags)
+            player.entity!!.tags.putAll(battleTagEntity.tags)
         }
 
-        Timber.w(tag.playerName + " now points to entity " + player.entity.EntityID)
+        Timber.w(tag.playerName + " now points to entity " + player.entity!!.EntityID)
 
         player.battleTag = tag.playerName
 
         /*
          * make the battleTag point to the same entity..
          */
-        mGame!!.entityMap.put(tag.playerName, player.entity)
+        mGame!!.entityMap.put(tag.playerName, player!!.entity!!)
     }
 
     private fun handleTagRecursive2(tag: Tag) {
@@ -217,10 +216,10 @@ class GameLogic private constructor() {
                 if (damage > 0) {
                     for (id in tag.Info) {
                         val damagedEntity = mGame!!.findEntitySafe(id)
-                        val secretEntityList = secretEntityList
-                        for (e2 in secretEntityList) {
-                            if (Utils.equalsNullSafe(e2.tags[Entity.KEY_CONTROLLER], damagedEntity.tags[Entity.KEY_CONTROLLER])) {
-                                if (Type.HERO == damagedEntity.tags[Entity.KEY_CARDTYPE]) {
+
+                        for (e2 in secretEntityList()) {
+                            if (Utils.equalsNullSafe(e2.tags[Entity.KEY_CONTROLLER], damagedEntity!!.tags[Entity.KEY_CONTROLLER])) {
+                                if (Type.HERO == damagedEntity!!.tags[Entity.KEY_CARDTYPE]) {
                                     e2.extra.selfHeroDamaged = true
                                 }
                             }
@@ -237,10 +236,10 @@ class GameLogic private constructor() {
     private fun handleShowEntityTag(tag: ShowEntityTag) {
         val entity = mGame!!.findEntitySafe(tag.Entity)
 
-        if (!Utils.isEmpty(entity.CardID) && entity.CardID != tag.CardID) {
+        if (!Utils.isEmpty(entity!!.CardID) && entity!!.CardID != tag.CardID) {
             Timber.e("[Inconsistent] entity " + entity + " changed cardId " + entity.CardID + " -> " + tag.CardID)
         }
-        entity.setCardId(tag.CardID)
+        entity!!.setCardId(tag.CardID)
 
         for (key in tag.tags.keys) {
             tagChanged(entity, key, tag.tags[key])
@@ -252,7 +251,7 @@ class GameLogic private constructor() {
         val entity = mGame!!.findEntitySafe(tag.Entity)
 
         for (key in tag.tags.keys) {
-            tagChanged2(entity, key, tag.tags[key])
+            tagChanged2(entity!!, key, tag.tags[key])
         }
     }
 
@@ -261,7 +260,7 @@ class GameLogic private constructor() {
     private fun tagChanged(entity: Entity, key: String, newValue: String?) {
         val oldValue = entity.tags[key]
 
-        entity.tags.put(key, newValue)
+        entity.tags.put(key, newValue!!)
 
         if (Entity.ENTITY_ID_GAME == entity.EntityID) {
             if (Entity.KEY_TURN == key) {
@@ -290,7 +289,7 @@ class GameLogic private constructor() {
 
         if (Entity.KEY_ZONE == key) {
             if (Entity.ZONE_HAND != oldValue && Entity.ZONE_HAND == newValue) {
-                val step = mGame!!.gameEntity.tags[Entity.KEY_STEP]
+                val step = mGame!!.gameEntity!!.tags[Entity.KEY_STEP]
                 if (step == null) {
                     // this is the original mulligan
                     entity.extra.drawTurn = 0
@@ -314,8 +313,7 @@ class GameLogic private constructor() {
                 /*
                  * secret detector
                  */
-                val secretEntityList = mGame!!.getEntityList { e -> Entity.ZONE_SECRET == e.tags[Entity.KEY_ZONE] }
-                for (secretEntity in secretEntityList) {
+                for (secretEntity in secretEntityList()) {
                     if (Utils.equalsNullSafe(secretEntity.tags[Entity.KEY_CONTROLLER], entity.tags[Entity.KEY_CONTROLLER]) && Type.MINION == entity.tags[Entity.KEY_CARDTYPE]) {
                         val controllerEntity = mGame!!.findControllerEntity(entity)
                         if (controllerEntity != null && "0" == controllerEntity.tags[Entity.KEY_CURRENT_PLAYER]) {
@@ -339,16 +337,15 @@ class GameLogic private constructor() {
             /*
              * secret detector
              */
-            val secretEntityList = secretEntityList
             var currentPlayer: Entity? = null
             for (player in mGame!!.playerMap.values) {
-                if ("1" == player.entity.tags[Entity.KEY_CURRENT_PLAYER]) {
+                if ("1" == player.entity!!.tags[Entity.KEY_CURRENT_PLAYER]) {
                     currentPlayer = player.entity
                     Timber.d("Current player: " + currentPlayer!!.PlayerID + "(" + player.battleTag + ")")
                     break
                 }
             }
-            for (secretEntity in secretEntityList) {
+            for (secretEntity in secretEntityList()) {
                 if (currentPlayer != null && Utils.equalsNullSafe(secretEntity.tags[Entity.KEY_CONTROLLER], currentPlayer.PlayerID)) {
                     val list = getMinionsOnBoardForController(secretEntity.tags[Entity.KEY_CONTROLLER])
                     if (!list.isEmpty()) {
@@ -363,9 +360,9 @@ class GameLogic private constructor() {
     private fun getMinionsOnBoardForController(playerId: String?): EntityList {
         return mGame!!.getEntityList { e ->
             if (Entity.ZONE_PLAY != e.tags[Entity.KEY_ZONE]) {
-                false
+                return@getEntityList false
             } else if (Type.MINION != e.tags[Entity.KEY_CARDTYPE]) {
-                false
+                return@getEntityList false
             }
             Utils.equalsNullSafe(playerId, e.tags[Entity.KEY_CONTROLLER])
         }
@@ -397,7 +394,7 @@ class GameLogic private constructor() {
                 mGame!!.addEntity(entity)
                 player = Player()
                 player.entity = entity
-                mGame!!.playerMap.put(entity.PlayerID, player)
+                mGame!!.playerMap[entity.PlayerID!!] = player
             }
         }
     }
@@ -467,11 +464,11 @@ class GameLogic private constructor() {
     }
 
     private fun handleTagChange(tag: TagChangeTag) {
-        tagChanged(mGame!!.findEntitySafe(tag.ID), tag.tag, tag.value)
+        tagChanged(mGame!!.findEntitySafe(tag.ID)!!, tag.tag, tag.value)
     }
 
     private fun handleTagChange2(tag: TagChangeTag) {
-        tagChanged2(mGame!!.findEntitySafe(tag.ID), tag.tag, tag.value)
+        tagChanged2(mGame!!.findEntitySafe(tag.ID)!!, tag.tag, tag.value)
     }
 
     private fun tryToGuessCardIdFromBlock(stack: ArrayList<BlockTag>, fullEntityTag: FullEntityTag) {
@@ -484,7 +481,7 @@ class GameLogic private constructor() {
         val blockEntity = mGame!!.findEntitySafe(blockTag.Entity)
         val entity = mGame!!.findEntitySafe(fullEntityTag.ID)
 
-        if (Utils.isEmpty(blockEntity.CardID)) {
+        if (Utils.isEmpty(blockEntity!!.CardID)) {
             return
         }
 
@@ -501,8 +498,8 @@ class GameLogic private constructor() {
                 CardId.DIRE_FRENZY,
                 CardId.BALEFUL_BANKER,
                 CardId.HOLY_WATER,
-                CardId.SPLINTERGRAFT -> mGame!!.findEntitySafe(blockTag.Target).CardID
-                //CardId.DOLLMASTER_DORIAN
+                CardId.SPLINTERGRAFT -> mGame!!.findEntitySafe(blockTag.Target)!!.CardID
+            //CardId.DOLLMASTER_DORIAN
                 CardId.WANTED -> CardId.COIN
                 CardId.BENEATH_THE_GROUNDS -> CardId.NERUBIAN_AMBUSH
                 CardId.IRON_JUGGERNAUT -> CardId.BURROWING_MINE
@@ -538,7 +535,7 @@ class GameLogic private constructor() {
         } else if (TYPE_TRIGGER == blockTag.BlockType) {
 
             // deathrattle or passive effect
-            guessedId = when (blockEntity.CardID) {
+            guessedId = when (blockEntity!!.CardID) {
                 CardId.PYROS -> CardId.PYROS1
                 CardId.PYROS1 -> CardId.PYROS2
                 CardId.WHITE_EYES -> CardId.THE_STORM_GUARDIAN
@@ -546,12 +543,12 @@ class GameLogic private constructor() {
                 CardId.BURGLY_BULLY -> CardId.THE_COIN
                 CardId.IGNEOUS_ELEMENTAL -> CardId.FLAME_ELEMENTAL
                 CardId.RHONIN -> CardId.ARCANE_MISSILES
-                CardId.FROZEN_CLONE -> stack.filter { BlockTag.TYPE_PLAY == it.BlockType }.firstOrNull()?.let { mGame!!.findEntitySafe(it.Entity).CardID }
+                CardId.FROZEN_CLONE -> stack.firstOrNull { BlockTag.TYPE_PLAY == it.BlockType }?.let { mGame!!.findEntitySafe(it.Entity)!!.CardID }
                 CardId.BONE_BARON -> CardId.SKELETON
                 CardId.WEASEL_TUNNELER -> CardId.WEASEL_TUNNELER
                 CardId.RAPTOR_HATCHLING -> CardId.RAPTOR_PATRIARCH
                 CardId.DIREHORN_HATCHLING -> CardId.DIREHORN_MATRIARCH
-                CardId.MANA_BIND -> stack.filter { BlockTag.TYPE_PLAY == it.BlockType }.firstOrNull()?.let { mGame!!.findEntitySafe(it.Entity).CardID }
+                CardId.MANA_BIND -> stack.firstOrNull { BlockTag.TYPE_PLAY == it.BlockType }?.let { mGame!!.findEntitySafe(it.Entity)!!.CardID }
                 CardId.ARCHMAGE_ANTONIDAS -> CardId.FIREBALL
                 CardId.HOARDING_DRAGON -> CardId.COIN
                 CardId.ASTRAL_TIGER -> CardId.ASTRAL_TIGER
@@ -568,11 +565,11 @@ class GameLogic private constructor() {
         }
 
         if (!Utils.isEmpty(guessedId)) {
-            entity.setCardId(guessedId)
+            entity!!.setCardId(guessedId!!)
         }
 
         // even if we don't know the guessedId, record that this was createdBy this entity
-        entity.extra.createdBy = blockEntity.CardID
+        entity!!.extra.createdBy = blockEntity!!.CardID
     }
 
     private fun handleFullEntityTag2(tag: FullEntityTag) {
@@ -607,7 +604,7 @@ class GameLogic private constructor() {
         } else if (Type.HERO_POWER == cardType) {
             player.heroPower = entity
         } else {
-            if (mGame!!.gameEntity.tags[Entity.KEY_STEP] == null) {
+            if (mGame!!.gameEntity!!.tags[Entity.KEY_STEP] == null) {
                 if (Entity.ZONE_DECK == entity.tags[Entity.KEY_ZONE]) {
                     entity.extra.originalController = entity.tags[Entity.KEY_CONTROLLER]
                 } else if (Entity.ZONE_HAND == entity.tags[Entity.KEY_ZONE]) {

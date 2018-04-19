@@ -77,11 +77,11 @@ public class TestParser {
     public void testCreatedBy() throws Exception {
         Game game = runParser("/created_by.log");
 
-        Assert.assertEquals(game.findEntitySafe("73").extra.createdBy, CardId.SERVANT_OF_KALIMOS);
-        Assert.assertEquals(game.findEntitySafe("78").extra.createdBy, CardId.SERVANT_OF_KALIMOS);
-        Assert.assertEquals(game.findEntitySafe("75").extra.createdBy, CardId.FROZEN_CLONE);
-        Assert.assertEquals(game.findEntitySafe("76").extra.createdBy, CardId.FROZEN_CLONE);
-        Assert.assertEquals(game.findEntitySafe("80").extra.createdBy, CardId.MIRROR_ENTITY);
+        Assert.assertEquals(game.findEntitySafe("73").extra.getCreatedBy(), CardId.SERVANT_OF_KALIMOS);
+        Assert.assertEquals(game.findEntitySafe("78").extra.getCreatedBy(), CardId.SERVANT_OF_KALIMOS);
+        Assert.assertEquals(game.findEntitySafe("75").extra.getCreatedBy(), CardId.FROZEN_CLONE);
+        Assert.assertEquals(game.findEntitySafe("76").extra.getCreatedBy(), CardId.FROZEN_CLONE);
+        Assert.assertEquals(game.findEntitySafe("80").extra.getCreatedBy(), CardId.MIRROR_ENTITY);
     }
 
     @Test
@@ -89,7 +89,7 @@ public class TestParser {
 
         Game game = runParser("/double_secret.log");
 
-        Assert.assertFalse(game.victory);
+        Assert.assertFalse(game.getVictory());
 
     }
 
@@ -99,13 +99,13 @@ public class TestParser {
         runParser("/secrets.log", new SimpleListener() {
             @Override
             public void somethingChanged() {
-                if ("19".equals(game.gameEntity.tags.get(Entity.KEY_TURN))) {
+                if ("19".equals(game.getGameEntity().tags.get(Entity.KEY_TURN))) {
                     Entity secretEntity = game.findEntityUnsafe("84");
-                    Assert.assertFalse(secretEntity.extra.competitiveSpiritTriggerConditionHappened);
-                    Assert.assertTrue(secretEntity.extra.otherPlayerHeroPowered);
-                    Assert.assertTrue(secretEntity.extra.otherPlayerPlayedMinion);
-                    Assert.assertTrue(secretEntity.extra.selfHeroDamaged);
-                    Assert.assertTrue(secretEntity.extra.selfHeroAttacked);
+                    Assert.assertFalse(secretEntity.extra.getCompetitiveSpiritTriggerConditionHappened());
+                    Assert.assertTrue(secretEntity.extra.getOtherPlayerHeroPowered());
+                    Assert.assertTrue(secretEntity.extra.getOtherPlayerPlayedMinion());
+                    Assert.assertTrue(secretEntity.extra.getSelfHeroDamaged());
+                    Assert.assertTrue(secretEntity.extra.getSelfHeroAttacked());
                 }
             }
         });
@@ -119,7 +119,7 @@ public class TestParser {
                 Entity kabalCrystalRunner = game.findEntitySafe("84");
                 if (Entity.ZONE_PLAY.equals(kabalCrystalRunner.tags.get(Entity.KEY_ZONE))) {
                     Entity iceBarrier = game.findEntitySafe("41");
-                    Assert.assertTrue(iceBarrier.extra.otherPlayerPlayedMinion);
+                    Assert.assertTrue(iceBarrier.extra.getOtherPlayerPlayedMinion());
                 }
             }
         });
@@ -133,7 +133,7 @@ public class TestParser {
                 Entity kabalCrystalRunner = game.findEntitySafe("84");
                 if (Entity.ZONE_PLAY.equals(kabalCrystalRunner.tags.get(Entity.KEY_ZONE))) {
                     Entity iceBarrier = game.findEntitySafe("41");
-                    Assert.assertTrue(iceBarrier.extra.otherPlayerPlayedMinion);
+                    Assert.assertTrue(iceBarrier.extra.getOtherPlayerPlayedMinion());
                 }
             }
         });
@@ -208,9 +208,9 @@ public class TestParser {
         runParser("/effigy.log", new SimpleListener() {
             @Override
             public void somethingChanged() {
-                if ("11".equals(game.gameEntity.tags.get(Entity.KEY_TURN))) {
+                if ("11".equals(game.getGameEntity().tags.get(Entity.KEY_TURN))) {
                     Entity secretEntity = game.findEntityUnsafe("18");
-                    Assert.assertFalse(secretEntity.extra.selfPlayerMinionDied);
+                    Assert.assertFalse(secretEntity.extra.getSelfPlayerMinionDied());
                 }
             }
         });
@@ -222,7 +222,7 @@ public class TestParser {
             @Override
             public void gameStarted(Game game) {
                 super.gameStarted(game);
-                Assert.assertTrue(game.player.playerClass().equals(PlayerClass.WARLOCK));
+                Assert.assertTrue(game.getPlayer().playerClass().equals(PlayerClass.WARLOCK));
 
             }
         };

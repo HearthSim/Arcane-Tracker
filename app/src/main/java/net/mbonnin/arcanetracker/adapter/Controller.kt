@@ -51,7 +51,7 @@ class Controller : GameLogic.Listener {
                 }
 
                 val deckEntry = DeckEntryItem(
-                        card = card,
+                        card = card!!,
                         gift = !entity.extra.hide && entity.extra.tmpIsGift,
                         count = 1
                 )
@@ -88,7 +88,7 @@ class Controller : GameLogic.Listener {
                 entity.card
             }
             val deckEntry = DeckEntryItem(
-                    card = card,
+                    card = card!!,
                     gift = entity.extra.tmpIsGift,
                     count = 1
                     )
@@ -138,7 +138,7 @@ class Controller : GameLogic.Listener {
                     unknownCards++
                 } else {
                     // each unknown gift card gets its own line
-                    val deckEntryItem = DeckEntryItem(card = entity.extra.tmpCard, gift = entity.extra.tmpIsGift)
+                    val deckEntryItem = DeckEntryItem(card = entity.extra.tmpCard!!, gift = entity.extra.tmpIsGift)
                     deckEntryItem.entityList.add(entity)
                     if (increasesCount(entity)) {
                         deckEntryItem.count++
@@ -152,8 +152,8 @@ class Controller : GameLogic.Listener {
         // entityList now only contains know cards, which we are going to bucket by cardID/gift pair
         val deckEntryItemMap = mutableMapOf<Pair<String, Boolean>, DeckEntryItem>()
         entityList.forEach { entity ->
-            val deckEntryItem = deckEntryItemMap.getOrPut(entity.extra.tmpCard.id to entity.extra.tmpIsGift, {
-                DeckEntryItem(card = entity.extra.tmpCard, gift = entity.extra.tmpIsGift)
+            val deckEntryItem = deckEntryItemMap.getOrPut(entity.extra.tmpCard!!.id to entity.extra.tmpIsGift, {
+                DeckEntryItem(card = entity.extra.tmpCard!!, gift = entity.extra.tmpIsGift)
             })
 
             deckEntryItem.entityList.add(entity)
@@ -341,8 +341,8 @@ class Controller : GameLogic.Listener {
 
     override fun gameStarted(game: Game) {
         mGame = game
-        mPlayerId = mGame!!.player.entity.PlayerID
-        mOpponentId = mGame!!.opponent.entity.PlayerID
+        mPlayerId = mGame!!.player!!.entity!!.PlayerID
+        mOpponentId = mGame!!.opponent!!.entity!!.PlayerID
         update()
     }
 

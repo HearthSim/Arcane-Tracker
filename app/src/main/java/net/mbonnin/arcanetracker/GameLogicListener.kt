@@ -37,15 +37,15 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                 deck = LegacyDeckList.arenaDeck
                 Timber.w("useArena deck")
             } else {
-                val classIndex = game.getPlayer().classIndex()
+                val classIndex = game.player!!.classIndex()
 
                 /*
                  * we filter the original deck to remove the coin mainly
                  */
                 val map = game.getEntityList { entity ->
-                    (game.player.entity.PlayerID == entity.tags[Entity.KEY_CONTROLLER]
+                    game.player!!.entity!!.PlayerID == entity.tags[Entity.KEY_CONTROLLER]
                             && Entity.ZONE_HAND == entity.tags[Entity.KEY_ZONE]
-                            && game.player.entity.PlayerID == entity.extra.originalController)
+                            && game.player!!.entity!!.PlayerID == entity.extra.originalController
                 }
                         .toCardMap()
 
@@ -56,7 +56,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         MainViewCompanion.legacyCompanion.deck = deck
 
         LegacyDeckList.opponentDeck.clear()
-        LegacyDeckList.opponentDeck.classIndex = game.getOpponent().classIndex()
+        LegacyDeckList.opponentDeck.classIndex = game.opponent!!.classIndex()
         MainViewCompanion.opponentCompanion.deck = LegacyDeckList.opponentDeck
 
 
@@ -66,7 +66,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                 val emptyDeck = Deck()
                 emptyDeck.name = Utils.getString(R.string.deck)
                 emptyDeck.id = "rototo"
-                emptyDeck.classIndex = getClassIndex(game.player.playerClass())
+                emptyDeck.classIndex = getClassIndex(game.player!!.playerClass())
                 MainViewCompanion.playerCompanion.deck = emptyDeck
             }
         }
@@ -116,12 +116,12 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         val rgame = RGame(
                 deck_id = deck.id,
                 victory = game.victory,
-                coin = game.player.hasCoin,
-                player_class = game.player.playerClass(),
-                opponent_class = game.opponent.playerClass(),
+                coin = game.player!!.hasCoin,
+                player_class = game.player!!.playerClass(),
+                opponent_class = game.opponent!!.playerClass(),
                 date = System.currentTimeMillis(),
-                format_type = game.formatType,
-                game_type = game.gameType,
+                format_type = game.formatType!!,
+                game_type = game.gameType!!,
                 rank = game.playerRank,
                 deck_name = deck.name
         )
@@ -137,16 +137,16 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         if ((Utils.isAppDebuggable || LoadingScreenParser.MODE_DRAFT == mode || LoadingScreenParser.MODE_TOURNAMENT == mode) && Trackobot.get().currentUser() != null) {
             val resultData = ResultData()
             resultData.result = Result()
-            resultData.result.coin = currentGame!!.getPlayer().hasCoin
+            resultData.result.coin = currentGame!!.player!!.hasCoin
             resultData.result.win = currentGame!!.victory
-            resultData.result.mode = Trackobot.getMode(currentGame!!.gameType)
+            resultData.result.mode = Trackobot.getMode(currentGame!!.gameType!!)
 
             val playerRank = currentGame!!.playerRank
             if (playerRank != RANK_UNKNOWN) {
                 resultData.result.rank = playerRank
             }
-            resultData.result.hero = Trackobot.getHero(currentGame!!.player.classIndex())
-            resultData.result.opponent = Trackobot.getHero(currentGame!!.opponent.classIndex())
+            resultData.result.hero = Trackobot.getHero(currentGame!!.player!!.classIndex())
+            resultData.result.opponent = Trackobot.getHero(currentGame!!.opponent!!.classIndex())
             resultData.result.added = Utils.ISO8601DATEFORMAT.format(Date())
 
             val history = ArrayList<CardPlay>()
@@ -196,7 +196,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
 
     private fun addKnownCardsToDeck(game: Game, deck: Deck) {
 
-        val originalDeck = game.getEntityList { entity -> game.player.entity.PlayerID == entity.extra.originalController }
+        val originalDeck = game.getEntityList { entity -> game.player!!.entity!!.PlayerID == entity.extra.originalController }
         val originalDeckMap = originalDeck.toCardMap()
         if (Settings.get(Settings.AUTO_ADD_CARDS, true) && Utils.cardMapTotal(deck.cards) < Deck.MAX_CARDS) {
             for (cardId in originalDeckMap.keys) {
@@ -244,10 +244,10 @@ class GameLogicListener private constructor() : GameLogic.Listener {
             else -> return // do not send strange games to HSReplay
         }*/
 
-        summary.coin = game.getPlayer().hasCoin
+        summary.coin = game.player!!.hasCoin
         summary.win = game.victory
-        summary.hero = game.player.classIndex()
-        summary.opponentHero = game.opponent.classIndex()
+        summary.hero = game.player!!.classIndex()
+        summary.opponentHero = game.opponent!!.classIndex()
         summary.date = Utils.ISO8601DATEFORMAT.format(Date())
         summary.deckName = MainViewCompanion.playerCompanion.deck?.name
 
@@ -257,9 +257,9 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         uploadRequest.match_start = gameStart
         uploadRequest.build = ArcaneTrackerApplication.get().hearthstoneBuild
         uploadRequest.spectator_mode = game.spectator
-        uploadRequest.friendly_player = game.player.entity.PlayerID
-        uploadRequest.format = fromFormatTypeString(game.formatType).intValue
-        uploadRequest.game_type = fromGameAndFormat(game.gameType, game.formatType).intValue
+        uploadRequest.friendly_player = game.player!!.entity!!.PlayerID
+        uploadRequest.format = fromFormatTypeString(game.formatType!!).intValue
+        uploadRequest.game_type = fromGameAndFormat(game.gameType!!, game.formatType!!).intValue
 
         val player = if (uploadRequest.friendly_player == "1") uploadRequest.player1 else uploadRequest.player2
         val opponent = if (uploadRequest.friendly_player == "1") uploadRequest.player2 else uploadRequest.player1
