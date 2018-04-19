@@ -105,10 +105,12 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("game_ended", bundle)
     }
 
-    private fun saveRGame(game: Game): Single<Pair<Long, Boolean>> {
+    class InsertResult(val id: Long, val success: Boolean)
+
+    private fun insertGame(game: Game): Single<InsertResult> {
         val deck = MainViewCompanion.playerCompanion.deck
         if (deck == null) {
-            return Single.just(-1L to false)
+            return Single.just(InsertResult(-1L, false))
         }
 
         val rgame = RGame(
@@ -125,7 +127,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         )
 
         return Single.fromCallable {
-            RDatabaseSingleton.instance.gameDao().insert(rgame) to true
+            InsertResult(RDatabaseSingleton.instance.gameDao().insert(rgame), true)
         }
     }
 
@@ -284,24 +286,24 @@ class GameLogicListener private constructor() : GameLogic.Listener {
             }
         }
 
-        val saveRGameSingle = saveRGame(game)
+        val insertGameSingle = insertGame(game)
 
-        val hsReplaySinge = if (HSReplay.get().token() != null) {
+        val hsReplaySingle = if (HSReplay.get().token() != null) {
             HSReplay.get().uploadGame(uploadRequest, gameStr)
         } else {
             Single.just(Lce.data(null))
         }
 
-        Single.zip(saveRGameSingle, hsReplaySinge) { insertResult, lce ->
+        Single.zip(insertGameSingle, hsReplaySingle) { insertResult, lce ->
             if (lce.error != null) {
                 Timber.d(lce.error)
                 Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplayError))
-            } else {
+            } else if (lce.data != null) {
                 summary.hsreplayUrl = lce.data
                 GameSummary.sync()
 
-                if (insertResult.second && lce.data != null) {
-                    RDatabaseSingleton.instance.gameDao().update(insertResult.first, lce.data)
+                if (insertResult.success) {
+                    RDatabaseSingleton.instance.gameDao().update(insertResult.id, lce.data)
                 }
 
                 Timber.d("hsreplay upload success")
