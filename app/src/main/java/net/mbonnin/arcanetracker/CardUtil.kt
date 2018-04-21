@@ -2,7 +2,6 @@ package net.mbonnin.arcanetracker
 
 
 import net.mbonnin.hsmodel.*
-import net.mbonnin.hsmodel.Set
 
 object CardUtil {
     @JvmField
@@ -20,7 +19,7 @@ object CardUtil {
                 race = "?",
                 collectible = false,
                 dbfId = 0,
-                set = Set.CORE
+                set = HSSet.CORE
         )
         return card
     }
@@ -62,7 +61,7 @@ object CardUtil {
                 cost = cost,
                 playerClass = pClass,
                 dbfId = 0,
-                set = Set.CORE
+                set = HSSet.CORE
         )
     }
 

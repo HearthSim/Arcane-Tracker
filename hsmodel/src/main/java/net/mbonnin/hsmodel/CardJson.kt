@@ -52,24 +52,13 @@ object CardJson {
                         goldenFeatures = null
                     }
 
-                    Card(id = it.id,
+                    it.copy(
                             name = cardTranslation[it.id]!!.name,
                             text = cardTranslation[it.id]!!.text,
-                            playerClass = it.playerClass,
-                            rarity = it.rarity,
-                            race = it.race,
-                            type = it.type,
-                            set = it.set,
-                            dbfId = it.dbfId,
-                            cost = it.cost,
-                            attack = it.attack,
-                            health = it.health,
-                            durability = it.durability,
-                            collectible = it.collectible,
-                            multiClassGroup = it.multiClassGroup,
                             scores = tierCard?.Scores,
                             features = features,
-                            goldenFeatures = goldenFeatures)
+                            goldenFeatures = goldenFeatures
+                    )
                 }
 
         allCards.addAll(augmentedCards)

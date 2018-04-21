@@ -17,6 +17,7 @@ data class Card(
         val durability: Int? = null,
         val multiClassGroup: String? = null,
         val collectible: Boolean = false,
+        val mechanics: kotlin.collections.Set<String> = emptySet(),
         val features: DoubleArray? = null,
         val goldenFeatures: DoubleArray? = null,
         val scores: List<TierScore>? = null
@@ -52,12 +53,12 @@ data class Card(
         const val CLASS_INDEX_WARRIOR = 0
         const val CLASS_INDEX_NEUTRAL = 9
 
-        val STANDARD_SETS = setOf(Set.CORE,
-                Set.EXPERT1,
-                Set.UNGORO,
-                Set.ICECROWN,
-                Set.LOOTAPALOOZA,
-                Set.GILNEAS
+        val STANDARD_SETS = setOf(HSSet.CORE,
+                HSSet.EXPERT1,
+                HSSet.UNGORO,
+                HSSet.ICECROWN,
+                HSSet.LOOTAPALOOZA,
+                HSSet.GILNEAS
         )
         val HALL_OF_FAME_CARDS = setOf(
                 CardId.ICE_BLOCK,
