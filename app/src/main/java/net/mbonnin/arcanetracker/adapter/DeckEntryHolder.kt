@@ -150,16 +150,16 @@ internal class DeckEntryHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
             downY = event.rawY
             if ("?" != card.id) {
                 Picasso.with(v.context).load(Utils.getCardUrl(card.id)).into(object : Target {
-                    override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom) {
+                    override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom?) {
                         this@DeckEntryHolder.bitmap = bitmap
                         displayImageViewIfNeeded()
                     }
 
-                    override fun onBitmapFailed(errorDrawable: Drawable) {
+                    override fun onBitmapFailed(errorDrawable: Drawable?) {
 
                     }
 
-                    override fun onPrepareLoad(placeHolderDrawable: Drawable) {
+                    override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
 
                     }
                 })

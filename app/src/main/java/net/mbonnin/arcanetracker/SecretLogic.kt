@@ -242,4 +242,12 @@ object SecretLogic {
             exclude(game, CardId.AVENGE)
         }
     }
+
+    fun newTurn(game: Game) {
+        if (game.opponent?.entity?.tags?.get(Entity.KEY_CURRENT_PLAYER) == "1") {
+            if (opponentMinionOnBoardCount(game) > 0) {
+                exclude(game, CardId.COMPETITIVE_SPIRIT)
+            }
+        }
+    }
 }

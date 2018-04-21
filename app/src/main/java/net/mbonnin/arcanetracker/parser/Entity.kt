@@ -2,7 +2,6 @@ package net.mbonnin.arcanetracker.parser
 
 import net.mbonnin.arcanetracker.CardUtil
 import net.mbonnin.hsmodel.Card
-import timber.log.Timber
 import java.util.*
 
 class Entity {
@@ -31,7 +30,7 @@ class Entity {
 
     class Extra {
         /**
-         * used from Controller.java to affect a temporary id to cards we don't know yet
+         * used from Controller.kt to affect a temporary id to cards we don't know yet
          */
         var tmpCard: Card? = null
         var tmpIsGift: Boolean = false
@@ -48,25 +47,8 @@ class Entity {
          * secret detector
          */
         val excludedSecretList = mutableListOf<String>()
-
-        var otherPlayerPlayedMinion: Boolean = false
-        var otherPlayerCastSpell: Boolean = false
-        var otherPlayerHeroPowered: Boolean = false
-        var selfHeroAttacked: Boolean = false
-        var selfMinionWasAttacked: Boolean = false
-        var selfHeroDamaged: Boolean = false
-        var selfPlayerMinionDied: Boolean = false
-        var selfMinionTargetedBySpell: Boolean = false
-        var competitiveSpiritTriggerConditionHappened: Boolean = false
-        var otherPlayerPlayedMinionWithThreeOnBoardAlready: Boolean = false
-        var selfHeroAttackedByMinion: Boolean = false
     }
 
-    fun dump() {
-        for (key in tags.keys) {
-            Timber.v("   " + key + "=" + tags[key])
-        }
-    }
 
     fun clone(): Entity {
         val clone = Entity()

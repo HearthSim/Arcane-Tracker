@@ -156,19 +156,6 @@ class TestParser {
 
     @Test
     @Throws(Exception::class)
-    fun testEffigy() {
-        runParser("/effigy.log", object : SimpleListener() {
-            override fun somethingChanged() {
-                if ("11" == game.gameEntity!!.tags[Entity.KEY_TURN]) {
-                    val secretEntity = game.findEntityUnsafe("18")
-                    Assert.assertFalse(secretEntity!!.extra.selfPlayerMinionDied)
-                }
-            }
-        })
-    }
-
-    @Test
-    @Throws(Exception::class)
     fun testNemsy() {
         val listener = object : SimpleListener() {
             override fun gameStarted(game: Game) {

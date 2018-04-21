@@ -263,26 +263,7 @@ class GameLogic private constructor() {
         }
 
         if (Entity.KEY_TURN == key) {
-            /*
-             * secret detector
-             */
-            var currentPlayer: Entity? = null
-            for (player in mGame!!.playerMap.values) {
-                if ("1" == player.entity!!.tags[Entity.KEY_CURRENT_PLAYER]) {
-                    currentPlayer = player.entity
-                    Timber.d("Current player: " + currentPlayer!!.PlayerID + "(" + player.battleTag + ")")
-                    break
-                }
-            }
-            for (secretEntity in secretEntityList()) {
-                if (currentPlayer != null && Utils.equalsNullSafe(secretEntity.tags[Entity.KEY_CONTROLLER], currentPlayer.PlayerID)) {
-                    val list = getMinionsOnBoardForController(secretEntity.tags[Entity.KEY_CONTROLLER])
-                    if (!list.isEmpty()) {
-                        Timber.d("Competitive condition")
-                        secretEntity.extra.competitiveSpiritTriggerConditionHappened = true
-                    }
-                }
-            }
+            SecretLogic.newTurn(mGame!!)
         }
     }
 
