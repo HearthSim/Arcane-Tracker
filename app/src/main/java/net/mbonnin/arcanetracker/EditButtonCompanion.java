@@ -40,7 +40,7 @@ public class EditButtonCompanion {
 
             FirebaseAnalytics.getInstance(ArcaneTrackerApplication.Companion.getContext()).logEvent("edit_edit", null);
 
-            DeckEditorView.show(MainViewCompanion.Companion.getLegacyCompanion().getDeck());
+            DeckEditorView.Companion.show(MainViewCompanion.Companion.getLegacyCompanion().getDeck());
         });
 
         view.findViewById(R.id.deleteDeck).setOnClickListener(v2 -> {

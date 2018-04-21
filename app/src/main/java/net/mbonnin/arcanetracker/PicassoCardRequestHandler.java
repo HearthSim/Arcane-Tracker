@@ -83,7 +83,7 @@ public class PicassoCardRequestHandler extends RequestHandler {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
             try {
-                CardRenderer.get().renderCard(cardId, outputStream);
+                CardRenderer.Companion.get().renderCard(cardId, outputStream);
             } catch (Exception e) {
                 Timber.e(e);
                 return null;

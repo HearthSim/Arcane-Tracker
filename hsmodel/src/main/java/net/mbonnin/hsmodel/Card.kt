@@ -2,35 +2,20 @@ package net.mbonnin.hsmodel
 
 
 data class Card(
-        @JvmField
         val id: String,
-        @JvmField
         val dbfId: Int,
-        @JvmField
         val type: String,
-        @JvmField
         val playerClass: String,
-        @JvmField
         val set: String,
-        @JvmField
         val name: String,
-        @JvmField
         val cost: Int? = null, // null for hero cards & enchantments
-        @JvmField
         val text: String? = null, //  null for hero cards, also for some regular cards like snowflipper penguin
-        @JvmField
         val rarity: String? = null,
-        @JvmField
         val race: String? = null,
-        @JvmField
         val attack: Int? = null,
-        @JvmField
         val health: Int? = null,
-        @JvmField
         val durability: Int? = null,
-        @JvmField
         val multiClassGroup: String? = null,
-        @JvmField
         val collectible: Boolean = false,
         val features: DoubleArray? = null,
         val goldenFeatures: DoubleArray? = null,

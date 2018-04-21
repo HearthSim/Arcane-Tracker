@@ -5,6 +5,7 @@ package net.mbonnin.arcanetracker.parser
  */
 
 import com.annimon.stream.function.Predicate
+import net.mbonnin.arcanetracker.SecretLogic
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.parser.power.*
 import net.mbonnin.arcanetracker.parser.power.BlockTag.TYPE_TRIGGER
@@ -96,6 +97,7 @@ class GameLogic private constructor() {
             mGame!!.lastPlayedCardId = play.cardId
             Timber.i("%s played %s", if (play.isOpponent) "opponent" else "I", play.cardId)
 
+            SecretLogic.cardPlayed(game, playedEntity)
             /*
              * secret detector
              */
