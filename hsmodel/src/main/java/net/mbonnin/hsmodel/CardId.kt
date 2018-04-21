@@ -3417,7 +3417,7 @@ object CardId {
   const val STRONGSHELL_SCAVENGER: String = "ICC_807"
 
   const val CAULDRON_ELEMENTAL: String = "GIL_119"
-
+  
   const val FERAL_SPIRIT: String = "EX1_248"
 
   const val NETHER_BREATH: String = "KARA_08_03"
