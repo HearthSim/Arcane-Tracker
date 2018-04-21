@@ -1,0 +1,72 @@
+package net.mbonnin.arcanetracker
+
+import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import io.reactivex.Flowable.zip
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.BiFunction
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.deck_line_view.*
+import net.mbonnin.arcanetracker.room.RDatabaseSingleton
+import net.mbonnin.arcanetracker.room.RDeck
+
+class PlayerDeckListAdapter : DeckListAdapter() {
+    private var listener: ((deck: Deck) -> Unit)? = null
+    private var list = mutableListOf<RDeck>()
+
+    init {
+        zip(
+                RDatabaseSingleton.instance.deckDao().getCollection(),
+                RDatabaseSingleton.instance.deckDao().getLatestArenaDeck(),
+                object : BiFunction<List<RDeck>, RDeck, List<RDeck>> {
+                    override fun apply(t1: List<RDeck>, t2: RDeck): List<RDeck> {
+                        val r = t1.toMutableList()
+                        r.add(t2)
+                        return r
+                    }
+                }
+        ).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    list.addAll(it)
+                    notifyDataSetChanged()
+                }
+    }
+
+    override fun setOnDeckSelectedListener(listener: (deck: Deck) -> Unit) {
+        this.listener = listener
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val view = LayoutInflater.from(ArcaneTrackerApplication.context).inflate(R.layout.deck_line_view, null)
+        return ViewHolder(view)
+    }
+
+    override fun getItemCount(): Int {
+        return list.size
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val rdeck = list[position]
+
+        (holder as ViewHolder).bind(rdeck)
+    }
+
+    inner class ViewHolder(override val containerView: View) : LayoutContainer, RecyclerView.ViewHolder(containerView) {
+        fun bind(rdeck: RDeck) {
+            val deck = DeckMapper.fromRDeck(rdeck)
+
+            itemView.setOnClickListener { v ->
+                if (deck != null) {
+                    listener?.invoke(deck)
+                }
+            }
+
+            deckImageRound.setImageDrawable(Utils.getDrawableForName(String.format("hero_%02d_round", deck?.classIndex ?:0 + 1)))
+            deckName.text = deck?.name
+        }
+    }
+}

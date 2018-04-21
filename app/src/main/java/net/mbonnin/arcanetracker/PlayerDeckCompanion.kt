@@ -1,24 +1,55 @@
 package net.mbonnin.arcanetracker
 
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
 import android.widget.NumberPicker
-import android.widget.TextView
+import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.deck_view.*
 import net.mbonnin.arcanetracker.adapter.Controller
 import net.mbonnin.arcanetracker.room.WLCounter
 import timber.log.Timber
 
-class PlayerDeckCompanion(v: View) : DeckCompanion(v) {
+
+class PlayerDeckCompanion(override val containerView: View) : DeckCompanion(containerView), LayoutContainer {
     init {
         recyclerView.adapter = Controller.get().playerAdapter
-        settings.setImageResource(R.drawable.ic_compare_arrows_black_24dp)
-        settings.visibility = GONE
+        settings.setImageResource(R.drawable.ic_compare_arrows_white_24dp)
 
-        (v.findViewById<TextView>(R.id.text)).setText(v.context.getString(R.string.your_deck_will_appear))
+        val viewManager = ViewManager.get()
+
+
+        settings.setOnClickListener({ v2 ->
+            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("edit_swap", null)
+
+            val a = IntArray(2)
+            settings.getLocationOnScreen(a)
+
+            val deckListView = LayoutInflater.from(v2.getContext()).inflate(R.layout.decklist_view, null)
+            val recyclerView = deckListView.findViewById<RecyclerView>(R.id.recyclerView)
+            recyclerView.layoutManager = LinearLayoutManager(v2.getContext())
+            val adapter = PlayerDeckListAdapter()
+            adapter.setOnDeckSelectedListener { deck ->
+                viewManager.removeView(deckListView)
+                MainViewCompanion.playerCompanion.deck = deck
+            }
+            recyclerView.adapter = adapter
+
+            val params = ViewManager.Params()
+            params.x = a[0] + settings.width / 2 + Utils.dpToPx(20)
+            params.y = 0
+            params.w = Utils.dpToPx(150)
+            params.h = a[1] + settings.height / 2
+
+            viewManager.addModalView(deckListView, params)
+        })
+
+        text.setText(containerView.context.getString(R.string.your_deck_will_appear))
     }
 
     var disposable: Disposable? = null

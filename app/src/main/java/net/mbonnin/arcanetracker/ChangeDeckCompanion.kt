@@ -20,7 +20,7 @@ class ChangeDeckCompanion(icon: View, anchor: View, callback: () -> Unit) {
             val deckListView = LayoutInflater.from(v2.getContext()).inflate(R.layout.decklist_view, null)
             val recyclerView = deckListView.findViewById<RecyclerView>(R.id.recyclerView)
             recyclerView.layoutManager = LinearLayoutManager(v2.getContext())
-            val adapter = DeckListAdapter()
+            val adapter = LegacyDeckListAdapter()
             adapter.setOnDeckSelectedListener { deck ->
                 viewManager.removeView(deckListView)
                 MainViewCompanion.legacyCompanion.deck = deck
