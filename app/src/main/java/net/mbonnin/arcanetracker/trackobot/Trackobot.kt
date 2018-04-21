@@ -230,7 +230,7 @@ class Trackobot {
 
         fun findTrackobotFile(): File? {
             val dir = Environment.getExternalStorageDirectory()
-            val files = dir.listFiles()
+            val files = dir.listFiles() ?: emptyArray()
             for (f in files) {
                 if (f.isFile && f.name.contains(".track-o-bot")) {
                     return f
