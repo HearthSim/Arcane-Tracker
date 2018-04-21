@@ -3,11 +3,14 @@ package net.mbonnin.arcanetracker;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import static android.provider.Settings.canDrawOverlays;
 
 public class Overlay {
     private static Overlay sOverlay;

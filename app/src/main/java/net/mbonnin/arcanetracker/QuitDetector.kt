@@ -1,7 +1,9 @@
 package net.mbonnin.arcanetracker
 
 import android.content.Context.WINDOW_SERVICE
+import android.os.Build
 import android.os.Handler
+import android.provider.Settings.canDrawOverlays
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import timber.log.Timber
@@ -28,6 +30,13 @@ class QuitDetector {
 
             } else if (height <= width && !visible) {
                 Timber.d("Show")
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (!canDrawOverlays(ArcaneTrackerApplication.get())) {
+                        // we might come here from the quit detector. In that case, just do nothing
+                        return
+                    }
+                }
 
                 Overlay.get().show()
                 visible = true
