@@ -258,8 +258,8 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         uploadRequest.build = ArcaneTrackerApplication.get().hearthstoneBuild
         uploadRequest.spectator_mode = game.spectator
         uploadRequest.friendly_player = game.player!!.entity!!.PlayerID
-        uploadRequest.format = fromFormatTypeString(game.formatType!!).intValue
-        uploadRequest.game_type = fromGameAndFormat(game.gameType!!, game.formatType!!).intValue
+        uploadRequest.format = fromFormatTypeString(game.formatType).intValue
+        uploadRequest.game_type = fromGameAndFormat(game.gameType, game.formatType!!).intValue
 
         val player = if (uploadRequest.friendly_player == "1") uploadRequest.player1 else uploadRequest.player2
         val opponent = if (uploadRequest.friendly_player == "1") uploadRequest.player2 else uploadRequest.player1

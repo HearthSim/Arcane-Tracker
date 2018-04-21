@@ -41,7 +41,7 @@ enum class BnetGameType(val intValue: Int) {
     BGT_FSG_BRAWL_2P_COOP(43)
 }
 
-fun fromGameAndFormat(gameType: String, format: String): BnetGameType {
+fun fromGameAndFormat(gameType: String?, format: String): BnetGameType {
     return when(gameType) {
         GameType.GT_ARENA.name -> BnetGameType.BGT_ARENA
         GameType.GT_TAVERNBRAWL.name -> BnetGameType.BGT_TAVERNBRAWL_1P_VERSUS_AI
