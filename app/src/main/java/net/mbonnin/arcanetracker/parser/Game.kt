@@ -109,7 +109,7 @@ class Game {
         return entity
     }
 
-    fun findEntityUnsafe(entityId: String): Entity {
-        return entityMap[entityId]!!
+    fun findEntityUnsafe(entityId: String): Entity? {
+        return entityMap[entityId]
     }
 }

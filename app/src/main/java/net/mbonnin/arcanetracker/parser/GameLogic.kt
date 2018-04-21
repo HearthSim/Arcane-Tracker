@@ -80,7 +80,7 @@ class GameLogic private constructor() {
     private fun handleBlockTag(tag: BlockTag) {}
 
     private fun handleBlockTag2(tag: BlockTag) {
-        val game = mGame
+        val game = mGame!!
 
         if (BlockTag.TYPE_PLAY == tag.BlockType) {
             val playedEntity = mGame!!.findEntitySafe(tag.Entity)
@@ -92,59 +92,17 @@ class GameLogic private constructor() {
             val play = Play()
             play.turn = mCurrentTurn
             play.cardId = playedEntity.CardID
-            play.isOpponent = game!!.findController(playedEntity).isOpponent
+            play.isOpponent = game.findController(playedEntity).isOpponent
 
             mGame!!.lastPlayedCardId = play.cardId
             Timber.i("%s played %s", if (play.isOpponent) "opponent" else "I", play.cardId)
 
-            SecretLogic.cardPlayed(game, playedEntity)
-            /*
-             * secret detector
-             */
-            for (secretEntity in secretEntityList()) {
-                if (!Utils.equalsNullSafe(secretEntity.tags[Entity.KEY_CONTROLLER], playedEntity.tags[Entity.KEY_CONTROLLER]) && !Utils.isEmpty(playedEntity.CardID)) {
-                    /*
-                     * it can happen that we don't know the id of the played entity, for an example if the player has a secret and its opponent plays one
-                     * it should be ok to ignore those since these are opponent plays
-                     */
-                    if (Type.MINION == playedEntity.tags[Entity.KEY_CARDTYPE]) {
-                        secretEntity.extra.otherPlayerPlayedMinion = true
-                        if (getMinionsOnBoardForController(playedEntity.tags[Entity.KEY_CONTROLLER]
-                                        ?: "").size >= 3) {
-                            secretEntity.extra.otherPlayerPlayedMinionWithThreeOnBoardAlready = true
-                        }
-                    } else if (Type.SPELL == playedEntity.tags[Entity.KEY_CARDTYPE]) {
-                        secretEntity.extra.otherPlayerCastSpell = true
-                        val targetEntiy = mGame!!.findEntityUnsafe(tag.Target)
-                        if (targetEntiy != null && Type.MINION == targetEntiy.tags[Entity.KEY_CARDTYPE]) {
-                            secretEntity.extra.selfMinionTargetedBySpell = true
-                        }
-                    } else if (Type.HERO_POWER == playedEntity.tags[Entity.KEY_CARDTYPE]) {
-                        secretEntity.extra.otherPlayerHeroPowered = true
-                    }
-                }
-            }
+            SecretLogic.blockPlayed(game, tag.Target, playedEntity)
 
             game.plays.add(play)
         } else if (BlockTag.TYPE_ATTACK == tag.BlockType) {
-            /*
-             * secret detector
-             */
-            val targetEntity = mGame!!.findEntitySafe(tag.Target)
 
-            for (secretEntity in secretEntityList()) {
-                if (Utils.equalsNullSafe(secretEntity.tags[Entity.KEY_CONTROLLER], targetEntity!!.tags[Entity.KEY_CONTROLLER])) {
-                    if (Type.MINION == targetEntity.tags[Entity.KEY_CARDTYPE]) {
-                        secretEntity.extra.selfMinionWasAttacked = true
-                    } else if (Type.HERO == targetEntity.tags[Entity.KEY_CARDTYPE]) {
-                        secretEntity.extra.selfHeroAttacked = true
-                        val attackerEntity = mGame!!.findEntitySafe(tag.Entity)
-                        if (Type.MINION == attackerEntity!!.tags[Entity.KEY_CARDTYPE]) {
-                            secretEntity.extra.selfHeroAttackedByMinion = true
-                        }
-                    }
-                }
-            }
+            SecretLogic.blockAttack(game, tag)
         }
     }
 
@@ -210,28 +168,7 @@ class GameLogic private constructor() {
 
     private fun handleMetaDataTag2(tag: MetaDataTag) {
         if (MetaDataTag.META_DAMAGE == tag.Meta) {
-            /*
-             * secret detector
-             */
-            try {
-                val damage = Integer.parseInt(tag.Data)
-                if (damage > 0) {
-                    for (id in tag.Info) {
-                        val damagedEntity = mGame!!.findEntitySafe(id)
-
-                        for (e2 in secretEntityList()) {
-                            if (Utils.equalsNullSafe(e2.tags[Entity.KEY_CONTROLLER], damagedEntity!!.tags[Entity.KEY_CONTROLLER])) {
-                                if (Type.HERO == damagedEntity!!.tags[Entity.KEY_CARDTYPE]) {
-                                    e2.extra.selfHeroDamaged = true
-                                }
-                            }
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                Timber.e(e)
-            }
-
+            SecretLogic.damage(mGame!!, tag)
         }
     }
 
@@ -312,17 +249,7 @@ class GameLogic private constructor() {
                 entity.extra.playTurn = mCurrentTurn
             } else if (Entity.ZONE_PLAY == oldValue && Entity.ZONE_GRAVEYARD == newValue) {
                 entity.extra.diedTurn = mCurrentTurn
-                /*
-                 * secret detector
-                 */
-                for (secretEntity in secretEntityList()) {
-                    if (Utils.equalsNullSafe(secretEntity.tags[Entity.KEY_CONTROLLER], entity.tags[Entity.KEY_CONTROLLER]) && Type.MINION == entity.tags[Entity.KEY_CARDTYPE]) {
-                        val controllerEntity = mGame!!.findControllerEntity(entity)
-                        if (controllerEntity != null && "0" == controllerEntity.tags[Entity.KEY_CURRENT_PLAYER]) {
-                            secretEntity.extra.selfPlayerMinionDied = true
-                        }
-                    }
-                }
+                SecretLogic.minionDied(mGame!!, entity)
             } else if (Entity.ZONE_HAND == oldValue && Entity.ZONE_HAND != newValue) {
                 /*
                  * card was put back in the deck (most likely from mulligan)

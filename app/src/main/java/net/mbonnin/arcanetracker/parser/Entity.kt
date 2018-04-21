@@ -47,7 +47,7 @@ class Entity {
         /*
          * secret detector
          */
-        val possibleSecretList = mutableListOf<String>()
+        val excludedSecretList = mutableListOf<String>()
 
         var otherPlayerPlayedMinion: Boolean = false
         var otherPlayerCastSpell: Boolean = false
@@ -79,18 +79,8 @@ class Entity {
         clone.extra.playTurn = extra.playTurn
         clone.extra.createdBy = extra.createdBy
         clone.extra.mulliganed = extra.mulliganed
+        clone.extra.excludedSecretList.addAll(extra.excludedSecretList)
 
-        clone.extra.otherPlayerPlayedMinion = extra.otherPlayerPlayedMinion
-        clone.extra.otherPlayerCastSpell = extra.otherPlayerCastSpell
-        clone.extra.otherPlayerHeroPowered = extra.otherPlayerHeroPowered
-        clone.extra.selfHeroAttacked = extra.selfHeroAttacked
-        clone.extra.selfMinionWasAttacked = extra.selfMinionWasAttacked
-        clone.extra.selfHeroDamaged = extra.selfHeroDamaged
-        clone.extra.selfPlayerMinionDied = extra.selfPlayerMinionDied
-        clone.extra.selfMinionTargetedBySpell = extra.selfMinionTargetedBySpell
-        clone.extra.competitiveSpiritTriggerConditionHappened = extra.competitiveSpiritTriggerConditionHappened
-        clone.extra.otherPlayerPlayedMinionWithThreeOnBoardAlready = extra.otherPlayerPlayedMinionWithThreeOnBoardAlready
-        clone.extra.selfHeroAttackedByMinion = extra.selfHeroAttackedByMinion
         clone.extra.hide = extra.hide
         return clone
     }
@@ -108,6 +98,7 @@ class Entity {
         val KEY_CLASS = "CLASS"
         val KEY_RARITY = "RARITY"
         val KEY_CURRENT_PLAYER = "CURRENT_PLAYER"
+        val KEY_NUM_CARDS_PLAYED_THIS_TURN = "NUM_CARDS_PLAYED_THIS_TURN"
 
         val PLAYSTATE_WON = "WON"
 

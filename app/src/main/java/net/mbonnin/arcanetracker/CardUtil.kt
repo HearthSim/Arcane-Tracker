@@ -10,7 +10,7 @@ object CardUtil {
     fun unknown(name: String? = null): Card {
         val card = Card(
                 id = "?",
-                name = name?:"?",
+                name = name ?: "?",
                 playerClass = "?",
                 cost = Card.UNKNOWN_COST,
                 rarity = "?",
@@ -78,5 +78,14 @@ object CardUtil {
 
     fun getCard(key: String): Card {
         return CardJson.getCard(key) ?: UNKNOWN
+    }
+
+    fun possibleSecretList(playerClass: String?, formatType: String?): Collection<String> {
+
+        return CardJson.allCards().filter {
+            it.mechanics.contains(Mechanic.SECRET)
+                    && it.playerClass == playerClass
+                    && (formatType != FormatType.FT_STANDARD.name || it.isStandard())
+        }.map { it.id }
     }
 }

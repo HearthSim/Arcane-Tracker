@@ -11,10 +11,7 @@ import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.databinding.DetailsViewBinding
 import net.mbonnin.arcanetracker.parser.Entity
 import net.mbonnin.arcanetracker.parser.GameLogic
-import net.mbonnin.hsmodel.CardId
-import net.mbonnin.hsmodel.PlayerClass
 import net.mbonnin.hsmodel.Type
-import java.util.*
 
 class DetailsView(context: Context) : LinearLayout(context) {
     private var mTopMargin: Int = 0
@@ -116,55 +113,19 @@ class DetailsView(context: Context) : LinearLayout(context) {
     }
 
     private fun appendPossibleSecrets(verticalLayout: LinearLayout, entity: Entity) {
-        val playerClass = entity.tags[Entity.KEY_CLASS] ?: return
+        val game = GameLogicListener.get().currentGame
 
-        val list = ArrayList<DeckEntryItem>()
+        if (game == null) {
+            return
+        }
+        val possibleSecrets = CardUtil.possibleSecretList(entity.tags[Entity.KEY_CLASS], game.formatType)
 
-        when (playerClass) {
-            PlayerClass.HUNTER -> {
-                addSecret(list, CardId.BEAR_TRAP, entity.extra.selfHeroAttacked)
-                addSecret(list, CardId.CAT_TRICK, entity.extra.otherPlayerCastSpell)
-                addSecret(list, CardId.EXPLOSIVE_TRAP, entity.extra.selfHeroAttacked)
-                addSecret(list, CardId.FREEZING_TRAP, entity.extra.selfHeroAttacked || entity.extra.selfMinionWasAttacked)
-                addSecret(list, CardId.SNAKE_TRAP, entity.extra.selfMinionWasAttacked)
-                addSecret(list, CardId.SNIPE, entity.extra.otherPlayerPlayedMinion)
-                addSecret(list, CardId.DART_TRAP, entity.extra.otherPlayerHeroPowered)
-                addSecret(list, CardId.HIDDEN_CACHE, entity.extra.otherPlayerPlayedMinion)
-                addSecret(list, CardId.MISDIRECTION, entity.extra.selfHeroAttacked)
-                addSecret(list, CardId.VENOMSTRIKE_TRAP, entity.extra.selfMinionWasAttacked)
-                addSecret(list, CardId.WANDERING_MONSTER, entity.extra.selfHeroAttacked)
-                //addSecret(list, CardId.RAT_TRAP, entity.extra.otherPlayerPlayedMinion)
-            }
-            PlayerClass.MAGE -> {
-                addSecret(list, CardId.MIRROR_ENTITY, entity.extra.otherPlayerPlayedMinion)
-                addSecret(list, CardId.MANA_BIND, entity.extra.otherPlayerCastSpell)
-                addSecret(list, CardId.COUNTERSPELL, entity.extra.otherPlayerCastSpell)
-                addSecret(list, CardId.EFFIGY, entity.extra.selfPlayerMinionDied)
-                addSecret(list, CardId.ICE_BARRIER, entity.extra.selfHeroAttacked)
-                addSecret(list, CardId.POTION_OF_POLYMORPH, entity.extra.otherPlayerPlayedMinion)
-                addSecret(list, CardId.DUPLICATE, entity.extra.selfPlayerMinionDied)
-                addSecret(list, CardId.VAPORIZE, entity.extra.selfHeroAttackedByMinion)
-                addSecret(list, CardId.ICE_BLOCK, false)
-                addSecret(list, CardId.SPELLBENDER, entity.extra.selfMinionTargetedBySpell)
-                addSecret(list, CardId.FROZEN_CLONE, entity.extra.otherPlayerPlayedMinion)
-                addSecret(list, CardId.EXPLOSIVE_RUNES, entity.extra.otherPlayerPlayedMinion)
-            }
-            PlayerClass.PALADIN -> {
-                addSecret(list, CardId.COMPETITIVE_SPIRIT, entity.extra.competitiveSpiritTriggerConditionHappened)
-                addSecret(list, CardId.AVENGE, entity.extra.selfPlayerMinionDied)
-                addSecret(list, CardId.REDEMPTION, entity.extra.selfPlayerMinionDied)
-                addSecret(list, CardId.REPENTANCE, entity.extra.otherPlayerPlayedMinion)
-                addSecret(list, CardId.SACRED_TRIAL, entity.extra.otherPlayerPlayedMinionWithThreeOnBoardAlready)
-                addSecret(list, CardId.NOBLE_SACRIFICE, entity.extra.selfHeroAttacked || entity.extra.selfMinionWasAttacked)
-                addSecret(list, CardId.GETAWAY_KODO, entity.extra.selfPlayerMinionDied)
-                addSecret(list, CardId.EYE_FOR_AN_EYE, entity.extra.selfHeroAttacked)
-                //addSecret(list, CardId.HIDDEN_WISDOM, entity.extra.selfHeroAttacked)
-            }
-            PlayerClass.ROGUE -> {
-                addSecret(list, CardId.CHEAT_DEATH, entity.extra.selfPlayerMinionDied)
-                addSecret(list, CardId.SUDDEN_BETRAYAL, entity.extra.selfHeroAttacked)
-                addSecret(list, CardId.EVASION, entity.extra.selfHeroDamaged)
-            }
+
+        val list = possibleSecrets.map {
+            val deckEntryItem = DeckEntryItem(card = CardUtil.getCard(it))
+            deckEntryItem.count = if (entity.extra.excludedSecretList.contains(it)) 0 else 1
+
+            deckEntryItem
         }
 
         for (deckEntryItem in list) {
