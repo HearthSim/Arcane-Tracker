@@ -1,5 +1,6 @@
 package net.mbonnin.arcanetracker.room
 
+import android.arch.paging.DataSource
 import android.arch.persistence.db.SupportSQLiteDatabase
 import android.arch.persistence.room.*
 import android.arch.persistence.room.migration.Migration
@@ -22,6 +23,17 @@ data class RDeck(
 )
 
 @Entity
+data class RPack(
+        val timeMillis: Long = System.currentTimeMillis(),
+        val cardList: String // a comma separated list of cards
+) {
+    @PrimaryKey(autoGenerate = true)
+    var id: Long = 0
+
+}
+
+
+@Entity
 data class RGame(
         val deck_id: String?,
         val victory: Boolean,
@@ -40,10 +52,11 @@ data class RGame(
 }
 
 
-@Database(entities = arrayOf(RDeck::class, RGame::class), version = 4)
+@Database(entities = arrayOf(RDeck::class, RGame::class, RPack::class), version = 5)
 abstract class RDatabase : RoomDatabase() {
     abstract fun deckDao(): RDeckDao
     abstract fun gameDao(): RGameDao
+    abstract fun packDao(): RPackDao
 }
 
 @Dao
@@ -91,11 +104,21 @@ interface RGameDao {
     fun counter(deck_id: String): Flowable<Counter>
 }
 
+@Dao
+interface RPackDao {
+    @Insert
+    fun insert(rPack: RPack): Long
+
+    @Query("select * from rpack ORDER BY timeMillis DESC")
+    fun all(): DataSource.Factory<Int, RPack>
+}
+
 data class Counter(val won: Int, val lost: Int)
 
 object RDatabaseSingleton {
     val instance = Room.databaseBuilder(ArcaneTrackerApplication.get(), RDatabase::class.java, "db")
-            .addMigrations(Migration3_4())
+            .addMigrations(Migration3_4(),
+                    Migration4_5())
             .fallbackToDestructiveMigration()
             .build()
 }
@@ -104,6 +127,16 @@ class Migration3_4: Migration(3, 4) {
     override fun migrate(database: SupportSQLiteDatabase) {
         try {
             database.execSQL("ALTER TABLE rdeck ADD arena integer NOT NULL DEFAULT 0")
+        } catch (e: Exception) {
+            Timber.d(e)
+        }
+    }
+}
+
+class Migration4_5: Migration(4, 5) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        try {
+            database.execSQL("CREATE TABLE rpack(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, timeMillis INTEGER NOT NULL, cardList TEXT NOT NULL)")
         } catch (e: Exception) {
             Timber.d(e)
         }

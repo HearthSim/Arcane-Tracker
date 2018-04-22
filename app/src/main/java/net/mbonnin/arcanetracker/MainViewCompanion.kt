@@ -394,6 +394,19 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
                 ArcaneTrackerApplication.context.startActivity(intent)
             }
 
+            view.findViewById<View>(R.id.yourPacks).setOnClickListener { v3 ->
+                mViewManager.removeView(view)
+
+                FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("menu_your_packs", null)
+
+
+                val intent = Intent()
+                intent.setClass(ArcaneTrackerApplication.context, YourPacksActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+                ArcaneTrackerApplication.context.startActivity(intent)
+            }
+
             view.findViewById<View>(R.id.hsReplayHistory).setOnClickListener { v3 ->
                 mViewManager.removeView(view)
 

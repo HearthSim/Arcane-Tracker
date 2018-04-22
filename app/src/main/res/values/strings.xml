@@ -63,7 +63,7 @@
     <string name="hand">Hand</string>
     <string name="helpUs">Help Arcane Tracker</string>
     <string name="hi_there">Hi There !</string>
-    <string name="history">Game history</string>
+    <string name="history">Your games</string>
     <string name="historyEmpty">Your history is empty. Games will show up here after you play them.</string>
     <string name="holy_light">Holy Light - %s</string>
     <string name="holy_light_purchased">Thank you for the holy light. 🙏</string>
@@ -204,6 +204,7 @@
     <string name="your_rank">Your rank: %d</string>
     <string name="opponent_rank">Opponent rank: %d</string>
     <string name="yourDecks">Your decks</string>
+    <string name="yourPacks">Your packs</string>
     <string name="select_deck">Please select a deck</string>
     <string name="opponents">Matchups:</string>
     <string name="won">Won</string>

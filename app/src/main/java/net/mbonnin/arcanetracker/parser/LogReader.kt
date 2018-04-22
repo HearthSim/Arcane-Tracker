@@ -14,18 +14,17 @@ import java.util.regex.Pattern
 class LogReader(private val mLog: String, private var mSkipPreviousData: Boolean = false) : Runnable {
     private var mPreviousDataRead = false
     private var mCanceled: Boolean = false
-    lateinit var lineConsumer: LineConsumer
+    private lateinit var lineConsumer: LineConsumer
+
+    fun start(lineConsumer: LineConsumer) {
+        this.lineConsumer = lineConsumer
+        val thread = Thread(this)
+        thread.start()
+    }
 
     interface LineConsumer {
         fun onLine(rawLine: String)
         fun onPreviousDataRead()
-    }
-
-    init {
-
-        val thread = Thread(this)
-        thread.start()
-
     }
 
     fun cancel() {
