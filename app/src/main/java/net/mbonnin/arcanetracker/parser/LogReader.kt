@@ -11,9 +11,10 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.regex.Pattern
 
-class LogReader @JvmOverloads constructor(private val mLog: String, val mLineConsumer: LineConsumer, private var mSkipPreviousData: Boolean = false) : Runnable {
+class LogReader(private val mLog: String, private var mSkipPreviousData: Boolean = false) : Runnable {
     private var mPreviousDataRead = false
     private var mCanceled: Boolean = false
+    lateinit var lineConsumer: LineConsumer
 
     interface LineConsumer {
         fun onLine(rawLine: String)
@@ -129,7 +130,7 @@ class LogReader @JvmOverloads constructor(private val mLog: String, val mLineCon
 
                 } else {
                     QuitDetector.get().ping()
-                    mLineConsumer.onLine(line)
+                    lineConsumer.onLine(line)
                 }
             }
 
@@ -139,7 +140,7 @@ class LogReader @JvmOverloads constructor(private val mLog: String, val mLineCon
 
     private fun previousDataConsumed() {
         mPreviousDataRead = true
-        mLineConsumer.onPreviousDataRead()
+        lineConsumer.onPreviousDataRead()
     }
 
     class LogLine {

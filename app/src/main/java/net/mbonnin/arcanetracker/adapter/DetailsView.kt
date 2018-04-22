@@ -118,7 +118,7 @@ class DetailsView(context: Context) : LinearLayout(context) {
         if (game == null) {
             return
         }
-        val possibleSecrets = CardUtil.possibleSecretList(entity.tags[Entity.KEY_CLASS], game.formatType)
+        val possibleSecrets = CardUtil.possibleSecretList(entity.tags[Entity.KEY_CLASS], game.gameType, game.formatType)
 
         val list = possibleSecrets.map {
             val deckEntryItem = DeckEntryItem(card = CardUtil.getCard(it))

@@ -80,12 +80,24 @@ object CardUtil {
         return CardJson.getCard(key) ?: UNKNOWN
     }
 
-    fun possibleSecretList(playerClass: String?, formatType: String?): Collection<String> {
+    fun possibleSecretList(playerClass: String?, gameType: String?, formatType: String?): Collection<String> {
 
-        return CardJson.allCards().filter {
+        var secrets = CardJson.allCards().filter {
             it.mechanics.contains(Mechanic.SECRET)
                     && it.playerClass == playerClass
                     && (formatType != FormatType.FT_STANDARD.name || it.isStandard())
-        }.map { it.id }
+        }
+
+        if (gameType == GameType.GT_ARENA.name) {
+            secrets = secrets.filter {
+                it.isStandard()
+            }
+        } else if (formatType == FormatType.FT_STANDARD.name) {
+            secrets = secrets.filter {
+                it.isStandard()
+            }
+        }
+
+        return secrets.map { it.id }
     }
 }

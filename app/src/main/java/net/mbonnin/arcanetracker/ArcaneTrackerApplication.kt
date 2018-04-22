@@ -107,13 +107,16 @@ class ArcaneTrackerApplication : MultiDexApplication() {
          * for Arena, we read the whole file again each time because the file is not that big and it allows us to
          * get the arena deck contents
          */
-        LogReader("Arena.log", ArenaParser.get())
+        val arenaLogReader = LogReader("Arena.log", true)
+        arenaLogReader.lineConsumer = ArenaParser.get()
 
         /*
          * we need to read the whole loading screen if we start Arcane Tracker while in the 'tournament' play screen
          * or arena screen already (and not in main menu)
          */
-        LogReader("LoadingScreen.log", LoadingScreenParser.get())
+        val loadingScreenLogReader = LogReader("LoadingScreen.log", false)
+        loadingScreenLogReader.lineConsumer = LoadingScreenParser.get()
+
 
         GameLogic.get().addListener(GameLogicListener.get())
         val handler = Handler()
@@ -125,9 +128,13 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         /*
          * Power.log, we just want the incremental changes
          */
-        LogReader("Power.log", powerParser, true)
+        val powerLogReader = LogReader("Power.log", true)
+        powerLogReader.lineConsumer = powerParser
 
-        LogReader("Decks.log", DecksParser.get(), false)
+
+        val decksLogReader = LogReader("Decks.log", false)
+        decksLogReader.lineConsumer = DecksParser.get()
+
 
         HSReplay.userAgent = (ArcaneTrackerApplication.context.getPackageName() + "/" + BuildConfig.VERSION_NAME
                 + "; Android " + Build.VERSION.RELEASE + ";")

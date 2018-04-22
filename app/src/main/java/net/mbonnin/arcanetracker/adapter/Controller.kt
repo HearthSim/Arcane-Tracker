@@ -72,8 +72,7 @@ class Controller : GameLogic.Listener {
 
         val entities = getEntityListInZone(mOpponentId, Entity.ZONE_SECRET)
                 .filter { e -> Rarity.LEGENDARY != e.tags[Entity.KEY_RARITY] }
-
-        Collections.sort(entities) { a, b -> compareNullSafe(a.tags[Entity.KEY_ZONE_POSITION], b.tags[Entity.KEY_ZONE_POSITION]) }
+                .sortedBy { it.tags[Entity.KEY_ZONE_POSITION] }
 
         for (entity in entities) {
             val card = if (TextUtils.isEmpty(entity.CardID)) {
