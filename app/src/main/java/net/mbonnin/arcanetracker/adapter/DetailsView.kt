@@ -120,7 +120,6 @@ class DetailsView(context: Context) : LinearLayout(context) {
         }
         val possibleSecrets = CardUtil.possibleSecretList(entity.tags[Entity.KEY_CLASS], game.formatType)
 
-
         val list = possibleSecrets.map {
             val deckEntryItem = DeckEntryItem(card = CardUtil.getCard(it))
             deckEntryItem.count = if (entity.extra.excludedSecretList.contains(it)) 0 else 1
