@@ -63,7 +63,7 @@ class PowerParser(private val mTagConsumer: (Tag) -> Unit, private val mRawGameC
             return
         }
 
-        Timber.v(line)
+        Timber.v(rawLine)
 
         if (logLine.method!!.startsWith("GameState.DebugPrintGame()")) {
             handleDebugPrintGame(line)
