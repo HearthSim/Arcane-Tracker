@@ -64,7 +64,7 @@ open class DeckCompanion(v: View) {
         v.findViewById<View>(R.id.button).setOnClickListener{
             val intent = Intent()
             intent.setClass(ArcaneTrackerApplication.context, DonateActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
 
             ArcaneTrackerApplication.context.startActivity(intent)
         }

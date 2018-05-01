@@ -389,7 +389,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
 
                 val intent = Intent()
                 intent.setClass(ArcaneTrackerApplication.context, YourDecksActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
 
                 ArcaneTrackerApplication.context.startActivity(intent)
             }
@@ -402,7 +402,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
 
                 val intent = Intent()
                 intent.setClass(ArcaneTrackerApplication.context, YourPacksActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
 
                 ArcaneTrackerApplication.context.startActivity(intent)
             }
@@ -420,7 +420,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
                     mViewManager.removeView(view)
                     val intent = Intent()
                     intent.setClass(ArcaneTrackerApplication.context, DonateActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
 
                     FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("menu_donate", null)
 

@@ -427,7 +427,6 @@ class CardRenderer {
             } catch (e: IOException) {
                 Timber.e(e)
             }
-
         }
 
         val result: Result

@@ -30,7 +30,7 @@ object ScreenCaptureHolder {
                         screenCaptureStarting = true
                         val intent = Intent()
                         intent.setClass(ArcaneTrackerApplication.get(), StartScreenCaptureActivity::class.java)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         ArcaneTrackerApplication.get().startActivity(intent)
                     }
                 } else {
