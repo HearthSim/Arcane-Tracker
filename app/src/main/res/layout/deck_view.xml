@@ -98,19 +98,5 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Your deck will appear here once you start a game" />
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorPrimary"
-            android:drawableRight="@drawable/heart_24dp"
-            android:text="@string/donate"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"
-            android:textColor="#fff"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-
     </android.support.constraint.ConstraintLayout>
 </FrameLayout>
