@@ -1,9 +1,9 @@
 package net.mbonnin.arcanetracker.room
 
-import android.arch.paging.DataSource
 import android.arch.persistence.db.SupportSQLiteDatabase
 import android.arch.persistence.room.*
 import android.arch.persistence.room.migration.Migration
+import android.database.Cursor
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
@@ -113,7 +113,7 @@ interface RPackDao {
     fun insert(rPack: RPack): Long
 
     @Query("select * from rpack ORDER BY timeMillis DESC")
-    fun all(): DataSource.Factory<Int, RPack>
+    fun all(): Cursor
 }
 
 data class Counter(val won: Int, val lost: Int)

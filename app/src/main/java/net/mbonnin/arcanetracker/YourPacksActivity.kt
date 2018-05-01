@@ -1,12 +1,9 @@
 package net.mbonnin.arcanetracker
 
-import android.arch.lifecycle.Observer
-import android.arch.paging.LivePagedListBuilder
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
-import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 
 
 class YourPacksActivity : AppCompatActivity() {
@@ -15,14 +12,13 @@ class YourPacksActivity : AppCompatActivity() {
 
         val recyclerView = RecyclerView(this)
 
-        val list = LivePagedListBuilder(RDatabaseSingleton.instance.packDao().all(),20).build()
+        val adapter = YourPacksAdapter(this)
 
-        val adapter = PacksAdapter()
-        list.observe(this, Observer {
-            adapter.submitList(it)
-        } )
+        val gridLayoutManager = GridLayoutManager(this, 6)
+        gridLayoutManager.spanSizeLookup = adapter.spanSizeLookup
 
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = gridLayoutManager
+
         recyclerView.adapter = adapter
 
         setContentView(recyclerView)
