@@ -3,11 +3,12 @@ package net.mbonnin.arcanetracker
 import android.graphics.*
 import android.os.Build
 import android.text.*
-import android.widget.TextView
 import net.mbonnin.hsmodel.Card
 import net.mbonnin.hsmodel.Race
 import net.mbonnin.hsmodel.Rarity
 import net.mbonnin.hsmodel.Type
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
@@ -27,13 +28,16 @@ class CardRenderer {
      */
     private val PLURAL_PATTERN = Pattern.compile("\\(?(\\d+)\\)?([^\\|]*)\\|4\\((.+?),(.+?)\\)")
 
-    internal var ready: Boolean = false
-    internal var view: TextView? = null
     private var parallelRenders: Int = 0
 
     init {
         belwe = Typefaces.belwe()
         franklin = Typefaces.franklin()
+    }
+
+    enum class Result {
+        SUCCESS,
+        ERROR,
     }
 
     @Synchronized
@@ -62,7 +66,7 @@ class CardRenderer {
         }
     }
 
-    fun renderCard(id: String, outputStream: OutputStream) {
+    fun renderCard(id: String, outputStream: OutputStream): Result {
         Timber.d("start render $id ($parallelRenders parallel)")
         parallelRenders++
         val bitmap = Bitmap.createBitmap(TOTAL_WIDTH / 2, TOTAL_HEIGHT / 2, Bitmap.Config.ARGB_8888)
@@ -73,11 +77,7 @@ class CardRenderer {
         var dy: Int
         val s: String
 
-        if (card.type == null) {
-            return
-        }
-
-        drawCardArt(canvas, card)
+        val result = drawCardArt(canvas, card)
 
         var type: String
         if (Type.HERO == card.type) {
@@ -157,6 +157,8 @@ class CardRenderer {
 
         bitmap.recycle()
         parallelRenders--
+
+        return result
     }
 
     private fun drawBodyText(canvas: Canvas, card: Card) {
@@ -362,7 +364,7 @@ class CardRenderer {
         canvas.restore()
     }
 
-    private fun drawCardArt(canvas: Canvas, card: Card) {
+    private fun drawCardArt(canvas: Canvas, card: Card): Result {
         val dx: Int
         val dy: Int
         val dWidth: Int
@@ -405,19 +407,46 @@ class CardRenderer {
 
         canvas.save()
         canvas.clipPath(clipPath)
-        val t = Utils.getAssetBitmap("cards/" + card.id + ".webp", "renderer/default.webp")
         val dstRect = RectF(dx.toFloat(), dy.toFloat(), (dx + dWidth).toFloat(), (dy + dHeight).toFloat())
+        var t = Utils.getAssetBitmap("cards/" + card.id + ".webp")
+
+        if (t == null) {
+            try {
+                val client = OkHttpClient()
+                val request = Request.Builder()
+                        .get()
+                        .url("https://arcanetracker.com/cards/${card.id}.webp")
+                        .build()
+
+                val response = client.newCall(request).execute()
+
+                val inputStream = response.body()?.byteStream()
+                if (inputStream != null) {
+                    t = BitmapFactory.decodeStream(inputStream)
+                }
+            } catch (e: IOException) {
+                Timber.e(e)
+            }
+
+        }
+
+        val result: Result
+
         if (t != null) {
             val srcRect = Rect(0, 0, t.width, t.height)
             canvas.drawBitmap(t, srcRect, dstRect, null)
             t.recycle()
+            result = Result.SUCCESS
         } else {
             val paint = Paint()
             paint.style = Paint.Style.FILL
             paint.color = Color.DKGRAY
             canvas.drawRect(dstRect, paint)
+            result = Result.ERROR
         }
         canvas.restore()
+
+        return result
     }
 
     companion object {
