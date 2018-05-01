@@ -22,3 +22,5 @@ app/google-services.json
 /hsmodel/build
 /.idea/*
 /*/build
+/website/public/cards
+/website/public/bars
