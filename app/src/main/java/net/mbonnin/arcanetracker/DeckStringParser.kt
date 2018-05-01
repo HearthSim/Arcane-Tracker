@@ -45,7 +45,7 @@ object DeckStringParser {
         for (i in 0 until cardCount) {
             val card = CardUtil.getCard(VarInt.getVarInt(byteBuffer))
             if (card != null) {
-                Timber.d("card1: %s", card.name)
+                //Timber.d("card1: %s", card.name)
                 deck.cards[card.id] = 1
             }
         }
@@ -54,7 +54,7 @@ object DeckStringParser {
         for (i in 0 until cardCount) {
             val card = CardUtil.getCard(VarInt.getVarInt(byteBuffer))
             if (card != null) {
-                Timber.d("card2: %s", card.name)
+                //Timber.d("card2: %s", card.name)
                 deck.cards[card.id] = 2
             }
         }
