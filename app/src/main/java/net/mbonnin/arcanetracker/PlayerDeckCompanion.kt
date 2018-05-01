@@ -12,6 +12,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.deck_view.*
 import net.mbonnin.arcanetracker.adapter.Controller
+import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.WLCounter
 import timber.log.Timber
 
@@ -43,13 +44,21 @@ class PlayerDeckCompanion(override val containerView: View) : DeckCompanion(cont
             val params = ViewManager.Params()
             params.x = a[0] + settings.width / 2 + Utils.dpToPx(20)
             params.y = 0
-            params.w = Utils.dpToPx(150)
+            params.w = Utils.dpToPx(250)
             params.h = a[1] + settings.height / 2
 
             viewManager.addModalView(deckListView, params)
         })
 
         text.setText(containerView.context.getString(R.string.your_deck_will_appear))
+
+        RDatabaseSingleton.instance.deckDao().getLatestDeck()
+                .firstElement()
+                .subscribe {
+                    it.firstOrNull()?.let {
+                        this.deck = DeckMapper.fromRDeck(it)
+                    }
+                }
     }
 
     var disposable: Disposable? = null
@@ -65,7 +74,7 @@ class PlayerDeckCompanion(override val containerView: View) : DeckCompanion(cont
 
             disposable?.dispose()
 
-            Timber.d("setDeck")
+            Timber.d("setDeck ${value.name}")
 
             disposable = WLCounter.watch(value.id)
                     .startWith(WLCounter(0, 0))

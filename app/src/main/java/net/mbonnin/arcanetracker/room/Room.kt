@@ -65,7 +65,10 @@ interface RDeckDao {
     fun getCollection(): Flowable<List<RDeck>>
 
     @Query("SELECT * FROM rdeck WHERE arena = 1 ORDER BY accessMillis DESC LIMIT 1")
-    fun getLatestArenaDeck(): Flowable<RDeck>
+    fun getLatestArenaDeck(): Flowable<List<RDeck>>
+
+    @Query("SELECT * FROM rdeck ORDER BY accessMillis DESC LIMIT 1")
+    fun getLatestDeck(): Flowable<List<RDeck>>
 
     @Query("UPDATE rdeck SET name = :name, deck_string = :deck_string, accessMillis = :accessMillis WHERE id = :id")
     fun updateNameAndContents(id: String, name: String, deck_string: String, accessMillis: Long)
@@ -80,7 +83,7 @@ interface RDeckDao {
     fun insert(rDeck: RDeck)
 
     @Query("SELECT * FROM rdeck WHERE id = :id LIMIT 1")
-    fun findById(id: String): Flowable<RDeck>
+    fun findById(id: String): Flowable<List<RDeck>>
 
     @Query("DELETE FROM rdeck WHERE id = :id")
     fun delete(id: String)

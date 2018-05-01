@@ -21,14 +21,15 @@ class PlayerDeckListAdapter : DeckListAdapter() {
         zip(
                 RDatabaseSingleton.instance.deckDao().getCollection(),
                 RDatabaseSingleton.instance.deckDao().getLatestArenaDeck(),
-                object : BiFunction<List<RDeck>, RDeck, List<RDeck>> {
-                    override fun apply(t1: List<RDeck>, t2: RDeck): List<RDeck> {
+                object : BiFunction<List<RDeck>, List<RDeck>, List<RDeck>> {
+                    override fun apply(t1: List<RDeck>, t2: List<RDeck>): List<RDeck> {
                         val r = t1.toMutableList()
-                        r.add(t2)
+                        r.addAll(t2)
                         return r
                     }
                 }
-        ).subscribeOn(Schedulers.io())
+        ).firstElement()
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     list.addAll(it)

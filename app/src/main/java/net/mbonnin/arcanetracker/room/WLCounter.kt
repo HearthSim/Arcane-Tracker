@@ -11,7 +11,11 @@ class WLCounter(val wins: Int, val losses: Int) {
 
         fun watch(id: String): Flowable<WLCounter> {
             return RDatabaseSingleton.instance.deckDao().findById(id)
-                    .map { WLCounter(it.wins, it.losses) }
+                    .map {
+                        it.firstOrNull()?.let {
+                            WLCounter(it.wins, it.losses)
+                        }
+                    }
         }
 
 

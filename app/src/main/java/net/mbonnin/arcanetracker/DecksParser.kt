@@ -8,46 +8,53 @@ import net.mbonnin.arcanetracker.room.RDeck
 import timber.log.Timber
 
 class DecksParser: LogReader.LineConsumer {
-    var isArena = false
+    enum class State {
+        DEFAULT,
+        ARENA,
+        GAME
+    }
+
     val deckStringHelper = DeckStringHelper()
+    var state = State.DEFAULT
+
 
     override fun onLine(rawLine: String) {
+        Timber.d(rawLine)
         if (rawLine.contains("Deck Contents Received:")) {
-            isArena = false
+            state = State.DEFAULT
         } else if (rawLine.contains("Finished Editing Deck:")) {
-            isArena = false
+            state = State.DEFAULT
         } else if (rawLine.contains("Finding Game With Deck:")) {
-            isArena = false
+            state = State.GAME
         } else if (rawLine.contains("Starting Arena Game With Deck")) {
-            isArena = true
+            state = State.ARENA
         } else {
             val logLine = LogReader.parseLine(rawLine)
             if (logLine != null) {
-
-                Timber.d(logLine.line)
-
                 val result = deckStringHelper.parseLine(logLine.line)
 
-                if (result != null && result.id != null) {
+                if (result?.id != null) {
                     val deck = DeckStringParser.parse(result.deckString)
                     if (deck != null) {
                         deck.id = result.id
-                        if (isArena) {
+                        if (state == State.ARENA) {
                             deck.name = ArcaneTrackerApplication.get().getString(R.string.arenaDeck)
                         } else {
                             deck.name = result.name ?: "?"
                         }
 
-                        Completable.fromAction {
-                            MainViewCompanion.playerCompanion.deck = deck
+                        if (state == State.ARENA || state == State.GAME) {
+                            Completable.fromAction {
+                                MainViewCompanion.playerCompanion.deck = deck
+                            }
+                                    .subscribeOn(AndroidSchedulers.mainThread())
+                                    .subscribe()
                         }
-                                .subscribeOn(AndroidSchedulers.mainThread())
-                                .subscribe()
 
                         val rdeck = RDeck(id = deck.id,
                                 name = deck.name,
                                 deck_string = result.deckString,
-                                arena = isArena)
+                                arena = state == State.ARENA)
 
                         try {
                             RDatabaseSingleton.instance.deckDao().insert(rdeck)
