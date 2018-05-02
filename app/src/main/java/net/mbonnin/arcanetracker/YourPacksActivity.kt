@@ -19,6 +19,13 @@ class YourPacksActivity : AppCompatActivity() {
 
         recyclerView.layoutManager = gridLayoutManager
 
+        val spacing = 8.toPixel(resources.displayMetrics)
+
+        recyclerView.setPadding(spacing, spacing, spacing, spacing)
+        recyclerView.clipToPadding = false
+
+        recyclerView.addItemDecoration(SpacesItemDecoration(spacing))
+
         recyclerView.adapter = adapter
 
         setContentView(recyclerView)

@@ -14,8 +14,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_pack.*
+import kotlinx.android.synthetic.main.item_packs_header.*
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RPack
+import net.mbonnin.hsmodel.CardId
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -81,6 +83,17 @@ class YourPacksAdapter(val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapte
     }
 
     private fun worker() {
+        //instertTestPacks()
+        val list = mutableListOf<Item>()
+
+        val stats = RDatabaseSingleton.instance.packDao().stats()
+
+        list.add(PacksItem(stats.count))
+        list.add(DustItem(stats.dust))
+        list.add(DustAverageItem(stats.dust/stats.count))
+
+        publishSubject.onNext(list)
+
         val cursor = RDatabaseSingleton.instance.packDao().all()
 
         while (true) {
@@ -96,24 +109,45 @@ class YourPacksAdapter(val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapte
                 }
             }
 
-            val list = mutableListOf<Item>()
             val _cursorIndexOfId = cursor.getColumnIndexOrThrow("id")
             val _cursorIndexOfTimeMillis = cursor.getColumnIndexOrThrow("timeMillis")
             val _cursorIndexOfCardList = cursor.getColumnIndexOrThrow("cardList")
+            val _cursorIndexOfDust = cursor.getColumnIndexOrThrow("dust")
 
             var i = 0
+            val list = mutableListOf<Item>()
             while (cursor.moveToNext() && i++ < 20) {
                 val _tmpTimeMillis = cursor.getLong(_cursorIndexOfTimeMillis)
                 val _tmpCardList = cursor.getString(_cursorIndexOfCardList)
                 val _tmpId = cursor.getLong(_cursorIndexOfId)
+                val _tmpDust = cursor.getInt(_cursorIndexOfDust)
 
-                val rpack = RPack(_tmpTimeMillis, _tmpCardList)
+                val rpack = RPack(_tmpTimeMillis, _tmpCardList, _tmpDust)
                 rpack.id = _tmpId
 
                 list.add(PackItem(rpack))
             }
 
             publishSubject.onNext(list)
+        }
+    }
+
+    private fun instertTestPacks() {
+        val cardList = listOf(
+                AchievementsParser.CardGained(CardId.MILLHOUSE_MANASTORM, true),
+                AchievementsParser.CardGained(CardId.RAGNAROS_THE_FIRELORD, false),
+                AchievementsParser.CardGained(CardId.MURLOC_WARLEADER, false),
+                AchievementsParser.CardGained(CardId.IRONBEAK_OWL, true),
+                AchievementsParser.CardGained(CardId.BRING_IT_ON, false)
+        )
+
+        for (i in 0..100) {
+            val dust = cardList.sumBy {
+                val card = CardUtil.getCard(it.id)
+                CardUtil.getDust(card.rarity, it.golden)
+            }
+            val rPack = RPack(cardList = cardList.map { it.toString() }.joinToString(","), dust = dust)
+            RDatabaseSingleton.instance.packDao().insert(rPack)
         }
     }
 
@@ -153,8 +187,8 @@ class YourPacksAdapter(val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapte
             TYPE_DUST,
             TYPE_DUST_AVERAGE,
             TYPE_PITY_COUNTER -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.item_pack, parent, false)
-                return PackViewHolder(view)
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.item_packs_header, parent, false)
+                return CardViewHolder(view)
             }
             TYPE_PACK -> {
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.item_pack, parent, false)
@@ -172,10 +206,10 @@ class YourPacksAdapter(val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapte
         requestMoreDataIfNeeded(position)
 
         when (item) {
-            is PacksItem -> Unit
-            is DustItem -> Unit
-            is DustAverageItem -> Unit
-            is PityCounterItem -> Unit
+            is PacksItem,
+            is DustItem,
+            is DustAverageItem,
+            is PityCounterItem -> (holder as CardViewHolder).bind(item)
             is PackItem -> (holder as PackViewHolder).bind(item.rpack)
         }
     }
@@ -205,5 +239,35 @@ class PackViewHolder(override val containerView: View) : LayoutContainer, Recycl
                 textView.setText("?")
             }
         }
+    }
+}
+
+class CardViewHolder(override val containerView: View) : LayoutContainer, RecyclerView.ViewHolder(containerView) {
+    fun bind(item: Item) {
+        val resId = when(item) {
+            is PacksItem -> R.drawable.pack
+            is DustItem -> R.drawable.dust
+            is DustAverageItem -> R.drawable.rightarrow
+            else -> R.drawable.pack
+        }
+
+        imageView.setImageResource(resId)
+
+        val num = when (item) {
+            is PacksItem -> item.packs
+            is DustItem -> item.dust
+            is DustAverageItem -> item.average
+            else -> 0
+        }
+        number.setText(num.toString())
+
+        val desc = when(item) {
+            is PacksItem -> R.string.packs_opened
+            is DustItem -> R.string.dust
+            is DustAverageItem -> R.string.average
+            else -> 0
+        }
+
+        description.setText(desc)
     }
 }

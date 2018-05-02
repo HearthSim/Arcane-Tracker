@@ -100,4 +100,17 @@ object CardUtil {
 
         return secrets.map { it.id }
     }
+
+    fun getDust(rarity: String?, golden: Boolean): Int {
+        if (rarity == null) {
+            return 0
+        }
+        return when (rarity) {
+            Rarity.COMMON -> if (golden) 50 else 5
+            Rarity.RARE -> if (golden) 100 else 20
+            Rarity.EPIC -> if (golden) 400 else 100
+            Rarity.LEGENDARY -> if (golden) 1600 else 400
+            else -> 0
+        }
+    }
 }

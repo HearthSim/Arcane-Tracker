@@ -25,7 +25,8 @@ data class RDeck(
 @Entity
 data class RPack(
         val timeMillis: Long = System.currentTimeMillis(),
-        val cardList: String // a comma separated list of cards
+        val cardList: String, // a comma separated list of cards
+        val dust: Int
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
@@ -52,7 +53,7 @@ data class RGame(
 }
 
 
-@Database(entities = arrayOf(RDeck::class, RGame::class, RPack::class), version = 5)
+@Database(entities = arrayOf(RDeck::class, RGame::class, RPack::class), version = 6)
 abstract class RDatabase : RoomDatabase() {
     abstract fun deckDao(): RDeckDao
     abstract fun gameDao(): RGameDao
@@ -114,14 +115,22 @@ interface RPackDao {
 
     @Query("select * from rpack ORDER BY timeMillis DESC")
     fun all(): Cursor
+
+    @Query("select COUNT(*) as count, SUM(DUST) as dust from rpack")
+    fun stats(): PackStats
 }
+
+data class PackStats(val count: Int, val dust: Int)
 
 data class Counter(val won: Int, val lost: Int)
 
 object RDatabaseSingleton {
     val instance = Room.databaseBuilder(ArcaneTrackerApplication.get(), RDatabase::class.java, "db")
-            .addMigrations(Migration3_4(),
-                    Migration4_5())
+            .addMigrations(
+                    Migration3_4(),
+                    Migration4_5(),
+                    Migration5_6()
+            )
             .fallbackToDestructiveMigration()
             .build()
 }
@@ -140,6 +149,16 @@ class Migration4_5: Migration(4, 5) {
     override fun migrate(database: SupportSQLiteDatabase) {
         try {
             database.execSQL("CREATE TABLE rpack(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, timeMillis INTEGER NOT NULL, cardList TEXT NOT NULL)")
+        } catch (e: Exception) {
+            Timber.d(e)
+        }
+    }
+}
+
+class Migration5_6: Migration(5, 6) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        try {
+            database.execSQL("ALTER TABLE rpack ADD dust integer NOT NULL DEFAULT 0")
         } catch (e: Exception) {
             Timber.d(e)
         }

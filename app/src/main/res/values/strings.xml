@@ -218,5 +218,8 @@
     <string name="hsReplayClaiming">Claiming your replays…</string>
     <string name="hsReplayClaimSuccess">You have successfully claimed your replays, yay!\n</string>
     <string name="backToGame">Back to game</string>
+    <string name="packs_opened">Packs opened</string>
+    <string name="dust">Total dust gained</string>
+    <string name="average">Dust per pack</string>
 
 </resources>
