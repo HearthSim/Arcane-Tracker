@@ -268,6 +268,12 @@ class CardViewHolder(override val containerView: View) : LayoutContainer, Recycl
             else -> 0
         }
 
+        when (item) {
+            is PacksItem,
+            is DustItem -> imageView.rotation = 20f
+            else -> imageView.rotation = 0f
+        }
+
         description.setText(desc)
     }
 }
