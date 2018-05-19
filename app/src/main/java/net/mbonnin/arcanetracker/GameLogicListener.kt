@@ -20,6 +20,7 @@ import net.mbonnin.arcanetracker.trackobot.model.CardPlay
 import net.mbonnin.arcanetracker.trackobot.model.Result
 import net.mbonnin.arcanetracker.trackobot.model.ResultData
 import rx.Single
+
 import rx.schedulers.Schedulers
 import timber.log.Timber
 import java.util.*
