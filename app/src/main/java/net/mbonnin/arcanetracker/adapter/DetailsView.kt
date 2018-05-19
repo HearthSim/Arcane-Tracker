@@ -5,8 +5,10 @@ import android.graphics.Bitmap
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.view.size
 import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.databinding.DetailsViewBinding
 import net.mbonnin.arcanetracker.parser.Entity
@@ -69,9 +71,9 @@ class DetailsView(context: Context) : LinearLayout(context) {
                 builder.append(context.getString(R.string.createdBy, CardUtil.getCard(entity.extra.createdBy!!).name))
             }
 
-            if (Entity.ZONE_SECRET == entity.tags[Entity.KEY_ZONE] && TextUtils.isEmpty(entity.CardID)) {
+            if (Entity.ZONE_SECRET == entity.tags[Entity.KEY_ZONE] && entity.CardID.isNullOrEmpty()) {
                 builder.append(Utils.getString(R.string.possibleSecrets))
-                appendPossibleSecrets(b.root as LinearLayout, entity)
+                appendPossibleSecrets(b.secrets, entity)
             }
 
             var s = builder.toString()
@@ -97,7 +99,7 @@ class DetailsView(context: Context) : LinearLayout(context) {
             if (child is ImageView) {
                 continue
             }
-            val layoutParams = LinearLayout.LayoutParams(mCardWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
+            val layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
             val p = Utils.dpToPx(5)
             layoutParams.rightMargin = p
             layoutParams.leftMargin = layoutParams.rightMargin
@@ -112,13 +114,19 @@ class DetailsView(context: Context) : LinearLayout(context) {
         applyMargins()
     }
 
-    private fun appendPossibleSecrets(verticalLayout: LinearLayout, entity: Entity) {
+    private fun appendPossibleSecrets(horizontalLayout: LinearLayout, entity: Entity) {
         val game = GameLogicListener.get().currentGame
 
-        if (game == null) {
-            return
+        val possibleSecrets: Collection<String>
+
+        if (TestSwitch.SECRET_LAYOUT) {
+            possibleSecrets = CardUtil.possibleSecretList(entity.tags[Entity.KEY_CLASS], GameType.GT_RANKED.name, FormatType.FT_WILD.name)
+        } else {
+            if (game == null) {
+                return
+            }
+            possibleSecrets = CardUtil.possibleSecretList(entity.tags[Entity.KEY_CLASS], game.gameType, game.formatType)
         }
-        val possibleSecrets = CardUtil.possibleSecretList(entity.tags[Entity.KEY_CLASS], game.gameType, game.formatType)
 
         val list = possibleSecrets.map {
             val deckEntryItem = DeckEntryItem(card = CardUtil.getCard(it))
@@ -127,7 +135,14 @@ class DetailsView(context: Context) : LinearLayout(context) {
             deckEntryItem
         }
 
+        var verticalLayout: LinearLayout? = null
         for (deckEntryItem in list) {
+
+            if (verticalLayout == null) {
+                verticalLayout = LinearLayout(horizontalLayout.context)
+                verticalLayout.orientation = VERTICAL
+                horizontalLayout.addView(verticalLayout, mCardWidth - Utils.dpToPx(40), WRAP_CONTENT)
+            }
             val view = LayoutInflater.from(context).inflate(R.layout.bar_card, null)
             val barTemplate = LayoutInflater.from(context).inflate(R.layout.bar_template, null) as ViewGroup
             val params = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
@@ -137,22 +152,11 @@ class DetailsView(context: Context) : LinearLayout(context) {
             holder.bind(deckEntryItem)
 
             verticalLayout.addView(barTemplate, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(30)))
-        }
-    }
 
-    private fun addSecret(list: MutableList<DeckEntryItem>, cardId: String, condition: Boolean) {
-        val deckEntryItem = DeckEntryItem(card = CardUtil.getCard(cardId))
-        deckEntryItem.count = if (condition) 0 else 1
-
-        val formatType = GameLogicListener.get().currentGame?.formatType
-        val isGameStandard = formatType == FormatType.FT_STANDARD.name
-
-        if (isGameStandard) {
-            if (deckEntryItem.card.isStandard()) {
-                list.add(deckEntryItem)
+            if (verticalLayout.size >= 8) {
+                // if we have a lot of secrets, they won't fit on a single screen
+                verticalLayout = null
             }
-        } else {
-            list.add(deckEntryItem)
         }
     }
 }

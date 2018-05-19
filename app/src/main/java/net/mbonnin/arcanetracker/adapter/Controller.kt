@@ -8,6 +8,7 @@ import net.mbonnin.arcanetracker.parser.Entity
 import net.mbonnin.arcanetracker.parser.EntityList
 import net.mbonnin.arcanetracker.parser.Game
 import net.mbonnin.arcanetracker.parser.GameLogic
+import net.mbonnin.hsmodel.PlayerClass
 import net.mbonnin.hsmodel.Rarity
 import net.mbonnin.hsmodel.Type
 import java.util.*
@@ -67,8 +68,8 @@ class Controller : GameLogic.Listener {
             return list
         }
 
-    fun getSecrets(): List<Any> {
-        val list = ArrayList<Any>()
+    fun getSecrets(): List<DeckEntryItem> {
+        val list = ArrayList<DeckEntryItem>()
 
         val entities = getEntityListInZone(mOpponentId, Entity.ZONE_SECRET)
                 .filter { e -> Rarity.LEGENDARY != e.tags[Entity.KEY_RARITY] }
@@ -90,13 +91,32 @@ class Controller : GameLogic.Listener {
                     card = card!!,
                     gift = entity.extra.tmpIsGift,
                     count = 1
-                    )
+            )
 
             val clone = entity.clone()
             clone.card = deckEntry.card
             deckEntry.entityList.add(clone)
             list.add(deckEntry)
         }
+
+        return list
+    }
+
+    fun getTestSecrets(): List<DeckEntryItem> {
+        val list = ArrayList<DeckEntryItem>()
+
+        val deckEntry = DeckEntryItem(
+                card = CardUtil.secret("MAGE"),
+                gift = false,
+                count = 1
+        )
+
+        val entity = Entity()
+        entity.tags[Entity.KEY_ZONE] = Entity.ZONE_SECRET
+        entity.tags[Entity.KEY_CLASS] = PlayerClass.MAGE
+        deckEntry.entityList.add(entity)
+
+        list.add(deckEntry)
 
         return list
     }
@@ -253,7 +273,11 @@ class Controller : GameLogic.Listener {
     private fun update() {
         if (mGame == null) {
             legacyAdapter.setList(getCardMapList(if (mLegacyCardMap != null) mLegacyCardMap!! else HashMap<String, Int>()))
-            playerAdapter.setList(getCardMapList(if (mPlayerCardMap != null) mPlayerCardMap!! else HashMap<String, Int>()))
+            if (TestSwitch.SECRET_LAYOUT) {
+                playerAdapter.setList(getTestSecrets() as ArrayList<Any>)
+            } else {
+                playerAdapter.setList(getCardMapList(if (mPlayerCardMap != null) mPlayerCardMap!! else HashMap<String, Int>()))
+            }
 
             val list = getCardMapList(HashMap())
             opponentAdapter.setList(list)
