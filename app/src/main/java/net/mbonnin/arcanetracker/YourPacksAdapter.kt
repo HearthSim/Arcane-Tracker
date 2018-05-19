@@ -84,7 +84,7 @@ class YourPacksAdapter(val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapte
 
     private fun worker() {
         //instertTestPacks()
-        val list = mutableListOf<Item>()
+        var list = mutableListOf<Item>()
 
         val stats = RDatabaseSingleton.instance.packDao().stats()
 
@@ -115,7 +115,7 @@ class YourPacksAdapter(val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapte
             val _cursorIndexOfDust = cursor.getColumnIndexOrThrow("dust")
 
             var i = 0
-            val list = mutableListOf<Item>()
+            list = mutableListOf()
             while (cursor.moveToNext() && i++ < 20) {
                 val _tmpTimeMillis = cursor.getLong(_cursorIndexOfTimeMillis)
                 val _tmpCardList = cursor.getString(_cursorIndexOfCardList)

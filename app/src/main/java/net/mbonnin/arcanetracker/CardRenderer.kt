@@ -7,8 +7,6 @@ import net.mbonnin.hsmodel.Card
 import net.mbonnin.hsmodel.Race
 import net.mbonnin.hsmodel.Rarity
 import net.mbonnin.hsmodel.Type
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
@@ -408,29 +406,9 @@ class CardRenderer {
         canvas.save()
         canvas.clipPath(clipPath)
         val dstRect = RectF(dx.toFloat(), dy.toFloat(), (dx + dWidth).toFloat(), (dy + dHeight).toFloat())
-        var t = Utils.getAssetBitmap("cards/" + card.id + ".webp")
-
-        if (t == null) {
-            try {
-                val client = OkHttpClient()
-                val request = Request.Builder()
-                        .get()
-                        .url("https://arcanetracker.com/cards/${card.id}.webp")
-                        .build()
-
-                val response = client.newCall(request).execute()
-
-                val inputStream = response.body()?.byteStream()
-                if (inputStream != null) {
-                    t = BitmapFactory.decodeStream(inputStream)
-                }
-            } catch (e: IOException) {
-                Timber.e(e)
-            }
-        }
+        val t = Utils.getCardArtBlocking(card.id)
 
         val result: Result
-
         if (t != null) {
             val srcRect = Rect(0, 0, t.width, t.height)
             canvas.drawBitmap(t, srcRect, dstRect, null)

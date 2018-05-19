@@ -15,6 +15,8 @@ import android.util.TypedValue
 import android.view.WindowManager
 import android.widget.Toast
 import com.crashlytics.android.Crashlytics
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import rx.Completable
 import rx.android.schedulers.AndroidSchedulers
 import timber.log.Timber
@@ -129,6 +131,32 @@ object Utils {
         }
 
         return BitmapFactory.decodeStream(inputStream)
+    }
+
+    fun getCardArtBlocking(cardId: String): Bitmap? {
+
+        var t = getAssetBitmap("cards/" + cardId + ".webp")
+
+        if (t == null) {
+            try {
+                val client = OkHttpClient()
+                val request = Request.Builder()
+                        .get()
+                        .url("https://arcanetracker.com/cards/${cardId}.webp")
+                        .build()
+
+                val response = client.newCall(request).execute()
+
+                val inputStream = response.body()?.byteStream()
+                if (inputStream != null) {
+                    t = BitmapFactory.decodeStream(inputStream)
+                }
+            } catch (e: IOException) {
+                Timber.e(e)
+            }
+        }
+
+        return t
     }
 
     fun getAssetBitmap(name: String, defaultName: String): Bitmap? {
