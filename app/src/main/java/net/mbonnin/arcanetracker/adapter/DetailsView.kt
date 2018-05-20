@@ -39,6 +39,7 @@ class DetailsView(context: Context) : LinearLayout(context) {
 
         for (entity in deckEntryItem.entityList) {
             val b = DetailsViewBinding.inflate(LayoutInflater.from(context))
+            b.root.minimumWidth = mCardWidth
 
             val builder = StringBuilder()
 
@@ -150,7 +151,7 @@ class DetailsView(context: Context) : LinearLayout(context) {
 
             val holder = DeckEntryHolder(barTemplate)
             holder.bind(deckEntryItem)
-
+mCardW
             verticalLayout.addView(barTemplate, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(30)))
 
             if (verticalLayout.size >= 8) {
