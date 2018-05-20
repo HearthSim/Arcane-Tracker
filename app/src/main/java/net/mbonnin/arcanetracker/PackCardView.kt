@@ -2,11 +2,16 @@ package net.mbonnin.arcanetracker
 
 import android.content.Context
 import android.graphics.*
+import android.graphics.drawable.Drawable
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.util.AttributeSet
 import android.util.TypedValue
+import android.view.MotionEvent
 import android.view.View
+import android.widget.ImageView
 import androidx.graphics.toRect
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Target
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -23,7 +28,7 @@ class PackCardView @JvmOverloads constructor(context: Context, attrs: AttributeS
     private var glowPaint = Paint()
 
     val padding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, context.resources.displayMetrics)
-    val roundRectRadius =  TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, context.resources.displayMetrics)
+    val roundRectRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, context.resources.displayMetrics)
     private lateinit var card: Card
 
     init {
@@ -32,7 +37,7 @@ class PackCardView @JvmOverloads constructor(context: Context, attrs: AttributeS
         glowPaint.isAntiAlias = true
         glowPaint.style = Paint.Style.STROKE
         glowPaint.strokeWidth = 8.toPixelFloat(resources.displayMetrics)
-        glowPaint.maskFilter = BlurMaskFilter(padding/3, BlurMaskFilter.Blur.NORMAL)
+        glowPaint.maskFilter = BlurMaskFilter(padding / 3, BlurMaskFilter.Blur.NORMAL)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -40,6 +45,7 @@ class PackCardView @JvmOverloads constructor(context: Context, attrs: AttributeS
 
         setMeasuredDimension(measuredWidth, (20.toPixel(resources.displayMetrics) + 2 * padding).toInt())
     }
+
     override fun onDraw(canvas: Canvas) {
         rect.top = 0f
         rect.left = 0f
@@ -58,7 +64,7 @@ class PackCardView @JvmOverloads constructor(context: Context, attrs: AttributeS
         if (bitmap != null && width > 0) {
             val croppedWidth = (0.68 * bitmap!!.width).toInt()
             val croppedHeight = (croppedWidth * height) / width
-            val y = (0.273 * bitmap!!.height - croppedHeight/2).toInt()
+            val y = (0.273 * bitmap!!.height - croppedHeight / 2).toInt()
             val x = (0.160 * bitmap!!.width).toInt()
             val croppedBitmap = Bitmap.createBitmap(bitmap, x, y, croppedWidth, croppedHeight)
             val bitmapDrawable = RoundedBitmapDrawableFactory.create(context.resources, croppedBitmap)
@@ -98,7 +104,7 @@ class PackCardView @JvmOverloads constructor(context: Context, attrs: AttributeS
 
         this.bitmap = null
 
-        disposable = Single.fromCallable{
+        disposable = Single.fromCallable {
             val bitmap = Utils.getCardArtBlocking(card.id)
             if (bitmap == null) {
                 Lce.error(Exception())
@@ -107,9 +113,75 @@ class PackCardView @JvmOverloads constructor(context: Context, attrs: AttributeS
             }
         }.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe( { lce ->
+                .subscribe({ lce ->
                     this.bitmap = lce.data
                     invalidate()
                 })
+    }
+
+    private var pressed_ = false
+
+    private var detailsView: View? = null
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        when (event.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                pressed_ = true
+
+                Picasso.with(context).load(Utils.getCardUrl(card.id)).into(object : Target {
+                    override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom?) {
+                        if (pressed_) {
+                            detailsView = displayImageView(event.rawX, event.rawY, bitmap)
+                        }
+                    }
+
+                    override fun onBitmapFailed(errorDrawable: Drawable?) {
+
+                    }
+
+                    override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+
+                    }
+                })
+
+            }
+            MotionEvent.ACTION_UP,
+            MotionEvent.ACTION_CANCEL -> {
+                pressed_ = false
+                if (detailsView != null) {
+                    ViewManager.get().removeView(detailsView!!)
+                    detailsView = null
+                }
+            }
+
+        }
+
+        return true
+    }
+
+    companion object {
+        fun displayImageView(x: Float, y: Float, bitmap: Bitmap): View {
+            val imageView = ImageView(ArcaneTrackerApplication.context)
+
+            imageView.setImageBitmap(bitmap)
+
+            val params = ViewManager.Params()
+            params.h = (ViewManager.get().height / 1.5f).toInt()
+            params.w = params.h * CardRenderer.TOTAL_WIDTH / CardRenderer.TOTAL_HEIGHT
+
+            params.x = (x - Utils.dpToPx(80) - params.w).toInt()
+            params.y = (y - params.h / 2).toInt()
+            if (params.y < 0) {
+                params.y = 0
+            } else if (params.y + params.h > ViewManager.get().height) {
+                params.y = ViewManager.get().height - params.h
+            }
+            if (params.x < 0) {
+                params.x = (x + Utils.dpToPx(40)).toInt()
+            }
+            ViewManager.get().addModalView(imageView, params)
+
+            return imageView
+        }
     }
 }

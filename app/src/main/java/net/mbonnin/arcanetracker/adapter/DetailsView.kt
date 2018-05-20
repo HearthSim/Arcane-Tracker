@@ -24,7 +24,7 @@ class DetailsView(context: Context) : LinearLayout(context) {
 
     }
 
-    fun configure(bitmap: Bitmap?, deckEntryItem: DeckEntryItem, height: Int) {
+    fun configure(bitmap: Bitmap?, entityList: List<Entity>, height: Int) {
 
         val w = height * CardRenderer.TOTAL_WIDTH / CardRenderer.TOTAL_HEIGHT
         if (bitmap != null) {
@@ -37,7 +37,7 @@ class DetailsView(context: Context) : LinearLayout(context) {
         mCardWidth = w
         mTopMargin = 30
 
-        for (entity in deckEntryItem.entityList) {
+        for (entity in entityList) {
             val b = DetailsViewBinding.inflate(LayoutInflater.from(context))
             b.root.minimumWidth = mCardWidth
 
