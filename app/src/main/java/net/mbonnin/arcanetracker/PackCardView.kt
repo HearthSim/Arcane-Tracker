@@ -12,14 +12,25 @@ import android.widget.ImageView
 import androidx.graphics.toRect
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import net.mbonnin.hsmodel.Card
 
 class PackCardView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : View(context, attrs, defStyleAttr) {
+    : View(context, attrs, defStyleAttr), Target {
+    override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+
+    }
+
+    override fun onBitmapFailed(errorDrawable: Drawable?) {
+        bitmap = null
+        invalidate()
+    }
+
+    override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+        this.bitmap = bitmap
+        invalidate()
+    }
+
     private var disposable: Disposable? = null
     private val paint = Paint()
     private var bitmap: Bitmap? = null
@@ -61,11 +72,23 @@ class PackCardView @JvmOverloads constructor(context: Context, attrs: AttributeS
             invalidate()
         }
 
-        if (bitmap != null && width > 0) {
-            val croppedWidth = (0.68 * bitmap!!.width).toInt()
-            val croppedHeight = (croppedWidth * height) / width
-            val y = (0.273 * bitmap!!.height - croppedHeight / 2).toInt()
-            val x = (0.160 * bitmap!!.width).toInt()
+        if (bitmap != null && width > 0 && height > 0) {
+            val croppedWidth: Int
+            val croppedHeight: Int
+            val y: Int
+            val x: Int
+
+            if (width/height > bitmap!!.width / bitmap!!.height) {
+                croppedWidth = bitmap!!.width
+                croppedHeight = croppedWidth * height / width
+                x = 0
+                y = (bitmap!!.height - croppedHeight) / 2
+            } else {
+                croppedHeight = bitmap!!.height
+                croppedWidth = croppedHeight * width/height
+                y = 0
+                x = (bitmap!!.width - croppedWidth)/2
+            }
             val croppedBitmap = Bitmap.createBitmap(bitmap, x, y, croppedWidth, croppedHeight)
             val bitmapDrawable = RoundedBitmapDrawableFactory.create(context.resources, croppedBitmap)
             bitmapDrawable.cornerRadius = roundRectRadius
@@ -104,19 +127,10 @@ class PackCardView @JvmOverloads constructor(context: Context, attrs: AttributeS
 
         this.bitmap = null
 
-        disposable = Single.fromCallable {
-            val bitmap = Utils.getCardArtBlocking(card.id)
-            if (bitmap == null) {
-                Lce.error(Exception())
-            } else {
-                Lce.data(bitmap)
-            }
-        }.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ lce ->
-                    this.bitmap = lce.data
-                    invalidate()
-                })
+        Picasso.with(context)
+                .load("bar://" + card.id)
+                .placeholder(R.drawable.hero_10)
+                .into(this)
     }
 
     private var pressed_ = false
