@@ -31,3 +31,7 @@ class YourDecksView(context: Context, val onDeckClicked: (Deck) -> Unit): Recycl
 fun Int.toPixel(displayMetrics: DisplayMetrics): Int {
     return (this.toFloat() * displayMetrics.density).toInt()
 }
+
+fun Int.toPixelFloat(displayMetrics: DisplayMetrics): Float {
+    return (this.toFloat() * displayMetrics.density)
+}

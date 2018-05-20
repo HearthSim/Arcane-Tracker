@@ -7,18 +7,12 @@ import android.arch.lifecycle.OnLifecycleEvent
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
-import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.item_pack.*
-import kotlinx.android.synthetic.main.item_packs_header.*
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RPack
 import net.mbonnin.hsmodel.CardId
-import java.text.SimpleDateFormat
 import java.util.*
 
 class YourPacksAdapter(val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -188,7 +182,7 @@ class YourPacksAdapter(val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapte
             TYPE_DUST_AVERAGE,
             TYPE_PITY_COUNTER -> {
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.item_packs_header, parent, false)
-                return CardViewHolder(view)
+                return PacksHeaderViewHolder(view)
             }
             TYPE_PACK -> {
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.item_pack, parent, false)
@@ -209,71 +203,9 @@ class YourPacksAdapter(val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapte
             is PacksItem,
             is DustItem,
             is DustAverageItem,
-            is PityCounterItem -> (holder as CardViewHolder).bind(item)
+            is PityCounterItem -> (holder as PacksHeaderViewHolder).bind(item)
             is PackItem -> (holder as PackViewHolder).bind(item.rpack)
         }
     }
 }
 
-class PackViewHolder(override val containerView: View) : LayoutContainer, RecyclerView.ViewHolder(containerView) {
-    fun bind(rpack: RPack) {
-        val cardList = rpack.cardList.split(",")
-
-        date.setText(SimpleDateFormat.getDateInstance().format(Date(rpack.timeMillis)))
-
-        for (i in 0 until 5) {
-            val textView = (containerView as ViewGroup).getChildAt(2 + i) as TextView
-
-            if (i < cardList.size) {
-                var cardId = cardList[i]
-                var golden = false
-                if (cardId.endsWith("*")) {
-                    cardId = cardId.substring(0, cardId.length - 1)
-                    golden = true
-                }
-                val card = CardUtil.getCard(cardId)
-                textView.setText(card.name + (if (golden) "(golden)" else ""))
-
-                set.setText(card.set)
-            } else {
-                textView.setText("?")
-            }
-        }
-    }
-}
-
-class CardViewHolder(override val containerView: View) : LayoutContainer, RecyclerView.ViewHolder(containerView) {
-    fun bind(item: Item) {
-        val resId = when(item) {
-            is PacksItem -> R.drawable.pack
-            is DustItem -> R.drawable.dust
-            is DustAverageItem -> R.drawable.rightarrow
-            else -> R.drawable.pack
-        }
-
-        imageView.setImageResource(resId)
-
-        val num = when (item) {
-            is PacksItem -> item.packs
-            is DustItem -> item.dust
-            is DustAverageItem -> item.average
-            else -> 0
-        }
-        number.setText(num.toString())
-
-        val desc = when(item) {
-            is PacksItem -> R.string.packs_opened
-            is DustItem -> R.string.dust
-            is DustAverageItem -> R.string.average
-            else -> 0
-        }
-
-        when (item) {
-            is PacksItem,
-            is DustItem -> imageView.rotation = 20f
-            else -> imageView.rotation = 0f
-        }
-
-        description.setText(desc)
-    }
-}

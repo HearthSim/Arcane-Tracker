@@ -25,59 +25,49 @@
         android:textColor="#fff"
         tools:text="Witchwood" />
 
-    <TextView
+    <net.mbonnin.arcanetracker.PackCardView
         android:id="@+id/card1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_weight="1"
-        android:fontFamily="@font/franklin_gothic"
-        android:gravity="center"
-        android:textColor="#fff"
-        tools:text="Card1" />
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_weight="1" />
 
-    <TextView
+    <net.mbonnin.arcanetracker.PackCardView
         android:id="@+id/card2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_weight="1"
-        android:fontFamily="@font/franklin_gothic"
-        android:gravity="center"
-        android:textColor="#fff"
-        tools:text="Card1" />
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_weight="1" />
 
-    <TextView
+    <net.mbonnin.arcanetracker.PackCardView
         android:id="@+id/card3"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_weight="1"
-        android:fontFamily="@font/franklin_gothic"
-        android:gravity="center"
-        android:textColor="#fff"
-        tools:text="Card1" />
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_weight="1" />
 
-    <TextView
+    <net.mbonnin.arcanetracker.PackCardView
         android:id="@+id/card4"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_weight="1"
-        android:fontFamily="@font/franklin_gothic"
-        android:gravity="center"
-        android:textColor="#fff"
-        tools:text="Card1" />
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_weight="1" />
 
-    <TextView
+    <net.mbonnin.arcanetracker.PackCardView
         android:id="@+id/card5"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_weight="1"
-        android:fontFamily="@font/franklin_gothic"
-        android:gravity="center"
-        android:textColor="#fff"
-        tools:text="Card1" />
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_weight="1" />
 
 </LinearLayout>
