@@ -17,8 +17,9 @@ class PackViewHolder(override val containerView: View) : LayoutContainer, Recycl
 
         date.setText(SimpleDateFormat.getDateInstance().format(Date(rpack.timeMillis)))
 
+        var hsSet:String? = null
         for (i in 0 until 5) {
-            val packCardView = (containerView as ViewGroup).getChildAt(2 + i) as PackCardView
+            val packCardView = (containerView as ViewGroup).getChildAt(3 + i) as PackCardView
 
             if (i < cardList.size) {
                 var cardId = cardList[i]
@@ -30,10 +31,21 @@ class PackViewHolder(override val containerView: View) : LayoutContainer, Recycl
                 val card = CardUtil.getCard(cardId)
                 packCardView.setCard(card, golden)
 
-                set.setText(card.set)
+                if (hsSet == null) {
+                    hsSet = card.set
+                }
+
+
             } else {
                 packCardView.setCard(CardUtil.UNKNOWN, false)
             }
         }
+
+        if (hsSet != null) {
+            val setDrawable = SetHelper.getDrawable(hsSet)
+            setDrawable?.let{set.setImageDrawable(it)}
+        }
+
+        dust.setText(rpack.dust.toString())
     }
 }

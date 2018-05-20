@@ -67,7 +67,7 @@ object Utils {
                 ArcaneTrackerApplication.context.resources.displayMetrics).toInt()
     }
 
-    fun getDrawableForName(name: String): Drawable {
+    fun getDrawableForNameDeprecated(name: String): Drawable {
         val context = ArcaneTrackerApplication.context
         val id = context.resources.getIdentifier(name.toLowerCase(), "drawable", context.packageName)
         if (id > 0) {
@@ -78,8 +78,19 @@ object Utils {
         }
     }
 
+    fun getDrawableForName(name: String): Drawable? {
+        val context = ArcaneTrackerApplication.context
+        val id = context.resources.getIdentifier(name.toLowerCase(), "drawable", context.packageName)
+        if (id > 0) {
+            return context.resources.getDrawable(id)
+        } else {
+            Timber.e("could not find a drawable for name " + name)
+            return null
+        }
+    }
+
     fun getDrawableForClassIndex(classIndex: Int): Drawable {
-        return getDrawableForName(getHeroId(classIndex))
+        return getDrawableForNameDeprecated(getHeroId(classIndex))
     }
 
     fun logWithDate(s: String) {

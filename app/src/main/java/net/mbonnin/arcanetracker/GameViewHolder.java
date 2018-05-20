@@ -28,8 +28,8 @@ public class GameViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(GameSummary summary) {
         Context context = itemView.getContext();
-        hero.setImageDrawable(Utils.INSTANCE.getDrawableForName(String.format("hero_%02d_round", summary.hero + 1)));
-        opponentHero.setImageDrawable(Utils.INSTANCE.getDrawableForName(String.format("hero_%02d_round", summary.opponentHero + 1)));
+        hero.setImageDrawable(Utils.INSTANCE.getDrawableForNameDeprecated(String.format("hero_%02d_round", summary.hero + 1)));
+        opponentHero.setImageDrawable(Utils.INSTANCE.getDrawableForNameDeprecated(String.format("hero_%02d_round", summary.opponentHero + 1)));
         deckName.setText(summary.deckName);
         winLoss.setText(summary.win ? context.getString(R.string.win):context.getString(R.string.loss));
         coin.setVisibility(summary.coin ? View.VISIBLE:View.INVISIBLE);

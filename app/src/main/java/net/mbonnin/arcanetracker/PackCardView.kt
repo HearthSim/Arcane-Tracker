@@ -48,7 +48,7 @@ class PackCardView @JvmOverloads constructor(context: Context, attrs: AttributeS
 
         rect.inset(padding, padding)
 
-        if (golden) {
+        if (false && golden) {
             val a = 100 + 155 * (1 + Math.sin(2 * Math.PI * System.currentTimeMillis() / 5000)) / 2
             glowPaint.color = Color.argb(a.toInt(), 0xff, 0xd5, 0x4f)
             canvas.drawRoundRect(rect, roundRectRadius, roundRectRadius, glowPaint)
@@ -73,7 +73,11 @@ class PackCardView @JvmOverloads constructor(context: Context, attrs: AttributeS
         }
 
         paint.style = Paint.Style.FILL
-        paint.color = Color.argb(100, 0, 0, 0)
+        if (golden) {
+            paint.color = Color.argb(160, 0xff, 0xd5, 0x4f)
+        } else {
+            paint.color = Color.argb(100, 0, 0, 0)
+        }
         canvas.drawRect(rect, paint)
 
         val rarityColor = RarityHelper.rarityToColor[card.rarity]

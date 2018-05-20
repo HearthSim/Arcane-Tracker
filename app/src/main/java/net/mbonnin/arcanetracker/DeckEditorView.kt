@@ -106,7 +106,7 @@ class DeckEditorView : RelativeLayout {
         mCardsAdapter!!.setListener(mCardsAdapterListener)
         mCardsAdapter!!.setClass(mClass!!)
 
-        classImageView.setBackgroundDrawable(Utils.getDrawableForName(String.format(Locale.ENGLISH, "hero_%02d_round", mDeck!!.classIndex + 1)))
+        classImageView.setBackgroundDrawable(Utils.getDrawableForNameDeprecated(String.format(Locale.ENGLISH, "hero_%02d_round", mDeck!!.classIndex + 1)))
         classImageViewDisabled!!.visibility = View.GONE
         neutralImageView.setBackgroundResource(R.drawable.hero_10_round)
 

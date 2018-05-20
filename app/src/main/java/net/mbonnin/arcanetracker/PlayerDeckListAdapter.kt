@@ -66,7 +66,7 @@ class PlayerDeckListAdapter : DeckListAdapter() {
                 }
             }
 
-            deckImageRound.setImageDrawable(Utils.getDrawableForName(String.format("hero_%02d_round", (deck?.classIndex ?:0) + 1)))
+            deckImageRound.setImageDrawable(Utils.getDrawableForNameDeprecated(String.format("hero_%02d_round", (deck?.classIndex ?:0) + 1)))
             deckName.text = deck?.name
         }
     }

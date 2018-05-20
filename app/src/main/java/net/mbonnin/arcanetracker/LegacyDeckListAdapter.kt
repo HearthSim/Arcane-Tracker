@@ -38,7 +38,7 @@ class LegacyDeckListAdapter : DeckListAdapter() {
 
         view.setOnClickListener { v -> onDeckSelectedListener(deck) }
 
-        (view.findViewById<View>(R.id.deckImageRound) as ImageView).setImageDrawable(Utils.getDrawableForName(String.format("hero_%02d_round", deck.classIndex + 1)))
+        (view.findViewById<View>(R.id.deckImageRound) as ImageView).setImageDrawable(Utils.getDrawableForNameDeprecated(String.format("hero_%02d_round", deck.classIndex + 1)))
         (view.findViewById<View>(R.id.deckName) as TextView).text = deck.name
     }
 
