@@ -8,30 +8,52 @@ import android.util.TypedValue
 import android.view.View
 import androidx.graphics.toRect
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import net.mbonnin.hsmodel.Card
 
 class PackCardView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : View(context, attrs, defStyleAttr) {
-    var disposable: Disposable? = null
-    val paint = Paint()
+    private var disposable: Disposable? = null
+    private val paint = Paint()
     private var bitmap: Bitmap? = null
     private var golden = false
-    val rect = RectF()
+    private val rect = RectF()
+    private var glowPaint = Paint()
 
-    val padding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4f, context.resources.displayMetrics)
+    val padding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, context.resources.displayMetrics)
     val roundRectRadius =  TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, context.resources.displayMetrics)
     private lateinit var card: Card
 
+    init {
+        // for blur
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        glowPaint.isAntiAlias = true
+        glowPaint.style = Paint.Style.STROKE
+        glowPaint.strokeWidth = 8.toPixelFloat(resources.displayMetrics)
+        glowPaint.maskFilter = BlurMaskFilter(padding/3, BlurMaskFilter.Blur.NORMAL)
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+
+        setMeasuredDimension(measuredWidth, (20.toPixel(resources.displayMetrics) + 2 * padding).toInt())
+    }
     override fun onDraw(canvas: Canvas) {
         rect.top = 0f
         rect.left = 0f
         rect.right = width.toFloat()
         rect.bottom = height.toFloat()
 
-        // to make sure the gold outline does not draw outside
-        rect.inset(paint.strokeWidth/2, paint.strokeWidth/2)
+        rect.inset(padding, padding)
+
+        if (golden) {
+            val a = 100 + 155 * (1 + Math.sin(2 * Math.PI * System.currentTimeMillis() / 5000)) / 2
+            glowPaint.color = Color.argb(a.toInt(), 0xff, 0xd5, 0x4f)
+            canvas.drawRoundRect(rect, roundRectRadius, roundRectRadius, glowPaint)
+            invalidate()
+        }
 
         if (bitmap != null && width > 0) {
             val croppedWidth = (0.68 * bitmap!!.width).toInt()
@@ -50,26 +72,18 @@ class PackCardView @JvmOverloads constructor(context: Context, attrs: AttributeS
             canvas.drawRoundRect(rect, roundRectRadius, roundRectRadius, paint)
         }
 
-        if (golden) {
-            paint.style = Paint.Style.STROKE
-            paint.color = RarityHelper.GOLD_COLOR
-            paint.strokeWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, context.resources.displayMetrics)
-            canvas.drawRoundRect(rect, roundRectRadius, roundRectRadius, paint)
-        }
+        paint.style = Paint.Style.FILL
+        paint.color = Color.argb(100, 0, 0, 0)
+        canvas.drawRect(rect, paint)
 
         val rarityColor = RarityHelper.rarityToColor[card.rarity]
         if (rarityColor != null) {
-            rect.top = 0f
-            rect.left = 0f
-            rect.right = 16.toPixelFloat(resources.displayMetrics)
-            rect.bottom = height.toFloat()
-
-            paint.style = Paint.Style.FILL
+            paint.style = Paint.Style.STROKE
+            paint.strokeWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, context.resources.displayMetrics)
             paint.color = rarityColor
 
-            canvas.drawCircle((height/2).toFloat(), (height/2).toFloat(), height/2 - padding, paint)
+            canvas.drawRoundRect(rect, roundRectRadius, roundRectRadius, paint)
         }
-
     }
 
     fun setCard(card: Card, golden: Boolean) {
@@ -83,15 +97,14 @@ class PackCardView @JvmOverloads constructor(context: Context, attrs: AttributeS
         disposable = Single.fromCallable{
             val bitmap = Utils.getCardArtBlocking(card.id)
             if (bitmap == null) {
-                throw Exception("cannot get bitmap")
+                Lce.error(Exception())
+            } else {
+                Lce.data(bitmap)
             }
-            bitmap
         }.subscribeOn(Schedulers.io())
-                .subscribe( {
-                    this.bitmap = it
-                    invalidate()
-                }, {
-                    this.bitmap = null
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe( { lce ->
+                    this.bitmap = lce.data
                     invalidate()
                 })
     }

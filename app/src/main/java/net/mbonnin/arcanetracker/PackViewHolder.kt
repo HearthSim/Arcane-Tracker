@@ -11,7 +11,7 @@ import java.util.*
 
 class PackViewHolder(override val containerView: View) : LayoutContainer, RecyclerView.ViewHolder(containerView) {
     fun bind(rpack: RPack) {
-        containerView.layoutParams.height = 16.toPixel(containerView.resources.displayMetrics)
+        containerView.layoutParams.height = 32.toPixel(containerView.resources.displayMetrics)
 
         val cardList = rpack.cardList.split(",")
 

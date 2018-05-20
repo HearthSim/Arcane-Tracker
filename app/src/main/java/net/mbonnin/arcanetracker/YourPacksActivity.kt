@@ -24,8 +24,6 @@ class YourPacksActivity : AppCompatActivity() {
         recyclerView.setPadding(spacing, spacing, spacing, spacing)
         recyclerView.clipToPadding = false
 
-        recyclerView.addItemDecoration(SpacesItemDecoration(spacing))
-
         recyclerView.adapter = adapter
 
         setContentView(recyclerView)
