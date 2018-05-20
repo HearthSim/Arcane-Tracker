@@ -151,7 +151,7 @@ class DetailsView(context: Context) : LinearLayout(context) {
 
             val holder = DeckEntryHolder(barTemplate)
             holder.bind(deckEntryItem)
-mCardW
+
             verticalLayout.addView(barTemplate, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(30)))
 
             if (verticalLayout.size >= 8) {
