@@ -111,15 +111,15 @@ internal class DeckEntryHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
                             detailsView = displayImageView(downX, downY, deckEntry?.entityList ?: listOf(), bitmap)
                         }
                     }
-
                     override fun onBitmapFailed(errorDrawable: Drawable?) {
 
                     }
-
                     override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
 
                     }
                 })
+            } else {
+                detailsView = displayImageView(downX, downY, deckEntry?.entityList ?: listOf(), null)
             }
         } else if (event.actionMasked == MotionEvent.ACTION_UP || event.actionMasked == MotionEvent.ACTION_CANCEL) {
             pressed = false
@@ -133,7 +133,7 @@ internal class DeckEntryHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
     }
 
     companion object {
-        fun displayImageView(x: Float, y: Float, entityList: List<Entity>, bitmap: Bitmap): View {
+        fun displayImageView(x: Float, y: Float, entityList: List<Entity>, bitmap: Bitmap?): View {
             val detailsView = DetailsView(ArcaneTrackerApplication.context)
 
             /*

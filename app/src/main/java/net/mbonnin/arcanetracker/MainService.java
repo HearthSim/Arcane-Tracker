@@ -69,7 +69,6 @@ public class MainService extends Service {
         super.onDestroy();
 
         Utils.INSTANCE.logWithDate("MainService.onDestroy()");
-
         FileTree.Companion.get().sync();
         stopForeground(true);
     }
