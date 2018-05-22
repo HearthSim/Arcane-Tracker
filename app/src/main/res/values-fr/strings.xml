@@ -217,4 +217,8 @@
     <string name="hsReplayClaiming">Connection à votre compte HSReplay.net...</string>
     <string name="hsReplayClaimSuccess">Vos replays sont désormais liés à votre compte !</string>
     <string name="backToGame">Retour</string>
+    <string name="yourPacks">Vos packs</string>
+    <string name="packs_opened">Packs ouverts</string>
+    <string name="dust">Poussière récoltée</string>
+    <string name="average">Poussière par pack</string>
 </resources>
