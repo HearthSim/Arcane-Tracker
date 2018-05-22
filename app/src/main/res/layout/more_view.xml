@@ -50,6 +50,7 @@
             android:padding="13dp"
             android:text="@string/yourPacks"
             android:textColor="@color/dialogText"
+            android:visibility="gone"
             android:textSize="18sp"/>
 
         <TextView
