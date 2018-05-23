@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.view.size
+import androidx.core.view.size
 import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.databinding.DetailsViewBinding
 import net.mbonnin.arcanetracker.parser.Entity

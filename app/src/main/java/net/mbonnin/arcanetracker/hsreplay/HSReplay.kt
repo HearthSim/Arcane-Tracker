@@ -3,7 +3,7 @@ package net.mbonnin.arcanetracker.hsreplay
 import android.annotation.SuppressLint
 import android.content.Context
 import android.preference.PreferenceManager
-import androidx.content.edit
+import androidx.core.content.edit
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
 import io.reactivex.Completable
