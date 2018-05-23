@@ -54,6 +54,7 @@ class PlayerDeckCompanion(override val containerView: View) : DeckCompanion(cont
 
         RDatabaseSingleton.instance.deckDao().getLatestDeck()
                 .firstElement()
+                .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     it.firstOrNull()?.let {
                         this.deck = DeckMapper.fromRDeck(it)
