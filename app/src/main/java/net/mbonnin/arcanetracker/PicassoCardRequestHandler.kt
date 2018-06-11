@@ -100,7 +100,7 @@ class PicassoCardRequestHandler private constructor() : RequestHandler() {
     }
 
     companion object {
-        private val VERSION = 7 // bump here to force flushing the cache
+        private val VERSION = 8 // bump here to force flushing the cache
         private val ENTRY_COUNT = 1
         private var sHandler: PicassoCardRequestHandler? = null
 

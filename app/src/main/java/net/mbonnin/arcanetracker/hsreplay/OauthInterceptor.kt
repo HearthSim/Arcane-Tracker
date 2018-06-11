@@ -2,13 +2,13 @@ package net.mbonnin.arcanetracker.hsreplay
 
 import com.google.gson.JsonParser
 import io.fabric.sdk.android.services.network.HttpRequest.HEADER_AUTHORIZATION
+import net.mbonnin.arcanetracker.Settings
 import net.mbonnin.arcanetracker.Utils
 import okhttp3.*
+import timber.log.Timber
 import java.util.*
 
 class OauthInterceptor : Interceptor {
-
-    class AuthenticationException : Exception()
 
     @Synchronized
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -17,10 +17,14 @@ class OauthInterceptor : Interceptor {
 
             val requestBuilder = request.newBuilder()
 
-            requestBuilder.header(HEADER_AUTHORIZATION, "Bearer ${accessToken!!}")
+            requestBuilder.header(HEADER_AUTHORIZATION, "Bearer ${accessToken}")
             request = requestBuilder.build()
 
             var response = chain.proceed(request)
+            if (!response.isSuccessful && accessToken != null && refreshToken != null) {
+                refreshToken()
+                response = chain.proceed(requestBuilder.build())
+            }
 
             return response
         }
@@ -32,7 +36,8 @@ class OauthInterceptor : Interceptor {
         private const val AUTHORIZE_URL = "https://hsreplay.net/oauth2/authorize/"
         private const val CALLBACK_URL = "arcanetracker://callback/"
 
-        private var accessToken: String? = null
+        private var accessToken: String? = Settings.getString(Settings.HSREPLAY_OAUTH_ACCESS_TOKEN, null)
+        var refreshToken: String? = Settings.getString(Settings.HSREPLAY_OAUTH_REFRESH_TOKEN, null)
 
         private val lock = java.lang.Object()
 
@@ -61,11 +66,21 @@ class OauthInterceptor : Interceptor {
             if (!response.isSuccessful) {
                 throw Exception("HTTP error ${response.code()}")
             } else {
-                val root = JsonParser().parse(response.body()!!.string())
 
-                synchronized(lock) {
-                    accessToken = root.asJsonObject.get("access_token").asString
-                    lock.notifyAll()
+                try {
+                    val json = response.body()!!.string()
+                    val root = JsonParser().parse(json)
+
+                    synchronized(lock) {
+                        accessToken = root.asJsonObject.get("access_token").asString
+                        refreshToken = root.asJsonObject.get("refresh_token").asString
+
+                        Settings.set(Settings.HSREPLAY_OAUTH_ACCESS_TOKEN, accessToken!!)
+                        Settings.set(Settings.HSREPLAY_OAUTH_REFRESH_TOKEN, refreshToken!!)
+                        lock.notifyAll()
+                    }
+                } catch (e: Exception) {
+                    Timber.e(e)
                 }
             }
         }
@@ -91,6 +106,46 @@ class OauthInterceptor : Interceptor {
                     .addQueryParameter("state", random())
 
             Utils.openLink(url.toString())
+        }
+
+        fun refreshToken() {
+            val client = OkHttpClient()
+
+            val httpUrl = HttpUrl.parse("https://hsreplay.net/oauth2/token/")!!
+                    .newBuilder()
+                    .build()
+
+            val body = FormBody.Builder()
+                    .add("client_id", A)
+                    .add("client_secret", B)
+                    .add("grant_type", "refresh_token")
+                    .add("refresh_token", refreshToken)
+                    .build()
+
+            val request = Request.Builder()
+                    .post(body)
+                    .url(httpUrl)
+                    .build()
+
+            val response = client.newCall(request).execute()
+
+            if (!response.isSuccessful) {
+                throw Exception("HTTP error ${response.code()}")
+            } else {
+
+                try {
+                    val json = response.body()!!.string()
+                    val root = JsonParser().parse(json)
+
+                    accessToken = root.asJsonObject.get("access_token").asString
+                    refreshToken = root.asJsonObject.get("refresh_token").asString
+
+                    Settings.set(Settings.HSREPLAY_OAUTH_ACCESS_TOKEN, accessToken!!)
+                    Settings.set(Settings.HSREPLAY_OAUTH_REFRESH_TOKEN, refreshToken!!)
+                } catch (e: Exception) {
+                    Timber.e(e)
+                }
+            }
         }
     }
 }

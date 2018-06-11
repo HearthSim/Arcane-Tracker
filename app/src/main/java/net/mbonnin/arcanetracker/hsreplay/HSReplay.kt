@@ -2,12 +2,16 @@ package net.mbonnin.arcanetracker.hsreplay
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Bundle
 import android.preference.PreferenceManager
 import androidx.core.content.edit
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
+import com.google.gson.JsonPrimitive
 import io.reactivex.Completable
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
+import net.mbonnin.arcanetracker.Gatekeeper
+import net.mbonnin.arcanetracker.Settings
 import net.mbonnin.arcanetracker.hsreplay.model.Lce
 import net.mbonnin.arcanetracker.hsreplay.model.Token
 import net.mbonnin.arcanetracker.hsreplay.model.TokenRequest
@@ -38,11 +42,11 @@ class HSReplay {
 
 
     fun user(): Observable<Lce<Token>> = legacyService().getToken(mLegacyToken)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map<Lce<Token>>({ Lce.data(it) })
-                .onErrorReturn({ Lce.error(it) })
-                .startWith(Lce.loading())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .map<Lce<Token>>({ Lce.data(it) })
+            .onErrorReturn({ Lce.error(it) })
+            .startWith(Lce.loading())
 
     val sharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(context)
@@ -100,7 +104,7 @@ class HSReplay {
         }
     }
 
-    inner class LegacyInterceptor: Interceptor {
+    inner class LegacyInterceptor : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
             var request = chain.request()
 
@@ -148,6 +152,43 @@ class HSReplay {
 
         mLegacyToken = sharedPreferences.getString(KEY_HSREPLAY_LEGACY_TOKEN, null)
         Timber.w("init token=" + mLegacyToken)
+
+        Gatekeeper.behaviorSubject
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    getAccount()
+                }
+    }
+
+    private fun getAccount() {
+        val key = (Gatekeeper.root.get("hsr") as? JsonPrimitive)?.asString
+        if (key == null) {
+            return // not sending
+        }
+
+        val isPremium = Settings.getString("hsr-$key", null)
+        if (isPremium != null) {
+            return // already sent
+        }
+
+        if (OauthInterceptor.refreshToken == null) {
+            return // no configured account
+        }
+        
+        mOauthervice.account()
+                .subscribeOn(io.reactivex.schedulers.Schedulers.io())
+                .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
+                .subscribe({
+                    val premium = it.is_premium ?: false
+
+                    val bundle = Bundle()
+                    bundle.putString("is_premium",premium.toString())
+
+                    FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("hsreplay_account", bundle)
+
+                    Timber.e("premium=$premium")
+                    Settings.set("hsr-$key", premium.toString())
+                }, Timber::e)
     }
 
 
@@ -190,7 +231,7 @@ class HSReplay {
 
         @SuppressLint("StaticFieldLeak")
         private var sHSReplay: HSReplay? = null
-        var userAgent=  "Arcane Tracker"
+        var userAgent = "Arcane Tracker"
         @SuppressLint("StaticFieldLeak")
         lateinit var context: Context
 

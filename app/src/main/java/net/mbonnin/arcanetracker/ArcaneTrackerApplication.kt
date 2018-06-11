@@ -147,6 +147,8 @@ class ArcaneTrackerApplication : MultiDexApplication() {
 
         MainService.start()
 
+        Gatekeeper.init()
+
         FirebaseAnalytics.getInstance(this).setUserProperty(FirebaseConstants.SCREEN_CAPTURE_ENABLED.name.toLowerCase(),
                 Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true).toString())
     }
