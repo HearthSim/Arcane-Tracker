@@ -40,7 +40,7 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         Stetho.initializeWithDefaults(this);
 
         sArcaneTrackerApplication = this
-        context = object : ContextThemeWrapper(this, R.style.AppThemeLight) {
+        context = object : ContextThemeWrapper(this, R.style.AppTheme) {
             override fun startActivity(intent: Intent) {
                 if (intent.flags and Intent.FLAG_ACTIVITY_NEW_TASK == 0) {
                     /*

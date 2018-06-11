@@ -34,6 +34,7 @@ class PlayerDeckCompanion(override val containerView: View) : DeckCompanion(cont
             val deckListView = LayoutInflater.from(v2.getContext()).inflate(R.layout.decklist_view, null)
             val recyclerView = deckListView.findViewById<RecyclerView>(R.id.recyclerView)
             recyclerView.layoutManager = LinearLayoutManager(v2.getContext())
+            recyclerView.setBackgroundColor(ArcaneTrackerApplication.context.resources.getColor(R.color.dialogGray))
             val adapter = PlayerDeckListAdapter()
             adapter.setOnDeckSelectedListener { deck ->
                 viewManager.removeView(deckListView)

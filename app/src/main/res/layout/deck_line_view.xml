@@ -20,6 +20,6 @@
         android:background="?android:selectableItemBackground"
         android:padding="13dp"
         android:text="@string/changeDeck"
-        android:textColor="#000" />
+        android:textColor="#fff" />
 
 </LinearLayout>
