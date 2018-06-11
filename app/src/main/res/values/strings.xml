@@ -53,7 +53,7 @@
     <string name="drawerSize">Drawer size</string>
     <string name="drawnTurn">Drawn turn: %d</string>
     <string name="editDeck">Edit deck</string>
-    <string name="erase_history">Erase history</string>
+    <string name="erase_history">Delete all</string>
     <string name="explanation1">Arcane tracker will now start Hearthstone and monitor the cards you and your opponent play in the background.</string>
     <string name="explanation2">The overlay will show what has been played as well as the cards remaining in your deck on top of the Game.</string>
     <string name="explanation3">May the Light bring you victory!</string>
@@ -221,5 +221,8 @@
     <string name="packs_opened">Packs opened</string>
     <string name="dust">Total dust gained</string>
     <string name="average">Dust per pack</string>
+    <string name="gameCount">%d games played</string>
+    <string name="history_delete_confirmation">Are you sure you want to delete your history ?</string>
+    <string name="delete_everything">Delete everything</string>
 
 </resources>

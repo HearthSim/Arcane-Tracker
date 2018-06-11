@@ -51,6 +51,10 @@
             android:screenOrientation="userLandscape">
         </activity>
         <activity
+            android:name=".YourGamesActivity"
+            android:screenOrientation="userLandscape">
+        </activity>
+        <activity
             android:name=".LicensesActivity">
         </activity>
         <activity android:name=".DonateActivity"

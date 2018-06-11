@@ -412,7 +412,11 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
 
                 FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("menu_history", null)
 
-                HistoryCompanion.show()
+                val intent = Intent()
+                intent.setClass(ArcaneTrackerApplication.context, YourGamesActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+
+                ArcaneTrackerApplication.context.startActivity(intent)
             }
             val donateView = view.findViewById<View>(R.id.donate)
             if (true) {

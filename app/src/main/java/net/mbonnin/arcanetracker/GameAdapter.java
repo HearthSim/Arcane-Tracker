@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import net.mbonnin.arcanetracker.model.GameSummary;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GameAdapter extends RecyclerView.Adapter {
@@ -24,13 +23,13 @@ public class GameAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.game_view, null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.game_view, parent, false);
         return new GameViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((GameViewHolder)holder).bind((mGameList.get(position)));
+        ((GameViewHolder)holder).bind(mGameList.get(position), position);
         holder.itemView.setOnClickListener(v -> mListener.onClick(mGameList.get(holder.getAdapterPosition())));
     }
 

@@ -1,84 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:background="?android:selectableItemBackground"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_weight="1">
+    <ImageView
+        android:id="@+id/coin"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:src="@drawable/coin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/hero"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/hero"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintLeft_toRightOf="@+id/coin"
+        app:layout_constraintRight_toLeftOf="@+id/deckName"
+        android:layout_centerVertical="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginLeft="5dp" />
+
+    <TextView
+        android:id="@+id/deckName"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        app:layout_constraintLeft_toRightOf="@+id/hero"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/vs"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="deck" />
+
+    <TextView
+        android:id="@+id/vs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:text="vs"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/deckName"
+        app:layout_constraintRight_toLeftOf="@+id/opponentHero"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
-        <ImageView
-            android:id="@+id/hero"
-            android:layout_width="40dp"
-            android:layout_centerVertical="true"
-            android:layout_height="40dp"
-            android:layout_marginLeft="5dp"
-            android:layout_alignParentLeft="true"/>
+    <ImageView
+        android:id="@+id/opponentHero"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/vs"
+        app:layout_constraintRight_toLeftOf="@+id/opponentName"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/deckName"
-            android:layout_centerVertical="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@id/hero"
-            android:text="deck"/>
+    <TextView
+        android:id="@+id/opponentName"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        app:layout_constraintLeft_toRightOf="@+id/opponentHero"
+        app:layout_constraintRight_toLeftOf="@+id/winLoss"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="deck" />
 
-        <ImageView
-            android:id="@+id/coin"
-            android:layout_width="20dp"
-            android:layout_centerVertical="true"
-            android:layout_height="20dp"
-            android:src="@drawable/coin"
-            android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@id/deckName"/>
+    <TextView
+        android:id="@+id/winLoss"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="WIN"
+        app:layout_constraintLeft_toRightOf="@+id/opponentName"
+        app:layout_constraintRight_toLeftOf="@+id/hsReplay"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginLeft="30dp"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_centerInParent="true">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:text="WIN"
-                android:id="@+id/winLoss"
-                android:textSize="16sp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:text="vs"/>
-            </LinearLayout>
+    <ImageView
+        android:id="@+id/hsReplay"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:padding="4dp"
+        android:background="?attr/selectableItemBackground"
+        android:src="@drawable/hsreplay"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginRight="20dp"/>
 
-        <ImageView
-            android:id="@+id/opponentHero"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginRight="5dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"/>
-        <TextView
-            android:id="@+id/opponentName"
-            android:layout_centerVertical="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:layout_toLeftOf="@id/opponentHero"
-            android:text="deck"/>
 
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="#BBB"></View>
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>
