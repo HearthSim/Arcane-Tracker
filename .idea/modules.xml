@@ -3,12 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/arcane_tracker.iml" filepath="$PROJECT_DIR$/arcane_tracker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/arcane_tracker.iml" filepath="$PROJECT_DIR$/.idea/arcane_tracker.iml" />
       <module fileurl="file://$PROJECT_DIR$/buildSrc/buildSrc.iml" filepath="$PROJECT_DIR$/buildSrc/buildSrc.iml" />
       <module fileurl="file://$PROJECT_DIR$/detector/detector.iml" filepath="$PROJECT_DIR$/detector/detector.iml" />
       <module fileurl="file://$PROJECT_DIR$/extra/extra.iml" filepath="$PROJECT_DIR$/extra/extra.iml" />
       <module fileurl="file://$PROJECT_DIR$/hsmodel/hsmodel.iml" filepath="$PROJECT_DIR$/hsmodel/hsmodel.iml" />
-      <module fileurl="file://$PROJECT_DIR$/hsreplay/hsreplay.iml" filepath="$PROJECT_DIR$/hsreplay/hsreplay.iml" />
     </modules>
   </component>
 </project>

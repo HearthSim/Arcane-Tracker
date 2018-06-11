@@ -13,7 +13,6 @@
             <option value="$PROJECT_DIR$/detector" />
             <option value="$PROJECT_DIR$/extra" />
             <option value="$PROJECT_DIR$/hsmodel" />
-            <option value="$PROJECT_DIR$/hsreplay" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
