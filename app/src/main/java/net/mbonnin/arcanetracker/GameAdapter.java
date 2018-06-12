@@ -12,7 +12,6 @@ import java.util.List;
 public class GameAdapter extends RecyclerView.Adapter {
 
     private final List<GameSummary> mGameList;
-    private Listener mListener;
 
     public interface Listener {
         void onClick(GameSummary summary);
@@ -30,7 +29,6 @@ public class GameAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ((GameViewHolder)holder).bind(mGameList.get(position), position);
-        holder.itemView.setOnClickListener(v -> mListener.onClick(mGameList.get(holder.getAdapterPosition())));
     }
 
     @Override
@@ -38,7 +36,4 @@ public class GameAdapter extends RecyclerView.Adapter {
         return mGameList.size();
     }
 
-    public void setOnclickListener(Listener listener) {
-        mListener = listener;
-    }
 }
