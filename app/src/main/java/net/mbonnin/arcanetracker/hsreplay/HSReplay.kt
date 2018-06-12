@@ -10,8 +10,8 @@ import com.google.gson.Gson
 import com.google.gson.JsonPrimitive
 import io.reactivex.Completable
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
+import net.mbonnin.arcanetracker.FirebaseConstants
 import net.mbonnin.arcanetracker.Gatekeeper
-import net.mbonnin.arcanetracker.Settings
 import net.mbonnin.arcanetracker.hsreplay.model.Lce
 import net.mbonnin.arcanetracker.hsreplay.model.Token
 import net.mbonnin.arcanetracker.hsreplay.model.TokenRequest
@@ -166,11 +166,6 @@ class HSReplay {
             return // not sending
         }
 
-        val isPremium = Settings.getString("hsr-$key", null)
-        if (isPremium != null) {
-            return // already sent
-        }
-
         if (OauthInterceptor.refreshToken == null) {
             return // no configured account
         }
@@ -184,10 +179,10 @@ class HSReplay {
                     val bundle = Bundle()
                     bundle.putString("is_premium",premium.toString())
 
-                    FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("hsreplay_account", bundle)
+                    FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).setUserProperty(FirebaseConstants.IS_PREMIUM.name.toLowerCase(),
+                            premium.toString())
 
                     Timber.e("premium=$premium")
-                    Settings.set("hsr-$key", premium.toString())
                 }, Timber::e)
     }
 

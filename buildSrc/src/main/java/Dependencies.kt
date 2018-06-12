@@ -52,9 +52,9 @@ object Libs {
     const val multidex = "com.android.support:multidex:1.0.3"
     const val picassoDownloader = "com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0"
     const val picasso = "com.squareup.picasso:picasso:2.5.2"
-    const val room = "android.arch.persistence.room:runtime:1.1.0"
-    const val rxRoom = "android.arch.persistence.room:rxjava2:1.1.0"
-    const val roomProcessor = "android.arch.persistence.room:compiler:1.1.0"
+    const val room = "android.arch.persistence.room:runtime:1.1.1-rc1"
+    const val rxRoom = "android.arch.persistence.room:rxjava2:1.1.1-rc1"
+    const val roomProcessor = "android.arch.persistence.room:compiler:1.1.1-rc1"
     const val stetho =  "com.facebook.stetho:stetho:1.5.0"
     const val stethoOkhttp = "com.facebook.stetho:stetho-okhttp3:1.5.0"
 
