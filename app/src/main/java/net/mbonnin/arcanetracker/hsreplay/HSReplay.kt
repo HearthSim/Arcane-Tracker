@@ -174,7 +174,7 @@ class HSReplay {
         if (OauthInterceptor.refreshToken == null) {
             return // no configured account
         }
-        
+
         mOauthervice.account()
                 .subscribeOn(io.reactivex.schedulers.Schedulers.io())
                 .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())

@@ -17,4 +17,5 @@
     <string name="changelog_303">The witchwood!\nPolish translations (Thanks Sarenka !).</string>
     <string name="changelog_304">You can now delete decks.</string>
     <string name="changelog_305">Updated for latest nerfs, no more Call To Arms turn 4!\nFixed secret detector in the kraken year.\nImproved german translations (Thanks AceXare!).</string>
+    <string name="changelog_308">Added Tavern of time cards.\nSwitching some menus to a black theme.</string>
 </resources>
