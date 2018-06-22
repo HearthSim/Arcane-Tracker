@@ -7,7 +7,7 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "",
+        "mobilesdk_app_id": "1:2:android:3",
         "client_id": "android:net.mbonnin.arcanetracker",
         "client_type": 1,
         "android_client_info": {

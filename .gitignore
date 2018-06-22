@@ -1,5 +1,3 @@
-/extra/*
-/extra
 app/google-services.json
 /app/keystore.properties
 /app/keystore.jks
@@ -24,3 +22,4 @@ app/google-services.json
 /*/build
 /website/public/cards
 /website/public/bars
+/.idea/*
