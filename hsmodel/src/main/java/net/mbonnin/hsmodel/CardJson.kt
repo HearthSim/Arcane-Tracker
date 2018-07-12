@@ -6,6 +6,7 @@ import okio.Okio
 import java.util.*
 import com.squareup.moshi.ToJson
 import com.squareup.moshi.FromJson
+import sun.rmi.runtime.Log
 
 
 object CardJson {
@@ -68,15 +69,15 @@ object CardJson {
 
         val type = Types.newParameterizedType(List::class.java, Card::class.java)
         val adapter = moshi.adapter<List<Card>>(type)
-        val bufferedSource = Okio.buffer(Okio.source(CardJson::class.java.getResourceAsStream("cards.json")))
+        val bufferedSource = Okio.buffer(Okio.source(CardJson::class.java.getResourceAsStream("/cards.json")))
+
         val cardList = bufferedSource.use {
             adapter.fromJson(bufferedSource)
         }
-
-        val allCards = cardList
+        allCards.addAll(cardList
                 ?.filter { it.dbfId != INVALID_DFB_ID } // removes "PlaceholderCard"
                 ?.filter { it.playerClass != INVALID_PLAYER_CLASS } // removes a bunch of FB_LK_BossSetup cards
-                ?.toMutableList() ?: mutableListOf()
+                ?: listOf())
 
         injectedCards?.let { allCards.addAll(it) }
 
