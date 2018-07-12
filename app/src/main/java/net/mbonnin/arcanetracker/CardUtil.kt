@@ -2,6 +2,7 @@ package net.mbonnin.arcanetracker
 
 
 import net.mbonnin.hsmodel.*
+import net.mbonnin.hsmodel.enum.*
 
 object CardUtil {
     @JvmField

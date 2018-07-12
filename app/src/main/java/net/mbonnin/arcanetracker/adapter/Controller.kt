@@ -8,9 +8,9 @@ import net.mbonnin.arcanetracker.parser.Entity
 import net.mbonnin.arcanetracker.parser.EntityList
 import net.mbonnin.arcanetracker.parser.Game
 import net.mbonnin.arcanetracker.parser.GameLogic
-import net.mbonnin.hsmodel.PlayerClass
-import net.mbonnin.hsmodel.Rarity
-import net.mbonnin.hsmodel.Type
+import net.mbonnin.hsmodel.enum.PlayerClass
+import net.mbonnin.hsmodel.enum.Rarity
+import net.mbonnin.hsmodel.enum.Type
 import java.util.*
 
 class Controller : GameLogic.Listener {

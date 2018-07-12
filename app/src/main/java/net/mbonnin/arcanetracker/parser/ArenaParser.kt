@@ -7,7 +7,7 @@ import net.mbonnin.arcanetracker.MainViewCompanion
 import net.mbonnin.arcanetracker.adapter.Controller
 import net.mbonnin.arcanetracker.heroIdToClassIndex
 import net.mbonnin.hsmodel.Card
-import net.mbonnin.hsmodel.Type
+import net.mbonnin.hsmodel.enum.Type
 import timber.log.Timber
 import java.util.regex.Matcher
 import java.util.regex.Pattern

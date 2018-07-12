@@ -13,7 +13,7 @@ import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.databinding.DetailsViewBinding
 import net.mbonnin.arcanetracker.parser.Entity
 import net.mbonnin.arcanetracker.parser.GameLogic
-import net.mbonnin.hsmodel.Type
+import net.mbonnin.hsmodel.enum.Type
 
 class DetailsView(context: Context) : LinearLayout(context) {
     private var mTopMargin: Int = 0

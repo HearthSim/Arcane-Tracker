@@ -22,7 +22,7 @@ import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.mbonnin.arcanetracker.parser.*
 import net.mbonnin.hsmodel.Card
 import net.mbonnin.hsmodel.CardJson
-import net.mbonnin.hsmodel.PlayerClass
+import net.mbonnin.hsmodel.enum.PlayerClass
 import okhttp3.OkHttpClient
 import timber.log.Timber
 import java.util.*

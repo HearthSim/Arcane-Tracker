@@ -9,9 +9,9 @@ import net.mbonnin.arcanetracker.SecretLogic
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.parser.power.*
 import net.mbonnin.arcanetracker.parser.power.BlockTag.TYPE_TRIGGER
-import net.mbonnin.hsmodel.CardId
-import net.mbonnin.hsmodel.Rarity
-import net.mbonnin.hsmodel.Type
+import net.mbonnin.hsmodel.enum.CardId
+import net.mbonnin.hsmodel.enum.Rarity
+import net.mbonnin.hsmodel.enum.Type
 import timber.log.Timber
 import java.util.*
 

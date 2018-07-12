@@ -4,9 +4,9 @@ import net.mbonnin.arcanetracker.parser.Entity
 import net.mbonnin.arcanetracker.parser.Game
 import net.mbonnin.arcanetracker.parser.power.BlockTag
 import net.mbonnin.arcanetracker.parser.power.MetaDataTag
-import net.mbonnin.hsmodel.CardId
-import net.mbonnin.hsmodel.Rarity
-import net.mbonnin.hsmodel.Type
+import net.mbonnin.hsmodel.enum.CardId
+import net.mbonnin.hsmodel.enum.Rarity
+import net.mbonnin.hsmodel.enum.Type
 import timber.log.Timber
 
 object SecretLogic {

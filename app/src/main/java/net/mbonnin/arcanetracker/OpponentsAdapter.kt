@@ -13,7 +13,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Function3
 import io.reactivex.schedulers.Schedulers
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
-import net.mbonnin.hsmodel.PlayerClass
+import net.mbonnin.hsmodel.enum.PlayerClass
 import timber.log.Timber
 
 class OpponentsAdapter(val deckId: String) : RecyclerView.Adapter<OpponentsAdapter.ViewHolder>() {

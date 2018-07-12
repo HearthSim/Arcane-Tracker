@@ -2,7 +2,7 @@ package net.mbonnin.arcanetracker.parser
 
 import com.annimon.stream.function.Predicate
 import net.mbonnin.arcanetracker.Utils
-import net.mbonnin.hsmodel.Type
+import net.mbonnin.hsmodel.enum.Type
 import java.util.*
 
 class EntityList : ArrayList<Entity>() {

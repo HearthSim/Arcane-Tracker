@@ -4,9 +4,9 @@ import android.graphics.*
 import android.os.Build
 import android.text.*
 import net.mbonnin.hsmodel.Card
-import net.mbonnin.hsmodel.Race
-import net.mbonnin.hsmodel.Rarity
-import net.mbonnin.hsmodel.Type
+import net.mbonnin.hsmodel.enum.Race
+import net.mbonnin.hsmodel.enum.Rarity
+import net.mbonnin.hsmodel.enum.Type
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream

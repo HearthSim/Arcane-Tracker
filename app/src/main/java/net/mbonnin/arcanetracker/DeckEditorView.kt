@@ -14,7 +14,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.*
 import net.mbonnin.arcanetracker.adapter.EditableItemAdapter
 import net.mbonnin.hsmodel.Card
-import net.mbonnin.hsmodel.PlayerClass
+import net.mbonnin.hsmodel.enum.PlayerClass
 import java.util.*
 
 class DeckEditorView : RelativeLayout {

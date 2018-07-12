@@ -1,7 +1,7 @@
 package net.mbonnin.arcanetracker
 
 import android.graphics.Color
-import net.mbonnin.hsmodel.Rarity
+import net.mbonnin.hsmodel.enum.Rarity
 
 object RarityHelper {
     val rarityToColor = mapOf(

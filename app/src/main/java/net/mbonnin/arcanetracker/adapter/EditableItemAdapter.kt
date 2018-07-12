@@ -10,7 +10,7 @@ import net.mbonnin.arcanetracker.CardUtil
 import net.mbonnin.arcanetracker.Deck
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
-import net.mbonnin.hsmodel.Rarity
+import net.mbonnin.hsmodel.enum.Rarity
 import java.util.*
 
 /**

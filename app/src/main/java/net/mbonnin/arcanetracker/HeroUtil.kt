@@ -1,16 +1,16 @@
 package net.mbonnin.arcanetracker
 
 import android.graphics.drawable.Drawable
-import net.mbonnin.hsmodel.PlayerClass.DRUID
-import net.mbonnin.hsmodel.PlayerClass.HUNTER
-import net.mbonnin.hsmodel.PlayerClass.MAGE
-import net.mbonnin.hsmodel.PlayerClass.NEUTRAL
-import net.mbonnin.hsmodel.PlayerClass.PALADIN
-import net.mbonnin.hsmodel.PlayerClass.PRIEST
-import net.mbonnin.hsmodel.PlayerClass.ROGUE
-import net.mbonnin.hsmodel.PlayerClass.SHAMAN
-import net.mbonnin.hsmodel.PlayerClass.WARLOCK
-import net.mbonnin.hsmodel.PlayerClass.WARRIOR
+import net.mbonnin.hsmodel.enum.PlayerClass.DRUID
+import net.mbonnin.hsmodel.enum.PlayerClass.HUNTER
+import net.mbonnin.hsmodel.enum.PlayerClass.MAGE
+import net.mbonnin.hsmodel.enum.PlayerClass.NEUTRAL
+import net.mbonnin.hsmodel.enum.PlayerClass.PALADIN
+import net.mbonnin.hsmodel.enum.PlayerClass.PRIEST
+import net.mbonnin.hsmodel.enum.PlayerClass.ROGUE
+import net.mbonnin.hsmodel.enum.PlayerClass.SHAMAN
+import net.mbonnin.hsmodel.enum.PlayerClass.WARLOCK
+import net.mbonnin.hsmodel.enum.PlayerClass.WARRIOR
 import java.util.regex.Pattern
 
 fun allHeroes(): Array<String> {
