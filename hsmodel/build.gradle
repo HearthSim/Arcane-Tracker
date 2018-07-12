@@ -7,6 +7,8 @@ apply plugin: "java-library"
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: "kotlin"
+apply plugin: 'kotlin-kapt'
+apply plugin: net.arcanetracker.hsmodel.HSModelPlugin
 
 repositories {
     mavenCentral()
@@ -15,7 +17,7 @@ repositories {
 dependencies {
     implementation Libs.kotlin_stdlib
     implementation Libs.moshi
-    implementation Libs.moshi_kotlin
+    kapt Libs.moshi_codegen
 }
 
 compileKotlin {

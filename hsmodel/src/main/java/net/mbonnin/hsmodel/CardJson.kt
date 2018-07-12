@@ -1,46 +1,82 @@
 package net.mbonnin.hsmodel
 
-import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import okio.Okio
-import java.lang.reflect.Type
 import java.util.*
+import com.squareup.moshi.ToJson
+import com.squareup.moshi.FromJson
 
 
 object CardJson {
     private val allCards = ArrayList<Card>()
+    private val INVALID_PLAYER_CLASS = "INVALID_PLAYER_CLASS"
+    private val INVALID_DFB_ID = Int.MIN_VALUE
 
-    fun <T> decode(resourceName: String, type: Type): T {
-        val moshi = Moshi.Builder()
-                .add(KotlinJsonAdapterFactory())
-                .build()
+    class CardAdapter(val lang: String) {
+        @FromJson
+        fun fromGson(hsCard: HSCard): Card {
 
-        val adapter = moshi.adapter<T>(type)
-        val bufferedSource = Okio.buffer(Okio.source(CardJson::class.java.getResourceAsStream(resourceName)))
-        return bufferedSource.use {
-            adapter.fromJson(bufferedSource)
-        }!! // <= not really sure if moshi can return null values since it usually throws exceptions
+            return Card(id = hsCard.id,
+                    mechanics = hsCard.mechanics?.toSet() ?: emptySet(),
+                    name = hsCard.name?.get(lang) ?: "",
+                    attack = hsCard.attack,
+                    collectible = hsCard.collectible ?: false,
+                    cost = hsCard.cost,
+                    dbfId = hsCard.dbfId ?: INVALID_DFB_ID,
+                    durability = hsCard.durability,
+                    features = null,
+                    goldenFeatures = null,
+                    health = hsCard.health,
+                    multiClassGroup = hsCard.multiClassGroup,
+                    playerClass = hsCard.cardClass ?: INVALID_PLAYER_CLASS,
+                    race = hsCard.race,
+                    rarity = hsCard.rarity,
+                    set = hsCard.set ?: "CORE",
+                    text = hsCard.text?.get(lang) ?: "",
+                    type = hsCard.type ?: ""
+            )
+        }
+
+        @ToJson
+        fun toJson(card: Card): HSCard {
+            return HSCard(id = card.id,
+                    mechanics = card.mechanics.toList(),
+                    name = emptyMap(),
+                    attack = card.attack,
+                    collectible = card.collectible ?: false,
+                    cost = card.cost,
+                    dbfId = card.dbfId,
+                    durability = card.durability,
+                    health = card.health,
+                    multiClassGroup = card.multiClassGroup,
+                    cardClass = card.playerClass,
+                    race = card.race,
+                    rarity = card.rarity,
+                    set = card.set,
+                    text = emptyMap(),
+                    type = card.type
+            )
+        }
     }
 
 
     fun init(lang: String, injectedCards: List<Card>?) {
-        val cardTranslation = decode<Map<String, CardTranslation>>("/card_translation_${lang}.json", Types.newParameterizedType(Map::class.java, String::class.java, CardTranslation::class.java))
+        val moshi = Moshi.Builder()
+                .add(CardAdapter(lang))
+                .build()
 
-        val cardData = decode<List<Card>>("/card_data.json", Types.newParameterizedType(List::class.java, Card::class.java))
+        val type = Types.newParameterizedType(List::class.java, Card::class.java)
+        val adapter = moshi.adapter<List<Card>>(type)
+        val bufferedSource = Okio.buffer(Okio.source(CardJson::class.java.getResourceAsStream("cards.json")))
+        val cardList = bufferedSource.use {
+            adapter.fromJson(bufferedSource)
+        }
 
-        val augmentedCards = cardData
-                .map {
-
-                    it.copy(
-                            name = cardTranslation[it.id]!!.name,
-                            text = cardTranslation[it.id]!!.text,
-                            features = null,
-                            goldenFeatures = null
-                    )
-                }
-
-        allCards.addAll(augmentedCards)
+        val allCards = cardList
+                ?.filter { it.dbfId != INVALID_DFB_ID } // removes "PlaceholderCard"
+                ?.filter { it.playerClass != INVALID_PLAYER_CLASS } // removes a bunch of FB_LK_BossSetup cards
+                ?.toMutableList() ?: mutableListOf()
 
         injectedCards?.let { allCards.addAll(it) }
 

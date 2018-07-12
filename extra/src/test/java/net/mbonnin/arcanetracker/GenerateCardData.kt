@@ -4,7 +4,7 @@ import com.squareup.moshi.Types
 import net.mbonnin.hsmodel.Card
 import net.mbonnin.hsmodel.CardTranslation
 import org.junit.Test
-
+import java.io.File
 
 
 class GenerateCardData {

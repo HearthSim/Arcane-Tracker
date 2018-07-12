@@ -22,8 +22,9 @@ object Libs {
 
     const val crashlytics = "com.crashlytics.sdk.android:crashlytics:2.9.2"
     const val gson = "com.google.code.gson:gson:2.8.5"
-    const val moshi = "com.squareup.moshi:moshi:1.5.0"
-    const val moshi_kotlin = "com.squareup.moshi:moshi-kotlin:1.5.0"
+    const val moshi = "com.squareup.moshi:moshi:1.6.0"
+    const val moshi_kotlin = "com.squareup.moshi:moshi-kotlin:1.6.0"
+    const val moshi_codegen = "com.squareup.moshi:moshi-kotlin-codegen:1.6.0"
     const val timber = "com.jakewharton.timber:timber:4.7.0"
     const val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin}"
     const val kotlin_reflect = "org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}"
