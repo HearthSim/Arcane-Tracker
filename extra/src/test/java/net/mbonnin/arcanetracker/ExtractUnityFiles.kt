@@ -6,7 +6,7 @@ import java.io.File
 class ExtractUnityFiles {
     @Test
     fun run() {
-        val dir = "/home/martin/dev/hearthsim/tavern_of_time_unity/"
+        val dir = "/home/martin/dev/hearthsim/boomsday_pre/"
         val result = exec("adb shell su -c ls /data/data/com.blizzard.wtcg.hearthstone/files/Data/dxt/*.unity3d")
 
         if (result.errCode != 0) {

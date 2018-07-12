@@ -7,6 +7,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
+apply plugin: ATPlugin
+
 
 static def extraFile(filename) {
     "../extra/app/" + filename
@@ -151,6 +153,7 @@ dependencies {
     kapt Libs.roomProcessor
 
     implementation project(":detector")
+    implementation project(":hsmodel")
 
     testImplementation Libs.junit
     androidTestImplementation Libs.test_runner

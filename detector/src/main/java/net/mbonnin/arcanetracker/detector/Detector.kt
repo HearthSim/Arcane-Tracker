@@ -1,16 +1,10 @@
 package net.mbonnin.arcanetracker.detector
 
 import android.content.Context
-import android.util.Log
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
-import net.mbonnin.hsmodel.Card
-import net.mbonnin.hsmodel.CardJson
-import net.mbonnin.hsmodel.PlayerClass
-import net.mbonnin.hsmodel.Type
 import okio.Okio
 import java.nio.ByteBuffer
-import java.util.*
 import kotlin.reflect.KFunction2
 
 class ByteBufferImage(val w: Int,
@@ -23,8 +17,6 @@ class MatchResult {
     var distance = 0.0
 }
 
-class ArenaResult(var cardId: String = "", var distance: Double = 0.0)
-
 const val INDEX_UNKNOWN = -1
 const val RANK_UNKNOWN = INDEX_UNKNOWN
 
@@ -35,13 +27,12 @@ class Detector(var context: Context, val isTablet: Boolean) {
 
     private fun <T> decode(resourceName: String, type: java.lang.reflect.Type): T {
         val adapter = moshi.adapter<T>(type)
-        val bufferedSource = Okio.buffer(Okio.source(CardJson::class.java.getResourceAsStream(resourceName)))
+        val bufferedSource = Okio.buffer(Okio.source(this::class.java.getResourceAsStream(resourceName)))
         return bufferedSource.use {
             adapter.fromJson(bufferedSource)
         }!! // <= not really sure if moshi can return null values since it usually throws exceptions
     }
 
-    var lastPlayerClass: String? = "?"
     val generatedData = decode<RankData>("/rank_data.json", RankData::class.java)
     val rectFactory = RRectFactory(isTablet)
 
@@ -77,73 +68,11 @@ class Detector(var context: Context, val isTablet: Boolean) {
         }
     }
 
-    private lateinit var cardByType: Array<List<Card>>
-
-    fun detectArena(byteBufferImage: ByteBufferImage, playerClass: String?): Array<ArenaResult> {
-        val arenaResults = Array<ArenaResult>(3, { ArenaResult("", Double.MAX_VALUE) })
-
-        if (playerClass != lastPlayerClass) {
-            val subList = CardJson.allCards()
-                    .filter { it.scores != null } // cards available in arena
-                    .filter {
-                        when {
-                            playerClass == null -> true // running from tests
-                            it.playerClass == PlayerClass.NEUTRAL -> true
-                            it.playerClass == playerClass -> true
-                            else -> false
-                        }
-                    }
-
-            cardByType = arrayOf(
-                    subList.filter { Type.MINION == it.type },
-                    subList.filter { Type.SPELL == it.type },
-                    subList.filter { Type.WEAPON == it.type }
-            )
-        }
-
-
-        val arena_rects = arrayOf(rectFactory.arenaMinionRectArray(), rectFactory.arenaSpellRectArray(), rectFactory.arenaWeaponRectArray())
-
-        for (position in 0 until 3) {
-            var minDistance = Double.MAX_VALUE
-            var bestId = ""
-            for (type in 0 until 3) {
-                val vector = extractHaar(byteBufferImage, arena_rects[type][position])
-                for (card in cardByType[type]) {
-                    var distance = manhattanDistance(vector, card.features!!)
-                    if (distance < minDistance) {
-                        minDistance = distance
-                        bestId = card.id
-                    }
-
-                    distance = manhattanDistance(vector, card.goldenFeatures!!)
-                    if (distance < minDistance) {
-                        minDistance = distance
-                        bestId = card.id
-                    }
-                }
-            }
-
-            arenaResults[position].distance = minDistance
-            arenaResults[position].cardId = bestId
-        }
-        Log.d("Detector", arenaResults.map { "[" + it.cardId + "(" + it.distance + ")]" }.joinToString(","))
-        return arenaResults
-    }
-
     companion object {
         fun euclidianDistance(a: DoubleArray, b: DoubleArray): Double {
             var dist = 0.0
             for (i in 0 until a.size) {
                 dist += (a[i] - b[i]) * (a[i] - b[i])
-            }
-            return dist
-        }
-
-        fun manhattanDistance(a: DoubleArray, b: DoubleArray): Double {
-            var dist = 0.0
-            for (i in 0 until a.size) {
-                dist += Math.abs(a[i] - b[i])
             }
             return dist
         }
@@ -181,43 +110,6 @@ class Detector(var context: Context, val isTablet: Boolean) {
                 }
             }
             return matchResult
-        }
-
-        fun haarToString(features: DoubleArray): String {
-            val sb = StringBuilder()
-
-            sb.append("=[")
-            sb.append(features.map { String.format("%3.2f", it) }.joinToString(" "))
-            sb.append("]")
-            return sb.toString()
-        }
-
-        val NAME_TO_CARD_ID by lazy {
-            val map = TreeMap<String, ArrayList<String>>()
-
-            CardJson.allCards().forEach({
-                val cardName = it.name
-                        .toUpperCase()
-                        .replace(" ", "_")
-                        .replace(Regex("[^A-Z_]"), "")
-
-                map.getOrPut(cardName, { ArrayList() }).add(it.id)
-            })
-
-            val nameToCardID = TreeMap<String, String>()
-
-            for (entry in map) {
-                entry.value.sort()
-                for ((i, id) in entry.value.withIndex()) {
-                    var name = entry.key
-                    if (i > 0) {
-                        name += i
-                    }
-                    nameToCardID.put(name, id)
-                }
-            }
-
-            nameToCardID
         }
     }
 }

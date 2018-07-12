@@ -28,36 +28,15 @@ object CardJson {
         val cardTranslation = decode<Map<String, CardTranslation>>("/card_translation_${lang}.json", Types.newParameterizedType(Map::class.java, String::class.java, CardTranslation::class.java))
 
         val cardData = decode<List<Card>>("/card_data.json", Types.newParameterizedType(List::class.java, Card::class.java))
-        val tierlist = decode<TierCards>("/tierlist.json", TierCards::class.java)
-        val arenaData = decode<ArenaData>("/arena_data.json", ArenaData::class.java)
-
-        val tierCards = tierlist.Cards.sortedBy { it.CardId }
 
         val augmentedCards = cardData
                 .map {
 
-                    val card = it
-                    var index = tierCards.binarySearch { it.CardId.compareTo(card.id) }
-                    var tierCard = if (index > 0) tierCards[index] else null
-
-                    index = arenaData.ids.binarySearch { it.compareTo(card.id) }
-                    var (features, goldenFeatures) = if (index > 0)
-                        arenaData.features[index] to arenaData.featuresGolden[index]
-                    else
-                        null to null
-
-                    if (!it.isDraftable()) {
-                        tierCard = null
-                        features = null
-                        goldenFeatures = null
-                    }
-
                     it.copy(
                             name = cardTranslation[it.id]!!.name,
                             text = cardTranslation[it.id]!!.text,
-                            scores = tierCard?.Scores,
-                            features = features,
-                            goldenFeatures = goldenFeatures
+                            features = null,
+                            goldenFeatures = null
                     )
                 }
 

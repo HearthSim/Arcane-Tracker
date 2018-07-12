@@ -36,8 +36,6 @@ dependencies {
     implementation Libs.moshi
     implementation Libs.moshi_kotlin
 
-    api(project(":hsmodel"))
-
     testImplementation Libs.junit
     testImplementation Libs.pngj
 

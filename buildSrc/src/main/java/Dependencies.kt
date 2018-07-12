@@ -2,7 +2,7 @@ object Versions {
     const val minSdkVersion = 16
     const val targetSdkVersion = 26
     const val compileSdkVersion = 26
-    const val kotlin = "1.2.41"
+    const val kotlin = "1.2.51"
     const val androidPlugin = "3.1.0"
 
 }

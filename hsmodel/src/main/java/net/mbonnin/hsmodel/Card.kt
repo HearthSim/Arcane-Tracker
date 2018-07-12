@@ -19,8 +19,7 @@ data class Card(
         val collectible: Boolean = false,
         val mechanics: kotlin.collections.Set<String> = emptySet(),
         val features: DoubleArray? = null,
-        val goldenFeatures: DoubleArray? = null,
-        val scores: List<TierScore>? = null
+        val goldenFeatures: DoubleArray? = null
 ) : Comparable<String> {
 
 

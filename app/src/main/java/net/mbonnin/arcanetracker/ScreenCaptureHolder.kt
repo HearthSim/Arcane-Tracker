@@ -56,15 +56,6 @@ object ScreenCaptureHolder {
 
                 RankHolder.registerRanks(playerRank, opponentRank)
             }
-
-            if (shouldDetectArena()) {
-                val index = LegacyDeckList.arenaDeck.classIndex
-                val playerClass = getPlayerClass(index)
-                val arenaResults = mDetector.detectArena(bbImage, playerClass)
-                ArenaGuessHolder.setArena(arenaResults, playerClass)
-            } else {
-                ArenaGuessHolder.clear()
-            }
         }
     }
 

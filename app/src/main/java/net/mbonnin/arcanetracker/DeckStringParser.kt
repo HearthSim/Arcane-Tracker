@@ -1,8 +1,6 @@
 package net.mbonnin.arcanetracker
 
 import android.util.Base64
-import com.crashlytics.android.Crashlytics
-import timber.log.Timber
 import java.nio.ByteBuffer
 import java.util.*
 
@@ -12,19 +10,14 @@ object DeckStringParser {
         try {
             return parseUnsafe(deckstring)
         } catch (e: Exception) {
-            Crashlytics.setString("deck_string", deckstring)
-            Utils.reportNonFatal(e)
             return null
         }
-
     }
 
     private fun parseUnsafe(deckstring: String): Deck? {
         val data = Base64.decode(deckstring, Base64.DEFAULT)
 
         val byteBuffer = ByteBuffer.wrap(data)
-
-        Timber.d("deckstring: %s", deckstring)
 
         val deck = Deck()
 
