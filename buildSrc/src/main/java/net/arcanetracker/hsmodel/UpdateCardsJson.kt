@@ -58,7 +58,9 @@ open class UpdateCardsJson: DefaultTask() {
                         .replace(" ", "_")
                         .replace(Regex("[^A-Z_]"), "")
 
-                map.getOrPut(cardName, { ArrayList() }).add(card.id)
+                if (!cardName.matches(Regex("_*"))) {
+                    map.getOrPut(cardName, { ArrayList() }).add(card.id)
+                }
             } catch (e: Exception) {
                 //System.out.print(e)
             }

@@ -1,5 +1,8 @@
 package net.mbonnin.hsmodel
 
+import net.mbonnin.hsmodel.enum.CardId
+import net.mbonnin.hsmodel.enum.HSSet
+import net.mbonnin.hsmodel.enum.Type
 
 data class Card(
         val id: String,
