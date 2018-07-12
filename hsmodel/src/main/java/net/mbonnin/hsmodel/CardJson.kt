@@ -44,7 +44,7 @@ object CardJson {
                     mechanics = card.mechanics.toList(),
                     name = emptyMap(),
                     attack = card.attack,
-                    collectible = card.collectible ?: false,
+                    collectible = card.collectible,
                     cost = card.cost,
                     dbfId = card.dbfId,
                     durability = card.durability,
