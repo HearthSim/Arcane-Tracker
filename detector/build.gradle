@@ -1,5 +1,9 @@
+import net.arcanetracker.detector.ATDetectorPlugin
+
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: ATDetectorPlugin
 
 repositories {
     mavenCentral()
@@ -34,7 +38,7 @@ dependencies {
     implementation Libs.gson
     implementation Libs.timber
     implementation Libs.moshi
-    implementation Libs.moshi_kotlin
+    kapt Libs.moshi_codegen
 
     testImplementation Libs.junit
     testImplementation Libs.pngj

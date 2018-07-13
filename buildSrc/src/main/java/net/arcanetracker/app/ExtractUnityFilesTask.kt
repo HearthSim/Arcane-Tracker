@@ -1,16 +1,19 @@
-package net.mbonnin.arcanetracker
+package net.arcanetracker.app
 
-import org.junit.Test
+import net.arcanetracker.ProcessHelper
+import net.arcanetracker.ProcessHelper.execOrFail
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
 import java.io.File
 
-class ExtractUnityFiles {
-    @Test
-    fun run() {
+open class ExtractUnityFilesTask: DefaultTask() {
+    @TaskAction
+    fun taskAction() {
         val dir = "/home/martin/dev/hearthsim/boomsday_pre/"
-        val result = exec("adb shell su -c ls /data/data/com.blizzard.wtcg.hearthstone/files/Data/dxt/*.unity3d")
+        val result = ProcessHelper.exec("adb shell su -c ls /data/data/com.blizzard.wtcg.hearthstone/files/Data/dxt/*.unity3d")
 
         if (result.errCode != 0) {
-            System.err.println("cannot run adb shell")
+            System.err.println("cannot run adb shell. Make sure adb is in your path")
             return
         }
 
@@ -43,29 +46,5 @@ class ExtractUnityFiles {
             execOrFail("adb pull /sdcard/$name ${outFile.canonicalPath}")
             execOrFail("adb shell rm /sdcard/$name")
         }
-    }
-
-    data class Result(val errCode: Int, val out: String)
-
-    fun exec(cmd: String): Result {
-        val process = ProcessBuilder().command(cmd.split(" "))
-                .start()
-
-        val inputStream = process.inputStream
-
-        val errCode = process.waitFor()
-
-        return Result(errCode, inputStream.bufferedReader().use { it.readText() })
-    }
-
-
-    fun execOrFail(cmd: String): String {
-        val result = exec(cmd)
-
-        if (result.errCode != 0) {
-            throw Exception("cannot execute $cmd: ${result.out}")
-        }
-
-        return result.out
     }
 }

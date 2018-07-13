@@ -163,20 +163,6 @@ dependencies {
     })
 }
 
-def googleServicesFile = file('google-services.json')
-def googleServicesExtraFile = file(extraFile('google-services.json'))
-def googleServicesMockFile = file('google-services.json.mock')
-
-if (!googleServicesFile.exists()){
-    if (googleServicesExtraFile.exists()) {
-        println 'using extra google-services.json'
-        googleServicesFile.bytes = googleServicesExtraFile.bytes
-    } else {
-        println 'using mock google-services.json'
-        googleServicesFile.bytes = googleServicesMockFile.bytes
-    }
-}
-
 dependencyUpdates.resolutionStrategy = {
     componentSelection { rules ->
         rules.all { ComponentSelection selection ->

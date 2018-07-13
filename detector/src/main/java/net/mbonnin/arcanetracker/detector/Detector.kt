@@ -1,7 +1,6 @@
 package net.mbonnin.arcanetracker.detector
 
 import android.content.Context
-import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
 import okio.Okio
 import java.nio.ByteBuffer
@@ -22,18 +21,15 @@ const val RANK_UNKNOWN = INDEX_UNKNOWN
 
 class Detector(var context: Context, val isTablet: Boolean) {
     private val moshi = Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
             .build()
 
-    private fun <T> decode(resourceName: String, type: java.lang.reflect.Type): T {
-        val adapter = moshi.adapter<T>(type)
-        val bufferedSource = Okio.buffer(Okio.source(this::class.java.getResourceAsStream(resourceName)))
-        return bufferedSource.use {
+    val generatedData by lazy {
+        val adapter = moshi.adapter(RankData::class.java)
+        val bufferedSource = Okio.buffer(Okio.source(this::class.java.getResourceAsStream("/rank_data.json")))
+        bufferedSource.use {
             adapter.fromJson(bufferedSource)
-        }!! // <= not really sure if moshi can return null values since it usually throws exceptions
+        }!!
     }
-
-    val generatedData = decode<RankData>("/rank_data.json", RankData::class.java)
     val rectFactory = RRectFactory(isTablet)
 
     fun prepareImage(bbImage: ByteBufferImage) {

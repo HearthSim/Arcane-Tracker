@@ -1,4 +1,6 @@
 package net.mbonnin.arcanetracker.detector
 
-class RankData(
-    val RANKS: List<DoubleArray>)
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
+data class RankData(val RANKS: List<DoubleArray>)
