@@ -1,3 +1,5 @@
+import net.arcanetracker.hsmodel.HSModelPlugin
+
 plugins {
     id "com.jfrog.bintray" version "1.7.3"
 }
@@ -8,7 +10,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: "kotlin"
 apply plugin: 'kotlin-kapt'
-apply plugin: net.arcanetracker.hsmodel.HSModelPlugin
+apply plugin: HSModelPlugin
 
 repositories {
     mavenCentral()

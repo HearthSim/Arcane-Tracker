@@ -1,5 +1,6 @@
 package net.arcanetracker.app
 
+import net.arcanetracker.DownloadHelper.download
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.gradle.api.Plugin
@@ -28,24 +29,5 @@ open class ATAppPlugin: Plugin<Project> {
         if (!franklin.exists()) {
             download("https://hearthsim.net/static/fonts/franklingothicfs_mediumcondensed_macroman/franklingothic-medcd-webfont.ttf", franklin)
         }
-    }
-
-    private fun download(url: String, file: File) {
-        val client = OkHttpClient()
-        val request = Request.Builder().url(url).get().build()
-
-        file.parentFile.mkdirs()
-        
-        val response = client.newCall(request).execute()
-        if (!response.isSuccessful) {
-            throw Exception("cannot download $url: ${response.code()}")
-        }
-
-        response.body()!!.byteStream().use {inputStream ->
-            file.outputStream().use {
-                inputStream.copyTo(it)
-            }
-        }
-
     }
 }

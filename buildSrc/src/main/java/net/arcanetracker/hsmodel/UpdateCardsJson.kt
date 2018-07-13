@@ -6,6 +6,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import net.arcanetracker.DownloadHelper
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.Okio
@@ -17,21 +18,9 @@ import java.util.*
 open class UpdateCardsJson: DefaultTask() {
     @TaskAction
     fun taskAction() {
-        val client = OkHttpClient()
-        val version = 25252
-        val request = Request.Builder().url("https://api.hearthstonejson.com/v1/$version/all/cards.json").build()
-
-        val response = client.newCall(request).execute()
-
-        if (!response.isSuccessful) {
-            throw Exception()
-        }
-
-        val cardsJsonFile = File(project.projectDir, "src/main/resources/cards.json")
-        response.body()?.byteStream()?.use {inputStream ->
-            cardsJsonFile.outputStream().use {
-                inputStream.copyTo(it)
-            }
+        val cardsJsonFile = File(project.projectDir, HSModelPlugin.CARDS_JSON_PATH)
+        if (!cardsJsonFile.exists()) {
+            DownloadHelper.download(HSModelPlugin.CARDS_JSON_URL, cardsJsonFile)
         }
 
         updateEnums(cardsJsonFile)
