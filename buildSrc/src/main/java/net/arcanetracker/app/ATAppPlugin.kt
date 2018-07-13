@@ -26,7 +26,7 @@ open class ATAppPlugin: Plugin<Project> {
             download("https://hearthsim.net/static/fonts/belwefs_extrabold_macroman/Belwe-ExtraBold-webfont.ttf", belwe)
         }
         if (!franklin.exists()) {
-            download("https://hearthsim.net/static/fonts/franklingothicfs_mediumcondensed_macroman/franklingothic-medcd-webfont", franklin)
+            download("https://hearthsim.net/static/fonts/franklingothicfs_mediumcondensed_macroman/franklingothic-medcd-webfont.ttf", franklin)
         }
     }
 
