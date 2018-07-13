@@ -1,7 +1,6 @@
-app/google-services.json
+/app/google-services.json
 /app/keystore.properties
 /app/keystore.jks
-/detector/src/androidTest
 *.iml
 .gradle
 /local.properties
@@ -13,7 +12,6 @@ app/google-services.json
 /build
 /captures
 .externalNativeBuild
-/app/src/test/resources/ranks/
 /app/src/main/assets/cards
 /app/src/main/assets/bars
 /buildSrc/build
@@ -22,5 +20,5 @@ app/google-services.json
 /*/build
 /website/public/cards
 /website/public/bars
-/.idea/*
-app/src/main/res/font/*
+/app/src/main/res/font/*
+/hsmodel/src/main/resources/cards.json
