@@ -1,3 +1,5 @@
+import net.arcanetracker.app.ATAppPlugin
+
 plugins {
     id 'com.github.ben-manes.versions' version '0.17.0'
     id "net.mbonnin.android.strings2xls" version "0.1.4"
@@ -7,11 +9,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
-
-
-static def extraFile(filename) {
-    "../extra/app/" + filename
-}
+apply plugin: ATAppPlugin
 
 android {
     compileSdkVersion Versions.compileSdkVersion
@@ -41,7 +39,7 @@ android {
         mbonnin {
             keyAlias 'mbonnin'
             keyPassword 'password'
-            storeFile file(extraFile('keystore.jks'))
+            storeFile file('keystore.jks')
             storePassword 'password'
             // sha1: 46:AF:3F:32:C0:F9:9C:EA:29:4E:F0:73:4D:2F:73:0B:E4:40:BB:7C
         }
@@ -52,7 +50,7 @@ android {
     }
 
     def props = new Properties()
-    def f = project.file(extraFile('keystore.properties'))
+    def f = project.file('keystore.properties')
     if (f.exists()) {
         props.load(new FileInputStream(f))
 
