@@ -34,6 +34,8 @@ open class ATAppPlugin: Plugin<Project> {
         val client = OkHttpClient()
         val request = Request.Builder().url(url).get().build()
 
+        file.parentFile.mkdirs()
+        
         val response = client.newCall(request).execute()
         if (!response.isSuccessful) {
             throw Exception("cannot download $url: ${response.code()}")
