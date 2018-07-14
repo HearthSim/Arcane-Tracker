@@ -146,7 +146,7 @@
     <string name="showWhatsNew">Show what\'s new</string>
     <string name="stop_hearthstone_explanation">Please make sure Hearthstone is stopped before continuing. If it\'s not stopped, detection might not work until the next time you restart it.</string>
     <string name="thank_you">Thank You !!!!</string>
-    <string name="thisIsArcaneTracker">This is Arcane Tracker version %1$s%2$s.</string>
+    <string name="thisIsArcaneTracker">This is Arcane Tracker version %1$s%2$s</string>
     <string name="trackobotConnectError">Could not connect to Track-o-bot</string>
     <string name="trackobotError">Could not upload to Track-o-bot :-(</string>
     <string name="trackobotExplanation">Linking a Track-o-bot account will allow you to track your stats on https://trackobot.com</string>
@@ -184,7 +184,7 @@
     <string name="priest">Priest</string>
     <string name="neutral">Neutral</string>
     <string name="ossLicenses">Software licenses</string>
-    <string name="copyright">Arcane Tracker © 2018\nThis app is not affiliated with Blizzard Entertainment.</string>
+    <string name="copyright">This app is not affiliated with Blizzard Entertainment</string>
     <string name="about">About</string>
     <string name="quitTimeout">Inactivity timeout:</string>
     <string name="quitTimeoutExplanation">Arcane tracker can unfortunately not detect when Hearthstone is closed. This setting will close Arcane Tracker if your phone is in portrait mode and Hearthstone has not written logs for the given time.</string>

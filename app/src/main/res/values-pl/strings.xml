@@ -184,7 +184,7 @@
     <string name="priest">Kapłan</string>
     <string name="neutral">Neutralne</string>
     <string name="ossLicenses">Software licenses</string>
-    <string name="copyright">Arcane Tracker ɠ2017\nTa aplikacja nie jest powiązana z firmą Blizzard Entertainment.</string>
+    <string name="copyright">Ta aplikacja nie jest powiązana z firmą Blizzard Entertainment.</string>
     <string name="about">O programie</string>
     <string name="quitTimeout">Czas bezczynności:</string>
     <string name="quitTimeoutExplanation">Arcane Tracker nie wykrywa, kiedy Hearthstone został zamknięty. Ta opcja zamknie Arcane Tracker jeżeli Twój telefon przełączy się tryb portretowy. Hearthstone nie zapisuje logów wskazanego czasu.</string>
