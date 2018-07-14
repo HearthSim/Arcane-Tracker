@@ -9,7 +9,7 @@ import java.io.File
 open class ExtractUnityFilesTask: DefaultTask() {
     @TaskAction
     fun taskAction() {
-        val dir = "/home/martin/dev/hearthsim/boomsday_pre/"
+        val dir = project.buildDir.absolutePath + "/boomsday_pre/"
         val result = ProcessHelper.exec("adb shell su -c ls /data/data/com.blizzard.wtcg.hearthstone/files/Data/dxt/*.unity3d")
 
         if (result.errCode != 0) {
