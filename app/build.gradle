@@ -153,6 +153,8 @@ dependencies {
     implementation project(":hsmodel")
 
     testImplementation Libs.junit
+    testImplementation Libs.okhttp
+
     androidTestImplementation Libs.test_runner
     androidTestImplementation Libs.test_rules
     androidTestImplementation Libs.multidex
