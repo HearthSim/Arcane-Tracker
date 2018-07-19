@@ -62,6 +62,7 @@ class Entity {
         clone.extra.createdBy = extra.createdBy
         clone.extra.mulliganed = extra.mulliganed
         clone.extra.excludedSecretList.addAll(extra.excludedSecretList)
+        clone.extra.tmpCard = extra.tmpCard
 
         clone.extra.hide = extra.hide
         return clone

@@ -175,10 +175,10 @@ class GameLogic private constructor() {
     private fun handleShowEntityTag(tag: ShowEntityTag) {
         val entity = mGame!!.findEntitySafe(tag.Entity)
 
-        if (!Utils.isEmpty(entity!!.CardID) && entity!!.CardID != tag.CardID) {
+        if (!Utils.isEmpty(entity!!.CardID) && entity.CardID != tag.CardID) {
             Timber.e("[Inconsistent] entity " + entity + " changed cardId " + entity.CardID + " -> " + tag.CardID)
         }
-        entity!!.setCardId(tag.CardID)
+        entity.setCardId(tag.CardID)
 
         for (key in tag.tags.keys) {
             tagChanged(entity, key, tag.tags[key])
@@ -264,17 +264,6 @@ class GameLogic private constructor() {
 
         if (Entity.KEY_TURN == key) {
             SecretLogic.newTurn(mGame!!)
-        }
-    }
-
-    private fun getMinionsOnBoardForController(playerId: String?): EntityList {
-        return mGame!!.getEntityList { e ->
-            if (Entity.ZONE_PLAY != e.tags[Entity.KEY_ZONE]) {
-                return@getEntityList false
-            } else if (Type.MINION != e.tags[Entity.KEY_CARDTYPE]) {
-                return@getEntityList false
-            }
-            Utils.equalsNullSafe(playerId, e.tags[Entity.KEY_CONTROLLER])
         }
     }
 

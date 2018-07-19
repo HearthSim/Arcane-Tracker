@@ -171,9 +171,9 @@ class Controller : GameLogic.Listener {
         // entityList now only contains know cards, which we are going to bucket by cardID/gift pair
         val deckEntryItemMap = mutableMapOf<Pair<String, Boolean>, DeckEntryItem>()
         entityList.forEach { entity ->
-            val deckEntryItem = deckEntryItemMap.getOrPut(entity.extra.tmpCard!!.id to entity.extra.tmpIsGift, {
+            val deckEntryItem = deckEntryItemMap.getOrPut(entity.extra.tmpCard!!.id to entity.extra.tmpIsGift) {
                 DeckEntryItem(card = entity.extra.tmpCard!!, gift = entity.extra.tmpIsGift)
-            })
+            }
 
             deckEntryItem.entityList.add(entity)
             if (increasesCount(entity)) {
@@ -311,9 +311,29 @@ class Controller : GameLogic.Listener {
                     && "PLAYER" != e.tags[Entity.KEY_CARDTYPE])
         }
 
-        list.addAll(entityListToItemList(allEntities, { e -> true }))
+        val sanitizedEntities = sanitizeEntities(allEntities)
+        list.addAll(entityListToItemList(sanitizedEntities, { e -> true }))
 
         opponentAdapter.setList(list)
+    }
+
+    private fun sanitizeEntities(entityList: EntityList): EntityList {
+        val newList = EntityList()
+
+        entityList.forEach {
+            val entity = if (it.extra.hide) {
+                //if the card is hidden, we don't want to disclose when it was drawn
+                val clone = it.clone()
+                clone.extra.drawTurn = -1
+                clone
+            } else {
+                it
+            }
+            newList.add(entity)
+        }
+
+        return newList;
+
     }
 
     private fun getPlayerList(cardMap: HashMap<String, Int>?): ArrayList<Any> {
