@@ -8,8 +8,7 @@ import java.io.File
 
 class HSModelPlugin: Plugin<Project> {
     companion object {
-        val CARDS_JSON_VERSION = 25252 // increase here when a new patch happens
-        val CARDS_JSON_URL = "https://api.hearthstonejson.com/v1/$CARDS_JSON_VERSION/all/cards.json"
+        val CARDS_JSON_URL = "https://api.hearthstonejson.com/v1/latest/all/cards.json"
         val CARDS_JSON_PATH = "src/main/resources/cards.json"
     }
 

@@ -27,4 +27,6 @@ object PlayerClass {
   const val WARLOCK: String = "WARLOCK"
 
   const val WARRIOR: String = "WARRIOR"
+
+  const val WHIZBANG: String = "WHIZBANG"
 }

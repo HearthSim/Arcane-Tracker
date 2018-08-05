@@ -4,6 +4,8 @@ package net.mbonnin.hsmodel.enum
 import kotlin.String
 
 object HSSet {
+  const val BOOMSDAY: String = "BOOMSDAY"
+
   const val BRM: String = "BRM"
 
   const val CORE: String = "CORE"

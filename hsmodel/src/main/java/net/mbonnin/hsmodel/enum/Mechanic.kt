@@ -88,6 +88,8 @@ object Mechanic {
 
   const val LIFESTEAL: String = "LIFESTEAL"
 
+  const val MODULAR: String = "MODULAR"
+
   const val MORPH: String = "MORPH"
 
   const val MULTIPLY_BUFF_VALUE: String = "MULTIPLY_BUFF_VALUE"
@@ -95,6 +97,8 @@ object Mechanic {
   const val OVERLOAD: String = "OVERLOAD"
 
   const val POISONOUS: String = "POISONOUS"
+
+  const val PUZZLE: String = "PUZZLE"
 
   const val QUEST: String = "QUEST"
 

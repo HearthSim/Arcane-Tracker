@@ -19,9 +19,7 @@ open class UpdateCardsJson: DefaultTask() {
     @TaskAction
     fun taskAction() {
         val cardsJsonFile = File(project.projectDir, HSModelPlugin.CARDS_JSON_PATH)
-        if (!cardsJsonFile.exists()) {
-            DownloadHelper.download(HSModelPlugin.CARDS_JSON_URL, cardsJsonFile)
-        }
+        DownloadHelper.download(HSModelPlugin.CARDS_JSON_URL, cardsJsonFile)
 
         updateEnums(cardsJsonFile)
     }
