@@ -18,4 +18,5 @@ The hsmodel submodule contains the cards database as well as some enums (CardIds
 To update it from the root of the repo:
 
     ./gradlew :hsmodel:updateCardsJson
-    
+
+

@@ -9,11 +9,14 @@ import java.io.File
 open class ExtractUnityFilesTask: DefaultTask() {
     @TaskAction
     fun taskAction() {
-        val dir = project.buildDir.absolutePath + "/boomsday_pre/"
-        val result = ProcessHelper.exec("adb shell su -c ls /data/data/com.blizzard.wtcg.hearthstone/files/Data/dxt/*.unity3d")
+        val dir = project.buildDir.absolutePath + "/boomsday/"
+
+        File(dir).mkdirs()
+        val result = ProcessHelper.exec("adb shell su -c ls /data/data/com.blizzard.wtcg.hearthstone/files/Data/etc1/*.unity3d")
 
         if (result.errCode != 0) {
             System.err.println("cannot run adb shell. Make sure adb is in your path")
+            System.err.println("err: ${result.err}")
             return
         }
 
