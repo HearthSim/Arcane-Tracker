@@ -399,7 +399,7 @@ class GameLogic private constructor() {
                 CardId.HOLY_WATER,
                 CardId.SPLINTERGRAFT -> mGame!!.findEntitySafe(blockTag.Target)!!.CardID
             //CardId.DOLLMASTER_DORIAN
-                CardId.WANTED -> CardId.COIN
+                CardId.WANTED -> CardId.THE_COIN
                 CardId.BENEATH_THE_GROUNDS -> CardId.NERUBIAN_AMBUSH
                 CardId.IRON_JUGGERNAUT -> CardId.BURROWING_MINE
                 CardId.FORGOTTEN_TORCH -> CardId.ROARING_TORCH
@@ -449,10 +449,10 @@ class GameLogic private constructor() {
                 CardId.DIREHORN_HATCHLING -> CardId.DIREHORN_MATRIARCH
                 CardId.MANA_BIND -> stack.firstOrNull { BlockTag.TYPE_PLAY == it.BlockType }?.let { mGame!!.findEntitySafe(it.Entity)!!.CardID }
                 CardId.ARCHMAGE_ANTONIDAS -> CardId.FIREBALL
-                CardId.HOARDING_DRAGON -> CardId.COIN
+                CardId.HOARDING_DRAGON -> CardId.THE_COIN
                 CardId.ASTRAL_TIGER -> CardId.ASTRAL_TIGER
                 CardId.DRYGULCH_JAILOR -> CardId.SILVER_HAND_RECRUIT
-                CardId.GILDED_GARGOYLE -> CardId.COIN
+                CardId.GILDED_GARGOYLE -> CardId.THE_COIN
                 CardId.RIN_THE_FIRST_DISCIPLE -> CardId.THE_FIRST_SEAL
                 CardId.THE_FIRST_SEAL -> CardId.THE_SECOND_SEAL
                 CardId.THE_THIRD_SEAL -> CardId.THE_FOURTH_SEAL
