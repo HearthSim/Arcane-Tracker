@@ -397,6 +397,7 @@ class GameLogic private constructor() {
                 CardId.DIRE_FRENZY,
                 CardId.BALEFUL_BANKER,
                 CardId.HOLY_WATER,
+                CardId.LAB_RECRUITER,
                 CardId.SPLINTERGRAFT -> mGame!!.findEntitySafe(blockTag.Target)!!.CardID
             //CardId.DOLLMASTER_DORIAN
                 CardId.WANTED -> CardId.THE_COIN
@@ -429,6 +430,9 @@ class GameLogic private constructor() {
                 CardId.FALDOREI_STRIDER -> CardId.SPIDER_AMBUSH
                 CardId.DECK_OF_WONDERS -> CardId.SCROLL_OF_WONDER
                 CardId.FERAL_GIBBERER -> CardId.FERAL_GIBBERER
+                CardId.SPARK_ENGINE -> CardId.SPARK
+                CardId.EXTRA_ARMS -> CardId.MORE_ARMS
+                CardId.SEAFORIUM_BOMBER -> CardId.BOMB
                 else -> null
             }
         } else if (TYPE_TRIGGER == blockTag.BlockType) {
@@ -459,6 +463,7 @@ class GameLogic private constructor() {
                 CardId.THE_FOURTH_SEAL -> CardId.THE_FINAL_SEAL
                 CardId.THE_FINAL_SEAL -> CardId.AZARI_THE_DEVOURER
                 CardId.MALORNE -> CardId.MALORNE
+                CardId.SPARK_DRILL -> CardId.SPARK
                 else -> null
             }
         }
