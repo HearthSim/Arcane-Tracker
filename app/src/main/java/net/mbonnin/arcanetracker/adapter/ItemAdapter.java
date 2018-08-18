@@ -12,6 +12,7 @@ import net.mbonnin.arcanetracker.Typefaces;
 import net.mbonnin.arcanetracker.Utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -24,9 +25,9 @@ public class ItemAdapter extends RecyclerView.Adapter {
     static final int TYPE_STRING = 1;
     static final int TYPE_HEADER = 2;
 
-    ArrayList<Object> list = new ArrayList<>();
+    List<Object> list = new ArrayList<>();
 
-    public void setList(ArrayList<Object> list) {
+    public void setList(List<Object> list) {
         this.list = list;
         notifyDataSetChanged();
     }

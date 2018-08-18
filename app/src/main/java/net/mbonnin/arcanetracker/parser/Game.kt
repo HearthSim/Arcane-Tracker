@@ -34,16 +34,6 @@ class Game {
         return findPlayer(entity.tags[Entity.KEY_CONTROLLER]!!)
     }
 
-    fun findControllerEntity(entity: Entity): Entity? {
-        val playerId = entity.tags[Entity.KEY_CONTROLLER]
-        for (e in entityMap.values) {
-            if (Utils.equalsNullSafe(e.PlayerID, playerId)) {
-                return e
-            }
-        }
-        return null
-    }
-
     fun findPlayer(playerId: String): Player {
         val player = playerMap[playerId]
         if (player == null) {
@@ -56,14 +46,8 @@ class Game {
         return player
     }
 
-    fun getEntityList(predicate: (Entity) -> Boolean): EntityList {
-        val entityList = EntityList()
-        for (entity in entityMap.values) {
-            if (predicate.invoke(entity)) {
-                entityList.add(entity)
-            }
-        }
-        return entityList
+    fun getEntityList(predicate: (Entity) -> Boolean): List<Entity> {
+        return entityMap.values.filter(predicate)
     }
 
     fun addEntity(entity: Entity) {

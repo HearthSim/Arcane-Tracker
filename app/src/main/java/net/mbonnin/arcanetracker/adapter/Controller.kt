@@ -5,7 +5,6 @@ import android.os.Handler
 import android.text.TextUtils
 import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.parser.Entity
-import net.mbonnin.arcanetracker.parser.EntityList
 import net.mbonnin.arcanetracker.parser.Game
 import net.mbonnin.arcanetracker.parser.GameLogic
 import net.mbonnin.hsmodel.enum.PlayerClass
@@ -132,12 +131,12 @@ class Controller : GameLogic.Listener {
         update()
     }
 
-    private fun entityListToItemList(entityList: EntityList, increasesCount: (Entity) -> Boolean): ArrayList<Any> {
+    private fun entityListToItemList(entityList: List<Entity>, increasesCount: (Entity) -> Boolean): ArrayList<Any> {
         /*
          * remove and count the unknown cards
          */
         var unknownCards = 0
-        val iterator = entityList.iterator()
+        val iterator = entityList.toMutableList().iterator()
 
         val deckEntryItemList = mutableListOf<DeckEntryItem>()
 
@@ -256,7 +255,7 @@ class Controller : GameLogic.Listener {
         }
     }
 
-    private fun getEntityListInZone(playerId: String?, zone: String): EntityList {
+    private fun getEntityListInZone(playerId: String?, zone: String): List<Entity> {
         return mGame!!.getEntityList { entity -> playerId == entity.tags[Entity.KEY_CONTROLLER] && zone == entity.tags[Entity.KEY_ZONE] }
     }
 
@@ -272,13 +271,13 @@ class Controller : GameLogic.Listener {
             val list = getCardMapList(HashMap())
             opponentAdapter.setList(list)
         } else {
-            playerAdapter.setList(getPlayerList(mPlayerCardMap))
 
-            updateOpponent()
+            playerAdapter.setList(getPlayerList(mPlayerCardMap))
+            opponentAdapter.setList(getOpponentList())
         }
     }
 
-    private fun updateOpponent() {
+    private fun getOpponentList(): ArrayList<Any> {
         val list = ArrayList<Any>()
 
         val secrets = getSecrets()
@@ -303,14 +302,12 @@ class Controller : GameLogic.Listener {
         val sanitizedEntities = sanitizeEntities(allEntities)
         list.addAll(entityListToItemList(sanitizedEntities, { e -> true }))
 
-        opponentAdapter.setList(list)
+        return list
     }
 
-    private fun sanitizeEntities(entityList: EntityList): EntityList {
-        val newList = EntityList()
-
-        entityList.forEach {
-            val entity = if (it.extra.hide) {
+    private fun sanitizeEntities(entityList: List<Entity>): List<Entity> {
+        return entityList.map {
+            if (it.extra.hide) {
                 //if the card is hidden, we don't want to disclose when it was drawn
                 val clone = it.clone()
                 clone.extra.drawTurn = -1
@@ -318,11 +315,7 @@ class Controller : GameLogic.Listener {
             } else {
                 it
             }
-            newList.add(entity)
         }
-
-        return newList;
-
     }
 
     private fun getPlayerList(cardMap: HashMap<String, Int>?): ArrayList<Any> {
@@ -347,7 +340,7 @@ class Controller : GameLogic.Listener {
             assignCardsFromDeck(cardMap)
         }
 
-        val entityList = mGame!!.getEntityList { entity -> mPlayerId == entity.extra.originalController }
+        val entityList = mGame!!.getEntityList { entity -> mPlayerId == entity.extra.originalController }.toMutableList()
         /*
          * Add all the gifts
          * XXX it's not enough to filter on !TextUtils.isEmpty(createdBy)
