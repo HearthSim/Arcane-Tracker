@@ -100,7 +100,7 @@ class PowerParser(private val mTagConsumer: (Tag) -> Unit, private val mRawGameC
             if (mBlockTagStack.size > 0) {
                 Timber.d("Ended in the middle of a block")
                 if (mCurrentTag != null) {
-                    mBlockTagStack[mBlockTagStack.size - 1].children.add(mCurrentTag)
+                    mBlockTagStack[mBlockTagStack.size - 1].children.add(mCurrentTag!!)
                 }
                 mTagConsumer(mBlockTagStack[0])
                 mBlockTagStack.clear()
@@ -189,18 +189,26 @@ class PowerParser(private val mTagConsumer: (Tag) -> Unit, private val mRawGameC
 
         m = BLOCK_START_PATTERN.matcher(line)
         if (m.matches()) {
-            val tag = BlockTag()
-            tag.BlockType = m.group(1)
-            tag.Entity = getEntityIdFromNameOrId(m.group(2))
-            tag.EffectCardId = m.group(3)
-            tag.EffectIndex = m.group(4)
-            tag.Target = getEntityIdFromNameOrId(m.group(5))
-            tag.SubOption = m.group(6)
-            m = BLOCK_START_CONTINUATION_PATTERN.matcher(m.group(6))
-            if (m.matches()) {
-                tag.SubOption = m.group(1)
-                tag.TriggerKeyword = m.group(2)
+            val m2 = BLOCK_START_CONTINUATION_PATTERN.matcher(m.group(6))
+            val subOption: String?
+            val triggerKeyWord: String?
+            if (m2.matches()) {
+                subOption = m2.group(1)
+                triggerKeyWord = m2.group(2)
+            } else {
+                subOption = m.group(6)
+                triggerKeyWord = null
             }
+            val tag = BlockTag(
+                    BlockType = m.group(1),
+                    Entity = getEntityIdFromNameOrId(m.group(2)),
+                    EffectCardId = m.group(3),
+                    EffectIndex = m.group(4),
+                    Target = getEntityIdFromNameOrId(m.group(5)),
+                    SubOption = subOption,
+                    TriggerKeyword = triggerKeyWord,
+                    children = mutableListOf()
+            )
 
             openNewTag(null)
 
@@ -323,7 +331,7 @@ class PowerParser(private val mTagConsumer: (Tag) -> Unit, private val mRawGameC
     private fun openNewTag(newTag: Tag?) {
         if (mCurrentTag != null) {
             if (mBlockTagStack.size > 0) {
-                mBlockTagStack[mBlockTagStack.size - 1].children.add(mCurrentTag)
+                mBlockTagStack[mBlockTagStack.size - 1].children.add(mCurrentTag!!)
             } else {
                 mTagConsumer(mCurrentTag!!)
             }

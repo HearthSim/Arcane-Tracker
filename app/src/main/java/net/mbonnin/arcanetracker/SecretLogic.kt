@@ -27,7 +27,7 @@ object SecretLogic {
         }
     }
 
-    fun blockPlayed(game: Game, target: String, playedEntity: Entity) {
+    fun blockPlayed(game: Game, target: String?, playedEntity: Entity) {
         if (shouldTrack(game, playedEntity)) {
             // a secret was just played
             playedEntity.extra.excludedSecretList.clear()
@@ -74,7 +74,7 @@ object SecretLogic {
                         exclude(game, CardId.MANA_BIND)
                     }
 
-                    val targetEntity = game.findEntityUnsafe(target)
+                    val targetEntity = game.findEntityUnsafe(target!!)
                     if (targetEntity != null && Type.MINION == targetEntity.tags[Entity.KEY_CARDTYPE]) {
                         exclude(game, CardId.SPELLBENDER)
                     }
@@ -126,9 +126,13 @@ object SecretLogic {
     }
 
     fun blockAttack(game: Game, tag: BlockTag) {
-        val attackingEntity = game.findEntitySafe(tag.Entity)
-        val targetEntity = game.findEntitySafe(tag.Target)
+        val entity = tag.Entity
+        val target = tag.Target
 
+        if (entity == null) {
+            return
+        }
+        val attackingEntity = game.findEntitySafe(entity)
         if (attackingEntity == null) {
             return // not sure how this can happen...
         }
@@ -146,6 +150,10 @@ object SecretLogic {
             }
         }
 
+        if (target == null) {
+            return
+        }
+        val targetEntity = game.findEntitySafe(target)
         if (targetEntity == null) {
             return // not sure how this can happen...
         }

@@ -8,7 +8,7 @@ import com.annimon.stream.function.Predicate
 import net.mbonnin.arcanetracker.SecretLogic
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.parser.power.*
-import net.mbonnin.arcanetracker.parser.power.BlockTag.TYPE_TRIGGER
+import net.mbonnin.arcanetracker.parser.power.BlockTag.Companion.TYPE_TRIGGER
 import net.mbonnin.hsmodel.enum.CardId
 import net.mbonnin.hsmodel.enum.Rarity
 import net.mbonnin.hsmodel.enum.Type
@@ -83,7 +83,7 @@ class GameLogic private constructor() {
         val game = mGame!!
 
         if (BlockTag.TYPE_PLAY == tag.BlockType) {
-            val playedEntity = mGame!!.findEntitySafe(tag.Entity)
+            val playedEntity = mGame!!.findEntitySafe(tag.Entity!!)
             if (playedEntity!!.CardID == null) {
                 Timber.e("no CardID for play")
                 return
@@ -377,7 +377,7 @@ class GameLogic private constructor() {
 
         val blockTag = stack[stack.size - 1]
 
-        val blockEntity = mGame!!.findEntitySafe(blockTag.Entity)
+        val blockEntity = mGame!!.findEntitySafe(blockTag.Entity!!)
         val entity = mGame!!.findEntitySafe(fullEntityTag.ID)
 
         if (Utils.isEmpty(blockEntity!!.CardID)) {
@@ -398,7 +398,7 @@ class GameLogic private constructor() {
                 CardId.BALEFUL_BANKER,
                 CardId.HOLY_WATER,
                 CardId.LAB_RECRUITER,
-                CardId.SPLINTERGRAFT -> mGame!!.findEntitySafe(blockTag.Target)!!.CardID
+                CardId.SPLINTERGRAFT -> mGame!!.findEntitySafe(blockTag.Target!!)!!.CardID
             //CardId.DOLLMASTER_DORIAN
                 CardId.WANTED -> CardId.THE_COIN
                 CardId.BENEATH_THE_GROUNDS -> CardId.NERUBIAN_AMBUSH
@@ -446,12 +446,12 @@ class GameLogic private constructor() {
                 CardId.BURGLY_BULLY -> CardId.THE_COIN
                 CardId.IGNEOUS_ELEMENTAL -> CardId.FLAME_ELEMENTAL
                 CardId.RHONIN -> CardId.ARCANE_MISSILES
-                CardId.FROZEN_CLONE -> stack.firstOrNull { BlockTag.TYPE_PLAY == it.BlockType }?.let { mGame!!.findEntitySafe(it.Entity)!!.CardID }
+                CardId.FROZEN_CLONE -> stack.firstOrNull { BlockTag.TYPE_PLAY == it.BlockType }?.let { mGame!!.findEntitySafe(it.Entity!!)!!.CardID }
                 CardId.BONE_BARON -> CardId.SKELETON
                 CardId.WEASEL_TUNNELER -> CardId.WEASEL_TUNNELER
                 CardId.RAPTOR_HATCHLING -> CardId.RAPTOR_PATRIARCH
                 CardId.DIREHORN_HATCHLING -> CardId.DIREHORN_MATRIARCH
-                CardId.MANA_BIND -> stack.firstOrNull { BlockTag.TYPE_PLAY == it.BlockType }?.let { mGame!!.findEntitySafe(it.Entity)!!.CardID }
+                CardId.MANA_BIND -> stack.firstOrNull { BlockTag.TYPE_PLAY == it.BlockType }?.let { mGame!!.findEntitySafe(it.Entity!!)!!.CardID }
                 CardId.ARCHMAGE_ANTONIDAS -> CardId.FIREBALL
                 CardId.HOARDING_DRAGON -> CardId.THE_COIN
                 CardId.ASTRAL_TIGER -> CardId.ASTRAL_TIGER
