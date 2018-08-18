@@ -1,11 +1,10 @@
 package net.mbonnin.arcanetracker
 
-import net.mbonnin.arcanetracker.deckstrings.DeckStringParser
 import net.mbonnin.arcanetracker.room.RDeck
 
 object DeckMapper {
     fun fromRDeck(rdeck: RDeck): Deck? {
-        val deck = DeckStringParser.parse(rdeck.deck_string)
+        val deck = DeckStringHelper.parse(rdeck.deck_string)
         if (deck == null) {
             return null
         }

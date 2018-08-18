@@ -3,7 +3,6 @@ package net.mbonnin.arcanetracker
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import net.hearthsim.kotlin.hslog.LogLine
-import net.mbonnin.arcanetracker.deckstrings.DeckStringParser
 import net.mbonnin.arcanetracker.parser.LogReader
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RDeck
@@ -36,7 +35,7 @@ class DecksParser: LogReader.LineConsumer {
                 val result = deckStringHelper.parseLine(logLine.line)
 
                 if (result?.id != null) {
-                    val deck = DeckStringParser.parse(result.deckString)
+                    val deck = DeckStringHelper.parse(result.deckString)
                     if (deck != null) {
                         deck.id = result.id
                         if (state == State.ARENA) {
