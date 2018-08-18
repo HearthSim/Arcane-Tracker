@@ -49,7 +49,7 @@ data class Card(
 
     companion object {
 
-        val UNKNOWN_COST: Int? = null
+        val UNKNOWN_COST = null
         const val UNKNOWN_TYPE = "UNKNOWN_TYPE"
 
         const val CLASS_INDEX_WARRIOR = 0

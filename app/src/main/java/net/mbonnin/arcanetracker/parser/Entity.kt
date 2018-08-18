@@ -29,12 +29,6 @@ class Entity {
     }
 
     class Extra {
-        /**
-         * used from Controller.kt to affect a temporary id to cards we don't know yet
-         */
-        var tmpCard: Card? = null
-        var tmpIsGift: Boolean = false
-
         var originalController: String? = null
         var drawTurn = -1
         var playTurn = -1
@@ -62,7 +56,6 @@ class Entity {
         clone.extra.createdBy = extra.createdBy
         clone.extra.mulliganed = extra.mulliganed
         clone.extra.excludedSecretList.addAll(extra.excludedSecretList)
-        clone.extra.tmpCard = extra.tmpCard
 
         clone.extra.hide = extra.hide
         return clone
@@ -96,6 +89,8 @@ class Entity {
 
         val STEP_FINAL_GAMEOVER = "FINAL_GAMEOVER"
         val STEP_BEGIN_MULLIGAN = "BEGIN_MULLIGAN"
+
+        val UNKNOWN_ENTITY = Entity()
     }
 
 }

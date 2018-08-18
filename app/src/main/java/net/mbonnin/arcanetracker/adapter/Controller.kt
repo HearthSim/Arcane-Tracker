@@ -10,6 +10,7 @@ import net.mbonnin.arcanetracker.parser.GameLogic
 import net.mbonnin.hsmodel.enum.PlayerClass
 import net.mbonnin.hsmodel.enum.Rarity
 import net.mbonnin.hsmodel.enum.Type
+import timber.log.Timber
 import java.util.*
 
 class Controller : GameLogic.Listener {
@@ -47,17 +48,18 @@ class Controller : GameLogic.Listener {
                     entity.card
                 }
 
-                val deckEntry = DeckEntryItem(
-                        card = card!!,
-                        gift = !entity.extra.hide && entity.extra.tmpIsGift,
-                        count = 1
-                )
-
                 val clone = entity.clone()
                 if (entity.extra.hide) {
                     clone.extra.createdBy = null
                 }
-                deckEntry.entityList.add(clone)
+
+                val deckEntry = DeckEntryItem(
+                        card = card!!,
+                        gift = !entity.extra.hide && !entity.extra.createdBy.isNullOrEmpty(),
+                        count = 1,
+                        entityList = listOf(clone)
+                )
+
                 list.add(deckEntry)
             }
 
@@ -83,15 +85,15 @@ class Controller : GameLogic.Listener {
             } else {
                 entity.card
             }
-            val deckEntry = DeckEntryItem(
-                    card = card!!,
-                    gift = entity.extra.tmpIsGift,
-                    count = 1
-            )
 
             val clone = entity.clone()
-            clone.card = deckEntry.card
-            deckEntry.entityList.add(clone)
+            clone.card = card
+            val deckEntry = DeckEntryItem(
+                    card = card!!,
+                    gift = !entity.extra.createdBy.isNullOrEmpty(),
+                    count = 1,
+                    entityList = listOf(clone)
+            )
             list.add(deckEntry)
         }
 
@@ -101,16 +103,15 @@ class Controller : GameLogic.Listener {
     fun getTestSecrets(): List<DeckEntryItem> {
         val list = ArrayList<DeckEntryItem>()
 
-        val deckEntry = DeckEntryItem(
-                card = CardUtil.secret("MAGE"),
-                gift = false,
-                count = 1
-        )
-
         val entity = Entity()
         entity.tags[Entity.KEY_ZONE] = Entity.ZONE_SECRET
         entity.tags[Entity.KEY_CLASS] = PlayerClass.MAGE
-        deckEntry.entityList.add(entity)
+        val deckEntry = DeckEntryItem(
+                card = CardUtil.secret("MAGE"),
+                gift = false,
+                count = 1,
+                entityList = listOf(entity)
+        )
 
         list.add(deckEntry)
 
@@ -131,130 +132,6 @@ class Controller : GameLogic.Listener {
         update()
     }
 
-    private fun entityListToItemList(entityList: List<Entity>, increasesCount: (Entity) -> Boolean): ArrayList<Any> {
-        /*
-         * remove and count the unknown cards
-         */
-        var unknownCards = 0
-        val iterator = entityList.toMutableList().iterator()
-
-        val deckEntryItemList = mutableListOf<DeckEntryItem>()
-
-        while (iterator.hasNext()) {
-            val entity = iterator.next()
-            if (entity.extra.tmpCard === CardUtil.UNKNOWN) {
-                if (!entity.extra.tmpIsGift) {
-                    unknownCards++
-                } else {
-                    // each unknown gift card gets its own line
-                    val deckEntryItem = DeckEntryItem(card = entity.extra.tmpCard!!, gift = entity.extra.tmpIsGift)
-                    deckEntryItem.entityList.add(entity)
-                    if (increasesCount(entity)) {
-                        deckEntryItem.count++
-                    }
-                    deckEntryItemList.add(deckEntryItem)
-                }
-                iterator.remove()
-            }
-        }
-
-        // entityList now only contains know cards, which we are going to bucket by cardID/gift pair
-        val deckEntryItemMap = mutableMapOf<Pair<String, Boolean>, DeckEntryItem>()
-        entityList.forEach { entity ->
-            val deckEntryItem = deckEntryItemMap.getOrPut(entity.extra.tmpCard!!.id to entity.extra.tmpIsGift) {
-                DeckEntryItem(card = entity.extra.tmpCard!!, gift = entity.extra.tmpIsGift)
-            }
-
-            deckEntryItem.entityList.add(entity)
-            if (increasesCount(entity)) {
-                deckEntryItem.count++
-            }
-        }
-
-        deckEntryItemList.addAll(deckEntryItemMap.values)
-
-        deckEntryItemList.sortWith(Comparator { a, b ->
-            var ret = Utils.compareNullSafe(a.card.cost, b.card.cost)
-
-            if (ret != 0) {
-                return@Comparator ret
-            }
-
-            ret = Utils.compareNullSafe(a.card.name, b.card.name)
-
-            if (ret != 0) {
-                return@Comparator ret
-            }
-
-            Utils.compareNullSafe(a.gift, b.gift)
-        })
-
-        /*
-         * sort the entity list
-         */
-        for (deckEntryItem in deckEntryItemList) {
-            deckEntryItem.entityList.sortedWith(Comparator { a, b -> a.extra.drawTurn - b.extra.drawTurn })
-        }
-
-        val itemList = ArrayList<Any>()
-        itemList.addAll(deckEntryItemList)
-        if (unknownCards > 0) {
-            itemList.add(ArcaneTrackerApplication.context.getString(R.string.unknown_cards, unknownCards))
-        }
-
-        return itemList
-    }
-
-    /*
-     * this attempts to map the knowledge that we have of mDeck to the unknown entities
-     * this assumes that an original card is either known or still in deck
-     * this sets tmpCard
-     *
-     * what needs to be handled is hemet, maybe others ?
-     */
-    private fun assignCardsFromDeck(cardMap: HashMap<String, Int>) {
-        val originalDeckEntityList = mGame!!.getEntityList { entity -> mPlayerId == entity.extra.originalController }
-        val cardIdsFromDeck = ArrayList<String>()
-
-        /*
-         * build a list of all the ids in mDeck
-         */
-        for ((key, value) in cardMap) {
-            for (i in 0 until value) {
-                cardIdsFromDeck.add(key)
-            }
-        }
-
-        /*
-         * remove the ones that have been revealed already
-         */
-        for (entity in originalDeckEntityList) {
-            if (!TextUtils.isEmpty(entity.CardID)) {
-                val it = cardIdsFromDeck.iterator()
-                while (it.hasNext()) {
-                    val next = it.next()
-                    if (next == entity.CardID) {
-                        it.remove()
-                        break
-                    }
-                }
-            }
-        }
-
-        /*
-         * assign a tmpCard to the cards we still don't know
-         */
-        var i = 0
-        for (entity in originalDeckEntityList) {
-            if (entity.card == null) {
-                if (i < cardIdsFromDeck.size) {
-                    entity.extra.tmpCard = CardUtil.getCard(cardIdsFromDeck[i])
-                    i++
-                }
-            }
-        }
-    }
-
     private fun getEntityListInZone(playerId: String?, zone: String): List<Entity> {
         return mGame!!.getEntityList { entity -> playerId == entity.tags[Entity.KEY_CONTROLLER] && zone == entity.tags[Entity.KEY_ZONE] }
     }
@@ -272,12 +149,12 @@ class Controller : GameLogic.Listener {
             opponentAdapter.setList(list)
         } else {
 
-            playerAdapter.setList(getPlayerList(mPlayerCardMap))
+            playerAdapter.setList(getPlayerList(mPlayerCardMap ?: emptyMap()))
             opponentAdapter.setList(getOpponentList())
         }
     }
 
-    private fun getOpponentList(): ArrayList<Any> {
+    private fun getOpponentList(): List<Any> {
         val list = ArrayList<Any>()
 
         val secrets = getSecrets()
@@ -300,8 +177,21 @@ class Controller : GameLogic.Listener {
         }
 
         val sanitizedEntities = sanitizeEntities(allEntities)
-        list.addAll(entityListToItemList(sanitizedEntities, { e -> true }))
 
+        val intermediateList = mutableListOf<Intermediate>()
+        var unknownCards = 0
+        sanitizedEntities.forEach {
+            if (it.CardID == null && it.extra.createdBy.isNullOrEmpty()) {
+                unknownCards++
+            } else {
+                intermediateList.add(Intermediate(it.CardID, it))
+            }
+        }
+
+        list.addAll(intermediateToDeckEntryList(intermediateList, { true }))
+        if (unknownCards > 0){
+            list.add(ArcaneTrackerApplication.context.getString(R.string.unknown_cards, unknownCards))
+        }
         return list
     }
 
@@ -318,51 +208,114 @@ class Controller : GameLogic.Listener {
         }
     }
 
-    private fun getPlayerList(cardMap: HashMap<String, Int>?): ArrayList<Any> {
-        /*
-         * all the code below uses tmpCard and tmpIsGift so that it can change them without messing up the internal game state
-         */
-        val allEntities = mGame!!.getEntityList { entity -> true }
-        allEntities.forEach { entity ->
-            entity.extra.tmpIsGift = !TextUtils.isEmpty(entity.extra.createdBy)
-            if (entity.card != null) {
-                entity.extra.tmpCard = entity.card
-            } else {
-                entity.extra.tmpCard = CardUtil.UNKNOWN
-            }
-        }
+    class Intermediate(val cardId: String?, val entity: Entity)
 
-        val list = ArrayList<Any>()
+    private fun getPlayerList(cardMap: Map<String, Int>): List<Any> {
+        val list = mutableListOf<Any>()
 
         list.add(HeaderItem(Utils.getString(R.string.deck)))
 
-        if (cardMap != null) {
-            assignCardsFromDeck(cardMap)
+        val knownIdList = ArrayList<String>()
+
+        val intermediateList = mutableListOf<Intermediate>()
+        /*
+         * build a list of all the ids that we know from the deck or from whizbang
+         */
+        for ((key, value) in cardMap) {
+            for (i in 0 until value) {
+                knownIdList.add(key)
+            }
         }
 
-        val entityList = mGame!!.getEntityList { entity -> mPlayerId == entity.extra.originalController }.toMutableList()
+        val originalDeckEntityList = mGame!!.getEntityList { entity -> mPlayerId == entity.extra.originalController }
+
+        /*
+         * remove the ones that have been revealed already
+         */
+        val revealedEntityList = originalDeckEntityList.filter { !it.CardID.isNullOrBlank() }
+        for (entity in revealedEntityList) {
+            val it = knownIdList.iterator()
+            while (it.hasNext()) {
+                val next = it.next()
+                if (next == entity.CardID) {
+                    it.remove()
+                    break
+                }
+            }
+        }
+
+        /*
+         * add the revealed cards
+         */
+        intermediateList.addAll(revealedEntityList.map { Intermediate(it.CardID, it) })
+
+        /*
+         * add the known cards from the deck, assume they are still inside the deck
+         */
+        intermediateList.addAll(knownIdList.map { Intermediate(it, Entity.UNKNOWN_ENTITY) })
+
         /*
          * Add all the gifts
          * XXX it's not enough to filter on !TextUtils.isEmpty(createdBy)
          * because then we get all enchantments
          * if a gift is in the graveyard, it won't be shown but I guess that's ok
          */
-        entityList.addAll(mGame!!.getEntityList { entity ->
-            (Entity.ZONE_DECK == entity.tags[Entity.KEY_ZONE]
+        val giftList = mGame!!.getEntityList { entity ->
+            Entity.ZONE_DECK == entity.tags[Entity.KEY_ZONE]
                     && mPlayerId != entity.extra.originalController
-                    && mPlayerId == entity.tags[Entity.KEY_CONTROLLER])
-        })
+                    && mPlayerId == entity.tags[Entity.KEY_CONTROLLER]
+        }
 
-        list.addAll(entityListToItemList(entityList, { entity -> Entity.ZONE_DECK == entity.tags.get(Entity.KEY_ZONE) }))
+        intermediateList.addAll(giftList.map { Intermediate(it.CardID, it) })
+
+        list.addAll(intermediateToDeckEntryList(intermediateList, { it == Entity.UNKNOWN_ENTITY || it.tags[Entity.KEY_ZONE] == Entity.ZONE_DECK }))
+
+        /*
+         * and the unknown if any
+         */
+        val unknownCards = originalDeckEntityList.size - revealedEntityList.size - knownIdList.size
+        if (unknownCards > 0) {
+            list.add(ArcaneTrackerApplication.context.getString(R.string.unknown_cards, unknownCards))
+        }
+        if (unknownCards < 0) {
+            Timber.e("too many known card ids: $unknownCards")
+        }
 
         return list
     }
 
+    data class GroupingKey(val cardId: String?, val gift: Boolean)
 
-    fun resetGame() {
-        mGame = null
-        update()
+    private fun intermediateToDeckEntryList(intermediateList: List<Intermediate>, increasesCount: (Entity) -> Boolean): List<DeckEntryItem> {
+        val map = intermediateList.groupBy({ GroupingKey(it.cardId, !it.entity.extra.createdBy.isNullOrEmpty()) }, { it.entity })
+
+        val deckEntryList = map.map {
+            val cardId = it.key.cardId
+            val card = if (cardId == null) {
+                CardUtil.UNKNOWN
+            } else {
+                CardUtil.getCard(cardId)
+            }
+            val entityList = it.value
+
+            val count = entityList
+                    .map { if (increasesCount(it)) 1 else 0 }
+                    .sum()
+
+            DeckEntryItem(card,
+                    gift = it.key.gift,
+                    count = count,
+                    entityList = entityList)
+        }
+
+        return deckEntryList.sortedBy {
+            val costString = it.card.cost?.toString() ?: ""
+            val giftString = if(it.gift)  "b" else "a"
+
+            "$costString${it.card.name}$giftString"
+        }
     }
+
 
     override fun gameStarted(game: Game) {
         mGame = game
@@ -401,7 +354,8 @@ class Controller : GameLogic.Listener {
             for ((key, value) in cardMap) {
                 val deckEntry = DeckEntryItem(
                         card = CardUtil.getCard(key),
-                        count = value)
+                        count = value,
+                        entityList = emptyList())
 
                 list.add(deckEntry)
                 unknown -= deckEntry.count
@@ -427,10 +381,6 @@ class Controller : GameLogic.Listener {
             }
 
             return sController!!
-        }
-
-        fun resetAll() {
-            get().resetGame()
         }
     }
 }

@@ -130,10 +130,10 @@ class DetailsView(context: Context) : LinearLayout(context) {
         }
 
         val list = possibleSecrets.map {
-            val deckEntryItem = DeckEntryItem(card = CardUtil.getCard(it))
-            deckEntryItem.count = if (entity.extra.excludedSecretList.contains(it)) 0 else 1
-
-            deckEntryItem
+            DeckEntryItem(card = CardUtil.getCard(it),
+                    count = if (entity.extra.excludedSecretList.contains(it)) 0 else 1,
+                    entityList = emptyList(),
+                    gift = false)
         }
 
         var verticalLayout: LinearLayout? = null
