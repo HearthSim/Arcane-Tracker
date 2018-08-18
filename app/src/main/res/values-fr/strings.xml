@@ -200,7 +200,6 @@
     <string name="opponent_deck_will_appear">Le deck de votre adversaire apparaitra ici lor de votre prochaine partie.</string>
     <string name="onoboarding_player">Cliquez le bouton bleu pour voir votre deck. Il est détécté automatiquement \\o/.</string>
     <string name="onboarding_opponent">Cliquez le bouton rouge pour voir le deck de votre adversaire.</string>
-    <string name="onboarding_legacy">Vos anciens decks ont été archivés.</string>
     <string name="your_rank">Votre rang: %d</string>
     <string name="opponent_rank">Rang de l\'adversaire: %d</string>
     <string name="yourDecks">Vos decks</string>
@@ -212,8 +211,6 @@
     <string name="na">N/A</string>
     <string name="total">Total</string>
     <string name="opponent">Adversaire</string>
-    <string name="legacyTitle">Deck archivés</string>
-    <string name="legacyDecksExplanation">Avec la détéction automatique, vos anciens decks manuel ont été archivés. Cliquez ici pour les réactiver. Sauvegardez les dès que possible.</string>
     <string name="hsReplayClaiming">Connection à votre compte HSReplay.net...</string>
     <string name="hsReplayClaimSuccess">Vos replays sont désormais liés à votre compte !</string>
     <string name="backToGame">Retour</string>
@@ -221,4 +218,6 @@
     <string name="packs_opened">Packs ouverts</string>
     <string name="dust">Poussière récoltée</string>
     <string name="average">Poussière par pack</string>
+    <string name="gameCount">%d parties jouées</string>
+    <string name="delete_everything">Tout supprimer</string>
 </resources>

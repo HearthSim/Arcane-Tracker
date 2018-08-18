@@ -200,7 +200,6 @@
     <string name="opponent_deck_will_appear">Talia przeciwnika pojawi się w tym miejscu, w momencie rozpoczęcia rozgrywki</string>
     <string name="onoboarding_player">Kliknij niebieski przycisk aby zobaczyć swoją talię.\nTwoja talia jest automatycznie wykrywana z logów Hearthstone.</string>
     <string name="onboarding_opponent">Kliknij czerwony przycisk aby zobaczyć karty zagrane przez przeciwnika.</string>
-    <string name="onboarding_legacy">Twoja wcześniejsza talia została zarchiwizowana i zostanie usunięta w przyszłej wersji Arcane Tracker.\nPamiętaj, aby zrobić kopię zapasową jeśli będziesz jej potrzebować!</string>
     <string name="your_rank">Twoja ranga: %d</string>
     <string name="opponent_rank">Ranga przeciwnika: %d</string>
     <string name="yourDecks">Twoja talia</string>
@@ -212,6 +211,4 @@
     <string name="na">N/A</string>
     <string name="total">Suma</string>
     <string name="opponent">Przeciwnik</string>
-    <string name="legacyTitle">Pokaż zarchiwizowane talie</string>
-    <string name="legacyDecksExplanation">Arcane Tracker teraz rozpoznaje talie automatycznie. Jeśli wcześniej używałeś Arcane Tracker aby stworzyć ręcznie kilka talii, możesz nadal mieć do nich dostęp włączając tę opcję.\nUwaga. Ta opcja zostanie usunięta w przyszłej aktualizaji Arcane Tracker.</string>
 </resources>

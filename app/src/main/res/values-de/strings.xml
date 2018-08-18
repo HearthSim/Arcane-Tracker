@@ -198,7 +198,6 @@
     <string name="opponent_deck_will_appear">Sobald du ein Spiel startest, erscheint das gegnerische Deck hier</string>
     <string name="onoboarding_player">Um dein Deck zu sehen, tippe auf den blauen Button.\nDein Deck wird automatisch durch die Hearthstone-Logs erkannt.</string>
     <string name="onboarding_opponent">Um gespielte Karten des Gegners zu sehen, tippe auf den roten Button.</string>
-    <string name="onboarding_legacy">Deine vorherigen Decks wurden archiviert und werden in einer zukünftigen Version von Arcane Tracker entfernt.\nFalls notwendig, solltest du diese noch sichern!</string>
     <string name="your_rank">Dein Rang: %d</string>
     <string name="opponent_rank">Gegnerischer Rang: %d</string>
     <string name="yourDecks">Deine Decks</string>
@@ -211,7 +210,5 @@
     <string name="total">Gesamt</string>
     <string name="opponent">Gegner</string>
     <string name="supportAT">Arcane Tracker unterstützen</string>
-    <string name="legacyTitle">Archivierte Decks anzeigen</string>
-    <string name="legacyDecksExplanation">Arcane Tracker erkennt Decks nun automatisch. Falls du Arcane Tracker zum erstellen von Decks verwendet hast, kannst du, durch aktivieren dieser Option, auf diese Zugreifen.\nMerke: Dieses Feature wird in einer zukünftigen Version von Arcane Tracker entfernt werden.</string>
     <string name="notifQuit">Schließen</string>
 </resources>
