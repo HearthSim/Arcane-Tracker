@@ -15,13 +15,10 @@ import java.util.*
 
 class Controller : GameLogic.Listener {
 
-
-    val legacyAdapter: ItemAdapter
     val playerAdapter: ItemAdapter
     val opponentAdapter: ItemAdapter
 
     private val mHandler: Handler
-    protected var mLegacyCardMap: HashMap<String, Int>? = null
     protected var mPlayerCardMap: HashMap<String, Int>? = null
     private var mGame: Game? = null
     private var mPlayerId: String? = null
@@ -123,17 +120,11 @@ class Controller : GameLogic.Listener {
 
 
     init {
-        legacyAdapter = ItemAdapter()
         opponentAdapter = ItemAdapter()
         playerAdapter = ItemAdapter()
 
         GameLogic.get().addListener(this)
         mHandler = Handler()
-    }
-
-    fun setLegacyCardMap(cardMap: HashMap<String, Int>) {
-        mLegacyCardMap = cardMap
-        update()
     }
 
     fun setPlayerCardMap(cardMap: HashMap<String, Int>) {
@@ -272,7 +263,6 @@ class Controller : GameLogic.Listener {
 
     private fun update() {
         if (mGame == null) {
-            legacyAdapter.setList(getCardMapList(if (mLegacyCardMap != null) mLegacyCardMap!! else HashMap<String, Int>()))
             if (TestSwitch.SECRET_LAYOUT) {
                 playerAdapter.setList(getTestSecrets() as ArrayList<Any>)
             } else {
@@ -282,7 +272,6 @@ class Controller : GameLogic.Listener {
             val list = getCardMapList(HashMap())
             opponentAdapter.setList(list)
         } else {
-            legacyAdapter.setList(getPlayerList(mLegacyCardMap))
             playerAdapter.setList(getPlayerList(mPlayerCardMap))
 
             updateOpponent()

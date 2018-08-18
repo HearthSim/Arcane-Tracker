@@ -4,13 +4,11 @@ package net.mbonnin.arcanetracker.parser
  * Created by martin on 11/11/16.
  */
 
-import com.annimon.stream.function.Predicate
 import net.hearthsim.kotlin.hslog.*
 import net.hearthsim.kotlin.hslog.BlockTag.Companion.TYPE_TRIGGER
 import net.mbonnin.arcanetracker.SecretLogic
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.hsmodel.enum.CardId
-import net.mbonnin.hsmodel.enum.Rarity
 import net.mbonnin.hsmodel.enum.Type
 import timber.log.Timber
 import java.util.*
@@ -22,12 +20,6 @@ class GameLogic private constructor() {
     private var mCurrentTurn: Int = 0
     private var mLastTag: Boolean = false
     private var spectator = false
-
-    private fun secretEntityList(): EntityList {
-        return mGame!!
-                .getEntityList { e -> Entity.ZONE_SECRET == e.tags[Entity.KEY_ZONE] }
-                .filter (Predicate{ e -> Rarity.LEGENDARY != e.tags[Entity.KEY_RARITY] }) // LEGENDARY secrets are actually quests
-    }
 
     fun handleRootTag(tag: Tag) {
         //Timber.d("handle tag: " + tag);

@@ -24,7 +24,6 @@ class HandlesView : LinearLayout {
     fun show(show: Boolean) {
         if (show) {
             ViewManager.get().addView(this, params)
-            showLegacy(Settings.get(Settings.SHOW_LEGACY_DECKS, false))
         } else {
             ViewManager.get().removeView(this)
         }
@@ -48,9 +47,5 @@ class HandlesView : LinearLayout {
 
     fun update() {
         ViewManager.get().updateView(this, params)
-    }
-
-    fun showLegacy(show: Boolean) {
-        findViewById<View>(R.id.legacyHandle)?.visibility = if (show) View.VISIBLE else View.GONE
     }
 }

@@ -31,7 +31,6 @@ object Settings {
     val ONBOARDING_FINISHED = "ONBOARDING_FINISHED"
     val HSREPLAY_OAUTH_REFRESH_TOKEN = "HSREPLAY_OAUTH_REFRESH_TOKEN"
     val HSREPLAY_OAUTH_ACCESS_TOKEN = "HSREPLAY_OAUTH_ACCESS_TOKEN"
-    val SHOW_LEGACY_DECKS = "SHOW_LEGACY_DECKS"
 
     private val preferences: SharedPreferences
         get() = PreferenceManager.getDefaultSharedPreferences(ArcaneTrackerApplication.context)

@@ -20,7 +20,6 @@ import com.squareup.picasso.Picasso
 import io.paperdb.Paper
 import net.hearthsim.kotlin.hslog.PowerParser
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
-import net.mbonnin.arcanetracker.parser.ArenaParser
 import net.mbonnin.arcanetracker.parser.GameLogic
 import net.mbonnin.arcanetracker.parser.LoadingScreenParser
 import net.mbonnin.arcanetracker.parser.LogReader
@@ -106,13 +105,6 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         ScreenCaptureHolder.start()
 
         initCardJson()
-
-        /*
-         * for Arena, we read the whole file again each time because the file is not that big and it allows us to
-         * get the arena deck contents
-         */
-        val arenaLogReader = LogReader("Arena.log", true)
-        arenaLogReader.start(ArenaParser.get())
 
         /*
          * we need to read the whole loading screen if we start Arcane Tracker while in the 'tournament' play screen

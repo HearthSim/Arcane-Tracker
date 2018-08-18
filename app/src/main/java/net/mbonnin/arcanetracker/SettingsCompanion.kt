@@ -450,10 +450,6 @@ class SettingsCompanion(internal var settingsView: View) {
             }
         })
 
-        val showLegacyDecks = view.findViewById<View>(R.id.legacyDecks) as CheckBox
-        showLegacyDecks.isChecked = Settings.get(Settings.SHOW_LEGACY_DECKS, false)
-        showLegacyDecks.setOnCheckedChangeListener { buttonView, isChecked -> c.handlesView.showLegacy(isChecked) }
-
         val hsReplay1 = view.findViewById<View>(R.id.hsReplayButton1)
         val hsReplay2 = view.findViewById<View>(R.id.hsReplayButton2)
 
@@ -468,7 +464,7 @@ class SettingsCompanion(internal var settingsView: View) {
 
         val licensesButton = view.findViewById<Button>(R.id.licenses)
         licensesButton.setOnClickListener { v ->
-            ViewManager.Companion.get().removeView(settingsView)
+            ViewManager.get().removeView(settingsView)
 
             val intent = Intent()
             intent.setClass(context, LicensesActivity::class.java)

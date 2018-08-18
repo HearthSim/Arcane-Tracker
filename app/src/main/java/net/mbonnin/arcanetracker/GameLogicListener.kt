@@ -8,7 +8,6 @@ import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.mbonnin.arcanetracker.hsreplay.model.Lce
 import net.mbonnin.arcanetracker.hsreplay.model.UploadRequest
 import net.mbonnin.arcanetracker.model.GameSummary
-import net.mbonnin.arcanetracker.parser.Entity
 import net.mbonnin.arcanetracker.parser.Game
 import net.mbonnin.arcanetracker.parser.GameLogic
 import net.mbonnin.arcanetracker.parser.LoadingScreenParser
@@ -20,7 +19,6 @@ import net.mbonnin.arcanetracker.trackobot.model.CardPlay
 import net.mbonnin.arcanetracker.trackobot.model.Result
 import net.mbonnin.arcanetracker.trackobot.model.ResultData
 import rx.Single
-
 import rx.schedulers.Schedulers
 import timber.log.Timber
 import java.util.*
@@ -31,30 +29,6 @@ class GameLogicListener private constructor() : GameLogic.Listener {
 
     override fun gameStarted(game: Game) {
         Timber.w("gameStarted")
-
-        var deck = MainViewCompanion.legacyCompanion.deck
-        if (Settings.get(Settings.AUTO_SELECT_DECK, true)) {
-            if (LoadingScreenParser.MODE_DRAFT == LoadingScreenParser.get().gameplayMode) {
-                deck = LegacyDeckList.arenaDeck
-                Timber.w("useArena deck")
-            } else {
-                val classIndex = game.player!!.classIndex()
-
-                /*
-                 * we filter the original deck to remove the coin mainly
-                 */
-                val map = game.getEntityList { entity ->
-                    game.player!!.entity!!.PlayerID == entity.tags[Entity.KEY_CONTROLLER]
-                            && Entity.ZONE_HAND == entity.tags[Entity.KEY_ZONE]
-                            && game.player!!.entity!!.PlayerID == entity.extra.originalController
-                }
-                        .toCardMap()
-
-                deck = activateBestDeck(classIndex, map)
-            }
-        }
-
-        MainViewCompanion.legacyCompanion.deck = deck
 
         LegacyDeckList.opponentDeck.clear()
         LegacyDeckList.opponentDeck.classIndex = game.opponent!!.classIndex()
@@ -89,8 +63,6 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                 currentGame!!.formatType,
                 mode,
                 Trackobot.get().currentUser())
-
-        legacyAddCardsToDeck()
 
         MainViewCompanion.playerCompanion.deck?.let { updateCounter(it.id, currentGame!!.victory) }
 
@@ -166,50 +138,9 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         }
     }
 
-    private fun legacyAddCardsToDeck() {
-        val legacyDeck = MainViewCompanion.legacyCompanion.deck
-
-        if (legacyDeck != null) {
-            if (LegacyDeckList.hasValidDeck()) {
-                addKnownCardsToDeck(currentGame!!, legacyDeck)
-            }
-
-            if (currentGame!!.victory) {
-                legacyDeck.wins++
-            } else {
-                legacyDeck.losses++
-            }
-            MainViewCompanion.legacyCompanion.deck = legacyDeck
-
-            if (LegacyDeckList.ARENA_DECK_ID == legacyDeck.id) {
-                LegacyDeckList.saveArena()
-            } else {
-                LegacyDeckList.save()
-            }
-
-        }
-    }
-
     private fun updateCounter(id: String, victory: Boolean) {
         val winsIncrement = if (victory) 1 else 0
         WLCounter.increment(id, winsIncrement, 1 - winsIncrement)
-    }
-
-    private fun addKnownCardsToDeck(game: Game, deck: Deck) {
-
-        val originalDeck = game.getEntityList { entity -> game.player!!.entity!!.PlayerID == entity.extra.originalController }
-        val originalDeckMap = originalDeck.toCardMap()
-        if (Settings.get(Settings.AUTO_ADD_CARDS, true) && Utils.cardMapTotal(deck.cards) < Deck.MAX_CARDS) {
-            for (cardId in originalDeckMap.keys) {
-                val found = originalDeckMap[cardId]!!
-                if (found > Utils.cardMapGet(deck.cards, cardId)) {
-                    Timber.w("adding card to the deck " + cardId)
-                    deck.cards.put(cardId, found)
-                }
-            }
-            LegacyDeckList.save()
-        }
-
     }
 
     override fun somethingChanged() {
@@ -318,46 +249,6 @@ class GameLogicListener private constructor() : GameLogic.Listener {
     companion object {
 
         private var sGameLogicListener: GameLogicListener? = null
-
-        private fun activateBestDeck(classIndex: Int, initialCards: HashMap<String, Int>): Deck {
-            val deck = MainViewCompanion.legacyCompanion.deck!!
-            if (deckScore(deck, classIndex, initialCards) != -1) {
-                // the current deck works fine
-                return deck
-            }
-
-            // sort the deck list by descending number of cards. We'll try to get the one with the most cards.
-            val index = ArrayList<Int>()
-            for (i in 0 until LegacyDeckList.get().size) {
-                index.add(i)
-            }
-
-            Collections.sort(index) { a, b -> LegacyDeckList.get()[b!!].cardCount - LegacyDeckList.get()[a!!].cardCount }
-
-            var maxScore = -1
-            var bestDeck: Deck? = null
-
-            for (i in index) {
-                val candidateDeck = LegacyDeckList.get()[i]
-
-                val score = deckScore(candidateDeck, classIndex, initialCards)
-
-                Timber.i("Deck selection " + candidateDeck.name + " has score " + score)
-                if (score > maxScore) {
-                    bestDeck = candidateDeck
-                    maxScore = score
-                }
-            }
-
-            if (bestDeck == null) {
-                /*
-             * No good candidate, create a new deck
-             */
-                bestDeck = LegacyDeckList.createDeck(classIndex)
-            }
-
-            return bestDeck
-        }
 
         /**
          *

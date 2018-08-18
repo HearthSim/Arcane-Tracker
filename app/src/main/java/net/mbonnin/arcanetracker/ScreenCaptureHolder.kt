@@ -8,10 +8,7 @@ import android.os.Handler
 import android.support.annotation.RequiresApi
 import net.mbonnin.arcanetracker.detector.ByteBufferImage
 import net.mbonnin.arcanetracker.detector.Detector
-import net.mbonnin.arcanetracker.parser.ArenaParser
 import net.mbonnin.arcanetracker.parser.Entity
-import net.mbonnin.arcanetracker.parser.LoadingScreenParser
-import net.mbonnin.hsmodel.Card
 
 object ScreenCaptureHolder {
     @SuppressLint("StaticFieldLeak")
@@ -24,7 +21,7 @@ object ScreenCaptureHolder {
         @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
         override fun run() {
             if (!screenCaptureStarting) {
-                if ((shouldDetectRank() || shouldDetectArena())
+                if (shouldDetectRank()
                         && Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true)) {
                     if (screenCapture == null) {
                         screenCaptureStarting = true
@@ -79,16 +76,6 @@ object ScreenCaptureHolder {
         return game != null
                 && game.gameEntity!!.tags[Entity.KEY_STEP] == Entity.STEP_BEGIN_MULLIGAN
                 && game.gameType == GameType.GT_RANKED.name
-    }
-
-    fun shouldDetectArena(): Boolean {
-        val index = LegacyDeckList.arenaDeck.classIndex
-        return LoadingScreenParser.MODE_DRAFT == LoadingScreenParser.get().mode
-                && ArenaParser.DRAFT_MODE_DRAFTING == ArenaParser.get().draftMode
-                && index >= 0
-                && index < Card.Companion.CLASS_INDEX_NEUTRAL
-                && Utils.isAppDebuggable
-                && false
     }
 
     fun start() {

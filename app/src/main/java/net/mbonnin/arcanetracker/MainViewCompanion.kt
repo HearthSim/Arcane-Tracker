@@ -30,7 +30,6 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
     private val mViewManager: ViewManager
 
     private val playerView: View
-    private val legacyView: View
     private val opponentView: View
 
     val handlesView = LayoutInflater.from(v.context).inflate(R.layout.handles_view, null) as HandlesView
@@ -132,7 +131,6 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
         mAnimator.addUpdateListener(this)
         mAnimator.addListener(this)
         frameLayout = v.findViewById(R.id.frameLayout)
-        legacyView = v.findViewById(R.id.legacyView)
         opponentView = v.findViewById(R.id.opponentView)
         playerView = v.findViewById(R.id.playerView)
         shadow = v.findViewById(R.id.shadow)
@@ -150,7 +148,6 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
         mParams.w = 0
         mParams.h = mViewManager.height
 
-        sLegacyCompanion = LegacyDeckCompanion(legacyView)
         sOpponentCompanion = OpponentDeckCompanion(opponentView)
         sPlayerCompanion = PlayerDeckCompanion(playerView)
 
@@ -324,7 +321,6 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
         if (newOpen) {
             opponentView.visibility = View.GONE
             playerView.visibility = View.GONE
-            legacyView.visibility = View.GONE
             when (newState) {
                 STATE_PLAYER -> {
                     playerView.visibility = View.VISIBLE
@@ -337,10 +333,6 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
                     FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("state_opponent", null)
 
                     Onboarding.opponentHandleClicked()
-                }
-                STATE_LEGACY -> {
-                    legacyView.visibility = View.VISIBLE
-                    FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("state_opponent", null)
                 }
             }
         }
@@ -450,11 +442,6 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
             mViewManager.addModalView(view, params)
         }
 
-        handleView = v.findViewById(R.id.legacyHandle)
-        drawable = v.context.resources.getDrawable(R.drawable.box)
-        handleView.init(drawable, v.context.resources.getColor(R.color.gray))
-        handleView.setOnClickListener(ClickListener(STATE_LEGACY))
-
         handleView = v.findViewById(R.id.opponentHandle)
         drawable = v.context.resources.getDrawable(R.drawable.icon_white)
         handleView.init(drawable, v.context.resources.getColor(R.color.opponentColor))
@@ -469,7 +456,6 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
 
     companion object {
         private var sOpponentCompanion: DeckCompanion? = null
-        private var sLegacyCompanion: DeckCompanion? = null
         private var sPlayerCompanion: DeckCompanion? = null
 
         val STATE_PLAYER = 0
@@ -478,12 +464,6 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
 
         private val HANDLES_MOVEMENT_X = 1
         private val HANDLES_MOVEMENT_Y = 2
-
-        val legacyCompanion: DeckCompanion
-            get() {
-                MainViewCompanion.get()
-                return sLegacyCompanion!!
-            }
 
         val opponentCompanion: DeckCompanion
             get() {
