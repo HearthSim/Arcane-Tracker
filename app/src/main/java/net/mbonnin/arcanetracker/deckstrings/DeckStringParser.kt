@@ -1,11 +1,10 @@
 package net.mbonnin.arcanetracker.deckstrings
 
 import android.util.Base64
+import net.hearthsim.java.deckstrings.Deckstrings
 import net.mbonnin.arcanetracker.CardUtil
 import net.mbonnin.arcanetracker.Deck
 import net.mbonnin.arcanetracker.getClassIndex
-import java.nio.ByteBuffer
-import java.util.*
 import kotlin.collections.HashMap
 
 object DeckStringParser {
@@ -21,7 +20,8 @@ object DeckStringParser {
     private fun parseUnsafe(deckstring: String): Deck? {
         val deck = Deck()
 
-        val result = Deckstrings.decode(deckstring)
+        val data = Base64.decode(deckstring, Base64.DEFAULT)
+        val result = Deckstrings.decode(data)
 
         deck.classIndex = result.heroes.map {
             val card = CardUtil.getCard(it);
@@ -43,7 +43,7 @@ object DeckStringParser {
         }.filterNotNull()
                 .toMap()
 
-        deck.cards = HashMap(map) 
+        deck.cards = HashMap(map)
 
         return deck
     }

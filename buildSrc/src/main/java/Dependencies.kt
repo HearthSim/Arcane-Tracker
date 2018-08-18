@@ -58,5 +58,6 @@ object Libs {
     const val roomProcessor = "android.arch.persistence.room:compiler:1.1.1-rc1"
     const val stetho =  "com.facebook.stetho:stetho:1.5.0"
     const val stethoOkhttp = "com.facebook.stetho:stetho-okhttp3:1.5.0"
+    const val javadeckstrings = "net.hearthsim:java-deckstrings:1.0-SNAPSHOT"
 
 }
