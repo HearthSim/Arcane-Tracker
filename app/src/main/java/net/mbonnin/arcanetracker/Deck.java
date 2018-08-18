@@ -4,7 +4,6 @@ import net.mbonnin.hsmodel.Card;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
-import java.util.Map;
 
 import timber.log.Timber;
 
@@ -23,10 +22,6 @@ public class Deck {
     public int losses;
 
     private transient WeakReference<Listener> mListenerRef;
-
-    public boolean isArena() {
-        return LegacyDeckList.INSTANCE.getARENA_DECK_ID().equals(id);
-    }
 
     public void checkClassIndex() {
         for (String cardId: cards.keySet()) {

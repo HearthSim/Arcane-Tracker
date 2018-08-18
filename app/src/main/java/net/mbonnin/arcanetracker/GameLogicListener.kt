@@ -30,14 +30,13 @@ class GameLogicListener private constructor() : GameLogic.Listener {
     override fun gameStarted(game: Game) {
         Timber.w("gameStarted")
 
-        LegacyDeckList.opponentDeck.clear()
-        LegacyDeckList.opponentDeck.classIndex = game.opponent!!.classIndex()
-        MainViewCompanion.opponentCompanion.deck = LegacyDeckList.opponentDeck
-
+        val deck = Deck()
+        deck.classIndex = game.opponent!!.classIndex()
+        MainViewCompanion.opponentCompanion.deck = deck
 
         when (game.gameType) {
             GameType.GT_TAVERNBRAWL.name,
-            GameType.GT_VS_AI.name ->{
+            GameType.GT_VS_AI.name -> {
                 val emptyDeck = Deck()
                 emptyDeck.name = Utils.getString(R.string.deck)
                 emptyDeck.id = "rototo"
@@ -249,47 +248,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
     companion object {
 
         private var sGameLogicListener: GameLogicListener? = null
-
-        /**
-         *
-         */
-        private fun deckScore(deck: Deck, classIndex: Int, mulliganCards: HashMap<String, Int>): Int {
-            if (deck.classIndex != classIndex) {
-                return -1
-            }
-
-            var matchedCards = 0
-            var newCards = 0
-
-            /*
-         * copy the cards
-         */
-            val deckCards = HashMap(deck.cards)
-
-            /*
-         * iterate through the mulligan cards.
-         *
-         * count the one that match the original deck and remove them from the original deck
-         *
-         * if a card is not in the original deck, increase newCards. At the end, if the total of cards is > 30, the deck is not viable
-         */
-            for (cardId in mulliganCards.keys) {
-                val inDeck = Utils.cardMapGet(deckCards, cardId)
-                val inMulligan = Utils.cardMapGet(mulliganCards, cardId)
-
-                val a = Math.min(inDeck, inMulligan)
-
-                Utils.cardMapAdd(deckCards, cardId, -a)
-                newCards += inMulligan - a
-                matchedCards += a
-            }
-
-            return if (Utils.cardMapTotal(deckCards) + matchedCards + newCards > Deck.MAX_CARDS) {
-                -1
-            } else matchedCards
-
-        }
-
+        
         fun get(): GameLogicListener {
             if (sGameLogicListener == null) {
                 sGameLogicListener = GameLogicListener()
