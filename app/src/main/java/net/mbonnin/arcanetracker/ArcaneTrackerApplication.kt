@@ -18,8 +18,12 @@ import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.LruCache
 import com.squareup.picasso.Picasso
 import io.paperdb.Paper
+import net.hearthsim.kotlin.hslog.PowerParser
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
-import net.mbonnin.arcanetracker.parser.*
+import net.mbonnin.arcanetracker.parser.ArenaParser
+import net.mbonnin.arcanetracker.parser.GameLogic
+import net.mbonnin.arcanetracker.parser.LoadingScreenParser
+import net.mbonnin.arcanetracker.parser.LogReader
 import net.mbonnin.hsmodel.Card
 import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.enum.PlayerClass
@@ -72,10 +76,10 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         display.getRealSize(point)
 
         val sizeInInches = Math.sqrt((point.x * point.x / (metrics.xdpi * metrics.xdpi) + point.y * point.y / (metrics.ydpi * metrics.ydpi)).toDouble())
-        Timber.d("Build.MODEL=" + Build.MODEL)
-        Timber.d("Build.MANUFACTURER=" + Build.MANUFACTURER)
-        Timber.d("screen size=" + point.x + "x" + point.y)
-        Timber.d("sizeInInches=" + sizeInInches)
+        Timber.d("Build.MODEL=\${Build.MODEL}")
+        Timber.d("Build.MANUFACTURER=${Build.MANUFACTURER}")
+        Timber.d("screen size= ${point.x} x ${point.y}")
+        Timber.d("sizeInInches=${sizeInInches}")
         mHasTabletLayout = sizeInInches >= 8
 
         Utils.logWithDate("ArcaneTrackerApplication.onCreate() + version=" + BuildConfig.VERSION_CODE)
@@ -124,12 +128,23 @@ class ArcaneTrackerApplication : MultiDexApplication() {
             handler.post { GameLogic.get().handleRootTag(tag) }
         }, { gameStr, gameStart ->
             GameLogicListener.get().uploadGame(gameStr, gameStart)
+        }, { format, args ->
+            Timber.d(format, *args)
         })
         /*
          * Power.log, we just want the incremental changes
          */
         val powerLogReader = LogReader("Power.log", true)
-        powerLogReader.start(powerParser)
+        powerLogReader.start(object : LogReader.LineConsumer {
+            var previousDataRead = false
+            override fun onLine(rawLine: String) {
+                powerParser.process(rawLine, previousDataRead)
+            }
+
+            override fun onPreviousDataRead() {
+                previousDataRead = true
+            }
+        })
 
 
         val decksLogReader = LogReader("Decks.log", false)

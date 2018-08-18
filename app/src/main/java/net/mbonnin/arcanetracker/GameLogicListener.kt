@@ -221,7 +221,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
 
     }
 
-    fun uploadGame(gameStr: String, gameStart: String) {
+    fun uploadGame(gameStr: String, gameStart: Date) {
         val summary = GameSummary()
         val game = currentGame
 
@@ -255,7 +255,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         GameSummary.addFirst(summary)
 
         val uploadRequest = UploadRequest()
-        uploadRequest.match_start = gameStart
+        uploadRequest.match_start = Utils.ISO8601DATEFORMAT.format(gameStart)
         uploadRequest.build = ArcaneTrackerApplication.get().hearthstoneBuild
         uploadRequest.spectator_mode = game.spectator
         uploadRequest.friendly_player = game.player!!.entity!!.PlayerID

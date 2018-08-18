@@ -2,6 +2,7 @@ package net.mbonnin.arcanetracker
 
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import net.hearthsim.kotlin.hslog.LogLine
 import net.mbonnin.arcanetracker.deckstrings.DeckStringParser
 import net.mbonnin.arcanetracker.parser.LogReader
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
@@ -30,7 +31,7 @@ class DecksParser: LogReader.LineConsumer {
         } else if (rawLine.contains("Starting Arena Game With Deck")) {
             state = State.ARENA
         } else {
-            val logLine = LogReader.parseLine(rawLine)
+            val logLine = LogLine.parseLine(rawLine)
             if (logLine != null) {
                 val result = deckStringHelper.parseLine(logLine.line)
 

@@ -2,7 +2,7 @@ package net.mbonnin.arcanetracker
 
 import net.mbonnin.arcanetracker.parser.Game
 import net.mbonnin.arcanetracker.parser.GameLogic
-import net.mbonnin.arcanetracker.parser.PowerParser
+import net.mbonnin.arcanetracker.parser.power.PowerParser
 import net.mbonnin.hsmodel.CardJson
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -39,7 +39,7 @@ class TestParser {
 
     private fun runParser(logFileName: String, listener: GameLogic.Listener) {
         GameLogic.get().addListener(listener)
-        val powerParser = PowerParser({ tag -> GameLogic.get().handleRootTag(tag) }, {_, _ -> Unit})
+        val powerParser = PowerParser({ tag -> GameLogic.get().handleRootTag(tag) }, null, null)
 
         val client = OkHttpClient()
         val request = Request.Builder().url("https://raw.githubusercontent.com/HearthSim/hsreplay-test-data/master/data/${logFileName}").get().build()

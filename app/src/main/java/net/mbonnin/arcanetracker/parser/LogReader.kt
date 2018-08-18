@@ -9,7 +9,6 @@ import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
-import java.util.regex.Pattern
 
 class LogReader(private val mLog: String, private var mSkipPreviousData: Boolean = false) : Runnable {
     private var mPreviousDataRead = false
@@ -140,89 +139,5 @@ class LogReader(private val mLog: String, private var mSkipPreviousData: Boolean
     private fun previousDataConsumed() {
         mPreviousDataRead = true
         lineConsumer.onPreviousDataRead()
-    }
-
-    class LogLine {
-        var level: String? = null
-        lateinit var line: String
-        var method: String? = null
-        var seconds: Int = 0
-    }
-
-    companion object {
-        private fun getSeconds(time: String): Int {
-            val a = time.split(":")
-            if (a.size < 3) {
-                Timber.e("bad time" + time)
-                return 0
-            }
-
-            var sec = 0
-            sec += Integer.parseInt(a[0]) * 3600
-            sec += Integer.parseInt(a[1]) * 60
-            sec += java.lang.Float.parseFloat(a[2]).toInt()
-
-            return sec
-        }
-
-        val PATTERN_WITH_METHOD = Pattern.compile("([^ ]) +([^ ]*) +([^ ]*) +(.*)")
-        val PATTERN =  Pattern.compile("([^ ]) +([^ ]*) +(.*)")
-
-        fun parseLineWithMethod(line: String): LogLine? {
-            val logLine = LogLine()
-
-            //D 19:48:03.8108410 GameState.DebugPrintPower() -     Player EntityID=3 PlayerID=2 GameAccountId=redacted
-
-            val matcher = PATTERN_WITH_METHOD.matcher(line)
-
-            if (!matcher.matches()) {
-                Timber.e("invalid line: %s", line)
-                return null
-            }
-
-            logLine.level = matcher.group(1)
-            try {
-                logLine.seconds = getSeconds(matcher.group(2))
-            } catch (e: NumberFormatException) {
-                Timber.e("bad time: %s", line)
-                return null
-            }
-
-            logLine.method = matcher.group(3)
-
-            val remaining = matcher.group(4)
-            if (!remaining.startsWith("- ")) {
-                Timber.e("missing '-': %s", line)
-                return null
-            }
-
-            logLine.line = remaining.substring(2)
-            return logLine
-        }
-
-        fun parseLine(line: String): LogLine? {
-            val logLine = LogLine()
-
-            //I 21:35:38.5792300 # Deck ID: 1384195626
-
-            val matcher = PATTERN.matcher(line)
-
-            if (!matcher.matches()) {
-                Timber.e("invalid line: %s", line)
-                return null
-            }
-
-            logLine.level = matcher.group(1)
-            try {
-                logLine.seconds = getSeconds(matcher.group(2))
-            } catch (e: NumberFormatException) {
-                Timber.e("bad time: %s", line)
-                return null
-            }
-
-            logLine.line = matcher.group(3)
-
-            return logLine
-        }
     }
 }

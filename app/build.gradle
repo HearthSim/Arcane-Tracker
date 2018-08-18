@@ -146,6 +146,7 @@ dependencies {
     implementation Libs.stetho
     implementation Libs.stethoOkhttp
     implementation Libs.javadeckstrings
+    implementation Libs.kotlinhslog
     implementation "android.arch.paging:runtime:1.0.0-rc1"
 
     kapt Libs.roomProcessor

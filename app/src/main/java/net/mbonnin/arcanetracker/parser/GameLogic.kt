@@ -5,10 +5,10 @@ package net.mbonnin.arcanetracker.parser
  */
 
 import com.annimon.stream.function.Predicate
+import net.hearthsim.kotlin.hslog.*
+import net.hearthsim.kotlin.hslog.BlockTag.Companion.TYPE_TRIGGER
 import net.mbonnin.arcanetracker.SecretLogic
 import net.mbonnin.arcanetracker.Utils
-import net.mbonnin.arcanetracker.parser.power.*
-import net.mbonnin.arcanetracker.parser.power.BlockTag.Companion.TYPE_TRIGGER
 import net.mbonnin.hsmodel.enum.CardId
 import net.mbonnin.hsmodel.enum.Rarity
 import net.mbonnin.hsmodel.enum.Type
