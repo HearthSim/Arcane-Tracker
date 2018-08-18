@@ -2,6 +2,7 @@ package net.mbonnin.arcanetracker
 
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import net.mbonnin.arcanetracker.deckstrings.DeckStringParser
 import net.mbonnin.arcanetracker.parser.LogReader
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RDeck

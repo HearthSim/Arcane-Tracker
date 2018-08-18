@@ -1,5 +1,6 @@
 package net.mbonnin.arcanetracker
 
+import net.mbonnin.arcanetracker.deckstrings.DeckStringParser
 import java.util.*
 
 class DeckStringHelper {

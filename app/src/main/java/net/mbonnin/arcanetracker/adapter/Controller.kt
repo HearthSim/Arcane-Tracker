@@ -412,7 +412,7 @@ class Controller : GameLogic.Listener {
             }
         }
 
-        fun getCardMapList(cardMap: HashMap<String, Int>): ArrayList<Any> {
+        fun getCardMapList(cardMap: Map<String, Int>): ArrayList<Any> {
             val list = ArrayList<Any>()
             var unknown = Deck.MAX_CARDS
 
