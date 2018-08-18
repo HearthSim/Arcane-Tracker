@@ -173,12 +173,12 @@ class GameLogic private constructor() {
     }
 
     private fun handleShowEntityTag(tag: ShowEntityTag) {
-        val entity = mGame!!.findEntitySafe(tag.Entity)
+        val entity = mGame!!.findEntitySafe(tag.Entity!!)
 
         if (!Utils.isEmpty(entity!!.CardID) && entity.CardID != tag.CardID) {
             Timber.e("[Inconsistent] entity " + entity + " changed cardId " + entity.CardID + " -> " + tag.CardID)
         }
-        entity.setCardId(tag.CardID)
+        entity.setCardId(tag.CardID!!)
 
         for (key in tag.tags.keys) {
             tagChanged(entity, key, tag.tags[key])
@@ -187,7 +187,7 @@ class GameLogic private constructor() {
 
 
     private fun handleShowEntityTag2(tag: ShowEntityTag) {
-        val entity = mGame!!.findEntitySafe(tag.Entity)
+        val entity = mGame!!.findEntitySafe(tag.Entity!!)
 
         for (key in tag.tags.keys) {
             tagChanged2(entity!!, key, tag.tags[key])
@@ -363,11 +363,11 @@ class GameLogic private constructor() {
     }
 
     private fun handleTagChange(tag: TagChangeTag) {
-        tagChanged(mGame!!.findEntitySafe(tag.ID)!!, tag.tag, tag.value)
+        tagChanged(mGame!!.findEntitySafe(tag.ID!!)!!, tag.tag!!, tag.value)
     }
 
     private fun handleTagChange2(tag: TagChangeTag) {
-        tagChanged2(mGame!!.findEntitySafe(tag.ID)!!, tag.tag, tag.value)
+        tagChanged2(mGame!!.findEntitySafe(tag.ID!!)!!, tag.tag!!, tag.value)
     }
 
     private fun tryToGuessCardIdFromBlock(stack: ArrayList<BlockTag>, fullEntityTag: FullEntityTag) {
@@ -378,7 +378,7 @@ class GameLogic private constructor() {
         val blockTag = stack[stack.size - 1]
 
         val blockEntity = mGame!!.findEntitySafe(blockTag.Entity!!)
-        val entity = mGame!!.findEntitySafe(fullEntityTag.ID)
+        val entity = mGame!!.findEntitySafe(fullEntityTag.ID!!)
 
         if (Utils.isEmpty(blockEntity!!.CardID)) {
             return
@@ -485,11 +485,11 @@ class GameLogic private constructor() {
 
         if (entity == null) {
             entity = Entity()
-            mGame!!.entityMap.put(tag.ID, entity)
+            mGame!!.entityMap.put(tag.ID!!, entity)
         }
         entity.EntityID = tag.ID
         if (!Utils.isEmpty(tag.CardID)) {
-            entity.setCardId(tag.CardID)
+            entity.setCardId(tag.CardID!!)
         }
         entity.tags.putAll(tag.tags)
 

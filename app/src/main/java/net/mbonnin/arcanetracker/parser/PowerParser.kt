@@ -284,7 +284,7 @@ class PowerParser(private val mTagConsumer: (Tag) -> Unit, private val mRawGameC
             m = INFO.matcher(line)
             if (m.matches()) {
                 if (mCurrentTag is MetaDataTag) {
-                    (mCurrentTag as MetaDataTag).Info.add(getEntityIdFromNameOrId(m.group(1)))
+                    (mCurrentTag as MetaDataTag).Info.add(getEntityIdFromNameOrId(m.group(1))!!)
                 }
                 break@contentLoop
             }
