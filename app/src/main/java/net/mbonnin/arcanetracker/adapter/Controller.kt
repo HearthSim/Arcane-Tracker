@@ -315,13 +315,10 @@ class Controller : GameLogic.Listener {
                     entityList = entityList)
         }
 
-        return deckEntryList.sortedBy {
-            val costString = it.card.cost?.toString() ?: ""
-            val giftString = if (it.gift) "b" else "a"
-
-            "$costString${it.card.name}$giftString"
-        }
+        return deckEntryList.sortedWith(deckEntryComparator)
     }
+
+
 
     override fun gameStarted(game: Game) {
         mGame = game
@@ -346,16 +343,34 @@ class Controller : GameLogic.Listener {
     companion object {
         private var sController: Controller? = null
 
-        private fun compareNullSafe(a: String?, b: String?): Int {
-            return if (a == null) {
-                if (b == null) 0 else 1
-            } else {
-                if (b == null) -1 else a.compareTo(b)
+        val deckEntryComparator = kotlin.Comparator<DeckEntryItem>{ a, b ->
+            val acost = a.card.cost
+            val bcost = b.card.cost
+
+            if (acost == null && bcost != null) {
+                return@Comparator -1
+            } else if (acost != null && bcost == null) {
+                return@Comparator 1
+            } else if (acost != null && bcost != null) {
+                val r = acost - bcost
+                if (r != 0) {
+                    return@Comparator r
+                }
             }
+
+            val r = a.card.name.compareTo(b.card.name)
+            if (r != 0) {
+                return@Comparator r
+            }
+
+            val agift = if (a.gift) 1 else 0
+            val bgift = if (b.gift) 1 else 0
+            return@Comparator agift - bgift
         }
 
-        fun getCardMapList(cardMap: Map<String, Int>): ArrayList<Any> {
-            val list = ArrayList<Any>()
+        fun getCardMapList(cardMap: Map<String, Int>): List<Any> {
+            val deckEntryList = mutableListOf<DeckEntryItem>()
+            val list = mutableListOf<Any>()
             var unknown = Deck.MAX_CARDS
 
             for ((key, value) in cardMap) {
@@ -364,16 +379,11 @@ class Controller : GameLogic.Listener {
                         count = value,
                         entityList = emptyList())
 
-                list.add(deckEntry)
+                deckEntryList.add(deckEntry)
                 unknown -= deckEntry.count
             }
 
-            Collections.sort(list) { a, b ->
-                val da = a as DeckEntryItem
-                val db = b as DeckEntryItem
-
-                Utils.compareNullSafe(da.card.cost, db.card.cost)
-            }
+            list.addAll(deckEntryList.sortedWith(deckEntryComparator))
 
             if (unknown > 0) {
                 list.add(ArcaneTrackerApplication.context.getString(R.string.unknown_cards, unknown))
