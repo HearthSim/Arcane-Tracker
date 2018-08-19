@@ -18,4 +18,6 @@
     <string name="changelog_304">You can now delete decks.</string>
     <string name="changelog_305">Updated for latest nerfs, no more Call To Arms turn 4!\nFixed secret detector in the kraken year.\nImproved german translations (Thanks AceXare!).</string>
     <string name="changelog_308">Added Tavern of time cards.\nSwitching some menus to a black theme.</string>
+    <string name="changelog_311">Boomsday project !</string>
+    <string name="changelog_312">Initial support for Whizbang decks.\nFixed some glitches when displaying possible secrets.</string>
 </resources>
