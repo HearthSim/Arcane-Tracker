@@ -119,7 +119,6 @@ dependencies {
     implementation Libs.kotlin_stdlib
 
     implementation Libs.timber
-    implementation Libs.annimonStream
 
     implementation Libs.rxjava2
     implementation Libs.rxAndroid2

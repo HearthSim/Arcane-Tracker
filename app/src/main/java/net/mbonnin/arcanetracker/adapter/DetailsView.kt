@@ -7,7 +7,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -65,6 +64,7 @@ class DetailsView(context: Context) : ViewGroup(context) {
             }
             it.layout(x, entityTop, x + it.measuredWidth, entityTop + it.measuredHeight)
 
+            x += it.measuredWidth
             x += padding
         }
     }
@@ -84,8 +84,12 @@ class DetailsView(context: Context) : ViewGroup(context) {
                         MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
                 )
             } else {
+                val entityWidthMeasureSpec = if (it is TextView)
+                    MeasureSpec.makeMeasureSpec(imageWidth, MeasureSpec.EXACTLY)
+                else
+                    MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
                 it.measure(
-                        MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
+                        entityWidthMeasureSpec,
                         MeasureSpec.makeMeasureSpec(h - marginTop, MeasureSpec.AT_MOST)
                 )
             }
@@ -189,7 +193,7 @@ class DetailsView(context: Context) : ViewGroup(context) {
 
             textView.text = s
 
-            addView(entityView, WRAP_CONTENT, WRAP_CONTENT)
+            addView(entityView)
         }
     }
 
