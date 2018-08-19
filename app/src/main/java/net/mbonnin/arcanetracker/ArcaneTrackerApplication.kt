@@ -12,7 +12,6 @@ import android.os.Handler
 import android.support.multidex.MultiDexApplication
 import android.util.DisplayMetrics
 import android.view.ContextThemeWrapper
-import com.facebook.stetho.Stetho
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.LruCache
@@ -39,8 +38,6 @@ class ArcaneTrackerApplication : MultiDexApplication() {
     @SuppressLint("NewApi")
     override fun onCreate() {
         super.onCreate()
-
-        Stetho.initializeWithDefaults(this);
 
         sArcaneTrackerApplication = this
         context = object : ContextThemeWrapper(this, R.style.AppTheme) {

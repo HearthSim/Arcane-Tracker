@@ -139,8 +139,6 @@ dependencies {
     implementation Libs.crashlytics
     implementation Libs.room
     implementation Libs.rxRoom
-    implementation Libs.stetho
-    implementation Libs.stethoOkhttp
     implementation Libs.javadeckstrings
     implementation Libs.kotlinhslog
     implementation Libs.flexbox
