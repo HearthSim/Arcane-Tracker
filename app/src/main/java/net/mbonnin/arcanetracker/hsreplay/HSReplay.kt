@@ -9,6 +9,10 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
 import com.google.gson.JsonPrimitive
 import io.reactivex.Completable
+import io.reactivex.Observable
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.FirebaseConstants
 import net.mbonnin.arcanetracker.Gatekeeper
@@ -18,13 +22,9 @@ import net.mbonnin.arcanetracker.hsreplay.model.TokenRequest
 import net.mbonnin.arcanetracker.hsreplay.model.UploadRequest
 import okhttp3.*
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import rx.Observable
-import rx.Single
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import rx.lang.kotlin.toSingle
 import timber.log.Timber
 import java.io.IOException
 
@@ -69,7 +69,7 @@ class HSReplay {
         FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("hsreplay_upload", null)
 
         return legacyService().createUpload("https://upload.hsreplay.net/api/v1/replay/upload/request", uploadRequest)
-                .toSingle()
+                .firstOrError()
                 .map {
                     Timber.w("url is " + it.url)
                     Timber.w("put_url is " + it.put_url)
@@ -127,7 +127,7 @@ class HSReplay {
 
         mLegacyService = Retrofit.Builder()
                 .baseUrl("https://hsreplay.net/api/v1/")
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
                 .addConverterFactory(GsonConverterFactory.create(Gson()))
                 .client(legacyClient)
                 .build()

@@ -6,12 +6,12 @@ import net.mbonnin.arcanetracker.hsreplay.model.TokenRequest;
 import net.mbonnin.arcanetracker.hsreplay.model.Upload;
 import net.mbonnin.arcanetracker.hsreplay.model.UploadRequest;
 
+import io.reactivex.Observable;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Url;
-import rx.Observable;
 
 public interface LegacyService {
     @POST("tokens/")

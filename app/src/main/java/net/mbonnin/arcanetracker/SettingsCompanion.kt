@@ -15,6 +15,10 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.*
 import com.google.firebase.analytics.FirebaseAnalytics
+import io.reactivex.Completable
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import net.mbonnin.arcanetracker.detector.ByteBufferImage
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.mbonnin.arcanetracker.hsreplay.OauthInterceptor
@@ -23,10 +27,6 @@ import net.mbonnin.arcanetracker.hsreplay.model.Token
 import net.mbonnin.arcanetracker.trackobot.Trackobot
 import net.mbonnin.arcanetracker.trackobot.Url
 import net.mbonnin.arcanetracker.trackobot.User
-import rx.Completable
-import rx.Single
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException

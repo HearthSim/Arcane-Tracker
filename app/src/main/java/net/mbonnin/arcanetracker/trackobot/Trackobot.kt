@@ -2,18 +2,18 @@ package net.mbonnin.arcanetracker.trackobot
 
 import android.os.Environment
 import com.google.gson.stream.MalformedJsonException
+import io.reactivex.Observable
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.trackobot.model.HistoryList
 import net.mbonnin.arcanetracker.trackobot.model.ResultData
 import okhttp3.Credentials
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import rx.Observable
-import rx.Single
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import timber.log.Timber
 import java.io.DataInputStream
 import java.io.File
@@ -21,7 +21,6 @@ import java.io.FileInputStream
 import java.io.IOException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
-import java.util.*
 
 /**
  * Created by martin on 10/25/16.
@@ -82,7 +81,7 @@ class Trackobot {
 
         val retrofit = Retrofit.Builder()
                 .baseUrl("https://trackobot.com/")
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()
@@ -135,7 +134,7 @@ class Trackobot {
     }
 
     private fun sendResultInternal(resultData: ResultData) {
-        sendResultSingle(resultData).subscribe({ this.handleResponse(it) })
+        sendResultSingle(resultData).subscribe({ it -> this.handleResponse(it) })
     }
 
     private fun handleResponse(lce: Lce<ResultData>) {

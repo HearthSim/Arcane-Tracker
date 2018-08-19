@@ -15,10 +15,10 @@ import android.util.TypedValue
 import android.view.WindowManager
 import android.widget.Toast
 import com.crashlytics.android.Crashlytics
+import io.reactivex.Completable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import rx.Completable
-import rx.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 import java.io.IOException
 import java.io.InputStream

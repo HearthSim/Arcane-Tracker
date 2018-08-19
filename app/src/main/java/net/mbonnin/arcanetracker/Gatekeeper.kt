@@ -5,9 +5,9 @@ import com.google.gson.JsonParser
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.BehaviorSubject
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import rx.subjects.BehaviorSubject
 import timber.log.Timber
 
 object Gatekeeper {

@@ -1,8 +1,8 @@
 package net.mbonnin.arcanetracker
 
 import android.widget.Toast
-import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
+import io.reactivex.Completable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -16,7 +16,7 @@ object Toaster {
     val lock = Object()
 
     init {
-        Observable.timer(5, TimeUnit.SECONDS)
+        Completable.timer(5, TimeUnit.SECONDS)
                 .repeat()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {

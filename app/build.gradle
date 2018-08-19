@@ -1,7 +1,7 @@
 import net.arcanetracker.app.ATAppPlugin
 
 plugins {
-    id 'com.github.ben-manes.versions' version '0.17.0'
+    id 'com.github.ben-manes.versions' version '0.20.0'
     id "net.mbonnin.android.strings2xls" version "0.1.4"
 }
 apply plugin: 'com.android.application'
@@ -117,18 +117,14 @@ dependencies {
     implementation Libs.paperDb
     implementation Libs.okhttp
     implementation Libs.kotlin_stdlib
-    implementation Libs.kotlin_reflect
 
     implementation Libs.timber
     implementation Libs.annimonStream
 
     implementation Libs.rxjava2
-    implementation Libs.rxAndroid
     implementation Libs.rxAndroid2
-    implementation Libs.rxKotlin
     implementation Libs.retrofit
     implementation Libs.gson
-    implementation Libs.retrofitRx
     implementation Libs.retrofitRx2
 
     implementation Libs.play_auth
