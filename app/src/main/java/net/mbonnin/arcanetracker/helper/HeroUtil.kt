@@ -1,6 +1,8 @@
-package net.mbonnin.arcanetracker
+package net.mbonnin.arcanetracker.helper
 
 import android.graphics.drawable.Drawable
+import net.mbonnin.arcanetracker.R
+import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.hsmodel.enum.PlayerClass.DRUID
 import net.mbonnin.hsmodel.enum.PlayerClass.HUNTER
 import net.mbonnin.hsmodel.enum.PlayerClass.MAGE

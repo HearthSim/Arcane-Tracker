@@ -18,6 +18,7 @@ import android.widget.CheckBox
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.iid.FirebaseInstanceId
+import net.mbonnin.arcanetracker.extension.finishAndRemoveTaskIfPossible
 import timber.log.Timber
 import java.io.File
 

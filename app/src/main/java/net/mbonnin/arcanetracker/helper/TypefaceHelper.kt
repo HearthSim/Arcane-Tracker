@@ -1,9 +1,11 @@
-package net.mbonnin.arcanetracker
+package net.mbonnin.arcanetracker.helper
 
 import android.graphics.Typeface
 import android.support.v4.content.res.ResourcesCompat
+import net.mbonnin.arcanetracker.ArcaneTrackerApplication
+import net.mbonnin.arcanetracker.R
 
-object Typefaces {
+object TypefaceHelper {
     fun belwe(): Typeface? {
         return ResourcesCompat.getFont(ArcaneTrackerApplication.context, R.font.belwe_bold)
     }

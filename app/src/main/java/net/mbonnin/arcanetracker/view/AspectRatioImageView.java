@@ -1,8 +1,7 @@
-package net.mbonnin.arcanetracker;
+package net.mbonnin.arcanetracker.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 /**

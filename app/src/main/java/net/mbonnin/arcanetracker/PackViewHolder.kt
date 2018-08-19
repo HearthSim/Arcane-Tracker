@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_pack.*
+import net.mbonnin.arcanetracker.helper.SetHelper
 import net.mbonnin.arcanetracker.room.RPack
 import java.text.SimpleDateFormat
 import java.util.*

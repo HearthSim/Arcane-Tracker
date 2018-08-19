@@ -1,9 +1,9 @@
-package net.mbonnin.arcanetracker
+package net.mbonnin.arcanetracker.parser
 
 import io.reactivex.Completable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import net.mbonnin.arcanetracker.parser.LogReader
+import net.mbonnin.arcanetracker.CardUtil
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RPack
 import timber.log.Timber

@@ -12,6 +12,8 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Function3
 import io.reactivex.schedulers.Schedulers
+import net.mbonnin.arcanetracker.helper.HeroUtil
+import net.mbonnin.arcanetracker.helper.allHeroes
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.hsmodel.enum.PlayerClass
 import timber.log.Timber

@@ -16,6 +16,7 @@ import net.mbonnin.arcanetracker.room.RDeck
 class PlayerDeckListAdapter : DeckListAdapter() {
     private var listener: ((deck: Deck) -> Unit)? = null
     private var list = mutableListOf<RDeck>()
+    private var whizbangDeck: Deck? = null
 
     init {
         zip(
@@ -47,19 +48,29 @@ class PlayerDeckListAdapter : DeckListAdapter() {
     }
 
     override fun getItemCount(): Int {
-        return list.size
+        return list.size + if (whizbangDeck == null) 0 else 1
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val rdeck = list[position]
+        if (position < list.size) {
+            val rdeck = list[position]
 
-        (holder as ViewHolder).bind(rdeck)
+            (holder as ViewHolder).bind(rdeck)
+        } else {
+            (holder as ViewHolder).bind(whizbangDeck)
+        }
+    }
+
+    fun setWhizbangDeck(whizbangDeck: Deck) {
+        this.whizbangDeck = whizbangDeck
     }
 
     inner class ViewHolder(override val containerView: View) : LayoutContainer, RecyclerView.ViewHolder(containerView) {
         fun bind(rdeck: RDeck) {
-            val deck = DeckMapper.fromRDeck(rdeck)
+            bind(DeckMapper.fromRDeck(rdeck))
+        }
 
+        fun bind(deck: Deck?) {
             itemView.setOnClickListener { v ->
                 if (deck != null) {
                     listener?.invoke(deck)
@@ -68,6 +79,16 @@ class PlayerDeckListAdapter : DeckListAdapter() {
 
             deckImageRound.setImageDrawable(Utils.getDrawableForNameDeprecated(String.format("hero_%02d_round", (deck?.classIndex ?:0) + 1)))
             deckName.text = deck?.name
+        }
+    }
+
+    companion object {
+        var instance: PlayerDeckListAdapter? = null
+        fun get(): PlayerDeckListAdapter {
+            if (instance == null) {
+                instance = PlayerDeckListAdapter()
+            }
+            return instance!!
         }
     }
 }

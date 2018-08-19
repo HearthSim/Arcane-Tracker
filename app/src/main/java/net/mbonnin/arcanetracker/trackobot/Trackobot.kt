@@ -7,6 +7,7 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.mbonnin.arcanetracker.*
+import net.mbonnin.arcanetracker.helper.getPlayerClass
 import net.mbonnin.arcanetracker.trackobot.model.HistoryList
 import net.mbonnin.arcanetracker.trackobot.model.ResultData
 import okhttp3.Credentials

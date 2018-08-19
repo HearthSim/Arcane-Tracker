@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import net.mbonnin.arcanetracker.R;
-import net.mbonnin.arcanetracker.Typefaces;
+import net.mbonnin.arcanetracker.helper.TypefaceHelper;
 import net.mbonnin.arcanetracker.Utils;
 
 import java.util.ArrayList;
@@ -95,7 +95,7 @@ public class ItemAdapter extends RecyclerView.Adapter {
         } else if (o instanceof HeaderItem) {
             HeaderItem headerItem = (HeaderItem)o;
             TextView textView = holder.itemView.findViewById(R.id.textView);
-            textView.setTypeface(Typefaces.INSTANCE.belwe());
+            textView.setTypeface(TypefaceHelper.INSTANCE.belwe());
             String text = "";//headerItem.expanded ?"▼":"▶";
             textView.setText(text + headerItem.title);
             if (headerItem.onClicked != null) {

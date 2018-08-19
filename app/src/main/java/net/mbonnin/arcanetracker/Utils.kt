@@ -17,6 +17,7 @@ import android.widget.Toast
 import com.crashlytics.android.Crashlytics
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import net.mbonnin.arcanetracker.helper.getHeroId
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import timber.log.Timber

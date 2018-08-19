@@ -3,6 +3,7 @@ package net.mbonnin.arcanetracker
 import android.graphics.*
 import android.os.Build
 import android.text.*
+import net.mbonnin.arcanetracker.helper.TypefaceHelper
 import net.mbonnin.hsmodel.Card
 import net.mbonnin.hsmodel.enum.Race
 import net.mbonnin.hsmodel.enum.Rarity
@@ -29,8 +30,8 @@ class CardRenderer {
     private var parallelRenders: Int = 0
 
     init {
-        belwe = Typefaces.belwe()
-        franklin = Typefaces.franklin()
+        belwe = TypefaceHelper.belwe()
+        franklin = TypefaceHelper.franklin()
     }
 
     enum class Result {
@@ -450,7 +451,7 @@ class CardRenderer {
             paint.style = Paint.Style.FILL
             paint.textAlign = Paint.Align.CENTER
             paint.isAntiAlias = true
-            paint.typeface = Typefaces.belwe()
+            paint.typeface = TypefaceHelper.belwe()
             paint.textSize = size.toFloat()
 
             canvas.drawText(number, dx.toFloat(), dy.toFloat(), paint)

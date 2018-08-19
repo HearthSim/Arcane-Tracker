@@ -19,9 +19,7 @@ import com.squareup.picasso.Picasso
 import io.paperdb.Paper
 import net.hearthsim.kotlin.hslog.PowerParser
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
-import net.mbonnin.arcanetracker.parser.GameLogic
-import net.mbonnin.arcanetracker.parser.LoadingScreenParser
-import net.mbonnin.arcanetracker.parser.LogReader
+import net.mbonnin.arcanetracker.parser.*
 import net.mbonnin.hsmodel.Card
 import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.enum.PlayerClass

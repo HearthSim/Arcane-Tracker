@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Toast
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.game_view.*
+import net.mbonnin.arcanetracker.helper.getDisplayName
 import net.mbonnin.arcanetracker.model.GameSummary
 
 class GameViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {

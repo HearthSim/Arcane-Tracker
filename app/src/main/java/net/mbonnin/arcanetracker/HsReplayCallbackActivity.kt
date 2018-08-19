@@ -7,6 +7,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.hs_replay_callback_activity.*
+import net.mbonnin.arcanetracker.extension.finishAndRemoveTaskIfPossible
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.mbonnin.arcanetracker.hsreplay.OauthInterceptor
 import timber.log.Timber

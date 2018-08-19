@@ -1,4 +1,4 @@
-package net.mbonnin.arcanetracker
+package net.mbonnin.arcanetracker.extension
 
 import android.app.Activity
 import android.os.Build

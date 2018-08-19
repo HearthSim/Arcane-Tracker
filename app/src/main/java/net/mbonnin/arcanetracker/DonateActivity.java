@@ -19,6 +19,7 @@ import com.example.android.trivialdrivesample.util.Inventory;
 import com.example.android.trivialdrivesample.util.Purchase;
 
 import net.mbonnin.arcanetracker.databinding.DonateBinding;
+import net.mbonnin.arcanetracker.extension.ActivityExtensionsKt;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,4 +1,4 @@
-package net.mbonnin.arcanetracker
+package net.mbonnin.arcanetracker.helper
 
 import android.graphics.Color
 import net.mbonnin.hsmodel.enum.Rarity

@@ -1,7 +1,7 @@
 package net.mbonnin.arcanetracker.parser
 
 import net.mbonnin.arcanetracker.CardUtil
-import net.mbonnin.arcanetracker.getClassIndex
+import net.mbonnin.arcanetracker.helper.getClassIndex
 
 /**
  * Created by martin on 11/7/16.

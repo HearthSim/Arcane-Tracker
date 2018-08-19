@@ -7,6 +7,9 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import net.mbonnin.arcanetracker.detector.RANK_UNKNOWN
+import net.mbonnin.arcanetracker.helper.DeckStringHelper
+import net.mbonnin.arcanetracker.helper.WhizbangHelper
+import net.mbonnin.arcanetracker.helper.getClassIndex
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.mbonnin.arcanetracker.hsreplay.model.Lce
 import net.mbonnin.arcanetracker.hsreplay.model.UploadRequest
@@ -21,6 +24,7 @@ import net.mbonnin.arcanetracker.trackobot.Trackobot
 import net.mbonnin.arcanetracker.trackobot.model.CardPlay
 import net.mbonnin.arcanetracker.trackobot.model.Result
 import net.mbonnin.arcanetracker.trackobot.model.ResultData
+import net.mbonnin.hsmodel.enum.CardId
 import timber.log.Timber
 import java.util.*
 
@@ -31,9 +35,9 @@ class GameLogicListener private constructor() : GameLogic.Listener {
     override fun gameStarted(game: Game) {
         Timber.w("gameStarted")
 
-        val deck = Deck()
-        deck.classIndex = game.opponent!!.classIndex()
-        MainViewCompanion.opponentCompanion.deck = deck
+        val opponentDeck = Deck()
+        opponentDeck.classIndex = game.opponent!!.classIndex()
+        MainViewCompanion.opponentCompanion.deck = opponentDeck
 
         when (game.gameType) {
             GameType.GT_TAVERNBRAWL.name,
@@ -46,6 +50,28 @@ class GameLogicListener private constructor() : GameLogic.Listener {
             }
         }
 
+        if (!game.player!!.entity!!.tags["WHIZBANG_DECK_ID"].isNullOrBlank()) {
+            val playerEntityList = game.getEntityList { entity ->
+                game.player!!.entity!!.PlayerID == entity.extra.originalController
+                        && entity.card != null
+            }
+
+            val whizbangDeck = WhizbangHelper.recipes
+                    .asSequence()
+                    .map { DeckStringHelper.parse(it) }
+                    .filterNotNull()
+                    .firstOrNull { deck2 ->
+                        playerEntityList.filter { !deck2.cards.containsKey(it.card!!.id) }.isEmpty()
+                    }
+
+            if (whizbangDeck != null) {
+                Timber.d("Found whizbang deck !")
+                whizbangDeck.id = "rototo"
+                whizbangDeck.name = CardUtil.getCard(CardId.WHIZBANG_THE_WONDERFUL).name
+                PlayerDeckListAdapter.get().setWhizbangDeck(whizbangDeck)
+                MainViewCompanion.playerCompanion.deck = whizbangDeck
+            }
+        }
         currentGame = game
     }
 

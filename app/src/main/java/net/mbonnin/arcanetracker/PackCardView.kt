@@ -13,6 +13,7 @@ import androidx.core.graphics.toRect
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import io.reactivex.disposables.Disposable
+import net.mbonnin.arcanetracker.helper.RarityHelper
 import net.mbonnin.hsmodel.Card
 
 class PackCardView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)

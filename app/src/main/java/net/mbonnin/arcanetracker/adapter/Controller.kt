@@ -19,7 +19,7 @@ class Controller : GameLogic.Listener {
     val opponentAdapter: ItemAdapter
 
     private val mHandler: Handler
-    protected var mPlayerCardMap: HashMap<String, Int>? = null
+    protected var mPlayerCardMap: Map<String, Int>? = null
     private var mGame: Game? = null
     private var mPlayerId: String? = null
     private var mOpponentId: String? = null
@@ -222,9 +222,10 @@ class Controller : GameLogic.Listener {
 
         list.add(HeaderItem(Utils.getString(R.string.deck)))
 
+        val originalDeckEntityList = mGame!!.getEntityList { entity -> mPlayerId == entity.extra.originalController }
+
         val knownIdList = ArrayList<String>()
 
-        val intermediateList = mutableListOf<Intermediate>()
         /*
          * build a list of all the ids that we know from the deck or from whizbang
          */
@@ -233,8 +234,6 @@ class Controller : GameLogic.Listener {
                 knownIdList.add(key)
             }
         }
-
-        val originalDeckEntityList = mGame!!.getEntityList { entity -> mPlayerId == entity.extra.originalController }
 
         /*
          * remove the ones that have been revealed already
@@ -254,6 +253,7 @@ class Controller : GameLogic.Listener {
         /*
          * add the revealed cards
          */
+        val intermediateList = mutableListOf<Intermediate>()
         intermediateList.addAll(revealedEntityList.map { Intermediate(it.CardID, it) })
 
         /*
@@ -323,11 +323,11 @@ class Controller : GameLogic.Listener {
         }
     }
 
-
     override fun gameStarted(game: Game) {
         mGame = game
         mPlayerId = mGame!!.player!!.entity!!.PlayerID
         mOpponentId = mGame!!.opponent!!.entity!!.PlayerID
+
         update()
     }
 

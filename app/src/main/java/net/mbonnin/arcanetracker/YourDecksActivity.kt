@@ -2,6 +2,7 @@ package net.mbonnin.arcanetracker
 
 import android.app.Activity
 import android.os.Bundle
+import net.mbonnin.arcanetracker.view.DeckStatsView
 
 class YourDecksActivity : Activity() {
     var isInStats = false

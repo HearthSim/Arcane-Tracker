@@ -1,5 +1,6 @@
 package net.mbonnin.arcanetracker;
 
+import net.mbonnin.arcanetracker.helper.HeroUtilKt;
 import net.mbonnin.hsmodel.Card;
 
 import java.lang.ref.WeakReference;

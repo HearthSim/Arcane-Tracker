@@ -6,6 +6,7 @@ import android.view.View.GONE
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
+import net.mbonnin.arcanetracker.extension.makeFullscreen
 import timber.log.Timber
 
 class OauthResultActivity : AppCompatActivity() {

@@ -1,4 +1,4 @@
-package net.mbonnin.arcanetracker
+package net.mbonnin.arcanetracker.view
 
 import android.content.Context
 import android.support.constraint.ConstraintLayout
@@ -8,6 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import net.mbonnin.arcanetracker.Deck
+import net.mbonnin.arcanetracker.OpponentsAdapter
+import net.mbonnin.arcanetracker.R
+import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.adapter.Controller
 import net.mbonnin.arcanetracker.adapter.ItemAdapter
 
