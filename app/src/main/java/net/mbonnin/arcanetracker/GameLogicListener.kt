@@ -3,6 +3,9 @@ package net.mbonnin.arcanetracker
 import android.os.Bundle
 import android.os.Handler
 import com.google.firebase.analytics.FirebaseAnalytics
+import io.reactivex.Single
+import io.reactivex.functions.BiFunction
+import io.reactivex.schedulers.Schedulers
 import net.mbonnin.arcanetracker.detector.RANK_UNKNOWN
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.mbonnin.arcanetracker.hsreplay.model.Lce
@@ -18,8 +21,6 @@ import net.mbonnin.arcanetracker.trackobot.Trackobot
 import net.mbonnin.arcanetracker.trackobot.model.CardPlay
 import net.mbonnin.arcanetracker.trackobot.model.Result
 import net.mbonnin.arcanetracker.trackobot.model.ResultData
-import rx.Single
-import rx.schedulers.Schedulers
 import timber.log.Timber
 import java.util.*
 
@@ -225,7 +226,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
             Single.just(Lce.data(null))
         }
 
-        Single.zip(insertGameSingle, hsReplaySingle) { insertResult, lce ->
+        Single.zip(insertGameSingle, hsReplaySingle, BiFunction<InsertResult, Lce<out String?>, Unit>  { insertResult, lce ->
             if (lce.error != null) {
                 Timber.d(lce.error)
                 Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplayError))
@@ -240,7 +241,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                 Timber.d("hsreplay upload success")
                 Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplaySuccess))
             }
-        }
+        })
                 .subscribeOn(Schedulers.io())
                 .subscribe()
     }
