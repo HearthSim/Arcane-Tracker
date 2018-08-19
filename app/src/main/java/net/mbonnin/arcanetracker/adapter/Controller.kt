@@ -26,45 +26,46 @@ class Controller : GameLogic.Listener {
 
     private val mUpdateRunnable = Runnable { this.update() }
 
-    private val hand: ArrayList<*>
-        get() {
-            val list = ArrayList<Any>()
-            val context = ArcaneTrackerApplication.context
+    private fun opponentHand(): List<DeckEntryItem> {
+        val list = ArrayList<DeckEntryItem>()
 
-            val entities = getEntityListInZone(mOpponentId, Entity.ZONE_HAND)
+        val entities = getEntityListInZone(mOpponentId, Entity.ZONE_HAND)
+                .sortedBy { it.tags[Entity.KEY_ZONE_POSITION] }
 
-            Collections.sort(entities) { a, b -> compareNullSafe(a.tags[Entity.KEY_ZONE_POSITION], b.tags[Entity.KEY_ZONE_POSITION]) }
-
-            list.add(HeaderItem(context.getString(R.string.hand) + " (" + entities.size + ")"))
-            for (entity in entities) {
-                val card = if (TextUtils.isEmpty(entity.CardID) || entity.extra.hide) {
-                    val builder = StringBuilder()
-                    builder.append("#").append(GameLogic.gameTurnToHumanTurn(entity.extra.drawTurn))
-                    if (entity.extra.mulliganed) {
-                        builder.append(" (M)")
-                    }
-                    CardUtil.unknown(builder.toString())
-                } else {
-                    entity.card
+        for (entity in entities) {
+            val card = entity.card
+            val deckEntry = if (card == null || entity.extra.hide) {
+                val builder = StringBuilder()
+                builder.append("#").append(GameLogic.gameTurnToHumanTurn(entity.extra.drawTurn))
+                if (entity.extra.mulliganed) {
+                    builder.append(" (M)")
                 }
+                val drawTurn = GameLogic.gameTurnToHumanTurn(entity.extra.drawTurn)
+                val mulliganed = if (entity.extra.mulliganed) " (M)" else ""
 
-                val clone = entity.clone()
-                if (entity.extra.hide) {
-                    clone.extra.createdBy = null
-                }
+                val displayedEntity = Entity()
+                displayedEntity.extra.drawTurn = entity.extra.drawTurn
 
-                val deckEntry = DeckEntryItem(
-                        card = card!!,
-                        gift = !entity.extra.hide && !entity.extra.createdBy.isNullOrEmpty(),
+                DeckEntryItem(
+                        card = CardUtil.unknown("#${drawTurn}${mulliganed}"),
+                        gift = false,
                         count = 1,
-                        entityList = listOf(clone)
+                        entityList = listOf(displayedEntity)
                 )
-
-                list.add(deckEntry)
+            } else {
+                DeckEntryItem(
+                        card = card,
+                        gift = !entity.extra.createdBy.isNullOrEmpty(),
+                        count = 1,
+                        entityList = listOf(entity)
+                )
             }
 
-            return list
+            list.add(deckEntry)
         }
+
+        return list
+    }
 
     fun getSecrets(): List<DeckEntryItem> {
         val list = ArrayList<DeckEntryItem>()
@@ -103,21 +104,26 @@ class Controller : GameLogic.Listener {
     fun getTestSecrets(): List<DeckEntryItem> {
         val list = ArrayList<DeckEntryItem>()
 
-        val entity = Entity()
-        entity.tags[Entity.KEY_ZONE] = Entity.ZONE_SECRET
-        entity.tags[Entity.KEY_CLASS] = PlayerClass.MAGE
-        val deckEntry = DeckEntryItem(
-                card = CardUtil.secret("MAGE"),
-                gift = false,
-                count = 1,
-                entityList = listOf(entity)
-        )
-
-        list.add(deckEntry)
+        for (i in 0 until 3) {
+            for (playerClass in listOf(PlayerClass.MAGE, PlayerClass.HUNTER, PlayerClass.PALADIN, PlayerClass.ROGUE)) {
+                val entity = Entity()
+                entity.tags[Entity.KEY_ZONE] = Entity.ZONE_SECRET
+                entity.tags[Entity.KEY_CLASS] = playerClass
+                entity.extra.drawTurn = 1
+                entity.extra.mulliganed = Math.random() < 0.5
+                entity.extra.createdBy = "toto"
+                val deckEntry = DeckEntryItem(
+                        card = CardUtil.secret(playerClass),
+                        gift = false,
+                        count = 1,
+                        entityList = listOf(entity)
+                )
+                list.add(deckEntry)
+            }
+        }
 
         return list
     }
-
 
     init {
         opponentAdapter = ItemAdapter()
@@ -139,14 +145,14 @@ class Controller : GameLogic.Listener {
 
     private fun update() {
         if (mGame == null) {
+            val list = mutableListOf<Any>()
             if (TestSwitch.SECRET_LAYOUT) {
-                playerAdapter.setList(getTestSecrets() as ArrayList<Any>)
-            } else {
-                playerAdapter.setList(getCardMapList(if (mPlayerCardMap != null) mPlayerCardMap!! else HashMap<String, Int>()))
+                list.addAll(getTestSecrets())
             }
+            list.addAll(getCardMapList(mPlayerCardMap ?: emptyMap()))
+            playerAdapter.setList(list)
 
-            val list = getCardMapList(HashMap())
-            opponentAdapter.setList(list)
+            opponentAdapter.setList(getCardMapList(HashMap()))
         } else {
 
             playerAdapter.setList(getPlayerList(mPlayerCardMap ?: emptyMap()))
@@ -158,14 +164,16 @@ class Controller : GameLogic.Listener {
         val list = ArrayList<Any>()
 
         val secrets = getSecrets()
-        if (secrets.size > 0) {
+        if (secrets.isNotEmpty()) {
             list.add(HeaderItem(Utils.getString(R.string.secrets)))
             list.addAll(secrets)
         }
-        list.addAll(hand)
+
+        val handDeckEntryItemList = opponentHand()
+        list.add(HeaderItem(Utils.getString(R.string.hand) + " (" + handDeckEntryItemList.size + ")"))
+        list.addAll(handDeckEntryItemList)
 
         list.add(HeaderItem(Utils.getString(R.string.allCards)))
-
         // trying a definition that's a bit different from the player definition here
         val allEntities = mGame!!.getEntityList { e ->
             (mOpponentId == e.tags[Entity.KEY_CONTROLLER]
@@ -176,7 +184,18 @@ class Controller : GameLogic.Listener {
                     && "PLAYER" != e.tags[Entity.KEY_CARDTYPE])
         }
 
-        val sanitizedEntities = sanitizeEntities(allEntities)
+        // the logic is a bit different than in opponentHand(). Here we want to display when the card
+        // was draw (think prince maltezaar)
+        val sanitizedEntities = allEntities.map {
+            if (it.extra.hide) {
+                val displayedEntity = Entity()
+                displayedEntity.CardID = it.CardID
+                displayedEntity.card = it.card
+                displayedEntity
+            } else {
+                it
+            }
+        }
 
         val intermediateList = mutableListOf<Intermediate>()
         var unknownCards = 0
@@ -189,24 +208,12 @@ class Controller : GameLogic.Listener {
         }
 
         list.addAll(intermediateToDeckEntryList(intermediateList, { true }))
-        if (unknownCards > 0){
+        if (unknownCards > 0) {
             list.add(ArcaneTrackerApplication.context.getString(R.string.unknown_cards, unknownCards))
         }
         return list
     }
 
-    private fun sanitizeEntities(entityList: List<Entity>): List<Entity> {
-        return entityList.map {
-            if (it.extra.hide) {
-                //if the card is hidden, we don't want to disclose when it was drawn
-                val clone = it.clone()
-                clone.extra.drawTurn = -1
-                clone
-            } else {
-                it
-            }
-        }
-    }
 
     class Intermediate(val cardId: String?, val entity: Entity)
 
@@ -310,7 +317,7 @@ class Controller : GameLogic.Listener {
 
         return deckEntryList.sortedBy {
             val costString = it.card.cost?.toString() ?: ""
-            val giftString = if(it.gift)  "b" else "a"
+            val giftString = if (it.gift) "b" else "a"
 
             "$costString${it.card.name}$giftString"
         }

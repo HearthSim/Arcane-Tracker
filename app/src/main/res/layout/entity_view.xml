@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/textView"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/extra_background"
+    android:gravity="top|center_horizontal"
+    android:padding="20dp"
+    android:text="test"
+    android:fontFamily="@font/franklin_gothic"
+    android:textColor="@android:color/white"
+    app:layout_constraintLeft_toLeftOf="@+id/secrets"
+    app:layout_constraintRight_toRightOf="@+id/secrets"
+    app:layout_constraintTop_toTopOf="parent" />

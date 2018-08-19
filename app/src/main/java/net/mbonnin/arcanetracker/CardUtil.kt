@@ -1,7 +1,8 @@
 package net.mbonnin.arcanetracker
 
 
-import net.mbonnin.hsmodel.*
+import net.mbonnin.hsmodel.Card
+import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.enum.*
 
 object CardUtil {
@@ -87,6 +88,8 @@ object CardUtil {
             it.mechanics.contains(Mechanic.SECRET)
                     && it.playerClass == playerClass
                     && (formatType != FormatType.FT_STANDARD.name || it.isStandard())
+                    && it.id != CardId.FLAME_WREATH  // these are bosses secrets
+                    && it.id != CardId.FLAME_WREATH1
         }
 
         if (gameType == GameType.GT_ARENA.name) {

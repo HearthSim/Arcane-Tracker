@@ -1,8 +1,6 @@
 package net.mbonnin.arcanetracker.adapter
 
-import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.support.v7.widget.RecyclerView
 import android.view.MotionEvent
@@ -12,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
@@ -104,23 +101,7 @@ internal class DeckEntryHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
             downX = event.rawX
             downY = event.rawY
             pressed = true
-            if ("?" != card.id) {
-                Picasso.with(v.context).load(Utils.getCardUrl(card.id)).into(object : Target {
-                    override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom?) {
-                        if (pressed) {
-                            detailsView = displayImageView(downX, downY, deckEntry?.entityList ?: listOf(), bitmap)
-                        }
-                    }
-                    override fun onBitmapFailed(errorDrawable: Drawable?) {
-
-                    }
-                    override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-
-                    }
-                })
-            } else {
-                detailsView = displayImageView(downX, downY, deckEntry?.entityList ?: listOf(), null)
-            }
+            detailsView = displayImageView(downX, downY, card.id, deckEntry?.entityList ?: listOf())
         } else if (event.actionMasked == MotionEvent.ACTION_UP || event.actionMasked == MotionEvent.ACTION_CANCEL) {
             pressed = false
             if (detailsView != null) {
@@ -133,32 +114,19 @@ internal class DeckEntryHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
     }
 
     companion object {
-        fun displayImageView(x: Float, y: Float, entityList: List<Entity>, bitmap: Bitmap?): View {
+        fun displayImageView(x: Float, y: Float, cardId: String, entityList: List<Entity>): View {
             val detailsView = DetailsView(ArcaneTrackerApplication.context)
 
-            /*
-             * bitmap might be null if the card comes from the Hand
-             */
-            detailsView.configure(bitmap, entityList, (ViewManager.get().height / 1.5f).toInt())
+            detailsView.configure(cardId, entityList, y.toInt())
 
             val params = ViewManager.Params()
 
-            val measureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-            detailsView.measure(measureSpec, measureSpec)
-            if (detailsView.measuredHeight >= ViewManager.get().height) {
-                detailsView.setTopMargin(0)
-                detailsView.measure(measureSpec, measureSpec)
-            }
-            params.w = detailsView.measuredWidth
-            params.h = detailsView.measuredHeight
-
             params.x = (x + Utils.dpToPx(40)).toInt()
-            params.y = (y - params.h / 2).toInt()
-            if (params.y < 0) {
-                params.y = 0
-            } else if (params.y + params.h > ViewManager.get().height) {
-                params.y = ViewManager.get().height - params.h
-            }
+            params.y = 0
+
+            params.w = ViewManager.get().width - params.x
+            params.h = ViewManager.get().height
+
             ViewManager.get().addModalView(detailsView, params)
 
             return detailsView

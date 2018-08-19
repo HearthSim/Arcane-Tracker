@@ -60,5 +60,7 @@ object Libs {
     const val stethoOkhttp = "com.facebook.stetho:stetho-okhttp3:1.5.0"
     const val javadeckstrings = "net.hearthsim:java-deckstrings:1.0-SNAPSHOT"
     const val kotlinhslog = "net.hearthsim:kotlin-hslog:1.0-SNAPSHOT"
+    const val flexbox = "com.google.android:flexbox:1.0.0"
+    const val archPaging = "android.arch.paging:runtime:1.0.0-rc1"
 
 }

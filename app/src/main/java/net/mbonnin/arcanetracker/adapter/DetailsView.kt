@@ -2,45 +2,125 @@ package net.mbonnin.arcanetracker.adapter
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
-import android.widget.LinearLayout
-import androidx.core.view.size
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.core.view.children
+import com.google.android.flexbox.FlexboxLayout
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Target
 import net.mbonnin.arcanetracker.*
-import net.mbonnin.arcanetracker.databinding.DetailsViewBinding
+import net.mbonnin.arcanetracker.databinding.EntityViewWithSecretsBinding
 import net.mbonnin.arcanetracker.parser.Entity
 import net.mbonnin.arcanetracker.parser.GameLogic
 import net.mbonnin.hsmodel.enum.Type
 
-class DetailsView(context: Context) : LinearLayout(context) {
-    private var mTopMargin: Int = 0
-    private var mCardWidth: Int = 0
+class DetailsView(context: Context) : ViewGroup(context) {
 
-    init {
-        orientation = LinearLayout.HORIZONTAL
+    private val imageHeight = (ViewManager.get().height / 1.5).toInt()
+    private var imageWidth = imageHeight * CardRenderer.TOTAL_WIDTH / CardRenderer.TOTAL_HEIGHT
+    private val imageView = ImageView(context)
+    private val progressBar = ProgressBar(context)
+    private var anchorY = 0
+    private var marginTop = Utils.dpToPx(30)
 
-    }
+    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        val padding = Utils.dpToPx(5)
 
-    fun configure(bitmap: Bitmap?, entityList: List<Entity>, height: Int) {
-
-        val w = height * CardRenderer.TOTAL_WIDTH / CardRenderer.TOTAL_HEIGHT
-        if (bitmap != null) {
-            val imageView = ImageView(context)
-            imageView.setImageBitmap(bitmap)
-            val layoutParams = LinearLayout.LayoutParams(w, height)
-            addView(imageView, layoutParams)
+        val imageLeft = padding
+        var imageTop = anchorY - imageHeight / 2
+        if (imageTop < 0) {
+            imageTop = 0
+        }
+        if (imageTop + imageHeight > b - t) {
+            imageTop = b - t - imageHeight
         }
 
-        mCardWidth = w
-        mTopMargin = 30
+        imageView.layout(imageLeft, imageTop, imageLeft + imageWidth, imageTop + imageHeight)
+
+        val progressBarLeft = (imageLeft + imageLeft + imageWidth) / 2 - progressBar.measuredWidth / 2
+        val progressBarTop = (imageTop + imageTop + imageHeight) / 2 - progressBar.measuredHeight / 2
+
+        progressBar.layout(progressBarLeft,
+                progressBarTop,
+                progressBarLeft + progressBar.measuredWidth,
+                progressBarTop + progressBar.measuredHeight)
+
+        var x = imageLeft + imageWidth + padding
+        children.forEach {
+            if (it == imageView || it == progressBar) {
+                return@forEach
+            }
+            x += padding
+
+            var entityTop = imageTop + marginTop
+            if (entityTop + it.measuredHeight > b - t) {
+                entityTop = b - t - it.measuredHeight
+            }
+            it.layout(x, entityTop, x + it.measuredWidth, entityTop + it.measuredHeight)
+
+            x += padding
+        }
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val w = MeasureSpec.getSize(widthMeasureSpec)
+        val h = MeasureSpec.getSize(heightMeasureSpec)
+        children.forEach {
+            if (it == imageView) {
+                it.measure(
+                        MeasureSpec.makeMeasureSpec(imageWidth, MeasureSpec.EXACTLY),
+                        MeasureSpec.makeMeasureSpec(imageHeight, MeasureSpec.EXACTLY)
+                )
+            } else if (it == progressBar) {
+                it.measure(
+                        MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
+                        MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
+                )
+            } else {
+                it.measure(
+                        MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
+                        MeasureSpec.makeMeasureSpec(h - marginTop, MeasureSpec.AT_MOST)
+                )
+            }
+        }
+
+        setMeasuredDimension(w, h)
+    }
+
+    fun configure(cardId: String, entityList: List<Entity>, anchorY: Int) {
+
+        removeAllViews()
+        this.anchorY = anchorY
+
+
+        if (cardId != "?") {
+            addView(imageView)
+            addView(progressBar)
+
+            Picasso.with(context).load(Utils.getCardUrl(cardId)).into(object : Target {
+                override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom?) {
+                    imageView.setImageBitmap(bitmap)
+                    progressBar.visibility = View.GONE
+                }
+
+                override fun onBitmapFailed(errorDrawable: Drawable?) {
+
+                }
+
+                override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+
+                }
+            })
+        }
 
         for (entity in entityList) {
-            val b = DetailsViewBinding.inflate(LayoutInflater.from(context))
-            b.root.minimumWidth = mCardWidth
-
             val builder = StringBuilder()
 
             if (Utils.isAppDebuggable) {
@@ -51,71 +131,69 @@ class DetailsView(context: Context) : LinearLayout(context) {
 
             val cardType = entity.tags[Entity.KEY_CARDTYPE]
             if (entity.extra.drawTurn != -1) {
+                if (!builder.isEmpty()) {
+                    builder.append("\n")
+                }
                 builder.append(context.getString(R.string.drawnTurn, GameLogic.gameTurnToHumanTurn(entity.extra.drawTurn)))
                 if (entity.extra.mulliganed) {
                     builder.append(" (")
                     builder.append(context.getString(R.string.mulliganed))
                     builder.append(")")
                 }
-                builder.append("\n")
             }
 
             if (entity.extra.playTurn != -1) {
+                if (!builder.isEmpty()) {
+                    builder.append("\n")
+                }
                 builder.append(context.getString(R.string.playedTurn, GameLogic.gameTurnToHumanTurn(entity.extra.playTurn)))
-                builder.append("\n")
             }
             if (entity.extra.diedTurn != -1 && (Type.MINION == cardType || Type.WEAPON == cardType)) {
+                if (!builder.isEmpty()) {
+                    builder.append("\n")
+                }
                 builder.append(context.getString(R.string.diedTurn, GameLogic.gameTurnToHumanTurn(entity.extra.diedTurn)))
-                builder.append("\n")
             }
             if (!TextUtils.isEmpty(entity.extra.createdBy)) {
+                if (!builder.isEmpty()) {
+                    builder.append("\n")
+                }
                 builder.append(context.getString(R.string.createdBy, CardUtil.getCard(entity.extra.createdBy!!).name))
             }
 
+            val textView: TextView
+            val entityView: View
             if (Entity.ZONE_SECRET == entity.tags[Entity.KEY_ZONE] && entity.CardID.isNullOrEmpty()) {
+                val binding = EntityViewWithSecretsBinding.inflate(LayoutInflater.from(context))
+                entityView = binding.root
+                textView = binding.textView
+
+                if (!builder.isEmpty()) {
+                    builder.append("\n")
+                }
                 builder.append(Utils.getString(R.string.possibleSecrets))
-                appendPossibleSecrets(b.secrets, entity)
+                builder.append("\n")
+
+                appendPossibleSecrets(binding.secrets, entity)
+            } else {
+                textView = LayoutInflater.from(context).inflate(R.layout.entity_view, this, false) as TextView
+                entityView = textView
             }
 
-            var s = builder.toString()
 
-            if (Utils.isEmpty(s)) {
+            if (builder.isEmpty()) {
                 builder.append(Utils.getString(R.string.inDeck))
                 builder.append("\n")
-                s = builder.toString()
             }
+            val s = builder.toString()
 
-            b.textView.text = s
-            b.textView.typeface = Typefaces.franklin()
+            textView.text = s
 
-            addView(b.root)
+            addView(entityView, WRAP_CONTENT, WRAP_CONTENT)
         }
-
-        applyMargins()
     }
 
-    internal fun applyMargins() {
-        for (i in 0 until childCount) {
-            val child = getChildAt(i)
-            if (child is ImageView) {
-                continue
-            }
-            val layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-            val p = Utils.dpToPx(5)
-            layoutParams.rightMargin = p
-            layoutParams.leftMargin = layoutParams.rightMargin
-            layoutParams.topMargin = Utils.dpToPx(mTopMargin)
-            child.layoutParams = layoutParams
-        }
-        requestLayout()
-    }
-
-    fun setTopMargin(topMargin: Int) {
-        mTopMargin = topMargin
-        applyMargins()
-    }
-
-    private fun appendPossibleSecrets(horizontalLayout: LinearLayout, entity: Entity) {
+    private fun appendPossibleSecrets(flexboxLayout: FlexboxLayout, entity: Entity) {
         val game = GameLogicListener.get().currentGame
 
         val possibleSecrets: Collection<String>
@@ -136,14 +214,7 @@ class DetailsView(context: Context) : LinearLayout(context) {
                     gift = false)
         }
 
-        var verticalLayout: LinearLayout? = null
         for (deckEntryItem in list) {
-
-            if (verticalLayout == null) {
-                verticalLayout = LinearLayout(horizontalLayout.context)
-                verticalLayout.orientation = VERTICAL
-                horizontalLayout.addView(verticalLayout, mCardWidth - Utils.dpToPx(40), WRAP_CONTENT)
-            }
             val view = LayoutInflater.from(context).inflate(R.layout.bar_card, null)
             val barTemplate = LayoutInflater.from(context).inflate(R.layout.bar_template, null) as ViewGroup
             val params = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
@@ -152,12 +223,7 @@ class DetailsView(context: Context) : LinearLayout(context) {
             val holder = DeckEntryHolder(barTemplate)
             holder.bind(deckEntryItem)
 
-            verticalLayout.addView(barTemplate, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(30)))
-
-            if (verticalLayout.size >= 8) {
-                // if we have a lot of secrets, they won't fit on a single screen
-                verticalLayout = null
-            }
+            flexboxLayout.addView(barTemplate, ViewGroup.LayoutParams(imageWidth - Utils.dpToPx(40), Utils.dpToPx(30)))
         }
     }
 }

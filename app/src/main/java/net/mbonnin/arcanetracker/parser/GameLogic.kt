@@ -242,13 +242,17 @@ class GameLogic private constructor() {
             } else if (Entity.ZONE_PLAY == oldValue && Entity.ZONE_GRAVEYARD == newValue) {
                 entity.extra.diedTurn = mCurrentTurn
                 SecretLogic.minionDied(mGame!!, entity)
-            } else if (Entity.ZONE_HAND == oldValue && Entity.ZONE_HAND != newValue) {
+            } else if (Entity.ZONE_HAND == oldValue && Entity.ZONE_DECK == newValue) {
                 /*
                  * card was put back in the deck (most likely from mulligan)
                  */
                 entity.extra.drawTurn = -1
+            }
+
+            if (Entity.ZONE_HAND == oldValue && Entity.ZONE_HAND != newValue) {
                 /*
-                 * no reason to hide it anymore
+                 * no reason to hide it anymore. Hopefully when the card leaves the hand, it is
+                 * revealed
                  */
                 entity.extra.hide = false
             }
