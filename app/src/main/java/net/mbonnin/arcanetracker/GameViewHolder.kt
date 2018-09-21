@@ -35,7 +35,7 @@ class GameViewHolder(override val containerView: View) : RecyclerView.ViewHolder
         hero.setImageDrawable(Utils.getDrawableForNameDeprecated(String.format("hero_%02d_round", summary.hero + 1)))
         opponentHero.setImageDrawable(Utils.getDrawableForNameDeprecated(String.format("hero_%02d_round", summary.opponentHero + 1)))
         deckName.text = summary.deckName
-        winLoss.text = if (summary.win) context.getString(R.string.win) else context.getString(R.string.loss)
+        winLoss.text = if (summary.win) context.getString(R.string.win) else context.getString(R.string.lost)
         coin.visibility = if (summary.coin) View.VISIBLE else View.INVISIBLE
         opponentName.text = getDisplayName(summary.opponentHero)
 

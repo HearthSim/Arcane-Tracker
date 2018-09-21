@@ -205,10 +205,11 @@
     <string name="yourDecks">I tuoi mazzi</string>
     <string name="select_deck">Per favore seleziona un mazzo</string>
     <string name="opponents">Matchups:</string>
-    <string name="won">Vinte</string>
-    <string name="lost">Perse</string>
+    <string name="won">Vinta</string>
+    <string name="lost">Persa</string>
     <string name="winRate">Percentuale di vincita</string>
     <string name="na">N/A</string>
     <string name="total">Totale</string>
     <string name="opponent">Avversario</string>
+    <string name="gameCount">%d Partite Giocate</string>
 </resources>
