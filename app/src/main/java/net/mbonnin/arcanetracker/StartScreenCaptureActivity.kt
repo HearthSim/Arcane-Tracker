@@ -7,8 +7,8 @@ import android.content.Intent
 import android.media.projection.MediaProjectionManager
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
-import android.support.v7.app.AppCompatActivity
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import net.mbonnin.arcanetracker.databinding.StartScreenCaptureActivityBinding
 import net.mbonnin.arcanetracker.extension.finishAndRemoveTaskIfPossible

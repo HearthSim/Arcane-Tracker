@@ -24,7 +24,7 @@ android {
         targetSdkVersion Versions.targetSdkVersion
         versionCode 313
         versionName "3.13"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
         javaCompileOptions {

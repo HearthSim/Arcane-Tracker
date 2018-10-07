@@ -4,7 +4,7 @@ import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Intent
 import android.os.Handler
-import android.support.v7.content.res.AppCompatResources
+import androidx.appcompat.content.res.AppCompatResources
 import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator

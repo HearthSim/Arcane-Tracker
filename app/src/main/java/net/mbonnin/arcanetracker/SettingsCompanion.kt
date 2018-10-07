@@ -6,8 +6,8 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
-import android.support.annotation.RequiresApi
-import android.support.v4.content.FileProvider
+import androidx.annotation.RequiresApi
+import androidx.core.content.FileProvider
 import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View

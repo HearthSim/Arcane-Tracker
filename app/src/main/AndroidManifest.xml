@@ -21,10 +21,9 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="android:allowBackup"
         >
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="net.mbonnin.arcanetracker.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">

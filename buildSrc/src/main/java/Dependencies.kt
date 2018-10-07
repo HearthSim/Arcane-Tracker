@@ -3,7 +3,7 @@ object Versions {
     const val targetSdkVersion = 28
     const val compileSdkVersion = 28
     const val kotlin = "1.2.71"
-    const val androidPlugin = "3.1.0"
+    const val androidPlugin = "3.2.0"
 
 }
 
@@ -34,7 +34,6 @@ object Libs {
     const val constraintLayout = "com.android.support.constraint:constraint-layout:1.1.3"
     const val paperDb = "io.paperdb:paperdb:2.6"
     const val annimonStream = "com.annimon:stream:1.2.0"
-    const val dataBindingCompiler = "com.android.databinding:compiler:${Versions.androidPlugin}"
     const val rxAndroid = "io.reactivex:rxandroid:1.2.1"
     const val rxAndroid2 = "io.reactivex.rxjava2:rxandroid:2.1.0"
     const val retrofit = "com.squareup.retrofit2:retrofit:2.4.0"

@@ -9,9 +9,9 @@ import android.content.res.Configuration
 import android.graphics.Point
 import android.os.Build
 import android.os.Handler
-import android.support.multidex.MultiDexApplication
 import android.util.DisplayMetrics
 import android.view.ContextThemeWrapper
+import androidx.multidex.MultiDexApplication
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.LruCache

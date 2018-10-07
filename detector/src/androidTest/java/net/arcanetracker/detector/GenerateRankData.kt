@@ -1,12 +1,10 @@
 package net.arcanetracker.detector
 
-import android.Manifest
-import android.support.test.rule.GrantPermissionRule
+import androidx.test.rule.GrantPermissionRule
 import com.squareup.moshi.Moshi
 import net.mbonnin.arcanetracker.detector.Detector
 import net.mbonnin.arcanetracker.detector.RankData
 import okio.Okio
-import org.junit.Rule
 import org.junit.Test
 import java.io.File
 

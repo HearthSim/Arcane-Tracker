@@ -8,9 +8,9 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
+import androidx.annotation.RequiresApi
+import com.google.android.material.snackbar.Snackbar
+import androidx.appcompat.app.AppCompatActivity
 import android.view.ContextThemeWrapper
 import android.view.View
 import android.widget.Button

@@ -1,9 +1,9 @@
 package net.mbonnin.arcanetracker.room
 
-import android.arch.persistence.db.SupportSQLiteDatabase
-import android.arch.persistence.room.*
-import android.arch.persistence.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.room.migration.Migration
 import android.database.Cursor
+import androidx.room.*
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication

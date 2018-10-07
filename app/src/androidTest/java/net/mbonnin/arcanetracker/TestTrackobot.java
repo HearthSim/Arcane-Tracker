@@ -1,6 +1,6 @@
 package net.mbonnin.arcanetracker;
 
-import android.support.test.InstrumentationRegistry;
+import androidx.test.InstrumentationRegistry;
 
 import junit.framework.Assert;
 

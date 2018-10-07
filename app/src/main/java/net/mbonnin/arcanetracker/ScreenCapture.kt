@@ -9,7 +9,7 @@ import android.media.projection.MediaProjection
 import android.os.Build
 import android.os.Handler
 import android.os.HandlerThread
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 import net.mbonnin.arcanetracker.detector.ByteBufferImage
 import timber.log.Timber
 import java.util.concurrent.CopyOnWriteArrayList

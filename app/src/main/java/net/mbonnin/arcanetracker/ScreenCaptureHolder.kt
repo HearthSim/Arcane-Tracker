@@ -5,7 +5,7 @@ import android.content.Intent
 import android.media.projection.MediaProjection
 import android.os.Build
 import android.os.Handler
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 import net.mbonnin.arcanetracker.detector.ByteBufferImage
 import net.mbonnin.arcanetracker.detector.Detector
 import net.mbonnin.arcanetracker.parser.Entity

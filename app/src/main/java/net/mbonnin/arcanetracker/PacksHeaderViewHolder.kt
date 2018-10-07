@@ -1,6 +1,6 @@
 package net.mbonnin.arcanetracker
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_packs_header.*

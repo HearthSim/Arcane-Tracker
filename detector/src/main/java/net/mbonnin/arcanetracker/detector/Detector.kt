@@ -25,7 +25,7 @@ class Detector(var context: Context, val isTablet: Boolean) {
 
     val generatedData by lazy {
         val adapter = moshi.adapter(RankData::class.java)
-        val bufferedSource = Okio.buffer(Okio.source(this::class.java.getResourceAsStream("/rank_data.json")))
+        val bufferedSource = Okio.buffer(Okio.source(this::class.java.getResourceAsStream("/rank_data.json")!!))
         bufferedSource.use {
             adapter.fromJson(bufferedSource)
         }!!

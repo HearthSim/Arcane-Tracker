@@ -3,7 +3,7 @@ package net.mbonnin.arcanetracker
 import android.app.Activity
 import android.app.AlertDialog
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import kotlinx.android.synthetic.main.history_activity.*
 import net.mbonnin.arcanetracker.model.GameSummary

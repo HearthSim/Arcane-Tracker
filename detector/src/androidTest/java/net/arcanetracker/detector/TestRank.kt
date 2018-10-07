@@ -1,11 +1,9 @@
 package net.arcanetracker.detector
 
-import android.Manifest
-import android.support.test.InstrumentationRegistry
-import android.support.test.rule.GrantPermissionRule
+import androidx.test.InstrumentationRegistry
+import androidx.test.rule.GrantPermissionRule
 import net.mbonnin.arcanetracker.detector.Detector
 import org.junit.Assert
-import org.junit.Rule
 import org.junit.Test
 import timber.log.Timber
 

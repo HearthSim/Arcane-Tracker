@@ -3,7 +3,7 @@ package net.mbonnin.arcanetracker
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.MotionEvent

@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    tools:parentTag="android.support.constraint.ConstraintLayout"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout"
     android:layout_height="match_parent">
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/deckList"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -70,7 +70,7 @@
         app:layout_constraintRight_toLeftOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/opponentList"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -83,7 +83,7 @@
         app:layout_constraintRight_toLeftOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/opponents">
 
-    </android.support.v7.widget.RecyclerView>
+    </androidx.recyclerview.widget.RecyclerView>
 
 
 </merge>
