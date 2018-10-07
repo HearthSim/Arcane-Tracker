@@ -14,7 +14,7 @@ class PicassoCardRequestHandler private constructor() : RequestHandler() {
     internal val cache: DiskLruCache
 
     init {
-        val file = File(ArcaneTrackerApplication.context.cacheDir, "cardsCache")
+        val file = File(HDTApplication.context.cacheDir, "cardsCache")
         cache = DiskLruCache.create(FileSystem.SYSTEM, file, VERSION, ENTRY_COUNT, (250 * 1024 * 1024).toLong())
     }
 

@@ -209,7 +209,7 @@ class Controller : GameLogic.Listener {
 
         list.addAll(intermediateToDeckEntryList(intermediateList, { true }))
         if (unknownCards > 0) {
-            list.add(ArcaneTrackerApplication.context.getString(R.string.unknown_cards, unknownCards))
+            list.add(HDTApplication.context.getString(R.string.unknown_cards, unknownCards))
         }
         return list
     }
@@ -282,7 +282,7 @@ class Controller : GameLogic.Listener {
          */
         val unknownCards = originalDeckEntityList.size - revealedEntityList.size - knownIdList.size
         if (unknownCards > 0) {
-            list.add(ArcaneTrackerApplication.context.getString(R.string.unknown_cards, unknownCards))
+            list.add(HDTApplication.context.getString(R.string.unknown_cards, unknownCards))
         }
         if (unknownCards < 0) {
             Timber.e("too many known card ids: $unknownCards")
@@ -386,7 +386,7 @@ class Controller : GameLogic.Listener {
             list.addAll(deckEntryList.sortedWith(deckEntryComparator))
 
             if (unknown > 0) {
-                list.add(ArcaneTrackerApplication.context.getString(R.string.unknown_cards, unknown))
+                list.add(HDTApplication.context.getString(R.string.unknown_cards, unknown))
             }
             return list
         }

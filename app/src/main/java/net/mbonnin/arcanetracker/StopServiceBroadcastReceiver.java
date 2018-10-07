@@ -22,7 +22,7 @@ public class StopServiceBroadcastReceiver extends BroadcastReceiver {
     public static void init() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION);
-        ArcaneTrackerApplication.Companion.getContext().registerReceiver(new StopServiceBroadcastReceiver(), filter);
+        HDTApplication.Companion.getContext().registerReceiver(new StopServiceBroadcastReceiver(), filter);
     }
 
     @Override

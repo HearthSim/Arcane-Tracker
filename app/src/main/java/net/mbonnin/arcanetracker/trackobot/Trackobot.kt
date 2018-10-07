@@ -140,7 +140,7 @@ class Trackobot {
 
     private fun handleResponse(lce: Lce<ResultData>) {
         if (lce.data != null) {
-            val context = ArcaneTrackerApplication.context
+            val context = HDTApplication.context
             Toaster.show(context.getString(R.string.trackobotSuccess))
             Timber.d("trackobot upload success")
         } else if (lce.error != null) {
@@ -149,7 +149,7 @@ class Trackobot {
 
             Timber.d("trackobot upload error")
 
-            val context = ArcaneTrackerApplication.context
+            val context = HDTApplication.context
             if (e is retrofit2.HttpException) {
                 message = context.getString(R.string.trackobotHttpError, e.code())
             } else if (e is SocketTimeoutException) {

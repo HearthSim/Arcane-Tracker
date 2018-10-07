@@ -13,7 +13,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import net.mbonnin.arcanetracker.ArcaneTrackerApplication
+import net.mbonnin.arcanetracker.HDTApplication
 import net.mbonnin.arcanetracker.FirebaseConstants
 import net.mbonnin.arcanetracker.Gatekeeper
 import net.mbonnin.arcanetracker.hsreplay.model.Lce
@@ -65,7 +65,7 @@ class HSReplay {
         }
 
         Timber.w("doUploadGame")
-        FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("hsreplay_upload", null)
+        FirebaseAnalytics.getInstance(HDTApplication.context).logEvent("hsreplay_upload", null)
 
         return legacyService().createUpload("https://upload.hsreplay.net/api/v1/replay/upload/request", uploadRequest)
                 .firstOrError()
@@ -178,7 +178,7 @@ class HSReplay {
                     val bundle = Bundle()
                     bundle.putString("is_premium",premium.toString())
 
-                    FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).setUserProperty(FirebaseConstants.IS_PREMIUM.name.toLowerCase(),
+                    FirebaseAnalytics.getInstance(HDTApplication.context).setUserProperty(FirebaseConstants.IS_PREMIUM.name.toLowerCase(),
                             premium.toString())
 
                     Timber.e("premium=$premium")

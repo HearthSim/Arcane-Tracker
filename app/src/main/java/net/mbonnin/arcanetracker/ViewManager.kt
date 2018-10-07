@@ -187,7 +187,7 @@ class ViewManager(context: Context) {
 
         fun get(): ViewManager {
             if (sViewManager == null) {
-                sViewManager = ViewManager(ArcaneTrackerApplication.context)
+                sViewManager = ViewManager(HDTApplication.context)
             }
 
             return sViewManager!!

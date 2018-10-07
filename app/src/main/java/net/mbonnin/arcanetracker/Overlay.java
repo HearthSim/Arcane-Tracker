@@ -3,14 +3,11 @@ package net.mbonnin.arcanetracker;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import static android.provider.Settings.canDrawOverlays;
 
 public class Overlay {
     private static Overlay sOverlay;
@@ -27,7 +24,7 @@ public class Overlay {
         MainViewCompanion.Companion.get().setState(MainViewCompanion.Companion.getSTATE_PLAYER(), false);
         MainViewCompanion.Companion.get().show(true);
 
-        Context context = ArcaneTrackerApplication.Companion.getContext();
+        Context context = HDTApplication.Companion.getContext();
 
         int previousVersion = Settings.INSTANCE.get(Settings.INSTANCE.getVERSION(), 0);
         Settings.INSTANCE.set(Settings.INSTANCE.getVERSION(), BuildConfig.VERSION_CODE);

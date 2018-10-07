@@ -18,7 +18,7 @@ class PicassoBarRequestHandler : RequestHandler() {
         val cardId = request.uri.host
         val loadedFrom = Picasso.LoadedFrom.DISK
 
-        val inputStream = ArcaneTrackerApplication.context.getAssets().open("bars/$cardId.webp") ?: throw IOException()
+        val inputStream = HDTApplication.context.getAssets().open("bars/$cardId.webp") ?: throw IOException()
 
         val b = BitmapFactory.decodeStream(inputStream)
         inputStream.close()

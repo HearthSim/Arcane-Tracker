@@ -6,7 +6,7 @@ import android.database.Cursor
 import androidx.room.*
 import io.reactivex.Flowable
 import io.reactivex.Maybe
-import net.mbonnin.arcanetracker.ArcaneTrackerApplication
+import net.mbonnin.arcanetracker.HDTApplication
 import timber.log.Timber
 
 
@@ -125,7 +125,7 @@ data class PackStats(val count: Int, val dust: Int)
 data class Counter(val won: Int, val lost: Int)
 
 object RDatabaseSingleton {
-    val instance = Room.databaseBuilder(ArcaneTrackerApplication.get(), RDatabase::class.java, "db")
+    val instance = Room.databaseBuilder(HDTApplication.get(), RDatabase::class.java, "db")
             .addMigrations(
                     Migration3_4(),
                     Migration4_5(),

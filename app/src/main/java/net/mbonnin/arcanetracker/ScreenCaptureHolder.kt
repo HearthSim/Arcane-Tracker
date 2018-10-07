@@ -12,7 +12,7 @@ import net.mbonnin.arcanetracker.parser.Entity
 
 object ScreenCaptureHolder {
     @SuppressLint("StaticFieldLeak")
-    private val mDetector = Detector(ArcaneTrackerApplication.get(), Utils.is7InchesOrHigher)
+    private val mDetector = Detector(HDTApplication.get(), Utils.is7InchesOrHigher)
     val handler = Handler()
     var screenCaptureStarting = false
     private var screenCapture: ScreenCapture? = null
@@ -26,9 +26,9 @@ object ScreenCaptureHolder {
                     if (screenCapture == null) {
                         screenCaptureStarting = true
                         val intent = Intent()
-                        intent.setClass(ArcaneTrackerApplication.get(), StartScreenCaptureActivity::class.java)
+                        intent.setClass(HDTApplication.get(), StartScreenCaptureActivity::class.java)
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                        ArcaneTrackerApplication.get().startActivity(intent)
+                        HDTApplication.get().startActivity(intent)
                     }
                 } else {
                     if (screenCapture != null) {

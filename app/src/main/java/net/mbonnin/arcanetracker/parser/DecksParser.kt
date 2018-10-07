@@ -3,7 +3,7 @@ package net.mbonnin.arcanetracker.parser
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import net.hearthsim.kotlin.hslog.LogLine
-import net.mbonnin.arcanetracker.ArcaneTrackerApplication
+import net.mbonnin.arcanetracker.HDTApplication
 import net.mbonnin.arcanetracker.helper.DeckStringHelper
 import net.mbonnin.arcanetracker.MainViewCompanion
 import net.mbonnin.arcanetracker.R
@@ -42,7 +42,7 @@ class DecksParser: LogReader.LineConsumer {
                     if (deck != null) {
                         deck.id = result.id
                         if (state == State.ARENA) {
-                            deck.name = ArcaneTrackerApplication.get().getString(R.string.arenaDeck)
+                            deck.name = HDTApplication.get().getString(R.string.arenaDeck)
                         } else {
                             deck.name = result.name ?: "?"
                         }

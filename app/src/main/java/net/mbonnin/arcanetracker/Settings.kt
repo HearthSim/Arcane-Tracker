@@ -33,7 +33,7 @@ object Settings {
     val HSREPLAY_OAUTH_ACCESS_TOKEN = "HSREPLAY_OAUTH_ACCESS_TOKEN"
 
     private val preferences: SharedPreferences
-        get() = PreferenceManager.getDefaultSharedPreferences(ArcaneTrackerApplication.context)
+        get() = PreferenceManager.getDefaultSharedPreferences(HDTApplication.context)
 
     operator fun get(key: String, defaultValue: Boolean): Boolean {
         return preferences.getBoolean(key, defaultValue)

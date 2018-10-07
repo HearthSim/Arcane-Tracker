@@ -26,7 +26,7 @@ object RankHolder {
         if (playerRank != RANK_UNKNOWN) {
             if (this.playerRank != playerRank) {
                 this.playerRank = playerRank
-                sb.append(ArcaneTrackerApplication.context.getString(R.string.your_rank, playerRank))
+                sb.append(HDTApplication.context.getString(R.string.your_rank, playerRank))
             }
         }
 
@@ -37,7 +37,7 @@ object RankHolder {
                 if (!sb.isBlank()) {
                     sb.append(" - ")
                 }
-                sb.append(ArcaneTrackerApplication.context.getString(R.string.opponent_rank, opponentRank))
+                sb.append(HDTApplication.context.getString(R.string.opponent_rank, opponentRank))
             }
         }
 

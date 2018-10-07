@@ -41,7 +41,7 @@ class CardRenderer {
 
     @Synchronized
     private fun getAsset(name: String): Bitmap? {
-        val lruCache = ArcaneTrackerApplication.get().imageCache
+        val lruCache = HDTApplication.get().imageCache
         var bitmap: Bitmap? = lruCache!!.get(name)
         if (bitmap == null) {
             bitmap = Utils.getAssetBitmap(String.format("renderer/%s.webp", name))
@@ -221,7 +221,7 @@ class CardRenderer {
         val b = getAsset("race-banner") ?: return
 
         var s: String? = null
-        val context = ArcaneTrackerApplication.context
+        val context = HDTApplication.context
 
         when (card.race) {
             Race.MECHANICAL -> s = context.getString(R.string.race_mechanical)

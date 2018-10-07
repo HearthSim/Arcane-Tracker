@@ -59,7 +59,7 @@ class ScreenCapture constructor(mediaProjection: MediaProjection) : ImageReader.
     init {
         mediaProjection.registerCallback(mCallback, null)
 
-        val wm = ArcaneTrackerApplication.get().getSystemService(Context.WINDOW_SERVICE) as android.view.WindowManager
+        val wm = HDTApplication.get().getSystemService(Context.WINDOW_SERVICE) as android.view.WindowManager
         val display = wm.defaultDisplay
         val point = Point()
         display.getRealSize(point)

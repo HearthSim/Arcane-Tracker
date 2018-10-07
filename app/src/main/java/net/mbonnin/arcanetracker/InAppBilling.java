@@ -32,7 +32,7 @@ public class InAppBilling {
 
     public static InAppBilling get() {
         if (sInAppBilling == null) {
-            sInAppBilling = new InAppBilling(ArcaneTrackerApplication.Companion.getContext());
+            sInAppBilling = new InAppBilling(HDTApplication.Companion.getContext());
         }
         return sInAppBilling;
     }

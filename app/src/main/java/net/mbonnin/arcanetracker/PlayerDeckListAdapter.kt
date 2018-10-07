@@ -43,7 +43,7 @@ class PlayerDeckListAdapter : DeckListAdapter() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(ArcaneTrackerApplication.context).inflate(R.layout.deck_line_view, null)
+        val view = LayoutInflater.from(HDTApplication.context).inflate(R.layout.deck_line_view, null)
         return ViewHolder(view)
     }
 

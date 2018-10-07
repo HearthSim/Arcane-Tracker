@@ -27,7 +27,7 @@ import okhttp3.OkHttpClient
 import timber.log.Timber
 import java.util.*
 
-class ArcaneTrackerApplication : MultiDexApplication() {
+class HDTApplication : MultiDexApplication() {
     var imageCache: LruCache? = null
         private set
     private var mHasTabletLayout: Boolean = false
@@ -37,7 +37,7 @@ class ArcaneTrackerApplication : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
 
-        sArcaneTrackerApplication = this
+        sHDTApplication = this
         context = object : ContextThemeWrapper(this, R.style.AppTheme) {
             override fun startActivity(intent: Intent) {
                 if (intent.flags and Intent.FLAG_ACTIVITY_NEW_TASK == 0) {
@@ -76,7 +76,7 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         Timber.d("sizeInInches=${sizeInInches}")
         mHasTabletLayout = sizeInInches >= 8
 
-        Utils.logWithDate("ArcaneTrackerApplication.onCreate() + version=" + BuildConfig.VERSION_CODE)
+        Utils.logWithDate("HDTApplication.onCreate() + version=" + BuildConfig.VERSION_CODE)
 
         Paper.init(this)
 
@@ -140,7 +140,7 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         val achievementLogReader = LogReader("Achievements.log", true)
         achievementLogReader.start(AchievementsParser())
 
-        HSReplay.userAgent = (ArcaneTrackerApplication.context.getPackageName() + "/" + BuildConfig.VERSION_NAME
+        HSReplay.userAgent = (HDTApplication.context.getPackageName() + "/" + BuildConfig.VERSION_NAME
                 + "; Android " + Build.VERSION.RELEASE + ";")
         HSReplay.context = this
         HSReplay.get()
@@ -184,10 +184,10 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         lateinit var context: Context
             private set
 
-        private lateinit var sArcaneTrackerApplication: ArcaneTrackerApplication
+        private lateinit var sHDTApplication: HDTApplication
 
-        fun get(): ArcaneTrackerApplication {
-            return sArcaneTrackerApplication
+        fun get(): HDTApplication {
+            return sHDTApplication
         }
     }
 

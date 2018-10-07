@@ -17,7 +17,7 @@ class QuitDetector {
 
         override fun run() {
             val displayMetrics = DisplayMetrics()
-            val windowManager = ArcaneTrackerApplication.get().getSystemService(WINDOW_SERVICE) as WindowManager
+            val windowManager = HDTApplication.get().getSystemService(WINDOW_SERVICE) as WindowManager
             windowManager.defaultDisplay.getMetrics(displayMetrics)
             val height = displayMetrics.heightPixels
             val width = displayMetrics.widthPixels
@@ -32,7 +32,7 @@ class QuitDetector {
                 Timber.d("Show")
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (!canDrawOverlays(ArcaneTrackerApplication.get())) {
+                    if (!canDrawOverlays(HDTApplication.get())) {
                         // we might come here from the quit detector. In that case, just do nothing
                         return
                     }

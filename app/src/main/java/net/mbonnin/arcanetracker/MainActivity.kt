@@ -179,12 +179,12 @@ class MainActivity : AppCompatActivity() {
                 packageManager.getPackageInfo(HEARTHSTONE_PACKAGE_ID, 0)?.let {
                     val c = it.versionName.split(".")
                     try {
-                        ArcaneTrackerApplication.get().hearthstoneBuild = c[c.size - 1].toInt()
+                        HDTApplication.get().hearthstoneBuild = c[c.size - 1].toInt()
                     } catch (e: Exception) {
                         Timber.e("cannot parse hearthstone version ${it.versionName}")
                     }
 
-                    Timber.d("hearthstone build: ${ArcaneTrackerApplication.get().hearthstoneBuild}")
+                    Timber.d("hearthstone build: ${HDTApplication.get().hearthstoneBuild}")
                 }
             } catch (e: Exception) {
                 Timber.d("Cannot find Hearthstone build number")

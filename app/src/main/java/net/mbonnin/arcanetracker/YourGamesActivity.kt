@@ -16,7 +16,7 @@ class YourGamesActivity : Activity() {
 
         val adapter = GameAdapter(GameSummary.getGameSummary())
 
-        recyclerView.layoutManager = LinearLayoutManager(ArcaneTrackerApplication.context)
+        recyclerView.layoutManager = LinearLayoutManager(HDTApplication.context)
         recyclerView.adapter = adapter
 
         if (adapter.itemCount == 0) {

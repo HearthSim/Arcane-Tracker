@@ -33,7 +33,7 @@ object Utils {
 
     val is7InchesOrHigher: Boolean
         get() {
-            val context = ArcaneTrackerApplication.context
+            val context = HDTApplication.context
             val display = (context.getSystemService(Activity.WINDOW_SERVICE) as WindowManager).defaultDisplay
             val outMetrics = DisplayMetrics()
             display.getMetrics(outMetrics)
@@ -48,7 +48,7 @@ object Utils {
 
     val isAppDebuggable: Boolean
         get() {
-            val context = ArcaneTrackerApplication.context
+            val context = HDTApplication.context
             return 0 != context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE
         }
 
@@ -57,7 +57,7 @@ object Utils {
 
     val isNetworkConnected: Boolean
         get() {
-            val cm = ArcaneTrackerApplication.context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val cm = HDTApplication.context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
             val activeNetwork = cm.activeNetworkInfo
             return activeNetwork != null && activeNetwork.isConnectedOrConnecting
@@ -65,11 +65,11 @@ object Utils {
 
     fun dpToPx(dp: Int): Int {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(),
-                ArcaneTrackerApplication.context.resources.displayMetrics).toInt()
+                HDTApplication.context.resources.displayMetrics).toInt()
     }
 
     fun getDrawableForNameDeprecated(name: String): Drawable {
-        val context = ArcaneTrackerApplication.context
+        val context = HDTApplication.context
         val id = context.resources.getIdentifier(name.toLowerCase(), "drawable", context.packageName)
         if (id > 0) {
             return context.resources.getDrawable(id)
@@ -80,7 +80,7 @@ object Utils {
     }
 
     fun getDrawableForName(name: String): Drawable? {
-        val context = ArcaneTrackerApplication.context
+        val context = HDTApplication.context
         val id = context.resources.getIdentifier(name.toLowerCase(), "drawable", context.packageName)
         if (id > 0) {
             return context.resources.getDrawable(id)
@@ -133,7 +133,7 @@ object Utils {
     }
 
     fun getAssetBitmap(name: String): Bitmap? {
-        val context = ArcaneTrackerApplication.context
+        val context = HDTApplication.context
         var inputStream: InputStream? = null
         try {
             inputStream = context.assets.open(name)
@@ -193,10 +193,10 @@ object Utils {
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         i.data = Uri.parse(url)
         try {
-            ArcaneTrackerApplication.context.startActivity(i)
+            HDTApplication.context.startActivity(i)
         } catch (e: Exception) {
             Utils.reportNonFatal(e)
-            Toast.makeText(ArcaneTrackerApplication.context, Utils.getString(R.string.noBrowserFound), Toast.LENGTH_LONG).show()
+            Toast.makeText(HDTApplication.context, Utils.getString(R.string.noBrowserFound), Toast.LENGTH_LONG).show()
         }
 
     }
@@ -206,7 +206,7 @@ object Utils {
     }
 
     fun getString(resId: Int, vararg args: Any): String {
-        return ArcaneTrackerApplication.context.getString(resId, *args)
+        return HDTApplication.context.getString(resId, *args)
     }
 
     fun isEmpty(str: String?): Boolean {
