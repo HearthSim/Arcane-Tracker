@@ -221,5 +221,6 @@
     <string name="history_delete_confirmation">Are you sure you want to delete your history ?</string>
     <string name="delete_everything">Delete everything</string>
     <string name="gameCount">%d Partite Giocate</string>
+    <string name="supportUs">Support us</string>
 
 </resources>

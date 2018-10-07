@@ -4,11 +4,9 @@ import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Intent
 import android.os.Handler
-import androidx.appcompat.content.res.AppCompatResources
 import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
-import android.widget.TextView
 import com.google.firebase.analytics.FirebaseAnalytics
 import timber.log.Timber
 
@@ -359,10 +357,6 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
         handleView.setOnClickListener { v2 ->
             val view = LayoutInflater.from(v.context).inflate(R.layout.more_view, null)
 
-            val d = AppCompatResources.getDrawable(v.context, R.drawable.heart)
-            d!!.setBounds(0, 0, Utils.dpToPx(26), Utils.dpToPx(24))
-            (view.findViewById<View>(R.id.donate) as TextView).setCompoundDrawables(null, null, d, null)
-            (view.findViewById<View>(R.id.donate) as TextView).compoundDrawablePadding = Utils.dpToPx(13)
             view.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
             view.findViewById<View>(R.id.settings).setOnClickListener { v3 ->
@@ -410,15 +404,15 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
 
                 HDTApplication.context.startActivity(intent)
             }
-            val donateView = view.findViewById<View>(R.id.donate)
+            val donateView = view.findViewById<View>(R.id.supportUs)
             if (true) {
                 donateView.setOnClickListener { v3 ->
                     mViewManager.removeView(view)
                     val intent = Intent()
-                    intent.setClass(HDTApplication.context, DonateActivity::class.java)
+                    intent.setClass(HDTApplication.context, SupportActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
 
-                    FirebaseAnalytics.getInstance(HDTApplication.context).logEvent("menu_donate", null)
+                    FirebaseAnalytics.getInstance(HDTApplication.context).logEvent("menu_support", null)
 
                     HDTApplication.context.startActivity(intent)
                 }

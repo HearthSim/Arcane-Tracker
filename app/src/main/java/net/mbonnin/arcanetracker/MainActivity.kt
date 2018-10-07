@@ -62,8 +62,6 @@ class MainActivity : AppCompatActivity() {
             tryToLaunchGame()
             return
         }
-
-        InAppBilling.get()
     }
 
     private fun hasAllPermissions(): Boolean {

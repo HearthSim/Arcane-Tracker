@@ -57,7 +57,7 @@
         <activity
             android:name=".LicensesActivity">
         </activity>
-        <activity android:name=".DonateActivity"
+        <activity android:name=".SupportActivity"
                   android:theme="@style/Theme.Transparent"
             />
         <activity android:name=".StartScreenCaptureActivity"
