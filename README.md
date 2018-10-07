@@ -1,6 +1,6 @@
-# Arcane Tracker
+# Hearthstone Deck Tracker
 
-https://arcanetracker.com/
+https://hsreplay.net/
 
 An automatic Hearthstone tracker for Android. 
 

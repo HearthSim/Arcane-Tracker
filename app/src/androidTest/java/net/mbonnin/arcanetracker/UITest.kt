@@ -21,7 +21,7 @@ class UITest {
     fun before() {
         Intents.init()
     }
-    
+
     @Test
     fun testButtonSize() {
         onView(withId(R.id.licenses))

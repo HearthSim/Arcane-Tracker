@@ -1,18 +1,18 @@
 <resources>
-  <string name="app_name">Arcane Tracker</string>
-  <string name="welcome">Arcane Tracker입니다!</string>
-  <string name="explanation1">Arcane tracker는 하스스톤을 실행하고 당신과 상대가 사용한 카드를 백그라운드에서 모니터링합니다.</string>
+  <string name="app_name">Hearthstone Deck Tracker</string>
+  <string name="welcome">Hearthstone Deck Tracker입니다!</string>
+  <string name="explanation1">Hearthstone Deck Tracker는 하스스톤을 실행하고 당신과 상대가 사용한 카드를 백그라운드에서 모니터링합니다.</string>
   <string name="explanation2">오버레이 창을 띄우면 게임 중 당신이 플레이한 카드와 덱에 남아 있는 카드를 보여줄겁니다.</string>
   <string name="explanation3">빛이 승리를 불러올 것입니다!</string>
   <string name="showNextTime">다음에 또 보기</string>
-  <string name="permissions">Arcane Tracker는 게임을 모니터링하고 오버레이 창을 띄우기 위해 저장소와 다른 앱 위에 그리기 권한을 필요로 합니다. 하스스톤이 실행중이라면 다시 실행해야 할 수 있습니다.</string>
+  <string name="permissions">Hearthstone Deck Tracker는 게임을 모니터링하고 오버레이 창을 띄우기 위해 저장소와 다른 앱 위에 그리기 권한을 필요로 합니다. 하스스톤이 실행중이라면 다시 실행해야 할 수 있습니다.</string>
   <string name="cannot_launch">하스스톤을 실행할 수 없습니다. 설치되어있나요?</string>
   <string name="oops_permission">이런, 권한이 없습니다.</string>
   <string name="play">시작!</string>
   <string name="authorizeAndPlay">승인하고 시작!</string>
   <string name="pleaseEnablePermissions">권한을 승인해주세요</string>
   <string name="cannot_locate_heathstone_install">하스스톤 설치 디렉토리에 접근할 수 없습니다</string>
-  <string name="arcane_tracker_running">Arcane tracker가 실행중입니다</string>
+  <string name="arcane_tracker_running">Hearthstone Deck Tracker가 실행중입니다</string>
   <string name="cannot_find_deck">최근에 사용한 덱을 찾을 수 없습니다</string>
   <string name="cannot_get_latest_cards">최근 카드 정보를 가져올 수 없습니다</string>
   <string name="settings">설정</string>
@@ -58,8 +58,8 @@
   <string name="username">유저이름:</string>
   <string name="password">비밀번호:</string>
   <string name="retrievePassword">비밀번호가 기억나지 않으면 https://github.com/HearthSim/arcane_tracker/issues/2를 참고하세요.</string>
-  <string name="quitArcaneTracker">Arcane Tracker 종료</string>
-  <string name="thisIsArcaneTracker">Arcane Tracker 버전 %1$s%2$s.</string>
+  <string name="quitArcaneTracker">Hearthstone Deck Tracker 종료</string>
+  <string name="thisIsArcaneTracker">Hearthstone Deck Tracker 버전 %1$s%2$s.</string>
   <string name="trackobotExplanation">Track-o-bot 계정과 연동해서 당신의 전적을 https://trackobot.com에서 확인할 수 있습니다.</string>
   <string name="linkAccount">기존 계정에 연동</string>
   <string name="createAccount">새 계정 만들기</string>

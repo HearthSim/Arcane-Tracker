@@ -225,7 +225,7 @@ class HSReplay {
 
         @SuppressLint("StaticFieldLeak")
         private var sHSReplay: HSReplay? = null
-        var userAgent = "Arcane Tracker"
+        var userAgent = "HDT"
         @SuppressLint("StaticFieldLeak")
         lateinit var context: Context
 

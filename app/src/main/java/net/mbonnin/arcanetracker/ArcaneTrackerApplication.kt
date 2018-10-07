@@ -102,7 +102,7 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         initCardJson()
 
         /*
-         * we need to read the whole loading screen if we start Arcane Tracker while in the 'tournament' play screen
+         * we need to read the whole loading screen if we start the Tracker while in the 'tournament' play screen
          * or arena screen already (and not in main menu)
          */
         val loadingScreenLogReader = LogReader("LoadingScreen.log", false)

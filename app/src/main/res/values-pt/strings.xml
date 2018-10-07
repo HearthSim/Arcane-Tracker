@@ -1,18 +1,18 @@
 <resources>
-  <string name="app_name">Arcane Tracker</string>
-  <string name="welcome">Bem-vindo ao Arcane Tracker !</string>
-  <string name="explanation1">Arcane Tracker vai iniciar Hearthstone e monitorar as cartas que voce e seu oponente jogam</string>
+  <string name="app_name">Hearthstone Deck Tracker</string>
+  <string name="welcome">Bem-vindo ao Hearthstone Deck Tracker !</string>
+  <string name="explanation1">Hearthstone Deck Tracker vai iniciar Hearthstone e monitorar as cartas que voce e seu oponente jogam</string>
   <string name="explanation2">A lista ira mostrar as cartas que ja foram jogadas, tambem as que faltam em seu deck enquanto voce joga.</string>
   <string name="explanation3">Que a luz lhe traga a vitoria!</string>
   <string name="showNextTime">mostrar proxima vez</string>
-  <string name="permissions">Arcane Tracker precisa de armazenamento e permicoes de tela para monitorar o jogo e mostrar a lista. Voce talvez precise reiniciar Hearthstone se ja estivesse rodando.</string>
+  <string name="permissions">Hearthstone Deck Tracker precisa de armazenamento e permicoes de tela para monitorar o jogo e mostrar a lista. Voce talvez precise reiniciar Hearthstone se ja estivesse rodando.</string>
   <string name="cannot_launch">Nao consegue abrir Hearthstone. Ele esta instalado?</string>
   <string name="oops_permission">Ops, parece que voce nao tem algumas permissoes.</string>
   <string name="play">Jogar !</string>
   <string name="authorizeAndPlay">Autorizar e jogar !</string>
   <string name="pleaseEnablePermissions">Por favor habilite permissoes</string>
   <string name="cannot_locate_heathstone_install">Nao consegue localizar diretorio de instalacao do Hearthstone</string>
-  <string name="arcane_tracker_running">Arcane tracker esta executando</string>
+  <string name="arcane_tracker_running">Hearthstone Deck Tracker esta executando</string>
   <string name="cannot_find_deck">Nao consegue achar ultimo deck usado</string>
   <string name="cannot_get_latest_cards">Nao consegue achar informacao de cartas</string>
   <string name="settings">Opcoes</string>
@@ -58,8 +58,8 @@
   <string name="username">Nome de usuario:</string>
   <string name="password">Senha:</string>
   <string name="retrievePassword">Se voce nao sabe sua senha, va para https://github.com/HearthSim/arcane_tracker/issues/2 para saber como recupera-la</string>
-  <string name="quitArcaneTracker">Sair do Arcane Tracker</string>
-  <string name="thisIsArcaneTracker">Esse é o Arcane Tracker versao %1$s%2$s.</string>
+  <string name="quitArcaneTracker">Sair do Hearthstone Deck Tracker</string>
+  <string name="thisIsArcaneTracker">Esse é o Hearthstone Deck Tracker versao %1$s%2$s.</string>
   <string name="trackobotExplanation">Ligando uma conta Track-o-bot vai permitir ver suas estatisticas em https://trackobot.com</string>
   <string name="linkAccount">Ligar conta existente</string>
   <string name="createAccount">Criar nova conta</string>

@@ -332,8 +332,8 @@ class SettingsCompanion(internal var settingsView: View) {
                         val emailIntent = Intent(Intent.ACTION_SEND_MULTIPLE)
                         emailIntent.type = "text/plain"
                         emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf("support@arcanetracker.com"))
-                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Arcane Tracker Feedback")
+                        emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf("contact@hsreplay.net"))
+                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Hearthstone Deck Tracker Feedback")
                         emailIntent.putExtra(Intent.EXTRA_TEXT, view.context.getString(R.string.decribeYourProblem) + "\n\n")
                         emailIntent.putExtra(Intent.EXTRA_STREAM, arrayUri)
 
