@@ -91,7 +91,6 @@ android {
         androidTest.java.srcDirs += 'src/androidTest/kotlin'
         androidTest.java.srcDirs += 'src/androidTest/java'
     }
-    buildToolsVersion '27.0.3'
 }
 
 repositories {
