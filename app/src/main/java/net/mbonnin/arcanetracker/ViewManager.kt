@@ -178,6 +178,10 @@ class ViewManager(context: Context) {
         }
     }
 
+    fun allViews(): List<View> {
+        return mViews
+    }
+
     companion object {
         var sViewManager: ViewManager? = null
 

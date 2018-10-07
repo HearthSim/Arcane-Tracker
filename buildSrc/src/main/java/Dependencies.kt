@@ -28,6 +28,7 @@ object Libs {
     const val rxjava2 = "io.reactivex.rxjava2:rxjava:2.2.2"
     const val junit = "junit:junit:4.12"
     const val espresso = "com.android.support.test.espresso:espresso-core:3.0.2"
+    const val espressoIntents = "com.android.support.test.espresso:espresso-intents:3.0.2"
     const val test_runner = "com.android.support.test:runner:1.0.2"
     const val test_rules = "com.android.support.test:rules:1.0.2"
     const val ktx = "androidx.core:core-ktx:1.0.0"
