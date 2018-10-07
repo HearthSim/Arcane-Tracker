@@ -408,13 +408,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
             if (true) {
                 donateView.setOnClickListener { v3 ->
                     mViewManager.removeView(view)
-                    val intent = Intent()
-                    intent.setClass(HDTApplication.context, SupportActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-
-                    FirebaseAnalytics.getInstance(HDTApplication.context).logEvent("menu_support", null)
-
-                    HDTApplication.context.startActivity(intent)
+                    Utils.openLink("https://hsreplay.net/premium/")
                 }
             } else {
                 donateView.visibility = View.GONE
