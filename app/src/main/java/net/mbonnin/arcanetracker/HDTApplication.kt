@@ -33,7 +33,7 @@ class HDTApplication : MultiDexApplication() {
     private var mHasTabletLayout: Boolean = false
     var hearthstoneBuild = 22585
 
-    @SuppressLint("NewApi")
+    @SuppressLint("NewApi", "CheckResult")
     override fun onCreate() {
         super.onCreate()
 
@@ -143,7 +143,9 @@ class HDTApplication : MultiDexApplication() {
         HSReplay.userAgent = (HDTApplication.context.getPackageName() + "/" + BuildConfig.VERSION_NAME
                 + "; Android " + Build.VERSION.RELEASE + ";")
         HSReplay.context = this
-        HSReplay.get()
+        if (HSReplay.get().token() == null) {
+            HSReplay.get().createToken().subscribe()
+        }
 
         CardRenderer.get()
 

@@ -222,5 +222,7 @@
     <string name="delete_everything">Delete everything</string>
     <string name="gameCount">%d Partite Giocate</string>
     <string name="supportUs">Subscribe to HSReplay.net</string>
+    <string name="hsReplayLogin">Login to your hsreplay account to claim your replays</string>
+    <string name="hsReplayLogedIn">You are currently logged as %s</string>
 
 </resources>

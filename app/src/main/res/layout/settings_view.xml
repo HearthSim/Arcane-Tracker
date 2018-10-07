@@ -144,8 +144,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:text="@string/screenCaptureExplanation"
-                 />
+                android:text="@string/screenCaptureExplanation" />
 
             <TextView
                 android:id="@+id/quitTimeout"
@@ -168,8 +167,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:text="@string/quitTimeoutExplanation"
-                 />
+                android:text="@string/quitTimeoutExplanation" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -186,8 +184,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                 />
+                android:layout_marginTop="5dp" />
 
             <include
                 android:id="@+id/hsReplayButton1"
@@ -195,6 +192,7 @@
 
             <include
                 android:id="@+id/hsReplayButton2"
+                android:visibility="gone"
                 layout="@layout/loadable_button_view" />
 
             <TextView
@@ -202,18 +200,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="Track-o-bot"
-
                 android:textSize="20dp"
-                android:textStyle="bold" />
+
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/trackobotText"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone">
 
                 <Button
                     android:id="@+id/trackobotSignup"
@@ -237,11 +238,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/or" />
+                android:text="@string/or"
+                android:visibility="gone" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -261,7 +264,8 @@
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -281,7 +285,8 @@
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone">
 
                 <Button
                     android:id="@+id/trackobotSignin"
@@ -309,18 +314,20 @@
                 android:layout_marginTop="5dp"
                 android:autoLink="all"
                 android:text="@string/retrievePassword"
-                 />
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/or2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/or" />
+                android:text="@string/or"
+                android:visibility="gone" />
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone">
 
                 <Button
                     android:id="@+id/trackobotImport"
@@ -348,7 +355,7 @@
                 android:layout_marginTop="5dp"
                 android:autoLink="all"
                 android:text="@string/importExplanation"
-                 />
+                android:visibility="gone" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -375,8 +382,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
                 android:gravity="center"
-                android:text="@string/appVersion"
-                 />
+                android:text="@string/appVersion" />
 
             <TextView
                 android:id="@+id/copyright"
@@ -386,8 +392,7 @@
                 android:layout_marginTop="5dp"
                 android:autoLink="all"
                 android:gravity="center"
-                android:text="@string/copyright"
-                 />
+                android:text="@string/copyright" />
         </LinearLayout>
     </ScrollView>
 </androidx.cardview.widget.CardView>
