@@ -9,7 +9,7 @@
     <string name="changelog_222">Secret tracker: fix sometimes Vaporize or Effigy badly detected.\nAdded Elise the trailblazer gift card support.\nDisplay the notification again in Android O.</string>
     <string name="changelog_223">Fixed a couple of crashes, improved memory usage.</string>
     <string name="changelog_227">Fixed detection of Nemsy.\nRank/mode detection using screen capture (beta).</string>
-    <string name="changelog_231">Marin the fox is now tracked by Hearthstone Deck Tracker!\nFixed the auto-selection of decks based on mulliganed cards.\nCrash fixes.</string>
+    <string name="changelog_231">Marin the fox is now tracked by Arcane Tracker!\nFixed the auto-selection of decks based on mulliganed cards.\nCrash fixes.</string>
     <string name="changelog_233">Kobold and Catacombs!\nAdded german translations (Thanks AceXare and Cyco).\nOnly show standard secrets in the secret detector if playing a standard game.\nFixed utf8 encoding of hsreplay uploads.</string>
     <string name="changelog_235">Bye bye Corridor Creeper… Cards have been nerfed.\nAdded italian support (Thanks Mariodm !).\nFixed some card names in hsreplay.net replays.\nSpecial handling of Hoarding Dragon, Deck of wonders and some K&amp;C cards.\nDisplay all gift cards on a single line.</string>
     <string name="changelog_237">New arena cards !\nImproved italian support (Thanks Mariodm and Silvano!).\nFixed a error message about HSReplay displayed even if you have not opted-in.</string>

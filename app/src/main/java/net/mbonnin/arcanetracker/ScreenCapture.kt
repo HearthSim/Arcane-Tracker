@@ -74,7 +74,7 @@ class ScreenCapture constructor(mediaProjection: MediaProjection) : ImageReader.
         worker.start()
         val handler = worker.waitUntilReady()
         mImageReader.setOnImageAvailableListener(this, handler)
-        virtualDisplay = mediaProjection.createVirtualDisplay("Hearthstone Deck Tracker",
+        virtualDisplay = mediaProjection.createVirtualDisplay("Arcane Tracker",
                 mWidth, mHeight, 320,
                 0,
                 mImageReader.surface, null, null)/*Callbacks*/

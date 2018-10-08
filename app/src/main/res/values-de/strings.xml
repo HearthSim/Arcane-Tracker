@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
     <string name="_default">Standard</string>
-    <string name="app_name">Hearthstone Deck Tracker</string>
     <string name="appVersion">App Version</string>
-    <string name="arcane_tracker_running">Hearthstone Deck Tracker läuft</string>
+    <string name="arcane_tracker_running">Arcane Tracker läuft</string>
     <string name="arenaDeck">Arena Deck</string>
     <string name="authorizeAndPlay">Autorisieren und spielen !</string>
     <string name="autoAdd">Automatisch Karten hinzufügen</string>
@@ -13,7 +12,7 @@
     <string name="autoHide">Automatisch verbergen</string>
     <string name="autoQuitExplanation">Versucht zu erkennen ob Hearthstone nicht mehr läuft und versteckt die Oberfläche automagisch</string>
     <string name="blessing_of_kings">Segen der Könige - %s</string>
-    <string name="blessing_of_kings_purchased">Du hast Hearthstone Deck Tracker gesegnet. Danke ! 👑</string>
+    <string name="blessing_of_kings_purchased">Du hast Arcane Tracker gesegnet. Danke ! 👑</string>
     <string name="buttonSize">Buttongröße</string>
     <string name="cancel">abbrechen</string>
     <string name="cannot_find_deck">Das zuletzt verwendete Deck konnte nicht gefunden werden</string>
@@ -44,24 +43,24 @@
     <string name="deleteConfirm">Bist du dir sicher, dass du dieses Deck löschen willst ?</string>
     <string name="deleteDeck">Deck löschen</string>
     <string name="diedTurn">Gestorben in Runde: %d</string>
-    <string name="dinosize">Hearthstone Deck Tracker in Dinogröße!!! - %s</string>
+    <string name="dinosize">Arcane Tracker in Dinogröße!!! - %s</string>
     <string name="dinosize_purchased">Nehme Dinogröße an… 🥚</string>
     <string name="donate">Spenden</string>
-    <string name="donateExplanation">Hearthstone Deck Tracker ist kostenlos und werbefrei. Nur eine Person (ich) hat es in seiner Freizeit (nachts) gemacht. Falls dir die App gefällt, erwäge doch eine Spende durch die Buttons unterhalb. Das würde es mir erlauben mehr Freizeit in das Schreiben von neuen Features zu stecken :-).</string>
+    <string name="donateExplanation">Arcane Tracker ist kostenlos und werbefrei. Nur eine Person (ich) hat es in seiner Freizeit (nachts) gemacht. Falls dir die App gefällt, erwäge doch eine Spende durch die Buttons unterhalb. Das würde es mir erlauben mehr Freizeit in das Schreiben von neuen Features zu stecken :-).</string>
     <string name="donateExplanation2">Möge das Licht mit dir sein !</string>
     <string name="done">Fertig</string>
     <string name="drawerSize">Leistenbreite</string>
     <string name="drawnTurn">Gezogen in Runde: %d</string>
     <string name="editDeck">Deck bearbeiten</string>
     <string name="erase_history">Verlauf leeren</string>
-    <string name="explanation1">Hearthstone Deck Tracker wird nun Hearthstone starten und die Karten die Du und dein Gegner spielen, im Hintergrund, überwachen.</string>
+    <string name="explanation1">Arcane Tracker wird nun Hearthstone starten und die Karten die Du und dein Gegner spielen, im Hintergrund, überwachen.</string>
     <string name="explanation2">Die Oberfläche zeigt die gespielten Karten an und zusätzlich werden die verbleibenden Karten über der Spielobefläche angezeigt.</string>
     <string name="explanation3">Möge das Licht dir den Sieg bringen!</string>
     <string name="general">Allgemein</string>
     <string name="gotIt">VERSTANDEN</string>
     <string name="graveyard">Friedhof</string>
     <string name="hand">Hand</string>
-    <string name="helpUs">Hilf Hearthstone Deck Tracker</string>
+    <string name="helpUs">Hilf Arcane Tracker</string>
     <string name="hi_there">Hey du !</string>
     <string name="history">Verlauf</string>
     <string name="historyEmpty">Dein Verlauf ist leer. Hier werden Spiele aufgeführt sobald du sie gespielt hast.</string>
@@ -83,7 +82,7 @@
     <string name="hsReplayUsernameError">Anspruchsspruchsstatus konnte nicht geprüfen werden</string>
     <string name="iabError">Konnte keine Details empfangen :-(. Bitte komm\' später zurück.</string>
     <string name="importDeck">Deck importieren</string>
-    <string name="importExplanation">Füge deine \".track-o-bot\"-Datei in das Stammverzeichnis deines Speichers, damit Hearthstone Deck Tracker es erkennen kann</string>
+    <string name="importExplanation">Füge deine \".track-o-bot\"-Datei in das Stammverzeichnis deines Speichers, damit Arcane Tracker es erkennen kann</string>
     <string name="importFromStorage">Konto aus Speicher importieren</string>
     <string name="inDeck">Im Deck</string>
     <string name="keyword">Schlüsselwort</string>
@@ -104,21 +103,21 @@
     <string name="openInBrowser">Profil öffnen (externer Browser)</string>
     <string name="opponentsDeck">Gegnerisches Deck</string>
     <string name="or">oder</string>
-    <string name="overlay_explanation">Zum Verwenden von Hearthstone Deck Tracker musst du das Einblenden über anderen Apps zulassen. Das kannst du in den Einstellungen ändern.</string>
+    <string name="overlay_explanation">Zum Verwenden von Arcane Tracker musst du das Einblenden über anderen Apps zulassen. Das kannst du in den Einstellungen ändern.</string>
     <string name="overlayOpacity">Oberflächendeckkraft</string>
     <string name="password">Passwort:</string>
-    <string name="permissions">Hearthstone Deck Tracker benötigt Berechtigungen für den Speicherzugriff und das Einblenden über anderen Apps um das Spiel korrekt zu erkennen und dessen Oberfläche darzustellen.</string>
+    <string name="permissions">Arcane Tracker benötigt Berechtigungen für den Speicherzugriff und das Einblenden über anderen Apps um das Spiel korrekt zu erkennen und dessen Oberfläche darzustellen.</string>
     <string name="play">Spielen !</string>
     <string name="played">>Gespielt</string>
     <string name="playedTurn">Gespielt in Runde: %d</string>
     <string name="please_enter_a_name">Bitte gib einen Namen ein</string>
     <string name="please_stop_hearthstone">Eine letzte Sache.</string>
     <string name="pleaseEnablePermissions">Bitte aktiviere die Berechtigungen</string>
-    <string name="pleaseRestart">Bitte starte Hearthstone Deck Tracker neu um die Änderungen zu berücksichtigen.</string>
+    <string name="pleaseRestart">Bitte starte Arcane Tracker neu um die Änderungen zu berücksichtigen.</string>
     <string name="possibleSecrets">Mögliche Geheimnisse:</string>
     <string name="purchase_failed">Etwas ist schiefgelaufen :-(</string>
     <string name="quit">Verlassen</string>
-    <string name="quitArcaneTracker">Hearthstone Deck Tracker verlassen</string>
+    <string name="quitArcaneTracker">Arcane Tracker verlassen</string>
     <string name="race_beast">Wildtier</string>
     <string name="race_demon">Dämon</string>
     <string name="race_dragon">Drache</string>
@@ -146,7 +145,7 @@
     <string name="showWhatsNew">Zeige Neuerungen</string>
     <string name="stop_hearthstone_explanation">Bevor du weitermachst, stelle sicher, dass Hearthstone beendet wurde. Falls nicht, kann es sein, dass die Erkennung erst nach einem Neustart funktioniert.</string>
     <string name="thank_you">Danke !!!!</string>
-    <string name="thisIsArcaneTracker">Dies ist Hearthstone Deck Tracker Version %1$s%2$s.</string>
+    <string name="thisIsArcaneTracker">Dies ist Arcane Tracker Version %1$s%2$s.</string>
     <string name="trackobotConnectError">Konnte keine Verbindung zu Track-o-bot herstellen</string>
     <string name="trackobotError">Konnte nicht auf Track-o-bot hochladen :-(</string>
     <string name="trackobotExplanation">Das Verknüpfen eines Track-o-bot Kontos erlaubt es dir deine Statistiken auf https://trackobot.com nachzuverfolgen</string>
@@ -160,7 +159,7 @@
     <string name="unlinkAccount">Kontoverknüpfung aufheben</string>
     <string name="useClipboardDeck">Du kannst Decks nun automatisch mit Deckcodes erstellen. Um zu Beginnen füge unterhalb einen Deckcode ein.\nFalls du eins in der Zwischenablage hast, wird es bereits vorausgefüllt.</string>
     <string name="username">Nutzername:</string>
-    <string name="welcome">Willkommen zu Hearthstone Deck Tracker !</string>
+    <string name="welcome">Willkommen zu Arcane Tracker !</string>
     <string name="whatsNew">Was ist neu</string>
     <string name="win">GEWONNEN</string>
     <string name="xiaomi_explanation">Es scheint du spielst auf einem Xiaomi Gerät. Diese Geräte verwalten die Berechtigung für das Einblenden über anderen Apps nicht gemäß dem Standard. Enstprechend kann es sein, dass du dies manuell in den Einstellungen erlauben musst.</string>
@@ -187,10 +186,10 @@
     <string name="copyright">Diese App steht nicht in Verbindung mit Blizzard Entertainment</string>
     <string name="about">Über</string>
     <string name="quitTimeout">Inaktivität:</string>
-    <string name="quitTimeoutExplanation">Hearthstone Deck Tracker kann unglücklicherweise nicht erkennen, ob Hearthstone beendet wurde. Diese Einstellung beendet Hearthstone Deck Tracker falls dein Gerät im Hochformat ist und Hearthstone für eine bestimmte Zeit nichts in die Logs geschrieben hat.</string>
+    <string name="quitTimeoutExplanation">Arcane Tracker kann unglücklicherweise nicht erkennen, ob Hearthstone beendet wurde. Diese Einstellung beendet Arcane Tracker falls dein Gerät im Hochformat ist und Hearthstone für eine bestimmte Zeit nichts in die Logs geschrieben hat.</string>
     <string name="minutes"> %1$d Minute(n)</string>
     <string name="never">Nie</string>
-    <string name="startScreenCaptureExplanation">Um deinen Rang und den Spielmodus zu erkennen (Ungewertet/Gewertet, Wild/Standard), wird Hearthstone Deck Tracker deinen Bildschirm aufnehmen.\n\nWenn du keine Rangerkennung willst, kannst du im nächsten Dialog oder später in den Einstellungen ablehnen.</string>
+    <string name="startScreenCaptureExplanation">Um deinen Rang und den Spielmodus zu erkennen (Ungewertet/Gewertet, Wild/Standard), wird Arcane Tracker deinen Bildschirm aufnehmen.\n\nWenn du keine Rangerkennung willst, kannst du im nächsten Dialog oder später in den Einstellungen ablehnen.</string>
     <string name="rankDetection">Rangerkennung</string>
     <string name="usernameHint">nutzername</string>
     <string name="passwordHint">passwort</string>
@@ -209,6 +208,6 @@
     <string name="na">N/A</string>
     <string name="total">Gesamt</string>
     <string name="opponent">Gegner</string>
-    <string name="supportAT">Hearthstone Deck Tracker unterstützen</string>
+    <string name="supportAT">Arcane Tracker unterstützen</string>
     <string name="notifQuit">Schließen</string>
 </resources>

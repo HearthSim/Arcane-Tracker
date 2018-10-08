@@ -1,4 +1,4 @@
-# Hearthstone Deck Tracker
+# Arcane Tracker
 
 https://hsreplay.net/
 

@@ -1,18 +1,17 @@
 <resources>
-  <string name="app_name">Hearthstone Deck Tracker</string>
-  <string name="welcome">Добро пожаловать в Hearthstone Deck Tracker!</string>
-  <string name="explanation1">Hearthstone Deck Tracker работает на пару с Hearthstone и отображает карты сыгранные вами и вашим оппонентом, в фоновом режиме</string>
+  <string name="welcome">Добро пожаловать в Arcane Tracker!</string>
+  <string name="explanation1">Arcane Tracker работает на пару с Hearthstone и отображает карты сыгранные вами и вашим оппонентом, в фоновом режиме</string>
   <string name="explanation2">Панель покажет сыгранные карты и те, что еще находятся в колоде</string>
   <string name="explanation3">Свет дарует вам победу!</string>
   <string name="showNextTime">показать позже</string>
-  <string name="permissions">Hearthstone Deck Tracker\'у необходимы разрешения на хранение и наложения для того, чтобы следить за игрой и отображать панель. Возможно потребуется повторный запуск Hearthstone, если он уже был запущен</string>
+  <string name="permissions">Arcane Tracker\'у необходимы разрешения на хранение и наложения для того, чтобы следить за игрой и отображать панель. Возможно потребуется повторный запуск Hearthstone, если он уже был запущен</string>
   <string name="cannot_launch">Не получается запустить Hearthstone? А он установлен?</string>
   <string name="oops_permission">Упс, кажется не хватает некоторых разрешений</string>
   <string name="play">Играть!</string>
   <string name="authorizeAndPlay">Авторизоваться и играть!</string>
   <string name="pleaseEnablePermissions">Пожалуйста, включите разрешения</string>
   <string name="cannot_locate_heathstone_install">Не удается найти Hearthstone</string>
-  <string name="arcane_tracker_running">Hearthstone Deck Tracker запущен</string>
+  <string name="arcane_tracker_running">Arcane Tracker запущен</string>
   <string name="cannot_find_deck">Не удалось найти последнюю использованную колоду</string>
   <string name="cannot_get_latest_cards">Не удается получить информацию о карте</string>
   <string name="settings">Настройки</string>
@@ -61,8 +60,8 @@
   <string name="username">Логин:</string>
   <string name="password">Пароль:</string>
   <string name="retrievePassword">Если вы забыли пароль, https://github.com/HearthSim/arcane_tracker/issues/2 for how to retrieve it</string>
-  <string name="quitArcaneTracker">Покинуть Hearthstone Deck Tracker</string>
-  <string name="thisIsArcaneTracker">Hearthstone Deck Tracker версии %1$s%2$s.</string>
+  <string name="quitArcaneTracker">Покинуть Arcane Tracker</string>
+  <string name="thisIsArcaneTracker">Arcane Tracker версии %1$s%2$s.</string>
 
   <string name="trackobotExplanation">Создайте учетную запись Track-o-bot, это позволит вам отслеживать свою статистику на: https://trackobot.com</string>
 
