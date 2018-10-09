@@ -8,17 +8,20 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import androidx.annotation.RequiresApi
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
 import android.view.ContextThemeWrapper
 import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.iid.FirebaseInstanceId
-import net.mbonnin.arcanetracker.*
+import net.mbonnin.arcanetracker.HDTApplication
+import net.mbonnin.arcanetracker.R
+import net.mbonnin.arcanetracker.Settings
+import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.extension.finishAndRemoveTaskIfPossible
 import net.mbonnin.arcanetracker.ui.overlay.Overlay
 import timber.log.Timber
@@ -192,7 +195,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(hsIntent)
             finishAndRemoveTaskIfPossible()
 
-            Overlay.get().show()
+            Overlay.show()
 
             Settings.set(Settings.CHECK_IF_RUNNING, false)
         } else {

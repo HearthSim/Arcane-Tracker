@@ -25,7 +25,7 @@ class QuitDetector {
             val width = displayMetrics.widthPixels
 
             if (height > width && visible) {
-                Overlay.get().hide()
+                Overlay.hide()
                 visible = false
 
                 Timber.d("Hide")
@@ -40,7 +40,7 @@ class QuitDetector {
                     }
                 }
 
-                Overlay.get().show()
+                Overlay.show()
                 visible = true
             }
 
