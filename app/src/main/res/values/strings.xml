@@ -224,5 +224,8 @@
     <string name="supportUs">Subscribe to HSReplay.net</string>
     <string name="hsReplayLogin">Login to your hsreplay account to claim your replays</string>
     <string name="hsReplayLogedIn">You are currently logged as %s</string>
+    <string name="myReplays">My Replays</string>
+    <string name="exploreDecks">Decks</string>
+    <string name="premium">Premium</string>
 
 </resources>

@@ -3,6 +3,7 @@ package net.mbonnin.arcanetracker
 import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -351,13 +352,23 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
     }
 
     private fun configureHandles(v: View) {
-        var handleView = v.findViewById<HandleView>(R.id.settingsHandle)
-        var drawable = v.context.resources.getDrawable(R.drawable.settings_handle)
+        var handleView: HandleView
+        var drawable: Drawable
+
+        handleView = v.findViewById(R.id.opponentHandle)
+        drawable = v.context.resources.getDrawable(R.drawable.ic_hs_replay)
+        handleView.init(drawable, v.context.resources.getColor(R.color.hsReplayBlue))
+        handleView.setOnClickListener {
+            val view = LayoutInflater.from(v.context).inflate(R.layout.hsreplay_menu_view, null)
+            HsReplayMenuCompanion(view)
+            mViewManager.addMenu(view, it)
+        }
+
+        handleView = v.findViewById(R.id.settingsHandle)
+        drawable = v.context.resources.getDrawable(R.drawable.settings_handle)
         handleView.init(drawable, v.context.resources.getColor(R.color.gray))
         handleView.setOnClickListener { v2 ->
             val view = LayoutInflater.from(v.context).inflate(R.layout.more_view, null)
-
-            view.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
             view.findViewById<View>(R.id.settings).setOnClickListener { v3 ->
                 mViewManager.removeView(view)
@@ -415,19 +426,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
             }
             view.findViewById<View>(R.id.quit).setOnClickListener { v3 -> Utils.exitApp() }
 
-            val wMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-            view.measure(wMeasureSpec, wMeasureSpec)
-
-            val a = IntArray(2)
-            v2.getLocationOnScreen(a)
-
-            val params = ViewManager.Params()
-            params.x = a[0] + v2.width / 2
-            params.y = a[1] + v2.height / 2 - view.measuredHeight
-            params.w = view.measuredWidth
-            params.h = view.measuredHeight
-
-            mViewManager.addModalView(view, params)
+            mViewManager.addMenu(view, v2)
         }
 
         handleView = v.findViewById(R.id.opponentHandle)

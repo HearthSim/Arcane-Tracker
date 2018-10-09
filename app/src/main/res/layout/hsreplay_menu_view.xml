@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/dialogGray"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#000"
+            android:gravity="left"
+            android:padding="13dp"
+            tools:text="username#1234"
+            android:textColor="@color/dialogText"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/myReplays"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackground"
+            android:gravity="left"
+            android:padding="13dp"
+            android:text="@string/myReplays"
+            android:textColor="@color/dialogText"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/exploreDecks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackground"
+            android:gravity="left"
+            android:padding="13dp"
+            android:text="@string/exploreDecks"
+            android:textColor="@color/dialogText"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/premium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackground"
+            android:gravity="left"
+            android:padding="13dp"
+            android:text="@string/premium"
+            android:textColor="#FFB00D"
+            android:textSize="18sp"/>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

@@ -13,6 +13,10 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.experimental.GlobalScope
+import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.launch
 import net.mbonnin.arcanetracker.HDTApplication
 import net.mbonnin.arcanetracker.FirebaseConstants
 import net.mbonnin.arcanetracker.Gatekeeper
@@ -43,8 +47,8 @@ class HSReplay {
     fun user(): Observable<Lce<Token>> = legacyService().getToken(mLegacyToken)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .map<Lce<Token>>({ Lce.data(it) })
-            .onErrorReturn({ Lce.error(it) })
+            .map<Lce<Token>> { Lce.data(it) }
+            .onErrorReturn { Lce.error(it) }
             .startWith(Lce.loading())
 
     val sharedPreferences by lazy {

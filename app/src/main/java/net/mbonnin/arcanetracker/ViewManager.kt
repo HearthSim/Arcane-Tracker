@@ -5,10 +5,7 @@ import android.content.Context
 import android.graphics.PixelFormat
 import android.graphics.Point
 import android.os.Build
-import android.view.Gravity
-import android.view.MotionEvent
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import java.util.*
 
 /**
@@ -180,6 +177,24 @@ class ViewManager(context: Context) {
 
     fun allViews(): List<View> {
         return mViews
+    }
+
+    fun addMenu(menuView: View, anchorView: View) {
+        menuView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        val wMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        menuView.measure(wMeasureSpec, wMeasureSpec)
+
+        val a = IntArray(2)
+        anchorView.getLocationOnScreen(a)
+
+        val params = ViewManager.Params()
+        params.x = a[0] + anchorView.width / 2
+        params.y = a[1] + anchorView.height / 2 - menuView.measuredHeight
+        params.w = menuView.measuredWidth
+        params.h = menuView.measuredHeight
+
+        addModalView(menuView, params)
+
     }
 
     companion object {

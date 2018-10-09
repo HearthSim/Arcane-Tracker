@@ -30,8 +30,8 @@ import java.util.*
 class HDTApplication : MultiDexApplication() {
     var imageCache: LruCache? = null
         private set
-    private var mHasTabletLayout: Boolean = false
-    var hearthstoneBuild = 22585
+
+    var hearthstoneBuild = 0
 
     @SuppressLint("NewApi", "CheckResult")
     override fun onCreate() {
@@ -74,7 +74,6 @@ class HDTApplication : MultiDexApplication() {
         Timber.d("Build.MANUFACTURER=${Build.MANUFACTURER}")
         Timber.d("screen size= ${point.x} x ${point.y}")
         Timber.d("sizeInInches=${sizeInInches}")
-        mHasTabletLayout = sizeInInches >= 8
 
         Utils.logWithDate("HDTApplication.onCreate() + version=" + BuildConfig.VERSION_CODE)
 
@@ -171,14 +170,6 @@ class HDTApplication : MultiDexApplication() {
         injectedCards.add(CardUtil.secret(PlayerClass.ROGUE))
 
         CardJson.init(jsonName, injectedCards)
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-    }
-
-    fun hasTabletLayout(): Boolean {
-        return mHasTabletLayout
     }
 
     companion object {

@@ -3,6 +3,7 @@
     <color name="colorPrimary">#64B5F6</color>
     <color name="colorPrimaryDark">#1565C0</color>
     <color name="colorAccent">#E57373</color>
+    <color name="hsReplayBlue">#1d3657</color>
     <color name="opponentColor">#E57373</color>
     <color name="black">#000000</color>
     <color name="gray">#a0a0a0</color>

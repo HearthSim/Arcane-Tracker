@@ -53,5 +53,5 @@ object Libs {
     const val kotlinhslog = "net.hearthsim:kotlin-hslog:1.0-SNAPSHOT"
     const val flexbox = "com.google.android:flexbox:1.1.0"
     const val archPaging = "android.arch.paging:runtime:1.0.1"
-
+    const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.30.2"
 }

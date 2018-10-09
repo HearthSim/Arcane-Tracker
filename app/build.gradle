@@ -141,6 +141,7 @@ dependencies {
     implementation Libs.kotlinhslog
     implementation Libs.flexbox
     implementation Libs.archPaging
+    implementation Libs.coroutines
 
     kapt Libs.roomProcessor
 
