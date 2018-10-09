@@ -6,6 +6,8 @@ import android.os.Handler
 import android.provider.Settings.canDrawOverlays
 import android.util.DisplayMetrics
 import android.view.WindowManager
+import net.mbonnin.arcanetracker.ui.overlay.Overlay
+import net.mbonnin.arcanetracker.ui.settings.SettingsCompanion
 import timber.log.Timber
 
 

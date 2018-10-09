@@ -20,6 +20,16 @@
             tools:text="username#1234"
             android:textColor="@color/dialogText"
             android:textSize="18sp"/>
+        <TextView
+            android:id="@+id/premium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackground"
+            android:gravity="left"
+            android:padding="13dp"
+            android:text="@string/premium"
+            android:textColor="#FFB00D"
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/myReplays"
@@ -44,15 +54,16 @@
             android:textSize="18sp"/>
 
         <TextView
-            android:id="@+id/premium"
+            android:id="@+id/signout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?android:selectableItemBackground"
             android:gravity="left"
             android:padding="13dp"
-            android:text="@string/premium"
-            android:textColor="#FFB00D"
+            android:text="@string/signOut"
+            android:textColor="@color/dialogText"
             android:textSize="18sp"/>
+
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

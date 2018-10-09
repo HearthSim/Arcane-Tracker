@@ -7,19 +7,12 @@ import android.preference.PreferenceManager
 import androidx.core.content.edit
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
-import com.google.gson.JsonPrimitive
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.launch
-import net.mbonnin.arcanetracker.HDTApplication
 import net.mbonnin.arcanetracker.FirebaseConstants
-import net.mbonnin.arcanetracker.Gatekeeper
+import net.mbonnin.arcanetracker.HDTApplication
 import net.mbonnin.arcanetracker.hsreplay.model.Lce
 import net.mbonnin.arcanetracker.hsreplay.model.Token
 import net.mbonnin.arcanetracker.hsreplay.model.TokenRequest
@@ -36,13 +29,6 @@ class HSReplay {
     private var mLegacyToken: String? = null
     private var mOauthervice: OauthService
     private val mLegacyService: LegacyService
-
-    fun claimTokenOauth(): Completable {
-        val str = "{\"token\": \"$mLegacyToken\"}"
-        return mOauthervice.claimToken(RequestBody.create(MediaType.parse("application/json"), str))
-                .ignoreElements()
-    }
-
 
     fun user(): Observable<Lce<Token>> = legacyService().getToken(mLegacyToken)
             .subscribeOn(Schedulers.io())
@@ -74,8 +60,8 @@ class HSReplay {
         return legacyService().createUpload("https://upload.hsreplay.net/api/v1/replay/upload/request", uploadRequest)
                 .firstOrError()
                 .map {
-                    Timber.w("url is " + it.url)
-                    Timber.w("put_url is " + it.put_url)
+                    Timber.w("url is ${it.url}")
+                    Timber.w("put_url is ${it.put_url}")
 
                     putToS3(it.put_url, gameStr)
                     it
@@ -154,21 +140,11 @@ class HSReplay {
                 .build()
 
         mLegacyToken = sharedPreferences.getString(KEY_HSREPLAY_LEGACY_TOKEN, null)
-        Timber.w("init token=" + mLegacyToken)
-
-        Gatekeeper.behaviorSubject
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    getAccount()
-                }
+        Timber.w("init token=$mLegacyToken")
     }
 
+    @SuppressLint("CheckResult")
     private fun getAccount() {
-        val key = (Gatekeeper.root.get("hsr") as? JsonPrimitive)?.asString
-        if (key == null) {
-            return // not sending
-        }
-
         if (OauthInterceptor.refreshToken == null) {
             return // no configured account
         }

@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
+
+import net.mbonnin.arcanetracker.ui.settings.SettingsActivity;
+
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
@@ -57,7 +60,7 @@ public class MainService extends Service {
                 .setContentText(getString(R.string.arcane_tracker_running))
                 .addAction(R.drawable.ic_close_black_24dp, getString(R.string.quit), stopPendingIntent)
                 .addAction(R.drawable.ic_settings_black_24dp, getString(R.string.settings), settingsPendingIntent)
-                .setSmallIcon(R.drawable.ic_notification_icon)
+                .setSmallIcon(R.drawable.ic_hdt)
                 .build();
 
         startForeground(NOTIFICATION_ID, notification);

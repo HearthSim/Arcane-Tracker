@@ -18,6 +18,7 @@ import com.crashlytics.android.Crashlytics
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import net.mbonnin.arcanetracker.helper.getHeroId
+import net.mbonnin.arcanetracker.ui.overlay.Overlay
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import timber.log.Timber
@@ -102,35 +103,11 @@ object Utils {
         Timber.w(df.format(c.time) + s)
     }
 
-    fun <T: Comparable<T>> compareNullSafe(a: T?, b: T?): Int {
-        if (a == null) {
-            if (b == null) {
-                return 0
-            } else {
-                return -1
-            }
-        } else {
-            if (b == null) {
-                return 1
-            } else {
-                return a.compareTo(b)
-            }
-        }
-    }
-
     fun reportNonFatal(e: Throwable) {
         Timber.w(e)
         Crashlytics.logException(e);
     }
 
-    fun cardMapTotal(map: HashMap<String, Int>): Int {
-        var total = 0
-        for (key in map.keys) {
-            total += cardMapGet(map, key)
-        }
-
-        return total
-    }
 
     fun getAssetBitmap(name: String): Bitmap? {
         val context = HDTApplication.context
@@ -169,11 +146,6 @@ object Utils {
         }
 
         return t
-    }
-
-    fun getAssetBitmap(name: String, defaultName: String): Bitmap? {
-        val b = getAssetBitmap(name)
-        return b ?: getAssetBitmap(defaultName)
     }
 
     fun getCardUrl(id: String): String {
@@ -217,21 +189,12 @@ object Utils {
         return "" == str
     }
 
-    fun equalsNullSafe(a: String?, b: String?): Boolean {
-        return a == b
-    }
-
     fun cardMapGet(map: HashMap<String, Int>, key: String): Int {
         var a: Int? = map[key]
         if (a == null) {
             a = 0
         }
         return a
-    }
-
-    fun cardMapAdd(map: HashMap<String, Int>, key: String, diff: Int) {
-        val a = cardMapGet(map, key)
-        map.put(key, a + diff)
     }
 
     fun runOnMainThread(action: () -> Unit) {

@@ -13,6 +13,7 @@ import android.view.View
 import net.mbonnin.arcanetracker.databinding.StartScreenCaptureActivityBinding
 import net.mbonnin.arcanetracker.extension.finishAndRemoveTaskIfPossible
 import net.mbonnin.arcanetracker.extension.makeFullscreen
+import net.mbonnin.arcanetracker.ui.main.MainActivity
 
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 class StartScreenCaptureActivity : AppCompatActivity() {

@@ -3,7 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <net.mbonnin.arcanetracker.view.AspectRatioImageView
+    <net.mbonnin.arcanetracker.ui.overlay.view.AspectRatioImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

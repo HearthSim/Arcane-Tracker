@@ -227,5 +227,6 @@
     <string name="myReplays">My Replays</string>
     <string name="exploreDecks">Decks</string>
     <string name="premium">Premium</string>
+    <string name="signOut">Sign out</string>
 
 </resources>

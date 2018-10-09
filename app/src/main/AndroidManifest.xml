@@ -22,7 +22,7 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        >
+        tools:ignore="GoogleAppIndexingWarning">
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="net.mbonnin.arcanetracker.fileprovider"
@@ -34,7 +34,7 @@
         </provider>
 
         <activity
-            android:name=".MainActivity"
+            android:name="net.mbonnin.arcanetracker.ui.main.MainActivity"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -43,37 +43,25 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".YourDecksActivity"
+            android:name=".ui.stats.YourDecksActivity"
             android:screenOrientation="userLandscape">
         </activity>
         <activity
-            android:name=".YourPacksActivity"
+            android:name=".ui.my_packs.YourPacksActivity"
             android:screenOrientation="userLandscape">
         </activity>
         <activity
-            android:name=".YourGamesActivity"
+            android:name=".ui.my_games.YourGamesActivity"
             android:screenOrientation="userLandscape">
         </activity>
         <activity
-            android:name=".LicensesActivity">
+            android:name=".ui.licenses.LicensesActivity">
         </activity>
-        <activity android:name=".SupportActivity"
-                  android:theme="@style/Theme.Transparent"
-            />
         <activity android:name=".StartScreenCaptureActivity"
                   android:theme="@style/Theme.Transparent"
             />
-        <activity android:name=".HsReplayCallbackActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="arcanetracker" android:host="callback" />
-            </intent-filter>
-        </activity>
         <activity
-            android:name=".SettingsActivity"
+            android:name=".ui.settings.SettingsActivity"
             android:launchMode="singleTask" />
 
         <service
@@ -94,7 +82,7 @@
         </service>
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/ic_notification_icon" />
+            android:resource="@drawable/ic_hdt" />
     </application>
 
 </manifest>

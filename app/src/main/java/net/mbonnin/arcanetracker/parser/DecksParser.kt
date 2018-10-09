@@ -5,7 +5,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import net.hearthsim.kotlin.hslog.LogLine
 import net.mbonnin.arcanetracker.HDTApplication
 import net.mbonnin.arcanetracker.helper.DeckStringHelper
-import net.mbonnin.arcanetracker.MainViewCompanion
+import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RDeck
