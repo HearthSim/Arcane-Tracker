@@ -3,12 +3,12 @@ package net.mbonnin.arcanetracker.ui.my_packs
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.core.graphics.toRect
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
@@ -132,7 +132,7 @@ class PackCardView @JvmOverloads constructor(context: Context, attrs: AttributeS
         this.bitmap = null
 
         Picasso.with(context)
-                .load("bar://" + card.id)
+                .load(Utils.getTileUrl(card.id))
                 .placeholder(R.drawable.hero_10)
                 .into(this)
     }

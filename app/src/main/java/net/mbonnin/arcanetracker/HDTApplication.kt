@@ -5,7 +5,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.graphics.Point
 import android.os.Build
 import android.os.Handler
@@ -23,15 +22,26 @@ import net.mbonnin.arcanetracker.parser.*
 import net.mbonnin.hsmodel.Card
 import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.enum.PlayerClass
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 import timber.log.Timber
+import java.io.File
 import java.util.*
 
 class HDTApplication : MultiDexApplication() {
-    var imageCache: LruCache? = null
-        private set
+    lateinit var picassoRamCache: LruCache
+    lateinit var picassoHddCache: Cache
 
     var hearthstoneBuild = 0
+
+    private fun defaultCacheDir(): File {
+        val cache = File(cacheDir, "picasso_cache")
+        if (!cache.exists()) {
+
+            cache.mkdirs()
+        }
+        return cache
+    }
 
     @SuppressLint("NewApi", "CheckResult")
     override fun onCreate() {
@@ -79,13 +89,17 @@ class HDTApplication : MultiDexApplication() {
 
         Paper.init(this)
 
-        imageCache = LruCache(this)
+        picassoRamCache = LruCache(this)
+
+        picassoHddCache = Cache(defaultCacheDir(), 200*1024*1024)
+        val okHttpClient = OkHttpClient.Builder()
+                .cache(picassoHddCache)
+                .build()
+        val downloader = OkHttp3Downloader(okHttpClient)
 
         val picasso = Picasso.Builder(this)
-                .memoryCache(imageCache!!)
-                .downloader(OkHttp3Downloader(OkHttpClient()))
-                .addRequestHandler(PicassoCardRequestHandler.get())
-                .addRequestHandler(PicassoBarRequestHandler())
+                .memoryCache(picassoRamCache!!)
+                .downloader(downloader)
                 .build()
 
         Picasso.setSingletonInstance(picasso)
@@ -145,8 +159,6 @@ class HDTApplication : MultiDexApplication() {
         if (HSReplay.get().token() == null) {
             HSReplay.get().createToken().subscribe()
         }
-
-        CardRenderer.get()
 
         MainService.start()
 

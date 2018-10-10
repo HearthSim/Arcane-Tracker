@@ -6,14 +6,14 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.core.content.FileProvider
 import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.*
+import androidx.annotation.RequiresApi
+import androidx.core.content.FileProvider
 import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -350,7 +350,10 @@ class SettingsCompanion(internal var settingsView: View) {
         }
 
         val resetCacheButton = view.findViewById<Button>(R.id.resetCache)
-        resetCacheButton.setOnClickListener { v -> PicassoCardRequestHandler.get().resetCache() }
+        resetCacheButton.setOnClickListener { v ->
+            HDTApplication.get().picassoHddCache.evictAll()
+            HDTApplication.get().picassoRamCache.evictAll()
+        }
 
         var seekBar = view.findViewById<SeekBar>(R.id.seekBar)
         seekBar.max = 100

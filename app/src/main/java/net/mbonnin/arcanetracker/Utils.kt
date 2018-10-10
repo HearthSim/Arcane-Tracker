@@ -149,11 +149,14 @@ object Utils {
     }
 
     fun getCardUrl(id: String): String {
-        return "card://" + Language.currentLanguage.key + "/" + id
+        return "https://art.hearthstonejson.com/v1/render/latest/${Language.currentLanguage.jsonName}/512x/${id}.png"
     }
 
+    fun getTileUrl(id: String): String {
+        return "https://art.hearthstonejson.com/v1/tiles/${id}.png"
+    }
     fun exitApp() {
-        Overlay.get().hide()
+        Overlay.hide()
         FileTree.get().sync()
         MainService.stop()
         System.exit(0)

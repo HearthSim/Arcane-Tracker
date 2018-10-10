@@ -2,13 +2,13 @@ package net.mbonnin.arcanetracker.ui.overlay.adapter
 
 import android.graphics.Color
 import android.os.Handler
-import androidx.recyclerview.widget.RecyclerView
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import net.mbonnin.arcanetracker.HDTApplication
 import net.mbonnin.arcanetracker.R
@@ -53,7 +53,7 @@ internal class DeckEntryHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
         val c = entry.count
 
         Picasso.with(itemView.context)
-                .load("bar://" + card.id)
+                .load(Utils.getTileUrl(card.id))
                 .placeholder(R.drawable.hero_10)
                 .into(background)
 
