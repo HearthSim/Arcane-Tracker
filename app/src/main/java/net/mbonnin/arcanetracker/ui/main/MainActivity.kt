@@ -1,6 +1,8 @@
 package net.mbonnin.arcanetracker.ui.main
 
 import android.Manifest
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.annotation.TargetApi
 import android.app.AlertDialog
 import android.content.Intent
@@ -9,9 +11,10 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.ContextThemeWrapper
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
-import android.widget.CheckBox
+import android.widget.FrameLayout
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.common.ConnectionResult
@@ -23,17 +26,19 @@ import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Settings
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.extension.finishAndRemoveTaskIfPossible
+import net.mbonnin.arcanetracker.hsreplay.OauthInterceptor
 import net.mbonnin.arcanetracker.ui.overlay.Overlay
 import timber.log.Timber
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
-    lateinit var activityView: View
-    private var checkbox: CheckBox? = null
+    lateinit var activityView: FrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        activityView = FrameLayout(this)
+        setContentView(activityView)
 
         Utils.logWithDate("MainActivity.onCreate")
 
@@ -45,27 +50,58 @@ class MainActivity : AppCompatActivity() {
             Timber.e(e)
         }
 
-        activityView = findViewById(R.id.activity_main)
-        val button = findViewById<View>(R.id.button) as Button
-        checkbox = findViewById<View>(R.id.checkbox) as CheckBox
-        val permissions = findViewById<View>(R.id.permissions)
-
         val showNextTime = Settings.get(Settings.SHOW_NEXT_TIME, true)
-        checkbox!!.isChecked = Settings.get(Settings.SHOW_NEXT_TIME, showNextTime)
 
-        if (hasAllPermissions()) {
-            permissions.visibility = View.GONE
-            button.text = getString(R.string.play)
+        if (OauthInterceptor.refreshToken == null) {
+            val view = LayoutInflater.from(this).inflate(R.layout.login_view, activityView, false)
+            view.findViewById<View>(R.id.button).setOnClickListener {
+                startOauth()
+            }
+            activityView.addView(view)
         } else {
-            button.text = getString(R.string.authorizeAndPlay)
+            showPermissionView()
+
+            if (!showNextTime) {
+                tryToLaunchGame()
+                return
+            }
         }
+    }
+
+    private fun showPermissionView() {
+        val view = LayoutInflater.from(this).inflate(R.layout.permission_view, activityView, false)
+        val button = view.findViewById<View>(R.id.button) as Button
 
         button.setOnClickListener { _ -> tryToLaunchGame() }
 
-        if (!showNextTime) {
-            tryToLaunchGame()
-            return
-        }
+        activityView.addView(view)
+    }
+
+    private fun startOauth() {
+        val view = LayoutInflater.from(this).inflate(R.layout.oauth_view, activityView, false)
+        OauthCompanion(view, this::oauthSuccess, this::oauthCancel)
+        activityView.addView(view)
+        view.alpha = 0f
+        view.animate().alpha(1.0f)
+    }
+
+    private fun discardView(view: View) {
+        val animation = view.animate()
+        animation.setListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator?) {
+                activityView.removeView(view)
+            }
+        })
+        animation.alpha(0f).start()
+    }
+
+    private fun oauthSuccess(view: View) {
+        discardView(view)
+        showPermissionView()
+    }
+
+    private fun oauthCancel(view: View) {
+        discardView(view)
     }
 
     private fun hasAllPermissions(): Boolean {
@@ -159,13 +195,13 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        launchGame()
+        doLaunchGame()
     }
 
-    private fun launchGame() {
+    private fun doLaunchGame() {
         val hsIntent = packageManager.getLaunchIntentForPackage(HEARTHSTONE_PACKAGE_ID)
         if (hsIntent != null) {
-            Settings.set(Settings.SHOW_NEXT_TIME, checkbox!!.isChecked)
+            Settings.set(Settings.SHOW_NEXT_TIME, false)
 
             try {
                 resources.openRawResource(R.raw.log_config).bufferedReader().use {

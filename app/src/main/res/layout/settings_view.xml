@@ -174,19 +174,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:text="HSReplay.net"
-
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/hsReplayDescription"
                 android:layout_width="match_parent"
+                android:visibility="gone"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp" />
 
             <include
+                android:visibility="gone"
                 android:id="@+id/hsReplayButton1"
                 layout="@layout/loadable_button_view" />
 

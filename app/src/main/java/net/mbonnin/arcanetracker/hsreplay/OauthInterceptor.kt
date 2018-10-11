@@ -3,10 +3,8 @@ package net.mbonnin.arcanetracker.hsreplay
 import com.google.gson.JsonParser
 import io.fabric.sdk.android.services.network.HttpRequest.HEADER_AUTHORIZATION
 import net.mbonnin.arcanetracker.Settings
-import net.mbonnin.arcanetracker.Utils
 import okhttp3.*
 import timber.log.Timber
-import java.util.*
 
 class OauthInterceptor : Interceptor {
 
@@ -31,10 +29,10 @@ class OauthInterceptor : Interceptor {
     }
 
     companion object {
-        private const val A = "pk_live_iKPWQuznmNf2BbBCxZa1VzmP"
-        private const val B = "sk_live_20180319oDB6PgKuHSwnDVs5B5SLBmh3"
-        private const val AUTHORIZE_URL = "https://hsreplay.net/oauth2/authorize/"
-        private const val CALLBACK_URL = "arcanetracker://callback/"
+        const val A = "pk_live_iKPWQuznmNf2BbBCxZa1VzmP"
+        const val B = "sk_live_20180319oDB6PgKuHSwnDVs5B5SLBmh3"
+        const val AUTHORIZE_URL = "https://hsreplay.net/oauth2/authorize/"
+        const val CALLBACK_URL = "arcanetracker://callback/"
 
         private var accessToken: String? = Settings.getString(Settings.HSREPLAY_OAUTH_ACCESS_TOKEN, null)
         var refreshToken: String? = Settings.getString(Settings.HSREPLAY_OAUTH_REFRESH_TOKEN, null)
@@ -85,28 +83,7 @@ class OauthInterceptor : Interceptor {
             }
         }
 
-        fun random(): String {
-            val generator = Random()
-            val randomStringBuilder = StringBuilder()
-            val c = "abcdefghijklmnopqrstuvwxyz0123456789"
 
-            for (i in 0 until 16) {
-                randomStringBuilder.append(c[generator.nextInt(c.length)])
-            }
-            return randomStringBuilder.toString()
-        }
-
-        fun startOauth() {
-            val url = HttpUrl.parse(AUTHORIZE_URL)!!
-                    .newBuilder()
-                    .addQueryParameter("response_type", "code")
-                    .addQueryParameter("client_id", A)
-                    .addQueryParameter("redirect_uri", CALLBACK_URL)
-                    .addQueryParameter("scope", "fullaccess")
-                    .addQueryParameter("state", random())
-
-            Utils.openLink(url.toString())
-        }
 
         fun refreshToken() {
             val client = OkHttpClient()

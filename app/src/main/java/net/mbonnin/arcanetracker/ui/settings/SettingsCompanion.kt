@@ -22,7 +22,6 @@ import io.reactivex.schedulers.Schedulers
 import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.detector.ByteBufferImage
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
-import net.mbonnin.arcanetracker.hsreplay.OauthInterceptor
 import net.mbonnin.arcanetracker.hsreplay.model.Lce
 import net.mbonnin.arcanetracker.hsreplay.model.Token
 import net.mbonnin.arcanetracker.trackobot.Trackobot
@@ -602,8 +601,6 @@ class SettingsCompanion(internal var settingsView: View) {
             } else {
                 mHsReplayCompanion1!!.setText(Utils.getString(R.string.hsReplayClaim)) { v ->
                     ViewManager.get().removeView(settingsView)
-
-                    OauthInterceptor.startOauth()
                 }
             }
         }

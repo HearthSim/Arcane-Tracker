@@ -35,6 +35,8 @@
 
         <activity
             android:name="net.mbonnin.arcanetracker.ui.main.MainActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="userPortrait"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
