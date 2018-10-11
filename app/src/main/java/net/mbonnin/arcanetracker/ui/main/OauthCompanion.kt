@@ -9,6 +9,7 @@ import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.mbonnin.arcanetracker.R
+import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.mbonnin.arcanetracker.hsreplay.OauthInterceptor
 import okhttp3.HttpUrl
 import java.util.*
@@ -40,7 +41,8 @@ class OauthCompanion(val view: View, val successCallback: (View) -> Unit, val ca
                     if (code != null) {
                         val d = Completable.fromAction {
                             OauthInterceptor.exchangeCode(code)
-                        }.subscribeOn(Schedulers.io())
+                        }.andThen(HSReplay.get().user())
+                                .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe {
                                     successCallback(view)

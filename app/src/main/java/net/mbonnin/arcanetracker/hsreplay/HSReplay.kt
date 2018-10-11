@@ -2,7 +2,6 @@ package net.mbonnin.arcanetracker.hsreplay
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Bundle
 import android.preference.PreferenceManager
 import androidx.core.content.edit
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -11,12 +10,8 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import net.mbonnin.arcanetracker.FirebaseConstants
 import net.mbonnin.arcanetracker.HDTApplication
-import net.mbonnin.arcanetracker.hsreplay.model.Lce
-import net.mbonnin.arcanetracker.hsreplay.model.Token
-import net.mbonnin.arcanetracker.hsreplay.model.TokenRequest
-import net.mbonnin.arcanetracker.hsreplay.model.UploadRequest
+import net.mbonnin.arcanetracker.hsreplay.model.*
 import okhttp3.*
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -143,28 +138,20 @@ class HSReplay {
         Timber.w("init token=$mLegacyToken")
     }
 
-    @SuppressLint("CheckResult")
-    private fun getAccount() {
-        if (OauthInterceptor.refreshToken == null) {
-            return // no configured account
-        }
-
-        mOauthervice.account()
+    fun getAccount(): Observable<Account>? {
+        return mOauthervice.account()
                 .subscribeOn(io.reactivex.schedulers.Schedulers.io())
                 .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
-                .subscribe({
-                    val premium = it.is_premium ?: false
-
-                    val bundle = Bundle()
-                    bundle.putString("is_premium",premium.toString())
-
-                    FirebaseAnalytics.getInstance(HDTApplication.context).setUserProperty(FirebaseConstants.IS_PREMIUM.name.toLowerCase(),
-                            premium.toString())
-
-                    Timber.e("premium=$premium")
-                }, Timber::e)
+                .doOnNext {
+                    sharedPreferences.edit {
+                        putBoolean(KEY_HSREPLAY_PREMIUM, it.is_premium ?: false)
+                        putString(KEY_HSREPLAY_BATTLETAG, it.battletag)
+                    }
+                }
     }
 
+    fun battleTag() = sharedPreferences.getString(KEY_HSREPLAY_BATTLETAG, null)
+    fun isPremium() = sharedPreferences.getBoolean(KEY_HSREPLAY_PREMIUM, false)
 
     private fun legacyService(): LegacyService {
         return mLegacyService
@@ -202,6 +189,8 @@ class HSReplay {
 
     companion object {
         const val KEY_HSREPLAY_LEGACY_TOKEN = "HSREPLAY_TOKEN"
+        const val KEY_HSREPLAY_PREMIUM = "HSREPLAY_PREMIUM"
+        const val KEY_HSREPLAY_BATTLETAG = "HSREPLAY_BATTLETAG"
 
         @SuppressLint("StaticFieldLeak")
         private var sHSReplay: HSReplay? = null

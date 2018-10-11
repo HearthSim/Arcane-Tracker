@@ -60,6 +60,11 @@ class HDTApplication : MultiDexApplication() {
             }
         }
 
+        val oldVersion = Settings[Settings.VERSION, 0]
+        if (oldVersion in 1..399
+                && BuildConfig.VERSION_CODE >= 400) {
+            Settings.set(Settings.IS_PRE_HEARTHSIM_USER, true)
+        }
         Timber.plant(FileTree.get())
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -91,7 +96,7 @@ class HDTApplication : MultiDexApplication() {
 
         picassoRamCache = LruCache(this)
 
-        picassoHddCache = Cache(defaultCacheDir(), 200*1024*1024)
+        picassoHddCache = Cache(defaultCacheDir(), 200 * 1024 * 1024)
         val okHttpClient = OkHttpClient.Builder()
                 .cache(picassoHddCache)
                 .build()

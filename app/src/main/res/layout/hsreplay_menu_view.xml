@@ -14,7 +14,7 @@
             android:id="@+id/username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#000"
+            android:background="#1D3657"
             android:gravity="left"
             android:padding="13dp"
             tools:text="username#1234"

@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
 
         val showNextTime = Settings.get(Settings.SHOW_NEXT_TIME, true)
 
-        if (OauthInterceptor.refreshToken == null) {
+        if (OauthInterceptor.refreshToken == null && !Settings.get(Settings.IS_PRE_HEARTHSIM_USER, false)) {
             val view = LayoutInflater.from(this).inflate(R.layout.login_view, activityView, false)
             view.findViewById<View>(R.id.button).setOnClickListener {
                 startOauth()

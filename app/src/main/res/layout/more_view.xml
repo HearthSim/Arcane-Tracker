@@ -9,16 +9,6 @@
         android:background="@color/dialogGray"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/supportUs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?android:selectableItemBackground"
-            android:gravity="left"
-            android:padding="13dp"
-            android:text="@string/supportUs"
-            android:textColor="@color/dialogText"
-            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/settings"
@@ -52,18 +42,6 @@
             android:textColor="@color/dialogText"
             android:visibility="gone"
             android:textSize="18sp"/>
-
-        <TextView
-            android:id="@+id/hsReplayHistory"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?android:selectableItemBackground"
-            android:gravity="left"
-            android:padding="13dp"
-            android:text="@string/history"
-            android:textColor="@color/dialogText"
-            android:textSize="18sp"/>
-
         <TextView
             android:id="@+id/quit"
             android:layout_width="match_parent"

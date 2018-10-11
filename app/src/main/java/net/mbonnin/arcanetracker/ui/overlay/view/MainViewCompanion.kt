@@ -424,15 +424,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
 
                 HDTApplication.context.startActivity(intent)
             }
-            val donateView = view.findViewById<View>(R.id.supportUs)
-            if (true) {
-                donateView.setOnClickListener { v3 ->
-                    mViewManager.removeView(view)
-                    Utils.openLink("https://hsreplay.net/premium/")
-                }
-            } else {
-                donateView.visibility = View.GONE
-            }
+
             view.findViewById<View>(R.id.quit).setOnClickListener { v3 -> Utils.exitApp() }
 
             mViewManager.addMenu(view, v2)

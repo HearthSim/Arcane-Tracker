@@ -202,7 +202,7 @@
     <string name="onboarding_opponent">Click the red button to view the cards played by your opponent.</string>
     <string name="your_rank">Your rank: %d</string>
     <string name="opponent_rank">Opponent rank: %d</string>
-    <string name="yourDecks">Your decks</string>
+    <string name="yourDecks">Stats</string>
     <string name="yourPacks">Your packs</string>
     <string name="select_deck">Please select a deck</string>
     <string name="opponents">Matchups:</string>
@@ -225,7 +225,7 @@
     <string name="hsReplayLogin">Login to your hsreplay account to claim your replays</string>
     <string name="hsReplayLogedIn">You are currently logged as %s</string>
     <string name="myReplays">My Replays</string>
-    <string name="exploreDecks">Decks</string>
+    <string name="exploreDecks">Explore Decks</string>
     <string name="premium">Premium</string>
     <string name="signOut">Sign out</string>
     <string name="loginExplanation">Sign in to HSReplay.net below.</string>
