@@ -13,7 +13,6 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import com.google.firebase.analytics.FirebaseAnalytics
 import net.mbonnin.arcanetracker.*
-import net.mbonnin.arcanetracker.ui.my_games.YourGamesActivity
 import net.mbonnin.arcanetracker.ui.my_packs.YourPacksActivity
 import net.mbonnin.arcanetracker.ui.overlay.Onboarding
 import net.mbonnin.arcanetracker.ui.settings.SettingsCompanion
@@ -408,18 +407,6 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
 
                 val intent = Intent()
                 intent.setClass(HDTApplication.context, YourPacksActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-
-                HDTApplication.context.startActivity(intent)
-            }
-
-            view.findViewById<View>(R.id.hsReplayHistory).setOnClickListener { v3 ->
-                mViewManager.removeView(view)
-
-                FirebaseAnalytics.getInstance(HDTApplication.context).logEvent("menu_history", null)
-
-                val intent = Intent()
-                intent.setClass(HDTApplication.context, YourGamesActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
 
                 HDTApplication.context.startActivity(intent)

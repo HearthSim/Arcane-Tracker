@@ -83,7 +83,14 @@ class OauthInterceptor : Interceptor {
             }
         }
 
+        fun unlink() {
+            accessToken = null
+            refreshToken = null
 
+            Settings.remove(Settings.HSREPLAY_OAUTH_ACCESS_TOKEN)
+            Settings.remove(Settings.HSREPLAY_OAUTH_REFRESH_TOKEN)
+
+        }
 
         fun refreshToken() {
             val client = OkHttpClient()

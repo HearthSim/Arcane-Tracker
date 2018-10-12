@@ -3,6 +3,7 @@ package net.mbonnin.arcanetracker.ui.main
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.view.View
+import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import io.reactivex.Completable
@@ -27,6 +28,16 @@ class OauthCompanion(val view: View, val successCallback: (View) -> Unit, val ca
         return randomStringBuilder.toString()
     }
 
+    fun setWebViewMargin(dp: Int) {
+        val webView = view.findViewById<WebView>(R.id.webView)
+        val layoutParams = webView.layoutParams as ViewGroup.MarginLayoutParams
+
+        layoutParams.leftMargin = dp
+        layoutParams.topMargin = dp
+        layoutParams.rightMargin = dp
+        layoutParams.bottomMargin = dp
+    }
+
 
     init {
         val webView = view.findViewById<WebView>(R.id.webView)
@@ -41,7 +52,7 @@ class OauthCompanion(val view: View, val successCallback: (View) -> Unit, val ca
                     if (code != null) {
                         val d = Completable.fromAction {
                             OauthInterceptor.exchangeCode(code)
-                        }.andThen(HSReplay.get().user())
+                        }.andThen(HSReplay.get().getAccount())
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe {

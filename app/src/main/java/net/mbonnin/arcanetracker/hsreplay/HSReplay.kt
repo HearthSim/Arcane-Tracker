@@ -181,9 +181,12 @@ class HSReplay {
     }
 
     fun unlink() {
+        OauthInterceptor.unlink()
         mLegacyToken = null
         sharedPreferences.edit {
             remove(KEY_HSREPLAY_LEGACY_TOKEN)
+            remove(KEY_HSREPLAY_PREMIUM)
+            remove(KEY_HSREPLAY_BATTLETAG)
         }
     }
 
