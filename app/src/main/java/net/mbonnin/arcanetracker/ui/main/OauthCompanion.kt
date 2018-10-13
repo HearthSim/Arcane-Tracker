@@ -58,13 +58,14 @@ class OauthCompanion(val view: View, val successCallback: (View) -> Unit, val ca
                                 .subscribe {
                                     successCallback(view)
                                 }
-                        return true
                     } else {
-                        return false
+                        cancelCallback(view)
                     }
-                }
 
-                return false
+                    return true
+                } else {
+                    return false
+                }
             }
         }
 
