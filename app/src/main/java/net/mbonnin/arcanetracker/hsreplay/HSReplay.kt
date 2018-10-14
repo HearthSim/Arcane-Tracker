@@ -146,11 +146,13 @@ class HSReplay {
                     sharedPreferences.edit {
                         putBoolean(KEY_HSREPLAY_PREMIUM, it.is_premium ?: false)
                         putString(KEY_HSREPLAY_BATTLETAG, it.battletag)
+                        putString(KEY_HSREPLAY_USERNAME, it.username)
                     }
                 }
     }
 
     fun battleTag() = sharedPreferences.getString(KEY_HSREPLAY_BATTLETAG, null)
+    fun username() = sharedPreferences.getString(KEY_HSREPLAY_USERNAME, null)
     fun isPremium() = sharedPreferences.getBoolean(KEY_HSREPLAY_PREMIUM, false)
 
     private fun legacyService(): LegacyService {
@@ -187,6 +189,7 @@ class HSReplay {
             remove(KEY_HSREPLAY_LEGACY_TOKEN)
             remove(KEY_HSREPLAY_PREMIUM)
             remove(KEY_HSREPLAY_BATTLETAG)
+            remove(KEY_HSREPLAY_USERNAME)
         }
     }
 
@@ -194,6 +197,7 @@ class HSReplay {
         const val KEY_HSREPLAY_LEGACY_TOKEN = "HSREPLAY_TOKEN"
         const val KEY_HSREPLAY_PREMIUM = "HSREPLAY_PREMIUM"
         const val KEY_HSREPLAY_BATTLETAG = "HSREPLAY_BATTLETAG"
+        const val KEY_HSREPLAY_USERNAME = "HSREPLAY_USERNAME"
 
         @SuppressLint("StaticFieldLeak")
         private var sHSReplay: HSReplay? = null

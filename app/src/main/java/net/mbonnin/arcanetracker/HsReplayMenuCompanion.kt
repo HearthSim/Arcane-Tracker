@@ -20,7 +20,7 @@ class HsReplayMenuCompanion(override val containerView: View): LayoutContainer {
         val isSignedIn = OauthInterceptor.refreshToken != null
 
         if (isSignedIn) {
-            battleTag.setText(HSReplay.get().battleTag())
+            battleTag.setText(HSReplay.get().username())
 
             signout.setOnClickListener {
                 Overlay.hide()
