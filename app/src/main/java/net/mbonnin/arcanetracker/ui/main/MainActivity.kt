@@ -1,8 +1,6 @@
 package net.mbonnin.arcanetracker.ui.main
 
 import android.Manifest
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.annotation.TargetApi
 import android.app.AlertDialog
 import android.content.Intent
@@ -21,24 +19,36 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.iid.FirebaseInstanceId
+import io.reactivex.Completable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import net.mbonnin.arcanetracker.HDTApplication
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Settings
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.extension.finishAndRemoveTaskIfPossible
+import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.mbonnin.arcanetracker.hsreplay.OauthInterceptor
 import net.mbonnin.arcanetracker.ui.overlay.Overlay
 import timber.log.Timber
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
-    lateinit var activityView: FrameLayout
+    lateinit var container: FrameLayout
+    val disposable = CompositeDisposable()
+
+    var state = State(true, false, false)
+
+    data class State(val needLogin: Boolean,
+                val loginLoading: Boolean,
+                val showNextTime: Boolean)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        activityView = FrameLayout(this)
-        setContentView(activityView)
+        container = FrameLayout(this)
+        setContentView(container)
 
         Utils.logWithDate("MainActivity.onCreate")
 
@@ -50,58 +60,64 @@ class MainActivity : AppCompatActivity() {
             Timber.e(e)
         }
 
-        val showNextTime = Settings.get(Settings.SHOW_NEXT_TIME, true)
+        val needLogin = OauthInterceptor.refreshToken == null
+                && !Settings.get(Settings.IS_PRE_HEARTHSIM_USER, false)
+        state = state.copy(showNextTime = Settings.get(Settings.SHOW_NEXT_TIME, true),
+                needLogin = needLogin)
+        handleIntent(intent)
+    }
 
-        if (OauthInterceptor.refreshToken == null && !Settings.get(Settings.IS_PRE_HEARTHSIM_USER, false)) {
-            val view = LayoutInflater.from(this).inflate(R.layout.login_view, activityView, false)
-            view.findViewById<View>(R.id.button).setOnClickListener {
-                startOauth()
+    fun handleIntent(intent: Intent?) {
+        val url = intent?.data?.toString()
+        if (url != null && url.startsWith(OauthInterceptor.CALLBACK_URL)) {
+            val code = Uri.parse(url).getQueryParameter("code")
+            if (code != null) {
+                updateState(state.copy(needLogin = true, loginLoading = true))
+                val d = Completable.fromAction {
+                    OauthInterceptor.exchangeCode(code)
+                }.andThen(HSReplay.get().getAccount())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe( {
+                            updateState(state.copy(loginLoading = false, needLogin = false))
+                        }, {
+                            Timber.e(it)
+                            updateState(state.copy(needLogin = true, loginLoading = false))
+                        })
+                disposable.add(d)
+                return
             }
-            activityView.addView(view)
-        } else {
-            showPermissionView()
+        }
+        updateState(state)
+    }
 
-            if (!showNextTime) {
+    fun updateState(newState: State) {
+        container.removeAllViews()
+
+        if (newState.needLogin) {
+            val view = LayoutInflater.from(this).inflate(R.layout.login_view, container, false)
+            val loginCompanion = LoginCompanion(view)
+            loginCompanion.loading(newState.loginLoading)
+            container.addView(view)
+        } else {
+            val view = LayoutInflater.from(this).inflate(R.layout.permission_view, container, false)
+            val button = view.findViewById<View>(R.id.button) as Button
+
+            button.setOnClickListener { _ -> tryToLaunchGame() }
+
+            container.addView(view)
+
+            if (!newState.showNextTime) {
                 tryToLaunchGame()
                 return
             }
         }
+        state = newState
     }
 
-    private fun showPermissionView() {
-        val view = LayoutInflater.from(this).inflate(R.layout.permission_view, activityView, false)
-        val button = view.findViewById<View>(R.id.button) as Button
-
-        button.setOnClickListener { _ -> tryToLaunchGame() }
-
-        activityView.addView(view)
-    }
-
-    private fun startOauth() {
-        val view = LayoutInflater.from(this).inflate(R.layout.oauth_view, activityView, false)
-        OauthCompanion(view, this::oauthSuccess, this::oauthCancel)
-        activityView.addView(view)
-        view.alpha = 0f
-        view.animate().alpha(1.0f)
-    }
-
-    private fun discardView(view: View) {
-        val animation = view.animate()
-        animation.setListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
-                activityView.removeView(view)
-            }
-        })
-        animation.alpha(0f).start()
-    }
-
-    private fun oauthSuccess(view: View) {
-        discardView(view)
-        showPermissionView()
-    }
-
-    private fun oauthCancel(view: View) {
-        discardView(view)
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
     }
 
     private fun hasAllPermissions(): Boolean {
@@ -119,7 +135,7 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (!canReallyDrawOverlays()) {
-            Snackbar.make(activityView, getString(R.string.pleaseEnablePermissions), Snackbar.LENGTH_LONG).show()
+            Snackbar.make(container, getString(R.string.pleaseEnablePermissions), Snackbar.LENGTH_LONG).show()
         } else {
             tryToLaunchGame()
         }
@@ -135,7 +151,7 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (checkCallingOrSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || checkCallingOrSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            Snackbar.make(activityView, getString(R.string.pleaseEnablePermissions), Snackbar.LENGTH_LONG).show()
+            Snackbar.make(container, getString(R.string.pleaseEnablePermissions), Snackbar.LENGTH_LONG).show()
         } else {
             tryToLaunchGame()
         }
@@ -209,7 +225,7 @@ class MainActivity : AppCompatActivity() {
                     File(Utils.hsExternalDir + "log.config").writeText(logConfig)
                 }
             } catch (e: Exception) {
-                Snackbar.make(activityView, getString(R.string.cannot_locate_heathstone_install), Snackbar.LENGTH_LONG).show()
+                Snackbar.make(container, getString(R.string.cannot_locate_heathstone_install), Snackbar.LENGTH_LONG).show()
                 Utils.reportNonFatal(Exception("cannot locate hearthstone install directory", e))
             }
 
@@ -235,7 +251,7 @@ class MainActivity : AppCompatActivity() {
 
             Settings.set(Settings.CHECK_IF_RUNNING, false)
         } else {
-            Snackbar.make(activityView, getString(R.string.cannot_launch), Snackbar.LENGTH_LONG).show()
+            Snackbar.make(container, getString(R.string.cannot_launch), Snackbar.LENGTH_LONG).show()
             Utils.reportNonFatal(Exception("no intent to launch game"))
         }
     }

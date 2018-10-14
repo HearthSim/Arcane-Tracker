@@ -231,4 +231,5 @@
     <string name="loginExplanation">Sign in to HSReplay.net below.</string>
     <string name="permissionExplanation">Arcane Tracker will now start Hearthstone and monitor the cards you and your opponent play in the background.\nThe overlay will show what has been played as well as the cards remaining in your deck on top of the Game.\n\nArcane Tracker needs storage and overlay permissions in order to monitor the game and display its overlay.</string>
     <string name="signIn">Sign In</string>
+    <string name="allowPermissions">Allow Permissions</string>
 </resources>
