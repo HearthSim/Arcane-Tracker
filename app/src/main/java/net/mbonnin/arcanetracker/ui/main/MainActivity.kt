@@ -60,8 +60,10 @@ class MainActivity : AppCompatActivity() {
             Timber.e(e)
         }
 
-        val needLogin = OauthInterceptor.refreshToken == null
-                && !Settings.get(Settings.IS_PRE_HEARTHSIM_USER, false)
+        val mandatoryLogin = true || !Settings.get(Settings.IS_PRE_HEARTHSIM_USER, false)
+
+        val needLogin = OauthInterceptor.refreshToken == null && mandatoryLogin
+
         state = state.copy(showNextTime = Settings.get(Settings.SHOW_NEXT_TIME, true),
                 needLogin = needLogin)
         handleIntent(intent)

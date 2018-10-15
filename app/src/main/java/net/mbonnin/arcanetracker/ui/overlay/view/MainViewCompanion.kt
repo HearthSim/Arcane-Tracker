@@ -13,6 +13,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import com.google.firebase.analytics.FirebaseAnalytics
 import net.mbonnin.arcanetracker.*
+import net.mbonnin.arcanetracker.ui.my_games.YourGamesActivity
 import net.mbonnin.arcanetracker.ui.my_packs.YourPacksActivity
 import net.mbonnin.arcanetracker.ui.overlay.Onboarding
 import net.mbonnin.arcanetracker.ui.settings.SettingsCompanion
@@ -222,7 +223,6 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
 
             return w
         }
-
         set(width) {
             Settings.set(Settings.BUTTON_WIDTH, width - Utils.dpToPx(8))
 
@@ -376,7 +376,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
         drawable = v.context.resources.getDrawable(R.drawable.settings_handle)
         handleView.init(drawable, v.context.resources.getColor(R.color.gray))
         handleView.setOnClickListener { v2 ->
-            val view = LayoutInflater.from(v.context).inflate(R.layout.more_view, null)
+            val view = LayoutInflater.from(v.context).inflate(R.layout.cog_menu, null)
 
             view.findViewById<View>(R.id.settings).setOnClickListener { v3 ->
                 mViewManager.removeView(view)
@@ -384,6 +384,19 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
                 FirebaseAnalytics.getInstance(HDTApplication.context).logEvent("menu_settings", null)
 
                 SettingsCompanion.show()
+            }
+
+            view.findViewById<View>(R.id.games).setOnClickListener { v3 ->
+                ViewManager.get().removeView(view)
+
+                FirebaseAnalytics.getInstance(HDTApplication.context).logEvent("menu_history", null)
+
+                val intent = Intent()
+                intent.setClass(HDTApplication.context, YourGamesActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+
+                HDTApplication.context.startActivity(intent)
+
             }
 
             view.findViewById<View>(R.id.yourDecks).setOnClickListener { v3 ->

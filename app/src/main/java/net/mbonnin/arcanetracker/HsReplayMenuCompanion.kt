@@ -4,13 +4,11 @@ import android.content.Intent
 import android.graphics.Color
 import android.view.View
 import android.view.View.GONE
-import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.hsreplay_menu_view.*
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.mbonnin.arcanetracker.hsreplay.OauthInterceptor
 import net.mbonnin.arcanetracker.ui.main.MainActivity
-import net.mbonnin.arcanetracker.ui.my_games.YourGamesActivity
 import net.mbonnin.arcanetracker.ui.overlay.Overlay
 
 class HsReplayMenuCompanion(override val containerView: View): LayoutContainer {
@@ -50,13 +48,13 @@ class HsReplayMenuCompanion(override val containerView: View): LayoutContainer {
         myReplays.setOnClickListener { v3 ->
             ViewManager.get().removeView(containerView)
 
-            FirebaseAnalytics.getInstance(HDTApplication.context).logEvent("menu_history", null)
+            Utils.openLink("https://hsreplay.net/games/mine/")
+        }
 
-            val intent = Intent()
-            intent.setClass(HDTApplication.context, YourGamesActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        meta.setOnClickListener { v3 ->
+            ViewManager.get().removeView(containerView)
 
-            HDTApplication.context.startActivity(intent)
+            Utils.openLink("https://hsreplay.net/meta/")
         }
 
         exploreDecks.setOnClickListener {
