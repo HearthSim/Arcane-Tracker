@@ -8,6 +8,7 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.hsreplay_menu_view.*
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.mbonnin.arcanetracker.hsreplay.OauthInterceptor
+import net.mbonnin.arcanetracker.ui.main.LoginCompanion
 import net.mbonnin.arcanetracker.ui.main.MainActivity
 import net.mbonnin.arcanetracker.ui.overlay.Overlay
 
@@ -21,6 +22,7 @@ class HsReplayMenuCompanion(override val containerView: View): LayoutContainer {
             signout.setOnClickListener {
                 Overlay.hide()
 
+                Settings.get(Settings.IS_PRE_HEARTHSIM_USER, false)
                 HSReplay.get().unlink()
 
                 val intent = Intent()
@@ -42,6 +44,7 @@ class HsReplayMenuCompanion(override val containerView: View): LayoutContainer {
 
             battleTag.setText(containerView.context.getText(R.string.signIn))
             battleTag.setOnClickListener {
+                LoginCompanion.openHsReplayOauth()
             }
         }
 

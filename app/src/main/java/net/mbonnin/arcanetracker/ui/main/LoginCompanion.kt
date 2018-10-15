@@ -8,7 +8,7 @@ import net.mbonnin.arcanetracker.helper.RandomHelper
 import net.mbonnin.arcanetracker.hsreplay.OauthInterceptor
 import okhttp3.HttpUrl
 
-class LoginCompanion(override val containerView: View): LayoutContainer {
+class LoginCompanion(override val containerView: View) : LayoutContainer {
     fun loading(loading: Boolean) {
         button.visibility = if (loading) View.GONE else View.VISIBLE
         progressBar.visibility = if (loading) View.VISIBLE else View.GONE
@@ -16,6 +16,12 @@ class LoginCompanion(override val containerView: View): LayoutContainer {
 
     init {
         button.setOnClickListener {
+            openHsReplayOauth()
+        }
+    }
+
+    companion object {
+        fun openHsReplayOauth() {
             val url = HttpUrl.parse(OauthInterceptor.AUTHORIZE_URL)!!
                     .newBuilder()
                     .addQueryParameter("response_type", "code")

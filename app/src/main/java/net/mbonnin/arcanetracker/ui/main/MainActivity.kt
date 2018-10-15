@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
             Timber.e(e)
         }
 
-        val mandatoryLogin = true || !Settings.get(Settings.IS_PRE_HEARTHSIM_USER, false)
+        val mandatoryLogin = !Settings.get(Settings.IS_PRE_HEARTHSIM_USER, false)
 
         val needLogin = OauthInterceptor.refreshToken == null && mandatoryLogin
 
