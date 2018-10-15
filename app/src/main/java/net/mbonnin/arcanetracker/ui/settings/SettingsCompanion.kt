@@ -586,7 +586,7 @@ class SettingsCompanion(internal var settingsView: View) {
         if (mHsReplayState.token == null) {
             mHsReplayCompanion1!!.view().visibility = GONE
         } else {
-            mHsReplayCompanion1!!.view().visibility = VISIBLE
+            mHsReplayCompanion1!!.view().visibility = GONE
             if (mHsReplayState.userNameLoading || mHsReplayState.claimUrlLoading) {
                 mHsReplayCompanion1!!.setLoading()
             } else if (mHsReplayState.userName != null) {
