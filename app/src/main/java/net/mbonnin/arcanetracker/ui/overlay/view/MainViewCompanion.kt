@@ -16,6 +16,7 @@ import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.ui.my_games.YourGamesActivity
 import net.mbonnin.arcanetracker.ui.my_packs.YourPacksActivity
 import net.mbonnin.arcanetracker.ui.overlay.Onboarding
+import net.mbonnin.arcanetracker.ui.overlay.Onboarding.hsReplayHandleClicked
 import net.mbonnin.arcanetracker.ui.settings.SettingsCompanion
 import net.mbonnin.arcanetracker.ui.stats.YourDecksActivity
 import timber.log.Timber
@@ -369,6 +370,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
         handleView.setOnClickListener {
             val view = LayoutInflater.from(v.context).inflate(R.layout.hsreplay_menu_view, null)
             HsReplayMenuCompanion(view)
+            hsReplayHandleClicked()
             mViewManager.addMenu(view, it)
         }
 

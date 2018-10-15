@@ -234,4 +234,5 @@
     <string name="allowPermissions">Allow Permissions</string>
     <string name="games">Games</string>
     <string name="meta">Meta</string>
+    <string name="onboarding_hsReplay">Click the HSReplay.net button to find your stats and the latest meta news!</string>
 </resources>

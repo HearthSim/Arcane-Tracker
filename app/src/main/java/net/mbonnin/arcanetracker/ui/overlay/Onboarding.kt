@@ -15,6 +15,7 @@ import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
 object Onboarding {
     var playerPopup: View? = null
     var opponentPopup: View? = null
+    var hsReplayPopup: View? = null
 
     val handler = Handler()
 
@@ -77,9 +78,23 @@ object Onboarding {
         opponentPopup = null
         getHandleView(R.id.opponentHandle).glow(false)
 
-        finishOnboarding()
+        handler.postDelayed ({
+            hsReplayPopup?.let { ViewManager.get().removeView(it) }
+            hsReplayPopup = displayPopup(getHandleView(R.id.hsReplayHandle), R.string.onboarding_hsReplay)
+        }, 300)
     }
 
+    fun hsReplayHandleClicked() {
+        if (hsReplayPopup == null) {
+            return
+        }
+
+        hsReplayPopup?.let { ViewManager.get().removeView(it) }
+        hsReplayPopup = null
+        getHandleView(R.id.hsReplayHandle).glow(false)
+
+        finishOnboarding()
+    }
 
     private fun finishOnboarding() {
 
