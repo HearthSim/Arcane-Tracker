@@ -18,7 +18,10 @@ class HsReplayMenuCompanion(override val containerView: View): LayoutContainer {
 
         if (isSignedIn) {
             battleTag.setText(HSReplay.get().username())
-
+            battleTag.setOnClickListener {
+                ViewManager.get().removeView(containerView)
+                Utils.openLink("https://hsreplay.net/account/")
+            }
             signout.setOnClickListener {
                 Overlay.hide()
 
@@ -44,6 +47,7 @@ class HsReplayMenuCompanion(override val containerView: View): LayoutContainer {
 
             battleTag.setText(containerView.context.getText(R.string.signIn))
             battleTag.setOnClickListener {
+                ViewManager.get().removeView(containerView)
                 LoginCompanion.openHsReplayOauth()
             }
         }
