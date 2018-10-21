@@ -1,19 +1,20 @@
 package net.mbonnin.arcanetracker.ui.overlay.adapter;
 
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import net.mbonnin.arcanetracker.HDTApplication;
 import net.mbonnin.arcanetracker.R;
-import net.mbonnin.arcanetracker.helper.TypefaceHelper;
 import net.mbonnin.arcanetracker.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import timber.log.Timber;
 
 /**
@@ -48,7 +49,6 @@ public class ItemAdapter extends RecyclerView.Adapter {
     }
 
 
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -79,7 +79,8 @@ public class ItemAdapter extends RecyclerView.Adapter {
             case TYPE_DECK_ENTRY:
                 return new DeckEntryHolder(barTemplate);
             default:
-                return new RecyclerView.ViewHolder(barTemplate) {};
+                return new RecyclerView.ViewHolder(barTemplate) {
+                };
         }
     }
 
@@ -88,14 +89,14 @@ public class ItemAdapter extends RecyclerView.Adapter {
         Object o = list.get(position);
         if (o instanceof DeckEntryItem) {
             DeckEntryItem entry = (DeckEntryItem) o;
-            ((DeckEntryHolder)holder).bind(entry);
+            ((DeckEntryHolder) holder).bind(entry);
         } else if (o instanceof String) {
             ViewGroup barTemplate = (ViewGroup) holder.itemView;
-            ((TextView)barTemplate.getChildAt(0)).setText((String) o);
+            ((TextView) barTemplate.getChildAt(0)).setText((String) o);
         } else if (o instanceof HeaderItem) {
-            HeaderItem headerItem = (HeaderItem)o;
+            HeaderItem headerItem = (HeaderItem) o;
             TextView textView = holder.itemView.findViewById(R.id.textView);
-            textView.setTypeface(TypefaceHelper.INSTANCE.belwe());
+            textView.setTypeface(ResourcesCompat.getFont(HDTApplication.Companion.getContext(), R.font.chunkfive));
             String text = "";//headerItem.expanded ?"▼":"▶";
             textView.setText(text + headerItem.title);
             if (headerItem.onClicked != null) {
