@@ -37,7 +37,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/overflow"
             tools:text="Deck name"
-            android:fontFamily="@font/belwe_bold"
+            android:fontFamily="@font/chunkfive"
             app:layout_constraintBottom_toBottomOf="@+id/overflow"/>
 
         <TextView

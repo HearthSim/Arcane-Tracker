@@ -49,7 +49,7 @@
                 android:gravity="center"
                 android:layout_marginTop="20dp"
                 android:textSize="32dp"
-                android:fontFamily="@font/belwe_bold"
+                android:fontFamily="@font/chunkfive"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 android:text="@string/allowPermissions" />
@@ -73,7 +73,7 @@
         android:layout_gravity="bottom"
         android:layout_margin="16dp"
         android:backgroundTint="@color/colorAccent"
-        android:fontFamily="@font/belwe_bold"
+        android:fontFamily="@font/chunkfive"
         android:text="@string/authorizeAndPlay"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

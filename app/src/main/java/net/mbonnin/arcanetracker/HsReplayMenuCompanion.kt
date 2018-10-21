@@ -38,6 +38,7 @@ class HsReplayMenuCompanion(override val containerView: View): LayoutContainer {
                 premium.visibility = GONE
             } else {
                 premium.setOnClickListener {
+                    ViewManager.get().removeView(containerView)
                     Utils.openLink("https://hsreplay.net/premium/")
                 }
             }
