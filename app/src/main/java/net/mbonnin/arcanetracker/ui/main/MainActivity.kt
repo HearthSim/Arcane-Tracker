@@ -101,6 +101,8 @@ class MainActivity : AppCompatActivity() {
             val loginCompanion = LoginCompanion(view)
             loginCompanion.loading(newState.loginLoading)
             container.addView(view)
+        } else if (hasAllPermissions()) {
+            doLaunchGame()
         } else {
             val view = LayoutInflater.from(this).inflate(R.layout.permission_view, container, false)
             val button = view.findViewById<View>(R.id.button) as Button
