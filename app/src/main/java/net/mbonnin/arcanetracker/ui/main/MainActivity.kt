@@ -233,7 +233,7 @@ class MainActivity : AppCompatActivity() {
 
             try {
                 packageManager.getPackageInfo(HEARTHSTONE_PACKAGE_ID, 0)?.let {
-                    val c = it.versionName.split("")
+                    val c = it.versionName.split(".")
                     try {
                         HDTApplication.get().hearthstoneBuild = c[c.size - 1].toInt()
                     } catch (e: Exception) {
