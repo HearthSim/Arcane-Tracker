@@ -31,17 +31,34 @@
         android:id="@+id/arcaneTracker"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="48dp"
         android:fontFamily="@font/chunkfive"
         android:gravity="center"
         android:text="@string/app_name"
         android:textColor="#CCC"
         android:textSize="32sp"
-        app:layout_constraintBottom_toTopOf="@+id/logo"
+        app:layout_constraintBottom_toTopOf="@+id/blurb"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/blurb"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="16dp"
+        android:fontFamily="@font/barlow_semicondensed_semibold"
+        android:gravity="center"
+        android:text="@string/blurb"
+        android:textColor="#CCC"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/logo"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/arcaneTracker" />
 
     <ImageView
         android:id="@+id/logo"
@@ -51,7 +68,7 @@
         android:tint="#ccc"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/arcaneTracker"
+        app:layout_constraintTop_toBottomOf="@+id/blurb"
         app:srcCompat="@drawable/ic_hdt" />
 
     <Button
@@ -59,13 +76,34 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_margin="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="48dp"
         android:backgroundTint="@color/colorAccent"
         android:fontFamily="@font/chunkfive"
+        android:padding="20dp"
         android:text="@string/signIn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/step"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/barlow_semicondensed_semibold"
+        android:gravity="center"
+        android:text="@string/step1"
+        android:textColor="#CCC"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button" />
 
     <ProgressBar
         android:id="@+id/progressBar"

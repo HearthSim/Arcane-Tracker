@@ -47,7 +47,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="48dp"
                 android:textSize="32dp"
                 android:fontFamily="@font/chunkfive"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -58,6 +58,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:fontFamily="@font/barlow_semicondensed_semibold"
+                android:textSize="18sp"
                 app:layout_constraintTop_toBottomOf="@+id/allow"
                 android:layout_marginTop="20dp"
                 android:text="@string/permissionExplanation" />
@@ -71,7 +73,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_margin="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="48dp"
+        android:padding="20dp"
         android:backgroundTint="@color/colorAccent"
         android:fontFamily="@font/chunkfive"
         android:text="@string/authorizeAndPlay"
@@ -79,5 +84,22 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
+    <TextView
+        android:id="@+id/step"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/barlow_semicondensed_semibold"
+        android:gravity="center"
+        android:text="@string/step2"
+        android:textColor="#CCC"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

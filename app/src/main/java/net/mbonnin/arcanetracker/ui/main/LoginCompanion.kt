@@ -9,9 +9,19 @@ import net.mbonnin.arcanetracker.hsreplay.OauthInterceptor
 import okhttp3.HttpUrl
 
 class LoginCompanion(override val containerView: View) : LayoutContainer {
+    private var hasAllPermissions_: Boolean = true
+    private var loading_: Boolean = false
+
     fun loading(loading: Boolean) {
-        button.visibility = if (loading) View.GONE else View.VISIBLE
+        this.loading_ = loading
+        button.visibility = if (loading) View.INVISIBLE else View.VISIBLE
         progressBar.visibility = if (loading) View.VISIBLE else View.GONE
+        step.visibility = if (!loading_ && !hasAllPermissions_)  View.INVISIBLE else View.VISIBLE
+    }
+
+    fun hasAllPermissions(hasAllPermissions: Boolean) {
+        this.hasAllPermissions_ = hasAllPermissions;
+        step.visibility = if (!loading_ && !hasAllPermissions_) View.VISIBLE else View.GONE
     }
 
     init {
