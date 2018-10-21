@@ -9,7 +9,7 @@
     android:gravity="top|center_horizontal"
     android:padding="20dp"
     android:text="test"
-    android:fontFamily="@font/franklin_gothic"
+    android:fontFamily="@font/barlow_semicondensed_semibold"
     android:textColor="@android:color/white"
     app:layout_constraintLeft_toLeftOf="@+id/secrets"
     app:layout_constraintRight_toRightOf="@+id/secrets"

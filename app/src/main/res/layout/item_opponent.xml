@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_gravity="center"
-            android:fontFamily="@font/franklin_gothic"
+            android:fontFamily="@font/barlow_semicondensed_semibold"
             android:gravity="center"
             android:text="@string/total"
             android:textColor="#fff" />
@@ -32,7 +32,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_weight="1"
-        android:fontFamily="@font/franklin_gothic"
+        android:fontFamily="@font/barlow_semicondensed_semibold"
         android:gravity="center"
         android:textColor="#fff"
         tools:text="Played" />
@@ -43,7 +43,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_weight="1"
-        android:fontFamily="@font/franklin_gothic"
+        android:fontFamily="@font/barlow_semicondensed_semibold"
         android:gravity="center"
         android:textColor="#fff"
         tools:text="Won" />
@@ -54,7 +54,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_weight="1"
-        android:fontFamily="@font/franklin_gothic"
+        android:fontFamily="@font/barlow_semicondensed_semibold"
         android:gravity="center"
         android:textColor="#fff"
         tools:text="Lost" />
@@ -65,7 +65,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_weight="1"
-        android:fontFamily="@font/franklin_gothic"
+        android:fontFamily="@font/barlow_semicondensed_semibold"
         android:gravity="center"
         android:textColor="#fff"
         tools:text="Winrate" />
