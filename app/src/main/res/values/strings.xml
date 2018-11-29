@@ -220,7 +220,7 @@
     <string name="average">Dust per pack</string>
     <string name="history_delete_confirmation">Are you sure you want to delete your history ?</string>
     <string name="delete_everything">Delete everything</string>
-    <string name="gameCount">%d Partite Giocate</string>
+    <string name="gameCount">%d Games played</string>
     <string name="supportUs">Subscribe to HSReplay.net</string>
     <string name="hsReplayLogin">Login to your hsreplay account to claim your replays</string>
     <string name="hsReplayLogedIn">You are currently logged as %s</string>
