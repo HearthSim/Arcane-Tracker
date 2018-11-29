@@ -394,8 +394,9 @@ class GameLogic private constructor() {
                 CardId.BALEFUL_BANKER,
                 CardId.HOLY_WATER,
                 CardId.LAB_RECRUITER,
+                CardId.SEANCE,
                 CardId.SPLINTERGRAFT -> mGame!!.findEntitySafe(blockTag.Target!!)!!.CardID
-            //CardId.DOLLMASTER_DORIAN
+                //CardId.DOLLMASTER_DORIAN
                 CardId.WANTED -> CardId.THE_COIN
                 CardId.BENEATH_THE_GROUNDS -> CardId.NERUBIAN_AMBUSH
                 CardId.IRON_JUGGERNAUT -> CardId.BURROWING_MINE
@@ -429,12 +430,15 @@ class GameLogic private constructor() {
                 CardId.SPARK_ENGINE -> CardId.SPARK
                 CardId.EXTRA_ARMS -> CardId.MORE_ARMS
                 CardId.SEAFORIUM_BOMBER -> CardId.BOMB
+                CardId.SPRINGPAW -> CardId.LYNX
+                CardId.HALAZZI_THE_LYNX -> CardId.LYNX
+
                 else -> null
             }
         } else if (TYPE_TRIGGER == blockTag.BlockType) {
 
             // deathrattle or passive effect
-            guessedId = when (blockEntity!!.CardID) {
+            guessedId = when (blockEntity.CardID) {
                 CardId.PYROS -> CardId.PYROS1
                 CardId.PYROS1 -> CardId.PYROS2
                 CardId.WHITE_EYES -> CardId.THE_STORM_GUARDIAN
@@ -460,6 +464,8 @@ class GameLogic private constructor() {
                 CardId.THE_FINAL_SEAL -> CardId.AZARI_THE_DEVOURER
                 CardId.MALORNE -> CardId.MALORNE
                 CardId.SPARK_DRILL -> CardId.SPARK
+                CardId.HIGH_PRIESTESS_JEKLIK -> CardId.HIGH_PRIESTESS_JEKLIK
+                CardId.HAKKAR_THE_SOULFLAYER -> CardId.CORRUPTED_BLOOD
                 else -> null
             }
         }
@@ -469,7 +475,7 @@ class GameLogic private constructor() {
         }
 
         // even if we don't know the guessedId, record that this was createdBy this entity
-        entity!!.extra.createdBy = blockEntity!!.CardID
+        entity!!.extra.createdBy = blockEntity.CardID
     }
 
     private fun handleFullEntityTag2(tag: FullEntityTag) {

@@ -164,6 +164,7 @@ object SecretLogic {
                     if (opponentHasRoomOnBoard(game)) {
                         exclude(game, CardId.FREEZING_TRAP)
                         exclude(game, CardId.VENOMSTRIKE_TRAP)
+                        exclude(game, CardId.SPLITTING_IMAGE)
                     }
                 }
                 Type.HERO -> {
