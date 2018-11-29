@@ -45,6 +45,7 @@ class HsReplayMenuCompanion(override val containerView: View): LayoutContainer {
         } else {
             premium.visibility = View.GONE
             signout.visibility = View.GONE
+            myReplays.visibility = View.GONE
 
             battleTag.setText(containerView.context.getText(R.string.signIn))
             battleTag.setOnClickListener {
