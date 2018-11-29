@@ -22,5 +22,5 @@
     <string name="changelog_312">Initial support for Whizbang decks.\nFixed some glitches when displaying possible secrets.</string>
     <string name="changelog_314">Fix Sir Annoy-o-Tron detection.\nUpdated for nerfs.</string>
     <string name="changelog_315">Fix King Rastakhan detection.\nAdded new classic cards.</string>
-    <string name="changelog_400">Arcane Tracker is now the official HSReplay.net Android Deck Tracker!\nSupport for Rastakhan’s Rumble!.</string>
+    <string name="changelog_400">Arcane Tracker is now the official HSReplay.net Android Deck Tracker!\nSupport for Rastakhan’s Rumble!</string>
 </resources>
