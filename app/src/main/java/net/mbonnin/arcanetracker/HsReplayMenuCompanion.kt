@@ -20,7 +20,7 @@ class HsReplayMenuCompanion(override val containerView: View): LayoutContainer {
             battleTag.setText(HSReplay.get().username())
             battleTag.setOnClickListener {
                 ViewManager.get().removeView(containerView)
-                Utils.openLink("https://hsreplay.net/account/")
+                Utils.openLink("https://hsreplay.net/account/?utm_source=hdt_android&utm_medium=client")
             }
             signout.setOnClickListener {
                 Overlay.hide()
@@ -39,7 +39,7 @@ class HsReplayMenuCompanion(override val containerView: View): LayoutContainer {
             } else {
                 premium.setOnClickListener {
                     ViewManager.get().removeView(containerView)
-                    Utils.openLink("https://hsreplay.net/premium/")
+                    Utils.openLink("https://hsreplay.net/premium/?utm_source=hdt_android&utm_medium=client")
                 }
             }
         } else {
@@ -57,19 +57,19 @@ class HsReplayMenuCompanion(override val containerView: View): LayoutContainer {
         myReplays.setOnClickListener { v3 ->
             ViewManager.get().removeView(containerView)
 
-            Utils.openLink("https://hsreplay.net/games/mine/")
+            Utils.openLink("https://hsreplay.net/games/mine/?utm_source=hdt_android&utm_medium=client")
         }
 
         meta.setOnClickListener { v3 ->
             ViewManager.get().removeView(containerView)
 
-            Utils.openLink("https://hsreplay.net/meta/")
+            Utils.openLink("https://hsreplay.net/meta/?utm_source=hdt_android&utm_medium=client")
         }
 
         exploreDecks.setOnClickListener {
             ViewManager.get().removeView(containerView)
 
-            Utils.openLink("https://hsreplay.net/decks/")
+            Utils.openLink("https://hsreplay.net/decks/?utm_source=hdt_android&utm_medium=client")
         }
 
     }
