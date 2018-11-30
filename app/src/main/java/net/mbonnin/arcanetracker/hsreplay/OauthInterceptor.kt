@@ -33,7 +33,7 @@ class OauthInterceptor : Interceptor {
     companion object {
         const val A = "pk_live_iKPWQuznmNf2BbBCxZa1VzmP"
         const val B = "sk_live_20180319oDB6PgKuHSwnDVs5B5SLBmh3"
-        const val AUTHORIZE_URL = "https://hsreplay.net/oauth2/authorize/??utm_source=arcanetracker&utm_medium=client"
+        const val AUTHORIZE_URL = "https://hsreplay.net/oauth2/authorize/?utm_source=arcanetracker&utm_medium=client"
         const val CALLBACK_URL = "arcanetracker://callback/"
 
         private var accessToken: String? = Settings.getString(Settings.HSREPLAY_OAUTH_ACCESS_TOKEN, null)
