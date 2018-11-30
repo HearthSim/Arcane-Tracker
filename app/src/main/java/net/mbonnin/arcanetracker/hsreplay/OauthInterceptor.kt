@@ -21,6 +21,8 @@ class OauthInterceptor : Interceptor {
             var response = chain.proceed(request)
             if (!response.isSuccessful && accessToken != null && refreshToken != null) {
                 refreshToken()
+
+                requestBuilder.header(HEADER_AUTHORIZATION, "Bearer ${accessToken}")
                 response = chain.proceed(requestBuilder.build())
             }
 
