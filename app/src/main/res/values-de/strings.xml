@@ -210,4 +210,19 @@
     <string name="opponent">Gegner</string>
     <string name="supportAT">Arcane Tracker unterstützen</string>
     <string name="notifQuit">Schließen</string>
+    <string name="supportUs">Abonniere HSReplay.net Premium</string>
+    <string name="hsReplayLogin">Melde dich mit deinem HSReplay.net-Konto an, um deine Aufzeichnungen zu beanspruchen.</string>
+    <string name="hsReplayLogedIn">Du bist zurzeit als %s angemeldet</string>
+    <string name="myReplays">Meine Aufzeichnungen</string>
+    <string name="exploreDecks">Decks erkunden</string>
+    <string name="premium">Premium</string>
+    <string name="signOut">Abmelden</string>
+    <string name="signIn">Mit HSReplay.net anmelden</string>
+    <string name="allowPermissions">Erlaube Berechtigungen</string>
+    <string name="games">Spiele</string>
+    <string name="meta">Meta</string>
+    <string name="onboarding_hsReplay">Klicke auf die HSReplay.net-Schaltfläche, um deine Statistiken und Meta-Neuigkeiten zu sehen!</string>
+    <string name="blurb">Deck- und Statistikenverlauf für Hearthstone</string>
+    <string name="step1">Schritt 1/2</string>
+    <string name="step2">Schritt 2/2</string>
 </resources>
