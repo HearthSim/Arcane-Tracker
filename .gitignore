@@ -10,14 +10,8 @@
 /.idea/libraries
 .DS_Store
 /build
-/captures
 .externalNativeBuild
-/app/src/main/assets/cards
-/app/src/main/assets/bars
 /buildSrc/build
 /hsmodel/build
 /.idea/*
 /*/build
-/website/public/cards
-/website/public/bars
-/app/src/main/res/font/*
