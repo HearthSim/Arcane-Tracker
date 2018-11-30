@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="changelog_213">Support for deckstrings. You can now paste decks copied from the game. Just click \"new deck\" after copying your deck.\nMark HSReplay.net uploads as Arena when needed\nYou can now edit the win/loss counter.</string>
-    <string name="changelog_214">Fixed a bug that prevented the tracker to detect new arena runs if your hero was golden.\nIncreased the time we wait for logs to complete at the end of a game. This should fix some instances where the logs are not uploaded to hsreplay.net.\nImproved french translations.</string>
-    <string name="changelog_217">Added support for the Frozen Throne extension.</string>
-    <string name="changelog_219">Fixed a crash at startup for devices on kitkat and below.</string>
-    <string name="changelog_220">Fixed a crash when clicking \'new deck\'\nImproved the HSReplay.net settings.</string>
-    <string name="changelog_221">Secret tracker: long press a secret in your opponent deck to determine which secrets are/are not possible.\nShow the creator of gift cards when possible.\nAdd support for Android Oreo.\nAllow to paste custom deckstrings.</string>
-    <string name="changelog_222">Secret tracker: fix sometimes Vaporize or Effigy badly detected.\nAdded Elise the trailblazer gift card support.\nDisplay the notification again in Android O.</string>
-    <string name="changelog_223">Fixed a couple of crashes, improved memory usage.</string>
-    <string name="changelog_227">Fixed detection of Nemsy.\nRank/mode detection using screen capture (beta).</string>
-    <string name="changelog_231">Marin the fox is now tracked by Arcane Tracker!\nFixed the auto-selection of decks based on mulliganed cards.\nCrash fixes.</string>
-    <string name="changelog_233">Kobold and Catacombs!\nAdded german translations (Thanks AceXare and Cyco).\nOnly show standard secrets in the secret detector if playing a standard game.\nFixed utf8 encoding of hsreplay uploads.</string>
-    <string name="changelog_235">Bye bye Corridor Creeper… Cards have been nerfed.\nAdded italian support (Thanks Mariodm !).\nFixed some card names in hsreplay.net replays.\nSpecial handling of Hoarding Dragon, Deck of wonders and some K&amp;C cards.\nDisplay all gift cards on a single line.</string>
-    <string name="changelog_237">New arena cards !\nImproved italian support (Thanks Mariodm and Silvano!).\nFixed a error message about HSReplay displayed even if you have not opted-in.</string>
-    <string name="changelog_300">Automatic deck detection!</string>
-    <string name="changelog_303">The witchwood!\nPolish translations (Thanks Sarenka !).</string>
-    <string name="changelog_304">You can now delete decks.</string>
-    <string name="changelog_305">Updated for latest nerfs, no more Call To Arms turn 4!\nFixed secret detector in the kraken year.\nImproved german translations (Thanks AceXare!).</string>
-    <string name="changelog_308">Added Tavern of time cards.\nSwitching some menus to a black theme.</string>
-    <string name="changelog_311">Boomsday project !</string>
-    <string name="changelog_312">Initial support for Whizbang decks.\nFixed some glitches when displaying possible secrets.</string>
-    <string name="changelog_314">Fix Sir Annoy-o-Tron detection.\nUpdated for nerfs.</string>
-    <string name="changelog_315">Fix King Rastakhan detection.\nAdded new classic cards.</string>
-    <string name="changelog_400">Arcane Tracker is now the official HSReplay.net Android Deck Tracker!\nSupport for Rastakhan’s Rumble!</string>
+    <string name="changelog_213" translatable="false">Support for deckstrings. You can now paste decks copied from the game. Just click \"new deck\" after copying your deck.\nMark HSReplay.net uploads as Arena when needed\nYou can now edit the win/loss counter.</string>
+    <string name="changelog_214" translatable="false">Fixed a bug that prevented the tracker to detect new arena runs if your hero was golden.\nIncreased the time we wait for logs to complete at the end of a game. This should fix some instances where the logs are not uploaded to hsreplay.net.\nImproved french translations.</string>
+    <string name="changelog_217" translatable="false">Added support for the Frozen Throne extension.</string>
+    <string name="changelog_219" translatable="false">Fixed a crash at startup for devices on kitkat and below.</string>
+    <string name="changelog_220" translatable="false">Fixed a crash when clicking \'new deck\'\nImproved the HSReplay.net settings.</string>
+    <string name="changelog_221" translatable="false">Secret tracker: long press a secret in your opponent deck to determine which secrets are/are not possible.\nShow the creator of gift cards when possible.\nAdd support for Android Oreo.\nAllow to paste custom deckstrings.</string>
+    <string name="changelog_222" translatable="false">Secret tracker: fix sometimes Vaporize or Effigy badly detected.\nAdded Elise the trailblazer gift card support.\nDisplay the notification again in Android O.</string>
+    <string name="changelog_223" translatable="false">Fixed a couple of crashes, improved memory usage.</string>
+    <string name="changelog_227" translatable="false">Fixed detection of Nemsy.\nRank/mode detection using screen capture (beta).</string>
+    <string name="changelog_231" translatable="false">Marin the fox is now tracked by Arcane Tracker!\nFixed the auto-selection of decks based on mulliganed cards.\nCrash fixes.</string>
+    <string name="changelog_233" translatable="false">Kobold and Catacombs!\nAdded german translations (Thanks AceXare and Cyco).\nOnly show standard secrets in the secret detector if playing a standard game.\nFixed utf8 encoding of hsreplay uploads.</string>
+    <string name="changelog_235" translatable="false">Bye bye Corridor Creeper… Cards have been nerfed.\nAdded italian support (Thanks Mariodm !).\nFixed some card names in hsreplay.net replays.\nSpecial handling of Hoarding Dragon, Deck of wonders and some K&amp;C cards.\nDisplay all gift cards on a single line.</string>
+    <string name="changelog_237" translatable="false">New arena cards !\nImproved italian support (Thanks Mariodm and Silvano!).\nFixed a error message about HSReplay displayed even if you have not opted-in.</string>
+    <string name="changelog_300" translatable="false">Automatic deck detection!</string>
+    <string name="changelog_303" translatable="false">The witchwood!\nPolish translations (Thanks Sarenka !).</string>
+    <string name="changelog_304" translatable="false">You can now delete decks.</string>
+    <string name="changelog_305" translatable="false">Updated for latest nerfs, no more Call To Arms turn 4!\nFixed secret detector in the kraken year.\nImproved german translations (Thanks AceXare!).</string>
+    <string name="changelog_308" translatable="false">Added Tavern of time cards.\nSwitching some menus to a black theme.</string>
+    <string name="changelog_311" translatable="false">Boomsday project !</string>
+    <string name="changelog_312" translatable="false">Initial support for Whizbang decks.\nFixed some glitches when displaying possible secrets.</string>
+    <string name="changelog_314" translatable="false">Fix Sir Annoy-o-Tron detection.\nUpdated for nerfs.</string>
+    <string name="changelog_315" translatable="false">Fix King Rastakhan detection.\nAdded new classic cards.</string>
+    <string name="changelog_400" translatable="false">Arcane Tracker is now the official HSReplay.net Android Deck Tracker!\nSupport for Rastakhan’s Rumble!</string>
 </resources>
