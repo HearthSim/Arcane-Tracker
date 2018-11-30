@@ -140,20 +140,13 @@ class HSReplay {
         if (OauthInterceptor.refreshToken != null) {
             // if the user is a previous user of the app and he is already signed up
             // or just to refresh values
-            val ignored = mOauthervice.account()
-                    .subscribeOn(io.reactivex.schedulers.Schedulers.io())
-                    .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
-                    .subscribe( {
-                        sharedPreferences.edit {
-                            putBoolean(KEY_HSREPLAY_PREMIUM, it.is_premium ?: false)
-                            putString(KEY_HSREPLAY_BATTLETAG, it.battletag)
-                            putString(KEY_HSREPLAY_USERNAME, it.username)
-                        }
-                    }, Timber::e)
+            val ignored = getAccount().subscribe({
+                Timber.d("account refreshed ${username()}")
+            }, Timber::e)
         }
     }
 
-    fun getAccount(): Observable<Account>? {
+    fun getAccount(): Observable<Account> {
         return mOauthervice.account()
                 .subscribeOn(io.reactivex.schedulers.Schedulers.io())
                 .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
