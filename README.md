@@ -13,5 +13,4 @@ If something wrong happens during a game, you can go to 'settings -> send feedba
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for how to start contributing.
-See [DEVELOPER.md](DEVELOPER.md) for some tips to help during development.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to start contributing and [DEVELOPER.md](DEVELOPER.md) for some tips to help during development.
