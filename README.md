@@ -11,6 +11,7 @@ Feel free to file bugs/feature requests at https://github.com/HearthSim/Arcane-T
 
 If something wrong happens during a game, you can go to 'settings -> send feedback' to send a bug report including detailed logs for us to investigate.
 
-## Developer guide 
+## Contributing
 
-Go to [the developer guide](DEVELOPER.md) for some info about how to setup your work environment
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to start contributing.
+See [DEVELOPER.md](DEVELOPER.md) for some tips to help during development.
