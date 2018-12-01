@@ -219,4 +219,20 @@
     <string name="average">Poussière par pack</string>
     <string name="gameCount">%d parties jouées</string>
     <string name="delete_everything">Tout supprimer</string>
+    <string name="history_delete_confirmation">Effacer tout l\'historique ?</string>
+    <string name="supportUs">S\'abonner à HSReplay.net</string>
+    <string name="myReplays">Mes replays</string>
+    <string name="exploreDecks">Decks du moment</string>
+    <string name="premium">Premium</string>
+    <string name="signOut">Déconnexion</string>
+    <string name="permissionExplanation">Arcane tracker a besoin des permissions d\'overlay et d\'accès au stockage. Ces permissions sont nécessaires pour pouvoir lire les logs du jeu et afficher l\'overlay. L\'overlay vous permet de voir les cartes que vous avez jouées en temps réel.</string>
+    <string name="signIn">Connexion à HSReplay.net</string>
+    <string name="allowPermissions">Authoriser</string>
+    <string name="games">Parties</string>
+    <string name="meta">Meta</string>
+    <string name="onboarding_hsReplay">Les dernières news de la meta et tes statistiques sont derrière le bouton HSReplay.net</string>
+    <string name="blurb">Trackez vos cartes et vos stats, améliorez votre gameplay !</string>
+    <string name="step1">Etape 1/2</string>
+    <string name="step2">Etape 2/2</string>
+    <string name="trackobotDeprecated">Attention: Track-o-boto n\'est plus maintenu et le support sera arrêté début 2019.</string>
 </resources>
