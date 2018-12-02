@@ -4,6 +4,7 @@ jdk:
   - oraclejdk8
 
 before_install:
+  - rm -rf $ANDROID_HOME/*
   - wget -q "https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip" -O sdk-tools.zip
   - unzip -o -q -d $ANDROID_HOME sdk-tools.zip
   - rm sdk-tools.zip
