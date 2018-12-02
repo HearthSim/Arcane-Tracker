@@ -183,6 +183,11 @@ class SettingsCompanion(internal var settingsView: View) {
 
 
     private fun updateTrackobot(view: View) {
+        view.findViewById<View>(R.id.trackobotWrapper).visibility = if (Settings.get(Settings.IS_LEGACY_TRACKOBOT_USER, false)) {
+            VISIBLE
+        } else {
+            GONE
+        }
         signupButton = view.findViewById<View>(R.id.trackobotSignup) as Button
         signinButton = view.findViewById<View>(R.id.trackobotSignin) as Button
         trackobotText = view.findViewById<View>(R.id.trackobotText) as TextView

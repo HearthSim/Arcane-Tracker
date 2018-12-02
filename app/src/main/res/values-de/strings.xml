@@ -229,4 +229,5 @@
     <string name="history_delete_confirmation">Bist du sicher, dass du deinen Verlauf löschen möchtest?</string>
     <string name="delete_everything">Alles löschen</string>
     <string name="gameCount">%d gespielte Spiele</string>
+    <string name="trackobotDeprecated">Hinweis: Bitte beachte, dass Track-o-Bot nicht mehr unterstützt wird und in einem zukünftigem Update entfernt wird.</string>
 </resources>

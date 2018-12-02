@@ -228,7 +228,7 @@
     <string name="exploreDecks">Explore Decks</string>
     <string name="premium">Premium</string>
     <string name="signOut">Sign out</string>
-    <string name="permissionExplanation">Arcane Tracker needs storage and overlay permissions in order to monitor the game and display its overlay.\n\nArcane Tracker will then start Hearthstone and monitor the cards you and your opponent play in the background.\nThe overlay will show what has been played as well as the cards remaining in your deck on top of the Game.</string>
+    <string name="permissionExplanation">Arcane Tracker needs storage and overlay permissions in order to monitor the game and display its overlay.  Arcane Tracker will then start Hearthstone and monitor the cards you and your opponent play in the background. The overlay will show what has been played as well as the cards remaining in your deck on top of the Game.</string>
     <string name="signIn">Sign in with HSReplay.net</string>
     <string name="allowPermissions">Allow Permissions</string>
     <string name="games">Games</string>
@@ -237,4 +237,5 @@
     <string name="blurb">Deck and stats tracking for Hearthstone</string>
     <string name="step1">Step 1/2</string>
     <string name="step2">Step 2/2</string>
+    <string name="trackobotDeprecated">Deprecation notice: Please note that Track-o-Bot is no longer supported and will be removed in a future update.</string>
 </resources>

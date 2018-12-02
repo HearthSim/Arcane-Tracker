@@ -19,6 +19,7 @@ import io.paperdb.Paper
 import net.hearthsim.kotlin.hslog.PowerParser
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.mbonnin.arcanetracker.parser.*
+import net.mbonnin.arcanetracker.trackobot.Trackobot
 import net.mbonnin.hsmodel.Card
 import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.enum.PlayerClass
@@ -64,6 +65,11 @@ class HDTApplication : MultiDexApplication() {
         if (oldVersion in 1..399
                 && BuildConfig.VERSION_CODE >= 400) {
             Settings.set(Settings.IS_PRE_HEARTHSIM_USER, true)
+        }
+        if (oldVersion in 1..401
+                && BuildConfig.VERSION_CODE >= 402
+                && Trackobot.get().currentUser() != null) {
+            Settings.set(Settings.IS_LEGACY_TRACKOBOT_USER, true)
         }
         Timber.plant(FileTree.get())
 
