@@ -71,6 +71,13 @@ class HDTApplication : MultiDexApplication() {
                 && Trackobot.get().currentUser() != null) {
             Settings.set(Settings.IS_LEGACY_TRACKOBOT_USER, true)
         }
+        if (oldVersion in 1..402
+                && BuildConfig.VERSION_CODE >= 403) {
+            Settings.set(Settings.NEED_TOKEN_CLAIM, true)
+        }
+        if (oldVersion >= 403 && BuildConfig.VERSION_CODE >= 403) {
+            Settings.set(Settings.NEED_TOKEN_CLAIM, false)
+        }
         Timber.plant(FileTree.get())
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

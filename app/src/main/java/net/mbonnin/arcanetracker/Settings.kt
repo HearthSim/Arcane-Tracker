@@ -36,6 +36,7 @@ object Settings {
     private val preferences: SharedPreferences
         get() = PreferenceManager.getDefaultSharedPreferences(HDTApplication.context)
     val IS_LEGACY_TRACKOBOT_USER = "IS_LEGACY_TRACKOBOT_USER"
+    val NEED_TOKEN_CLAIM = "NEED_TOKEN_CLAIM"
 
     operator fun get(key: String, defaultValue: Boolean): Boolean {
         return preferences.getBoolean(key, defaultValue)

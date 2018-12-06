@@ -78,6 +78,7 @@ class MainActivity : AppCompatActivity() {
                 val d = Completable.fromAction {
                     OauthInterceptor.exchangeCode(code)
                 }.andThen(HSReplay.get().getAccount())
+                        .flatMapCompletable { HSReplay.get().claimToken() }
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe( {
