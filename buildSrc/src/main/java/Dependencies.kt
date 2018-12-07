@@ -2,7 +2,7 @@ object Versions {
     const val minSdkVersion = 16
     const val targetSdkVersion = 28
     const val compileSdkVersion = 28
-    const val kotlin = "1.2.71"
+    const val kotlin = "1.3.10"
     const val androidPlugin = "3.2.0"
 
 }
@@ -49,8 +49,8 @@ object Libs {
     const val room = "android.arch.persistence.room:runtime:1.1.1"
     const val rxRoom = "android.arch.persistence.room:rxjava2:1.1.1"
     const val roomProcessor = "android.arch.persistence.room:compiler:1.1.1"
-    const val javadeckstrings = "net.hearthsim:java-deckstrings:1.0-SNAPSHOT"
-    const val kotlinhslog = "net.hearthsim:kotlin-hslog:1.0-SNAPSHOT"
+    const val javadeckstrings = "net.hearthsim:java-deckstrings:1.0"
+    const val kotlinhslog = "net.hearthsim:kotlin-hslog:1.0"
     const val flexbox = "com.google.android:flexbox:1.1.0"
     const val archPaging = "android.arch.paging:runtime:1.0.1"
     const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.30.2"

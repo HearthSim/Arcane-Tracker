@@ -19,12 +19,11 @@ buildscript {
 allprojects {
 
     repositories {
-        mavenLocal()
         google()
         jcenter()
         mavenCentral()
         maven {
-            url "https://dl.bintray.com/mbonnin/default/"
+            url "https://dl.bintray.com/hearthsim/net.hearthsim"
         }
     }
 }
