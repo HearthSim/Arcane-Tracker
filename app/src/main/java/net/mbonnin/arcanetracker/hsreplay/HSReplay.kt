@@ -6,11 +6,14 @@ import android.preference.PreferenceManager
 import androidx.core.content.edit
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
+import io.reactivex.Completable
+import io.reactivex.CompletableSource
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.mbonnin.arcanetracker.HDTApplication
+import net.mbonnin.arcanetracker.Settings
 import net.mbonnin.arcanetracker.hsreplay.model.*
 import okhttp3.*
 import retrofit2.Retrofit
@@ -140,7 +143,15 @@ class HSReplay {
         if (OauthInterceptor.refreshToken != null) {
             // if the user is a previous user of the app and he is already signed up
             // or just to refresh values
-            val ignored = getAccount().subscribe({
+            val ignored = getAccount()
+                    .flatMapCompletable {
+                        if (Settings.get(Settings.NEED_TOKEN_CLAIM, false)) {
+                            HSReplay.get().claimToken()
+                        } else {
+                            Completable.complete()
+                        }
+                    }
+                    .subscribe({
                 Timber.d("account refreshed ${username()}")
             }, Timber::e)
         }
@@ -157,6 +168,14 @@ class HSReplay {
                         putString(KEY_HSREPLAY_USERNAME, it.username)
                     }
                 }
+    }
+
+    fun claimToken(): CompletableSource? {
+        val str = "{\"token\": \"$mLegacyToken\"}"
+        return mOauthervice.claimToken(RequestBody.create(MediaType.parse("application/json"), str))
+                .subscribeOn(io.reactivex.schedulers.Schedulers.io())
+                .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
+                .ignoreElements()
     }
 
     fun battleTag() = sharedPreferences.getString(KEY_HSREPLAY_BATTLETAG, null)
@@ -200,6 +219,8 @@ class HSReplay {
             remove(KEY_HSREPLAY_USERNAME)
         }
     }
+
+
 
     companion object {
         const val KEY_HSREPLAY_LEGACY_TOKEN = "HSREPLAY_TOKEN"

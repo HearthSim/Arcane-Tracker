@@ -12,7 +12,7 @@ import retrofit2.http.POST
 interface OauthService {
 
     @POST("account/claim_token/")
-    fun claimToken(@Body tokenBody: RequestBody): Observable<Token>
+    fun claimToken(@Body tokenBody: RequestBody): Observable<retrofit2.Response<Token>>
 
     @GET("account/")
     fun account(): Observable<Account>
