@@ -67,7 +67,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                     }
 
             if (whizbangDeck != null) {
-                Timber.d("Found whizbang deck !")
+                Timber.d("Found whizbang deck: ${whizbangDeck.name}")
                 whizbangDeck.id = "rototo"
                 whizbangDeck.name = CardUtil.getCard(CardId.WHIZBANG_THE_WONDERFUL).name
                 PlayerDeckListAdapter.get().setWhizbangDeck(whizbangDeck)
