@@ -98,7 +98,7 @@ class HDTApplication : MultiDexApplication() {
         display.getRealSize(point)
 
         val sizeInInches = Math.sqrt((point.x * point.x / (metrics.xdpi * metrics.xdpi) + point.y * point.y / (metrics.ydpi * metrics.ydpi)).toDouble())
-        Timber.d("Build.MODEL=\${Build.MODEL}")
+        Timber.d("Build.MODEL=${Build.MODEL}")
         Timber.d("Build.MANUFACTURER=${Build.MANUFACTURER}")
         Timber.d("screen size= ${point.x} x ${point.y}")
         Timber.d("sizeInInches=${sizeInInches}")
