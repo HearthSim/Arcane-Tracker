@@ -94,6 +94,8 @@ object Mechanic {
 
   const val MULTIPLY_BUFF_VALUE: String = "MULTIPLY_BUFF_VALUE"
 
+  const val OVERKILL: String = "OVERKILL"
+
   const val OVERLOAD: String = "OVERLOAD"
 
   const val POISONOUS: String = "POISONOUS"
