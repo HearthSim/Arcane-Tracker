@@ -85,6 +85,7 @@ class MainActivity : AppCompatActivity() {
                             updateState(state.copy(loginLoading = false, needLogin = false))
                         }, {
                             Timber.e(it)
+                            Utils.reportNonFatal(Exception("cannot exchange code", it))
                             updateState(state.copy(needLogin = true, loginLoading = false))
                         })
                 disposable.add(d)

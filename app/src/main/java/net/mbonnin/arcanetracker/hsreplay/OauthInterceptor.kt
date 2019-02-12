@@ -3,6 +3,7 @@ package net.mbonnin.arcanetracker.hsreplay
 import com.google.gson.JsonParser
 import io.fabric.sdk.android.services.network.HttpRequest.HEADER_AUTHORIZATION
 import net.mbonnin.arcanetracker.Settings
+import net.mbonnin.arcanetracker.Utils
 import okhttp3.*
 import timber.log.Timber
 
