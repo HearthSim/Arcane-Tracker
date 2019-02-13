@@ -38,17 +38,6 @@ class ViewManager(context: Context) {
         }
     }
 
-    fun removeAllViewsExcept(view: View) {
-        val it = mViews.iterator()
-        while (it.hasNext()) {
-            val view2 = it.next()
-            if (view !== view2) {
-                it.remove()
-                mWindowManager.removeView(view2)
-            }
-        }
-    }
-
     class Params {
         var x: Int = 0
         var y: Int = 0
@@ -69,21 +58,13 @@ class ViewManager(context: Context) {
             usableWidth = screenSize.y
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            mWindowManager.defaultDisplay.getRealSize(screenSize)
-            if (screenSize.x > screenSize.y) {
-                width = screenSize.x
-                height = screenSize.y
-            } else {
-                height = screenSize.x
-                width = screenSize.y
-            }
+        mWindowManager.defaultDisplay.getRealSize(screenSize)
+        if (screenSize.x > screenSize.y) {
+            width = screenSize.x
+            height = screenSize.y
         } else {
-            /**
-             * best effort
-             */
-            width = usableWidth
-            height = usableHeight
+            height = screenSize.x
+            width = screenSize.y
         }
     }
 

@@ -20,6 +20,7 @@ import net.hearthsim.kotlin.hslog.PowerParser
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.mbonnin.arcanetracker.parser.*
 import net.mbonnin.arcanetracker.trackobot.Trackobot
+import net.mbonnin.arcanetracker.ui.TurnTimerHolder
 import net.mbonnin.hsmodel.Card
 import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.enum.PlayerClass
@@ -149,6 +150,8 @@ class HDTApplication : MultiDexApplication() {
         }, { format, args ->
             Timber.d(format, *args)
         })
+
+        TurnTimerHolder.start()
         /*
          * Power.log, we just want the incremental changes
          */

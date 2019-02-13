@@ -91,6 +91,8 @@ class Entity {
         val STEP_BEGIN_MULLIGAN = "BEGIN_MULLIGAN"
 
         val UNKNOWN_ENTITY = Entity()
+        val KEY_MULLIGAN_STATE = "MULLIGAN_STATE"
+        val KEY_TIMEOUT = "TIMEOUT"
     }
 
 }

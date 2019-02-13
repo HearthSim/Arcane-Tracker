@@ -450,7 +450,6 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
 
         val STATE_PLAYER = 0
         val STATE_OPPONENT = 1
-        val STATE_LEGACY = 2
 
         private val HANDLES_MOVEMENT_X = 1
         private val HANDLES_MOVEMENT_Y = 2
