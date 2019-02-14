@@ -14,7 +14,9 @@ class Language(var friendlyName: String, var jsonName: String, var key: String) 
                 Language("Português", "ptBR", "pt"),
                 Language("Pусский", "ruRU", "ru"),
                 Language("한국의", "koKR", "ko"),
-                Language("中國", "zhTW", "zh"))
+                Language("中國", "zhTW", "zh"),
+                Language("日本", "jaJP", "ja")
+        )
 
     val currentLanguage: Language
         get() {
@@ -39,6 +41,8 @@ class Language(var friendlyName: String, var jsonName: String, var key: String) 
                     l = "pl"
                 } else if (locale.contains("it")) {
                     l = "it"
+                } else if (locale.contains("ja")) {
+                    l = "ja"
                 } else {
                     l = "en"
                 }
