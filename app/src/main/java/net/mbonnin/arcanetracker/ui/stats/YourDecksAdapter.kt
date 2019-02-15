@@ -31,6 +31,7 @@ class YourDecksAdapter : RecyclerView.Adapter<YourDecksAdapter.ViewHolder>() {
                             .sortedBy { it.name.toLowerCase() }
                             .map { rDeck -> DeckMapper.fromRDeck(rDeck) }
                             .filterNotNull()
+                            .filter { it.wins != 0 || it.losses != 0 }
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
