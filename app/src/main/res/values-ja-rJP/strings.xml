@@ -207,7 +207,7 @@
     <string name="opponents">マッチアップ:</string>
     <string name="won">勝利</string>
     <string name="lost">敗北</string>
-    <string name="winRate">勝利</string>
+    <string name="winRate">勝率</string>
     <string name="na">なし</string>
     <string name="total">合計</string>
     <string name="opponent">相手</string>
