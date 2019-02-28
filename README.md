@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/HearthSim/Arcane-Tracker.svg?branch=master)](https://travis-ci.org/HearthSim/Arcane-Tracker)
+
 # Arcane Tracker
 
 https://hsreplay.net/
