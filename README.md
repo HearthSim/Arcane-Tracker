@@ -6,6 +6,7 @@ https://hsreplay.net/
 
 An automatic Hearthstone tracker for Android. 
 
+Install it from the [Google Play](https://play.google.com/store/apps/details?id=net.mbonnin.arcanetracker&hl=en) or the [Release page](https://github.com/HearthSim/Arcane-Tracker/releases).
 
 ## Filing bugs/feature requests 
 
