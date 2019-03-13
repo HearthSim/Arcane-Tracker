@@ -11,6 +11,7 @@ import android.os.Handler
 import android.util.DisplayMetrics
 import android.view.ContextThemeWrapper
 import androidx.multidex.MultiDexApplication
+import com.google.android.gms.security.ProviderInstaller
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.LruCache
@@ -47,7 +48,22 @@ class ArcaneTrackerApplication : MultiDexApplication() {
     @SuppressLint("NewApi", "CheckResult")
     override fun onCreate() {
         super.onCreate()
-        
+
+        /*
+         * There is a small race condition here if the user tries to login too early but installing
+         * the provider should be fast enough that it's not noticeable
+         */
+        ProviderInstaller.installIfNeededAsync(this, object : ProviderInstaller.ProviderInstallListener {
+            override fun onProviderInstallFailed(p0: Int, p1: Intent?) {
+                Utils.reportNonFatal(Exception("cannot install latest security provider"))
+            }
+
+            override fun onProviderInstalled() {
+                Timber.d("new provider installed")
+            }
+        })
+
+
         sArcaneTrackerApplication = this
         context = object : ContextThemeWrapper(this, R.style.AppTheme) {
             override fun startActivity(intent: Intent) {
