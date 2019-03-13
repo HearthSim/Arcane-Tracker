@@ -20,10 +20,6 @@ import net.mbonnin.arcanetracker.parser.LoadingScreenParser
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RGame
 import net.mbonnin.arcanetracker.room.WLCounter
-import net.mbonnin.arcanetracker.trackobot.Trackobot
-import net.mbonnin.arcanetracker.trackobot.model.CardPlay
-import net.mbonnin.arcanetracker.trackobot.model.Result
-import net.mbonnin.arcanetracker.trackobot.model.ResultData
 import net.mbonnin.arcanetracker.ui.overlay.adapter.PlayerDeckListAdapter
 import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
 import net.mbonnin.hsmodel.enum.CardId
@@ -85,23 +81,19 @@ class GameLogicListener private constructor() : GameLogic.Listener {
 
         RankHolder.reset()
 
-        Timber.w("gameOver  %s [gameType %s][format_type %s][mode %s] [user %s]",
+        Timber.w("gameOver  %s [gameType %s][format_type %s][mode %s]",
                 if (currentGame!!.victory) "victory" else "lost",
                 currentGame!!.gameType,
                 currentGame!!.formatType,
-                mode,
-                Trackobot.get().currentUser())
+                mode)
 
         MainViewCompanion.playerCompanion.deck?.let { updateCounter(it.id, currentGame!!.victory) }
-
-        sendTrackobotResult()
 
         FileTree.get().sync()
 
         val bundle = Bundle()
         bundle.putString(EventParams.GAME_TYPE.value, currentGame!!.gameType)
         bundle.putString(EventParams.FORMAT_TYPE.value, currentGame!!.formatType)
-        bundle.putString(EventParams.TRACK_O_BOT.value, (Trackobot.get().currentUser() != null).toString())
         bundle.putString(EventParams.HSREPLAY.value, (HSReplay.get().token() != null).toString())
         FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("game_ended", bundle)
     }
@@ -129,40 +121,6 @@ class GameLogicListener private constructor() : GameLogic.Listener {
 
         return Single.fromCallable {
             InsertResult(RDatabaseSingleton.instance.gameDao().insert(rgame), true)
-        }
-    }
-
-    private fun sendTrackobotResult() {
-        val mode = LoadingScreenParser.get().gameplayMode
-
-        if ((Utils.isAppDebuggable || LoadingScreenParser.MODE_DRAFT == mode || LoadingScreenParser.MODE_TOURNAMENT == mode) && Trackobot.get().currentUser() != null) {
-            val resultData = ResultData()
-            resultData.result = Result()
-            resultData.result.coin = currentGame!!.player!!.hasCoin
-            resultData.result.win = currentGame!!.victory
-            resultData.result.mode = Trackobot.getMode(currentGame!!.gameType!!)
-
-            val playerRank = currentGame!!.playerRank
-            if (playerRank != RANK_UNKNOWN) {
-                resultData.result.rank = playerRank
-            }
-            resultData.result.hero = Trackobot.getHero(currentGame!!.player!!.classIndex())
-            resultData.result.opponent = Trackobot.getHero(currentGame!!.opponent!!.classIndex())
-            resultData.result.added = Utils.ISO8601DATEFORMAT.format(Date())
-
-            val history = ArrayList<CardPlay>()
-            for (play in currentGame!!.plays) {
-                val cardPlay = CardPlay()
-                cardPlay.player = if (play.isOpponent) "opponent" else "me"
-                cardPlay.turn = (play.turn + 1) / 2
-                cardPlay.card_id = play.cardId
-                history.add(cardPlay)
-            }
-
-            resultData.result.card_history = history
-
-            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("trackobot_upload", null)
-            Trackobot.get().sendResult(resultData)
         }
     }
 

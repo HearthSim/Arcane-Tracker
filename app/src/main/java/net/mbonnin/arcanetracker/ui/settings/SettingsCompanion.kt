@@ -10,7 +10,6 @@ import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
@@ -24,9 +23,6 @@ import net.mbonnin.arcanetracker.detector.ByteBufferImage
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.mbonnin.arcanetracker.hsreplay.model.Lce
 import net.mbonnin.arcanetracker.hsreplay.model.Token
-import net.mbonnin.arcanetracker.trackobot.Trackobot
-import net.mbonnin.arcanetracker.trackobot.Url
-import net.mbonnin.arcanetracker.trackobot.User
 import net.mbonnin.arcanetracker.ui.licenses.LicensesActivity
 import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
 import timber.log.Timber
@@ -38,17 +34,7 @@ import java.util.concurrent.TimeUnit
 
 class SettingsCompanion(internal var settingsView: View) {
     private var mHsReplayCompanion1: LoadableButtonCompanion? = null
-    private var trackobotText: TextView? = null
-    private var signinButton: Button? = null
-    private var signupButton: Button? = null
-    private var usernameEditText: EditText? = null
-    private var passwordEditText: EditText? = null
-    private var signupProgressBar: ProgressBar? = null
-    private var signinProgressBar: ProgressBar? = null
-    private var retrievePassword: View? = null
-    private var importButton: Button? = null
-    private var importExplanation: View? = null
-    private var importProgressBar: ProgressBar? = null
+    internal var mHsReplayState = HsReplayState()
     private var firstTime: Boolean = false
     private var mHsReplayCompanion2: LoadableButtonCompanion? = null
 
@@ -66,106 +52,6 @@ class SettingsCompanion(internal var settingsView: View) {
         }
     }
 
-    private val mSigninButtonClicked = View.OnClickListener {
-        val user = User(usernameEditText!!.text.toString(), passwordEditText!!.text.toString())
-
-        Trackobot.get().testUser(user)
-                .subscribe { lce ->
-                    if (lce.isLoading) {
-                        signinButton!!.visibility = GONE
-                        signinProgressBar!!.visibility = VISIBLE
-                        signupButton!!.isEnabled = false
-                    } else {
-                        signinProgressBar!!.visibility = GONE
-                        signinButton!!.visibility = VISIBLE
-                        signupButton!!.isEnabled = true
-                        if (lce.error != null) {
-                            Toast.makeText(ArcaneTrackerApplication.context, ArcaneTrackerApplication.context.getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show()
-                            Utils.reportNonFatal(lce.error)
-                        } else {
-                            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("track_o_bot_signin", null)
-                            updateTrackobot(settingsView)
-                        }
-                    }
-                }
-    }
-
-    private val mSignupButtonClicked = View.OnClickListener {
-        Trackobot.get().createUser()
-                .subscribe { lce ->
-                    if (lce.isLoading) {
-                        signupButton!!.visibility = GONE
-                        signupProgressBar!!.visibility = VISIBLE
-                        signinButton!!.isEnabled = false
-                    } else {
-                        signupProgressBar!!.visibility = GONE
-                        signupButton!!.visibility = VISIBLE
-                        signinButton!!.isEnabled = true
-
-                        val context = ArcaneTrackerApplication.context
-                        if (lce.error != null) {
-                            Toast.makeText(context, context.getString(R.string.trackobotSignupError), Toast.LENGTH_LONG).show()
-                            Utils.reportNonFatal(lce.error)
-                        } else {
-                            Trackobot.get().link(lce.data)
-
-                            FirebaseAnalytics.getInstance(context).logEvent("track_o_bot_signup", null)
-                            updateTrackobot(settingsView)
-                        }
-                    }
-                }
-    }
-
-    private fun onTrackobotUrl(url: Url) {
-        ViewManager.get().removeView(settingsView)
-
-        Utils.openLink(url.url)
-    }
-
-    private fun onTrackobotUrlError(throwable: Throwable) {
-        val context = ArcaneTrackerApplication.context
-        Toast.makeText(context, context.getString(R.string.couldNotGetProfile), Toast.LENGTH_LONG).show()
-        signupButton!!.visibility = VISIBLE
-        signupProgressBar!!.visibility = GONE
-        Timber.e(throwable)
-    }
-
-    private val mImportButtonClicked = View.OnClickListener {
-        val context = ArcaneTrackerApplication.context
-        val f = Trackobot.findTrackobotFile()
-        if (f == null) {
-            Toast.makeText(context, context.getString(R.string.couldNotFindTrackobotFile), Toast.LENGTH_LONG).show()
-            return@OnClickListener
-        }
-
-        val user = Trackobot.parseTrackobotFile(f)
-        if (user == null) {
-            Toast.makeText(context, context.getString(R.string.couldNotOpenTrackobotFile), Toast.LENGTH_LONG).show()
-            return@OnClickListener
-        }
-
-        Trackobot.get().testUser(user)
-                .subscribe { lce ->
-                    if (lce.isLoading) {
-                        importButton!!.visibility = GONE
-                        importProgressBar!!.visibility = VISIBLE
-                        importButton!!.isEnabled = false
-                    } else {
-                        importProgressBar!!.visibility = GONE
-                        importButton!!.visibility = VISIBLE
-                        importButton!!.isEnabled = true
-
-                        if (lce.error != null) {
-                            Toast.makeText(ArcaneTrackerApplication.context, ArcaneTrackerApplication.context.getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show()
-                            Utils.reportNonFatal(lce.error)
-                        } else {
-                            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("track_o_bot_import", null)
-                            updateTrackobot(settingsView)
-                        }
-                    }
-                }
-    }
-
     fun setTimeoutIndex(index: Int) {
         val quitTimeoutExplanation = settingsView.findViewById<TextView>(R.id.quitTimeout)
         val value = timeouts[index]
@@ -179,86 +65,7 @@ class SettingsCompanion(internal var settingsView: View) {
         quitTimeoutExplanation.text = explanation
     }
 
-    internal var mHsReplayState = HsReplayState()
 
-
-    private fun updateTrackobot(view: View) {
-        view.findViewById<View>(R.id.trackobotWrapper).visibility = if (Settings.get(Settings.IS_LEGACY_TRACKOBOT_USER, false)) {
-            VISIBLE
-        } else {
-            GONE
-        }
-        signupButton = view.findViewById<View>(R.id.trackobotSignup) as Button
-        signinButton = view.findViewById<View>(R.id.trackobotSignin) as Button
-        trackobotText = view.findViewById<View>(R.id.trackobotText) as TextView
-        passwordEditText = view.findViewById<View>(R.id.password) as EditText
-        usernameEditText = view.findViewById<View>(R.id.username) as EditText
-        signinProgressBar = view.findViewById<View>(R.id.signinProgressBar) as ProgressBar
-        signupProgressBar = view.findViewById<View>(R.id.signupProgressBar) as ProgressBar
-        retrievePassword = view.findViewById(R.id.retrievePassword)
-        importButton = view.findViewById<View>(R.id.trackobotImport) as Button
-        importProgressBar = view.findViewById<View>(R.id.importProgressBar) as ProgressBar
-        importExplanation = view.findViewById(R.id.importExplanation)
-
-        val user = Trackobot.get().currentUser()
-        if (user == null) {
-            trackobotText!!.text = view.context.getString(R.string.trackobotExplanation)
-            view.findViewById<View>(R.id.or).visibility = VISIBLE
-
-            usernameEditText!!.isEnabled = true
-            passwordEditText!!.isEnabled = true
-
-            signinButton!!.text = view.context.getString(R.string.linkAccount)
-            signinButton!!.setOnClickListener(mSigninButtonClicked)
-
-            signupButton!!.text = view.context.getString(R.string.createAccount)
-            signupButton!!.setOnClickListener(mSignupButtonClicked)
-
-            retrievePassword!!.visibility = VISIBLE
-
-            importButton!!.text = view.context.getString(R.string.importFromStorage)
-            importButton!!.setOnClickListener(mImportButtonClicked)
-            importButton!!.isEnabled = true
-            importButton!!.visibility = VISIBLE
-            view.findViewById<View>(R.id.or2).visibility = VISIBLE
-            importExplanation!!.visibility = VISIBLE
-
-
-        } else {
-            trackobotText!!.visibility = GONE
-            view.findViewById<View>(R.id.or).visibility = GONE
-
-            usernameEditText!!.setText(user.username)
-            passwordEditText!!.setText(user.password)
-            usernameEditText!!.isEnabled = false
-            passwordEditText!!.isEnabled = false
-
-            signinButton!!.text = view.context.getString(R.string.unlinkAccount)
-            signinButton!!.setOnClickListener { v ->
-                Trackobot.get().unlink()
-                usernameEditText!!.setText("")
-                passwordEditText!!.setText("")
-                updateTrackobot(settingsView)
-            }
-
-            signupButton!!.text = view.context.getString(R.string.openInBrowser)
-            signupButton!!.setOnClickListener { v ->
-                signupProgressBar!!.visibility = VISIBLE
-                signupButton!!.visibility = GONE
-
-                Trackobot.get().createOneTimeAuth()
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(this::onTrackobotUrl, this::onTrackobotUrlError)
-            }
-
-            retrievePassword!!.visibility = GONE
-
-            importExplanation!!.visibility = GONE
-            importButton!!.visibility = GONE
-            view.findViewById<View>(R.id.or2).visibility = GONE
-
-        }
-    }
 
     init {
         init()
@@ -290,8 +97,6 @@ class SettingsCompanion(internal var settingsView: View) {
     private fun init() {
         val view = settingsView
         val context = ArcaneTrackerApplication.context
-
-        updateTrackobot(view)
 
         val appVersion = view.findViewById<TextView>(R.id.appVersion)
         appVersion.text = view.context.getString(R.string.thisIsArcaneTracker, BuildConfig.VERSION_NAME, if (Utils.isAppDebuggable) " (debug)" else "")
