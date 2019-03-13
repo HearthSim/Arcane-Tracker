@@ -23,7 +23,7 @@ import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import net.mbonnin.arcanetracker.HDTApplication
+import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Settings
 import net.mbonnin.arcanetracker.Utils
@@ -240,12 +240,12 @@ class MainActivity : AppCompatActivity() {
                 packageManager.getPackageInfo(HEARTHSTONE_PACKAGE_ID, 0)?.let {
                     val c = it.versionName.split(".")
                     try {
-                        HDTApplication.get().hearthstoneBuild = c[c.size - 1].toInt()
+                        ArcaneTrackerApplication.get().hearthstoneBuild = c[c.size - 1].toInt()
                     } catch (e: Exception) {
                         Timber.e("cannot parse hearthstone version ${it.versionName}")
                     }
 
-                    Timber.d("hearthstone build: ${HDTApplication.get().hearthstoneBuild}")
+                    Timber.d("hearthstone build: ${ArcaneTrackerApplication.get().hearthstoneBuild}")
                 }
             } catch (e: Exception) {
                 Timber.d("Cannot find Hearthstone build number")

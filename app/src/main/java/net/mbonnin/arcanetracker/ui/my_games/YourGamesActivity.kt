@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import kotlinx.android.synthetic.main.history_activity.*
-import net.mbonnin.arcanetracker.HDTApplication
+import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.model.GameSummary
 
@@ -18,7 +18,7 @@ class YourGamesActivity : Activity() {
 
         val adapter = GameAdapter(GameSummary.getGameSummary())
 
-        recyclerView.layoutManager = LinearLayoutManager(HDTApplication.context)
+        recyclerView.layoutManager = LinearLayoutManager(ArcaneTrackerApplication.context)
         recyclerView.adapter = adapter
 
         if (adapter.itemCount == 0) {

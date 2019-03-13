@@ -28,7 +28,7 @@ class PlayerDeckCompanion(override val containerView: View) : DeckCompanion(cont
 
 
         settings.setOnClickListener({ v2 ->
-            FirebaseAnalytics.getInstance(HDTApplication.context).logEvent("edit_swap", null)
+            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("edit_swap", null)
 
             val a = IntArray(2)
             settings.getLocationOnScreen(a)
@@ -36,7 +36,7 @@ class PlayerDeckCompanion(override val containerView: View) : DeckCompanion(cont
             val deckListView = LayoutInflater.from(v2.getContext()).inflate(R.layout.decklist_view, null)
             val recyclerView = deckListView.findViewById<RecyclerView>(R.id.recyclerView)
             recyclerView.layoutManager = LinearLayoutManager(v2.getContext())
-            recyclerView.setBackgroundColor(HDTApplication.context.resources.getColor(R.color.dialogGray))
+            recyclerView.setBackgroundColor(ArcaneTrackerApplication.context.resources.getColor(R.color.dialogGray))
             val adapter = PlayerDeckListAdapter.get()
             adapter.setOnDeckSelectedListener { deck ->
                 viewManager.removeView(deckListView)

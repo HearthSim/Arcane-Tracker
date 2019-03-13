@@ -22,12 +22,12 @@ public class MainService extends Service {
 
     public static void stop() {
         Intent serviceIntent = new Intent();
-        serviceIntent.setClass(HDTApplication.Companion.getContext(), MainService.class);
-        HDTApplication.Companion.getContext().stopService(serviceIntent);
+        serviceIntent.setClass(ArcaneTrackerApplication.Companion.getContext(), MainService.class);
+        ArcaneTrackerApplication.Companion.getContext().stopService(serviceIntent);
     }
 
     public static void start() {
-        Context context = HDTApplication.Companion.getContext();
+        Context context = ArcaneTrackerApplication.Companion.getContext();
         Intent serviceIntent = new Intent();
         serviceIntent.setClass(context, MainService.class);
 
@@ -53,10 +53,10 @@ public class MainService extends Service {
         Intent intent = StopServiceBroadcastReceiver.getIntent();
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Intent intent2 = new Intent(HDTApplication.Companion.getContext(), SettingsActivity.class);
+        Intent intent2 = new Intent(ArcaneTrackerApplication.Companion.getContext(), SettingsActivity.class);
         PendingIntent settingsPendingIntent = PendingIntent.getActivity(this, 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Notification notification = new NotificationCompat.Builder(this, HDTApplication.Companion.getNOTIFICATION_CHANNEL_ID())
+        Notification notification = new NotificationCompat.Builder(this, ArcaneTrackerApplication.Companion.getNOTIFICATION_CHANNEL_ID())
                 .setContentText(getString(R.string.arcane_tracker_running))
                 .addAction(R.drawable.ic_close_black_24dp, getString(R.string.quit), stopPendingIntent)
                 .addAction(R.drawable.ic_settings_black_24dp, getString(R.string.settings), settingsPendingIntent)

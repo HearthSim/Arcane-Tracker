@@ -23,7 +23,7 @@ object Toaster {
                     synchronized(lock) {
                         if (!queue.isEmpty()) {
                             val message = queue.removeFirst()
-                            Toast.makeText(HDTApplication.context, message, Toast.LENGTH_LONG).show()
+                            Toast.makeText(ArcaneTrackerApplication.context, message, Toast.LENGTH_LONG).show()
                         }
                     }
                 }

@@ -29,7 +29,7 @@ import timber.log.Timber
 import java.io.File
 import java.util.*
 
-class HDTApplication : MultiDexApplication() {
+class ArcaneTrackerApplication : MultiDexApplication() {
     lateinit var picassoRamCache: LruCache
     lateinit var picassoHddCache: Cache
 
@@ -47,8 +47,8 @@ class HDTApplication : MultiDexApplication() {
     @SuppressLint("NewApi", "CheckResult")
     override fun onCreate() {
         super.onCreate()
-
-        sHDTApplication = this
+        
+        sArcaneTrackerApplication = this
         context = object : ContextThemeWrapper(this, R.style.AppTheme) {
             override fun startActivity(intent: Intent) {
                 if (intent.flags and Intent.FLAG_ACTIVITY_NEW_TASK == 0) {
@@ -103,7 +103,7 @@ class HDTApplication : MultiDexApplication() {
         Timber.d("screen size= ${point.x} x ${point.y}")
         Timber.d("sizeInInches=${sizeInInches}")
 
-        Utils.logWithDate("HDTApplication.onCreate() + version=" + BuildConfig.VERSION_CODE)
+        Utils.logWithDate("ArcaneTrackerApplication.onCreate() + version=" + BuildConfig.VERSION_CODE)
 
         Paper.init(this)
 
@@ -171,7 +171,7 @@ class HDTApplication : MultiDexApplication() {
         val achievementLogReader = LogReader("Achievements.log", true)
         achievementLogReader.start(AchievementsParser())
 
-        HSReplay.userAgent = (HDTApplication.context.getPackageName() + "/" + BuildConfig.VERSION_NAME
+        HSReplay.userAgent = (ArcaneTrackerApplication.context.getPackageName() + "/" + BuildConfig.VERSION_NAME
                 + "; Android " + Build.VERSION.RELEASE + ";")
         HSReplay.context = this
         if (HSReplay.get().token() == null) {
@@ -205,10 +205,10 @@ class HDTApplication : MultiDexApplication() {
         lateinit var context: Context
             private set
 
-        private lateinit var sHDTApplication: HDTApplication
+        private lateinit var sArcaneTrackerApplication: ArcaneTrackerApplication
 
-        fun get(): HDTApplication {
-            return sHDTApplication
+        fun get(): ArcaneTrackerApplication {
+            return sArcaneTrackerApplication
         }
     }
 

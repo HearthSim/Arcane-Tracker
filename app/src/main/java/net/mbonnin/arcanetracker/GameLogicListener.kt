@@ -103,7 +103,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         bundle.putString(EventParams.FORMAT_TYPE.value, currentGame!!.formatType)
         bundle.putString(EventParams.TRACK_O_BOT.value, (Trackobot.get().currentUser() != null).toString())
         bundle.putString(EventParams.HSREPLAY.value, (HSReplay.get().token() != null).toString())
-        FirebaseAnalytics.getInstance(HDTApplication.context).logEvent("game_ended", bundle)
+        FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("game_ended", bundle)
     }
 
     class InsertResult(val id: Long, val success: Boolean)
@@ -161,7 +161,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
 
             resultData.result.card_history = history
 
-            FirebaseAnalytics.getInstance(HDTApplication.context).logEvent("trackobot_upload", null)
+            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("trackobot_upload", null)
             Trackobot.get().sendResult(resultData)
         }
     }
@@ -215,7 +215,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
 
         val uploadRequest = UploadRequest()
         uploadRequest.match_start = Utils.ISO8601DATEFORMAT.format(gameStart)
-        uploadRequest.build = HDTApplication.get().hearthstoneBuild
+        uploadRequest.build = ArcaneTrackerApplication.get().hearthstoneBuild
         uploadRequest.spectator_mode = game.spectator
         uploadRequest.friendly_player = game.player!!.entity!!.PlayerID
         uploadRequest.format = fromFormatTypeString(game.formatType).intValue
@@ -257,7 +257,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         Single.zip(insertGameSingle, hsReplaySingle, BiFunction<InsertResult, Lce<out String?>, Unit>  { insertResult, lce ->
             if (lce.error != null) {
                 Timber.d(lce.error)
-                Toaster.show(HDTApplication.context.getString(R.string.hsreplayError))
+                Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplayError))
             } else if (lce.data != null) {
                 summary.hsreplayUrl = lce.data
                 GameSummary.sync()
@@ -267,7 +267,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                 }
 
                 Timber.d("hsreplay upload success")
-                Toaster.show(HDTApplication.context.getString(R.string.hsreplaySuccess))
+                Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplaySuccess))
             }
         })
                 .subscribeOn(Schedulers.io())

@@ -12,7 +12,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import net.mbonnin.arcanetracker.HDTApplication
+import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.Settings
 import net.mbonnin.arcanetracker.hsreplay.model.*
 import okhttp3.*
@@ -53,7 +53,7 @@ class HSReplay {
         }
 
         Timber.w("doUploadGame")
-        FirebaseAnalytics.getInstance(HDTApplication.context).logEvent("hsreplay_upload", null)
+        FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("hsreplay_upload", null)
 
         return legacyService().createUpload("https://upload.hsreplay.net/api/v1/replay/upload/request", uploadRequest)
                 .firstOrError()

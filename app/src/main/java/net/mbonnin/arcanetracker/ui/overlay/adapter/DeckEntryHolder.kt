@@ -10,7 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
-import net.mbonnin.arcanetracker.HDTApplication
+import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.ViewManager
@@ -115,7 +115,7 @@ internal class DeckEntryHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
 
     companion object {
         fun displayImageView(x: Float, y: Float, cardId: String, entityList: List<Entity>): View {
-            val detailsView = DetailsView(HDTApplication.context)
+            val detailsView = DetailsView(ArcaneTrackerApplication.context)
 
             detailsView.configure(cardId, entityList, y.toInt())
 

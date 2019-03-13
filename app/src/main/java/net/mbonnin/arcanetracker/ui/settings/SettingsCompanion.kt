@@ -80,10 +80,10 @@ class SettingsCompanion(internal var settingsView: View) {
                         signinButton!!.visibility = VISIBLE
                         signupButton!!.isEnabled = true
                         if (lce.error != null) {
-                            Toast.makeText(HDTApplication.context, HDTApplication.context.getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show()
+                            Toast.makeText(ArcaneTrackerApplication.context, ArcaneTrackerApplication.context.getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show()
                             Utils.reportNonFatal(lce.error)
                         } else {
-                            FirebaseAnalytics.getInstance(HDTApplication.context).logEvent("track_o_bot_signin", null)
+                            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("track_o_bot_signin", null)
                             updateTrackobot(settingsView)
                         }
                     }
@@ -102,7 +102,7 @@ class SettingsCompanion(internal var settingsView: View) {
                         signupButton!!.visibility = VISIBLE
                         signinButton!!.isEnabled = true
 
-                        val context = HDTApplication.context
+                        val context = ArcaneTrackerApplication.context
                         if (lce.error != null) {
                             Toast.makeText(context, context.getString(R.string.trackobotSignupError), Toast.LENGTH_LONG).show()
                             Utils.reportNonFatal(lce.error)
@@ -123,7 +123,7 @@ class SettingsCompanion(internal var settingsView: View) {
     }
 
     private fun onTrackobotUrlError(throwable: Throwable) {
-        val context = HDTApplication.context
+        val context = ArcaneTrackerApplication.context
         Toast.makeText(context, context.getString(R.string.couldNotGetProfile), Toast.LENGTH_LONG).show()
         signupButton!!.visibility = VISIBLE
         signupProgressBar!!.visibility = GONE
@@ -131,7 +131,7 @@ class SettingsCompanion(internal var settingsView: View) {
     }
 
     private val mImportButtonClicked = View.OnClickListener {
-        val context = HDTApplication.context
+        val context = ArcaneTrackerApplication.context
         val f = Trackobot.findTrackobotFile()
         if (f == null) {
             Toast.makeText(context, context.getString(R.string.couldNotFindTrackobotFile), Toast.LENGTH_LONG).show()
@@ -156,10 +156,10 @@ class SettingsCompanion(internal var settingsView: View) {
                         importButton!!.isEnabled = true
 
                         if (lce.error != null) {
-                            Toast.makeText(HDTApplication.context, HDTApplication.context.getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show()
+                            Toast.makeText(ArcaneTrackerApplication.context, ArcaneTrackerApplication.context.getString(R.string.cannotLinkTrackobot), Toast.LENGTH_LONG).show()
                             Utils.reportNonFatal(lce.error)
                         } else {
-                            FirebaseAnalytics.getInstance(HDTApplication.context).logEvent("track_o_bot_import", null)
+                            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("track_o_bot_import", null)
                             updateTrackobot(settingsView)
                         }
                     }
@@ -266,7 +266,7 @@ class SettingsCompanion(internal var settingsView: View) {
 
     private fun bbImageToFile(bbImage: ByteBufferImage): File {
         val now = DateFormat.format("yyyy_MM_dd_hh_mm_ss", Date())
-        val file = File(HDTApplication.get().getExternalFilesDir(null), "screenshot_" + now + ".jpg")
+        val file = File(ArcaneTrackerApplication.get().getExternalFilesDir(null), "screenshot_" + now + ".jpg")
         val bitmap = Bitmap.createBitmap(bbImage.w, bbImage.h, Bitmap.Config.ARGB_8888)
         val buffer = bbImage.buffer
         val stride = bbImage.stride
@@ -289,7 +289,7 @@ class SettingsCompanion(internal var settingsView: View) {
     @SuppressLint("NewApi")
     private fun init() {
         val view = settingsView
-        val context = HDTApplication.context
+        val context = ArcaneTrackerApplication.context
 
         updateTrackobot(view)
 
@@ -345,18 +345,18 @@ class SettingsCompanion(internal var settingsView: View) {
                         emailIntent.putExtra(Intent.EXTRA_STREAM, arrayUri)
 
                         try {
-                            HDTApplication.context.startActivity(emailIntent)
+                            ArcaneTrackerApplication.context.startActivity(emailIntent)
                         } catch (e: Exception) {
                             Utils.reportNonFatal(e)
-                            Toast.makeText(HDTApplication.context, Utils.getString(R.string.noEmailFound), Toast.LENGTH_LONG).show()
+                            Toast.makeText(ArcaneTrackerApplication.context, Utils.getString(R.string.noEmailFound), Toast.LENGTH_LONG).show()
                         }
                     }
         }
 
         val resetCacheButton = view.findViewById<Button>(R.id.resetCache)
         resetCacheButton.setOnClickListener { v ->
-            HDTApplication.get().picassoHddCache.evictAll()
-            HDTApplication.get().picassoRamCache.evictAll()
+            ArcaneTrackerApplication.get().picassoHddCache.evictAll()
+            ArcaneTrackerApplication.get().picassoRamCache.evictAll()
         }
 
         var seekBar = view.findViewById<SeekBar>(R.id.seekBar)
@@ -533,7 +533,7 @@ class SettingsCompanion(internal var settingsView: View) {
             Utils.reportNonFatal(Exception("HsReplay token error", lce.error))
             Toast.makeText(settingsView.context, Utils.getString(R.string.hsReplayTokenError), Toast.LENGTH_LONG).show()
         } else {
-            FirebaseAnalytics.getInstance(HDTApplication.context).logEvent("hsreplay_enable", null)
+            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("hsreplay_enable", null)
 
             mHsReplayState.tokenLoading = false
             mHsReplayState.token = lce.data
@@ -578,7 +578,7 @@ class SettingsCompanion(internal var settingsView: View) {
                 mHsReplayState.userName = null
                 mHsReplayState.token = null
 
-                FirebaseAnalytics.getInstance(HDTApplication.context).logEvent("hsreplay_disable", null)
+                FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("hsreplay_disable", null)
 
                 HSReplay.get().unlink()
                 updateHsReplay()
@@ -601,7 +601,7 @@ class SettingsCompanion(internal var settingsView: View) {
                     val i = Intent(Intent.ACTION_VIEW)
                     i.data = Uri.parse("https://hsreplay.net/games/mine/")
                     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    HDTApplication.context.startActivity(i)
+                    ArcaneTrackerApplication.context.startActivity(i)
                 }
             } else {
                 mHsReplayCompanion1!!.setText(Utils.getString(R.string.hsReplayClaim)) { v ->
@@ -616,12 +616,12 @@ class SettingsCompanion(internal var settingsView: View) {
             mHsReplayState.claimUrlLoading = true
         } else if (lce.error != null) {
             mHsReplayState.claimUrlLoading = false
-            Toast.makeText(HDTApplication.context, Utils.getString(R.string.hsReplayClaimFailed), Toast.LENGTH_LONG).show()
+            Toast.makeText(ArcaneTrackerApplication.context, Utils.getString(R.string.hsReplayClaimFailed), Toast.LENGTH_LONG).show()
             Utils.reportNonFatal(Exception("HSReplay claim url", lce.error))
         } else if (lce.data != null) {
             mHsReplayState.claimUrlLoading = false
 
-            FirebaseAnalytics.getInstance(HDTApplication.context).logEvent("hsreplay_claimurl_opened", null)
+            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("hsreplay_claimurl_opened", null)
 
             ViewManager.get().removeView(settingsView)
 
@@ -649,7 +649,7 @@ class SettingsCompanion(internal var settingsView: View) {
 
 
         fun show() {
-            val context = HDTApplication.context
+            val context = ArcaneTrackerApplication.context
             val viewManager = ViewManager.get()
             val view2 = LayoutInflater.from(context).inflate(R.layout.settings_view, null)
 

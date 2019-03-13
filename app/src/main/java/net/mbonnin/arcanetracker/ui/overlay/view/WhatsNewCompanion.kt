@@ -11,7 +11,7 @@ import net.mbonnin.arcanetracker.*
 class WhatsNewCompanion(view: View, previousVersion: Int) {
     init {
 
-        val context = HDTApplication.context
+        val context = ArcaneTrackerApplication.context
 
         val params = ViewManager.Params()
         params.x = ViewManager.get().width / 4

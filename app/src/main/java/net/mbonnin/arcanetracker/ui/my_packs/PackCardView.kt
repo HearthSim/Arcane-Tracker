@@ -179,7 +179,7 @@ class PackCardView @JvmOverloads constructor(context: Context, attrs: AttributeS
 
     companion object {
         fun displayImageView(x: Float, y: Float, bitmap: Bitmap): View {
-            val imageView = ImageView(HDTApplication.context)
+            val imageView = ImageView(ArcaneTrackerApplication.context)
 
             imageView.setImageBitmap(bitmap)
 

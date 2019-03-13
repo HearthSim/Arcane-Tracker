@@ -332,13 +332,13 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
             when (newState) {
                 STATE_PLAYER -> {
                     playerView.visibility = View.VISIBLE
-                    FirebaseAnalytics.getInstance(HDTApplication.context).logEvent("state_player", null)
+                    FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("state_player", null)
 
                     Onboarding.playerHandleClicked()
                 }
                 STATE_OPPONENT -> {
                     opponentView.visibility = View.VISIBLE
-                    FirebaseAnalytics.getInstance(HDTApplication.context).logEvent("state_opponent", null)
+                    FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("state_opponent", null)
 
                     Onboarding.opponentHandleClicked()
                 }
@@ -383,7 +383,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
             view.findViewById<View>(R.id.settings).setOnClickListener { v3 ->
                 mViewManager.removeView(view)
 
-                FirebaseAnalytics.getInstance(HDTApplication.context).logEvent("menu_settings", null)
+                FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("menu_settings", null)
 
                 SettingsCompanion.show()
             }
@@ -391,40 +391,40 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
             view.findViewById<View>(R.id.games).setOnClickListener { v3 ->
                 ViewManager.get().removeView(view)
 
-                FirebaseAnalytics.getInstance(HDTApplication.context).logEvent("menu_history", null)
+                FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("menu_history", null)
 
                 val intent = Intent()
-                intent.setClass(HDTApplication.context, YourGamesActivity::class.java)
+                intent.setClass(ArcaneTrackerApplication.context, YourGamesActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
 
-                HDTApplication.context.startActivity(intent)
+                ArcaneTrackerApplication.context.startActivity(intent)
 
             }
 
             view.findViewById<View>(R.id.yourDecks).setOnClickListener { v3 ->
                 mViewManager.removeView(view)
 
-                FirebaseAnalytics.getInstance(HDTApplication.context).logEvent("menu_your_decks", null)
+                FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("menu_your_decks", null)
 
 
                 val intent = Intent()
-                intent.setClass(HDTApplication.context, YourDecksActivity::class.java)
+                intent.setClass(ArcaneTrackerApplication.context, YourDecksActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
 
-                HDTApplication.context.startActivity(intent)
+                ArcaneTrackerApplication.context.startActivity(intent)
             }
 
             view.findViewById<View>(R.id.yourPacks).setOnClickListener { v3 ->
                 mViewManager.removeView(view)
 
-                FirebaseAnalytics.getInstance(HDTApplication.context).logEvent("menu_your_packs", null)
+                FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("menu_your_packs", null)
 
 
                 val intent = Intent()
-                intent.setClass(HDTApplication.context, YourPacksActivity::class.java)
+                intent.setClass(ArcaneTrackerApplication.context, YourPacksActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
 
-                HDTApplication.context.startActivity(intent)
+                ArcaneTrackerApplication.context.startActivity(intent)
             }
 
             view.findViewById<View>(R.id.quit).setOnClickListener { v3 -> Utils.exitApp() }
@@ -471,7 +471,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
 
         fun get(): MainViewCompanion {
             if (sMainCompanion == null) {
-                val view = LayoutInflater.from(HDTApplication.context).inflate(R.layout.main_view, null)
+                val view = LayoutInflater.from(ArcaneTrackerApplication.context).inflate(R.layout.main_view, null)
                 sMainCompanion = MainViewCompanion(view)
             }
 

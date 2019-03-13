@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import net.mbonnin.arcanetracker.HDTApplication;
+import net.mbonnin.arcanetracker.ArcaneTrackerApplication;
 import net.mbonnin.arcanetracker.R;
 import net.mbonnin.arcanetracker.Utils;
 
@@ -96,7 +96,7 @@ public class ItemAdapter extends RecyclerView.Adapter {
         } else if (o instanceof HeaderItem) {
             HeaderItem headerItem = (HeaderItem) o;
             TextView textView = holder.itemView.findViewById(R.id.textView);
-            textView.setTypeface(ResourcesCompat.getFont(HDTApplication.Companion.getContext(), R.font.chunkfive));
+            textView.setTypeface(ResourcesCompat.getFont(ArcaneTrackerApplication.Companion.getContext(), R.font.chunkfive));
             String text = "";//headerItem.expanded ?"▼":"▶";
             textView.setText(text + headerItem.title);
             if (headerItem.onClicked != null) {

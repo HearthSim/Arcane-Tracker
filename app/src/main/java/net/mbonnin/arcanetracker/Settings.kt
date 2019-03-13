@@ -34,7 +34,7 @@ object Settings {
     val IS_PRE_HEARTHSIM_USER = "IS_PRE_HEARTHSIM_USER"
 
     private val preferences: SharedPreferences
-        get() = PreferenceManager.getDefaultSharedPreferences(HDTApplication.context)
+        get() = PreferenceManager.getDefaultSharedPreferences(ArcaneTrackerApplication.context)
     val IS_LEGACY_TRACKOBOT_USER = "IS_LEGACY_TRACKOBOT_USER"
     val NEED_TOKEN_CLAIM = "NEED_TOKEN_CLAIM"
 

@@ -90,7 +90,7 @@ class FileTree(context: Context) : Timber.DebugTree() {
 
         fun get(): FileTree {
             if (sTree == null) {
-                sTree = FileTree(HDTApplication.context)
+                sTree = FileTree(ArcaneTrackerApplication.context)
             }
             return sTree!!
         }

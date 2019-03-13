@@ -31,7 +31,7 @@ object Onboarding {
     }
 
     fun displayPopup(handleView: HandleView, textResId: Int): View {
-        val view = LayoutInflater.from(HDTApplication.get()).inflate(R.layout.onboarding_view, null, false)
+        val view = LayoutInflater.from(ArcaneTrackerApplication.get()).inflate(R.layout.onboarding_view, null, false)
         view.findViewById<TextView>(R.id.text).setText(Utils.getString(textResId))
         view.findViewById<Button>(R.id.button).visibility = GONE
 

@@ -11,7 +11,7 @@ object Overlay {
         MainViewCompanion.get().setState(MainViewCompanion.STATE_PLAYER, false)
         MainViewCompanion.get().show(true)
 
-        val context = HDTApplication.context
+        val context = ArcaneTrackerApplication.context
 
         val previousVersion = Settings[Settings.VERSION, 0]
         Settings[Settings.VERSION] = BuildConfig.VERSION_CODE
