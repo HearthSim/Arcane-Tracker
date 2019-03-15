@@ -842,6 +842,8 @@ object CardId {
 
   const val JANALAIS_FLAME: String = "TRLA_128"
 
+  const val VARGOTH_ENCHANT: String = "TB_Vargoth_ench"
+
   const val AZALINA_SOULTHIEF: String = "GILA_BOSS_55h"
 
   const val CHIPPED: String = "BOT_438e"
@@ -6754,6 +6756,8 @@ object CardId {
 
   const val A_F_KAY1: String = "LOOTA_BOSS_54h"
 
+  const val THE_MYSTERY_CARD: String = "FB_TopX_Mystery"
+
   const val NOBLE_SACRIFICE: String = "EX1_130"
 
   const val WICKED_KNIFE: String = "CS2_082"
@@ -7021,6 +7025,8 @@ object CardId {
   const val KINGSBLOOD: String = "CFM_621t22"
 
   const val THE_KABAL: String = "TB_Blizzcon2016_KabalEnchant"
+
+  const val HEAL2: String = "CS1h_001_H2_AT_132"
 
   const val SHADOW_WORD_PAIN: String = "CS2_234"
 
@@ -7902,6 +7908,8 @@ object CardId {
 
   const val SACRED: String = "TRLA_801e"
 
+  const val RESET_DECKS: String = "TB_RandomDeckRecipeResetDecks"
+
   const val SHADOW_OF_NOTHING: String = "EX1_345t"
 
   const val GUARDIAN_SPIRIT2: String = "LOOT_091t2t"
@@ -7919,6 +7927,8 @@ object CardId {
   const val MASSIVE_GNOLL: String = "TU4a_005"
 
   const val A_DIRE_SITUATION: String = "BOTA_614"
+
+  const val LESSER_HEAL2: String = "CS1h_001_H2"
 
   const val MAGIC: String = "TBA01_5e"
 
@@ -8378,6 +8388,8 @@ object CardId {
 
   const val RAW_POWER: String = "EX1_274e"
 
+  const val MADAME_LAZUL: String = "HERO_09b"
+
   const val DRUID_OF_THE_FANG: String = "GVG_080"
 
   const val SHIELDSMAN: String = "TB_SPT_Minion1"
@@ -8631,6 +8643,8 @@ object CardId {
   const val GROVE_TENDER: String = "GVG_032"
 
   const val NIGHTS_DEVOTION: String = "OG_292e"
+
+  const val DEATHRATTLE_YOG_ENCHANT: String = "TB_DeathrattleYog_ench"
 
   const val BEASTLY_PETE: String = "GILA_BOSS_52h2"
 
@@ -10683,6 +10697,8 @@ object CardId {
   const val HELL_BOVINE: String = "TB_SPT_DPromoMinion"
 
   const val MURLOC_BONUS: String = "TB_PickYourFate_11b"
+
+  const val BAN_OPPONENTS_CARD: String = "FB_TopX_Ban"
 
   const val PLAGUE_OF_MURLOCS: String = "GILA_BOSS_37e2"
 
