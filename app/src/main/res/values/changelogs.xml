@@ -24,4 +24,5 @@
     <string name="changelog_315" translatable="false">Fix King Rastakhan detection.\nAdded new classic cards.</string>
     <string name="changelog_400" translatable="false">Arcane Tracker is now the official HSReplay.net Android Deck Tracker!\nSupport for Rastakhan’s Rumble!</string>
     <string name="changelog_403" translatable="false">Fixed an issue where replays where not shown in \'my replays\'\nUpdated Whizbang decks for Rastakhan\'s Rumble.</string>
+    <string name="changelog_406" translatable="false">Add support for Madam Lazul.\nFixed some issues connecting to HSReplay.net.</string>
 </resources>
