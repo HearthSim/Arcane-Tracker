@@ -1,13 +1,13 @@
 package net.mbonnin.arcanetracker.ui.my_packs
 
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
 import net.mbonnin.arcanetracker.CardUtil
@@ -87,7 +87,8 @@ class YourPacksAdapter(val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapte
 
         list.add(PacksItem(stats.count))
         list.add(DustItem(stats.dust))
-        list.add(DustAverageItem(stats.dust / stats.count))
+        val average = if (stats.count > 0) stats.dust / stats.count else 0
+        list.add(DustAverageItem(average))
 
         publishSubject.onNext(list)
 
