@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="VDDDDDDDDDDDDDDDDDDDD"
-        android:fontFamily="monospace"
+        app:fontFamily="monospace"
         android:background="#C0C0C0"
         android:scrollHorizontally="true"
         android:padding="10dp"

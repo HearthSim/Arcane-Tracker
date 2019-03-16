@@ -9,7 +9,7 @@
         android:layout_width="60dp"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:fontFamily="@font/barlow_semicondensed_semibold"
+        app:fontFamily="@font/barlow_semicondensed_semibold"
         android:gravity="center"
         android:textColor="#fff"
         android:maxLines="1"
@@ -43,7 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:fontFamily="@font/barlow_semicondensed_semibold"
+        app:fontFamily="@font/barlow_semicondensed_semibold"
         android:gravity="left|center_vertical"
         android:textColor="#fff"
         tools:text="9999" />

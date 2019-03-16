@@ -61,7 +61,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:fontFamily="@font/barlow_semicondensed_semibold"
+        app:fontFamily="@font/barlow_semicondensed_semibold"
         android:paddingTop="10dp"
         android:text="@string/opponents"
         android:textColor="#fff"

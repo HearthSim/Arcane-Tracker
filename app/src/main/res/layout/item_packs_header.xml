@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginRight="10dp"
-            android:fontFamily="@font/chunkfive"
+            app:fontFamily="@font/chunkfive"
             android:maxLines="1"
             android:gravity="center"
             android:textColor="#fff"
@@ -55,7 +55,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/separator"
             android:layout_margin="10dp"
-            android:fontFamily="@font/barlow_semicondensed_semibold"
+            app:fontFamily="@font/barlow_semicondensed_semibold"
             android:textSize="26dp"
             android:textColor="#fff"
             tools:text="packs opened"/>
