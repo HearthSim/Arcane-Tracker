@@ -137,7 +137,6 @@ class ArcaneTrackerApplication : MultiDexApplication() {
 
         StopServiceBroadcastReceiver.init()
 
-        QuitDetector.get().start()
         ScreenCaptureHolder.start()
 
         initCardJson()

@@ -3,7 +3,6 @@ package net.mbonnin.arcanetracker.parser
 import android.Manifest
 import android.content.pm.PackageManager
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
-import net.mbonnin.arcanetracker.QuitDetector
 import net.mbonnin.arcanetracker.Utils
 import timber.log.Timber
 import java.io.File
@@ -127,7 +126,6 @@ class LogReader(private val mLog: String, private var mSkipPreviousData: Boolean
                     }
 
                 } else {
-                    QuitDetector.get().ping()
                     lineConsumer.onLine(line)
                 }
             }
