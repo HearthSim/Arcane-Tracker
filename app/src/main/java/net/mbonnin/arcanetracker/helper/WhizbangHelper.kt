@@ -13,12 +13,12 @@ object WhizbangHelper {
             "AAECAa0GBpvCAsnHAsrLApziAqeHA8CPAwzlBPIM+wzKwwKbywLo0ALL5gKJ8QLeggPqiAOwiQPsiQMA",
             "AAECAa0GAqUJvsgCDvgC5QT2B9EK0gryDPsM0cEC2MEC5fcC5ogDi4kD0okD64oDAA==",
             "AAECAaIHBM0D18oCzfQC1owDDbQBiAfnB4YJ3NEC2+MC3+8CovcCqv8CroUDz4kDzowD24wDAA==",
-            "AAECAaIHBvYEi+ECz+ECnOICn/gCi4oDDLQBjAKGCYHCAqvCAuvCAtvjArT2At76Auz8AtGBA86MAwA=",
+            "AAECAaIHCJziAt0Iz+ECi+ECn/gCoIAD9gSLigMLtAGGCevCAqvCAt76AtGBA9vjAs6MA+z8AoHCArT2AgA=", //deathrattle rogue
             "AAECAaoIDN4F7QX/BYoHwAfPxwLCzgLD6gKn7gLv9wLq+gLzigMJgQT1BP4Fx8ECm8sC8+cCm/8CioADl4ADAA==",
-            "AAECAaoIBpMJ688CsPAC4vgCmfsCy4UDDPAHkcEC68ICysMCm8sC+9MC3+kCm/8CnP8CvYUD24kD5YkDAA==",
+            "AAECAaoIBpMJ688CsPAC4vgCmfsCy4UDDPAHkcEC68ICysMCm8sC+9MC3+kCm/8CnP8CvYUD24kD5YkDAA==", // elemental shaman
             "AAECAf0GApfTAvKGAw4w9wTCCPYI68ICm8sC980C8dAC8tAC9PcC0/gCw/0C6YYD3YkDAA==",
-            "AAECAf0GBJTHArjQAo+CA/CGAw0w0AT3BM4HwgjrwgKRxwKSzQL3zQLx0ALy0ALWhgOvjQMA",
-            "AAECAQcGkAf/B6IJ+wz4hgOShwMMogTJxwLMzQKJ8QKb8wL09QKBhwOLhwPoiQPsiQOqiwPolAMA",
-            "AAECAQcEze8Cm/ACkvgCoIADDczNArrsAp3wApfzAp/1AqX1AuT3Ao74AoP7Aqj7ArP8AsyBA/iGAwA="
+            "AAECAf0GBJTHArjQAo+CA/CGAw0w0AT3BM4HwgjrwgKRxwKSzQL3zQLx0ALy0ALWhgOvjQMA", // discard warlock
+            "AAECAQcGkAf/B6IJ+wz4hgOShwMMogTJxwLMzQKJ8QKb8wL09QKBhwOLhwPoiQPsiQOqiwPolAMA", // dragon warrior
+            "AAECAQcEze8Cm/ACkvgCoIADDczNArrsAp3wApfzAp/1AqX1AuT3Ao74AoP7Aqj7ArP8AsyBA/iGAwA=" // mech warrior
     )
 }
