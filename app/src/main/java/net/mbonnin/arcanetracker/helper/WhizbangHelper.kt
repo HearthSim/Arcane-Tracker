@@ -2,23 +2,23 @@ package net.mbonnin.arcanetracker.helper
 
 object WhizbangHelper {
     val recipes = listOf(
-            "AAECAZICBpkC/M0CmdMCm+gC9fwCwYYDDEC0BeYFmgjrwgKHzgKY0gKm7wKYhgPAhgPGhgPPiQMA",
-            "AAECAZICAiTF/QIO/QLtA/cD5gWxCIbBAqTCAuvCAtfvAsHzAt/7Ar/9AtWDA7SJAwA=",
-            "AAECAR8IhwTFCN3SAunSAobTAvLqApuFA6KKAwuoArUDyQSXCNsJ/gzf0gLj0gLh4wLq4wKH+wIA",
-            "AAECAR8G7QmG0wKA8wLqiQOiigPjiwMMqAK1A+sH2wmBCo7DAtfNAt3SAovlAqCFA7CLA+SLAwA=",
-            "AAECAf0EBNACm9MCo+sCr4cDDU2KAckD7Af7DMrDApbHAtvTAtXhAtfhApbkAtfrAs2JAwA=",
-            "AAECAf0ECNACxQT7DNPFApvTAu72Ap74AqiHAwvsB5vCAuvCAsrDAtfhApbkArfxAr36AqSHA6aHA82JAwA=",
-            "AAECAZ8FBuPjApvwAv37Atn+Ar2GA+OGAwzcA/QFrwf2B8rDAojHAuPLAvnsAt6GA+aGA+yGA++GAwA=",
-            "AAECAZ8FBvQF+ga5wQLx/gKggAPehgMM3AOPCbPBAuPLAp/1AqX1Atb+Atn+AuH+ApGAA9GAA8yBAwA=",
-            "AAECAa0GBpvCAsnHAsrLApziAqeHA8CPAwzlBPIM+wzKwwKbywLo0ALL5gKJ8QLeggPqiAOwiQPsiQMA",
-            "AAECAa0GAqUJvsgCDvgC5QT2B9EK0gryDPsM0cEC2MEC5fcC5ogDi4kD0okD64oDAA==",
-            "AAECAaIHBM0D18oCzfQC1owDDbQBiAfnB4YJ3NEC2+MC3+8CovcCqv8CroUDz4kDzowD24wDAA==",
-            "AAECAaIHCJziAt0Iz+ECi+ECn/gCoIAD9gSLigMLtAGGCevCAqvCAt76AtGBA9vjAs6MA+z8AoHCArT2AgA=", //deathrattle rogue
-            "AAECAaoIDN4F7QX/BYoHwAfPxwLCzgLD6gKn7gLv9wLq+gLzigMJgQT1BP4Fx8ECm8sC8+cCm/8CioADl4ADAA==",
-            "AAECAaoIBpMJ688CsPAC4vgCmfsCy4UDDPAHkcEC68ICysMCm8sC+9MC3+kCm/8CnP8CvYUD24kD5YkDAA==", // elemental shaman
-            "AAECAf0GApfTAvKGAw4w9wTCCPYI68ICm8sC980C8dAC8tAC9PcC0/gCw/0C6YYD3YkDAA==",
-            "AAECAf0GBJTHArjQAo+CA/CGAw0w0AT3BM4HwgjrwgKRxwKSzQL3zQLx0ALy0ALWhgOvjQMA", // discard warlock
-            "AAECAQcGkAf/B6IJ+wz4hgOShwMMogTJxwLMzQKJ8QKb8wL09QKBhwOLhwPoiQPsiQOqiwPolAMA", // dragon warrior
-            "AAECAQcEze8Cm/ACkvgCoIADDczNArrsAp3wApfzAp/1AqX1AuT3Ao74AoP7Aqj7ArP8AsyBA/iGAwA=" // mech warrior
+            "AAEBAZICBCT9AsX9AsOUAw3tA/cD5gWxCNfvAt/7AuH7Ar/9AtWDA7SJA86UA8qcA9OcAwA=", // Trees are friends
+            "AAEBAZICBu0Fm/AC9fwCoIAD05QDypwDDEBWX5MExAaYB9UI8wz6/gK5lAPPlAO7nwMA", // Nature restauration
+            "AAEBAR8CgPMC44sDDqgCtQPeBNkH6wfbCe0JgQqghQOiigOwiwPkiwOenQPHnQMA", // Animal Instincts
+            "AAEBAR8EoIADm4UD8ZYD+ZYDDbUDlwjg9QLi9QLv9QK09gK5+AKH+wKY+wL2/QKghQPylgO2nAMA", // The scrap heap
+            "AAEBAf0ECMUE+wyggAOvhwPnlQODlgOWmgOKngMLTYoBuwLJA6sEywSWBewHw/gCn5sDoJsDAA==", // Khadgars Creations
+            "AAEBAf0EBO0FuAj77ALu9gINuwKrBLQE5gSWBZX/Arn/AqOHA8iHA4mWA5+bA+KbA/+dAwA=", // Archmages of Dalaran
+            "AAEBAZ8FCtIE+wyb8AL9+wKE/AKggAO9hgPehgPjhgPOhwMK3AP0Ba8H9gf57ALmhgPshgPvhgOKmgO0mwMA", // Shirvallah's chosen
+            "AAEBAZ8FAq8ElJoDDkaMAZ4ByAT1Bc8GrwexCK3yAtj+AvWJA76YA46aA5CaAwA=", // Sunreaver's secret
+            "AAEBAa0GBqUJ5fcCoIADi4oDgpQDoKwDDO0B5QTSCtMK8gzc9QK09gKh/gLriAPvkgODlAONlwMA", // Whispers from the grave
+            "AAEBAa0GBND+AqCAA5ObA4OgAw3tAeUE1QjRCtIK1wryDPLxAvv+ApeHA4OUA5ibA5mbAwA=", // Day of the dead
+            "AAEBAaIHBrICyAPdCM6MA9aMA9uMAwy0AZsFqAXUBYgH5weGCabvAt/vAqr/As+JA5CXAwA=", // Cursed crew
+            "AAEBAaIHCLIC6/AC7/MCqPcC5/oCzowDr5EDiJsDC7QBmwX1BYgH3QiGCcf4ApCXA6iYA/uaA/6aAwA=", // The Heist
+            "AAEBAaoIBCCiCafuAqCAAw2UA/UE/gWyBp/9Apv/AoqFA72FA/OKA62RA4qUA4+UA8SZAwA=", // Swamp of horrors
+            "AAEBAaoIArWYA5ybAw6/AcUD2wP+A+MF0AenCJMJ8PMC3oID4okDjJQDxpkD9JkDAA==", // Underbelly Underlings
+            "AAEBAf0GCJME8gXbBooHkgec+AKggAOXlwMLigH7BrYH4QeNCMQIzAjzDMXzAo+AA8KZAwA=", // Hand of Gul'dan
+            "AAEBAf0GAA8w0wHVA84H2QexCMIIkO4CnvEC9PcCw/0Cq5EDv5gDgJoDh50DAA==", // Ultimate Impfestation
+            "AAEBAQcIkAf/B6IJ+wzeggP4hgOShwO9mQMLogSJ8QKb8wL09QKBhwOLhwPoiQPsiQOqiwPolAPCmQMA", // Wings of war
+            "AAEBAQcI0gL8BLj2ApL4AqCAA5qHA5uKA/aWAwtLogSRBv8Hsgjy8QKb8wKO+wLYjAOWlAOZlAMA" // Dropping The Boom
     )
 }
