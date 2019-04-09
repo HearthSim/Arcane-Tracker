@@ -12,6 +12,8 @@ object HSSet {
 
   const val CREDITS: String = "CREDITS"
 
+  const val DALARAN: String = "DALARAN"
+
   const val EXPERT1: String = "EXPERT1"
 
   const val GANGS: String = "GANGS"

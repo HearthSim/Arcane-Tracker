@@ -66,6 +66,7 @@ object SecretLogic {
                 }
                 Type.SPELL -> {
                     exclude(game, CardId.COUNTERSPELL)
+                    exclude(game, CardId.NEVER_SURRENDER)
 
                     if (opponentHasRoomOnBoard(game)) {
                         exclude(game, CardId.CAT_TRICK)

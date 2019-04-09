@@ -132,6 +132,8 @@ object Mechanic {
 
   const val TRIGGER_VISUAL: String = "TRIGGER_VISUAL"
 
+  const val TWINSPELL: String = "TWINSPELL"
+
   const val UNTOUCHABLE: String = "UNTOUCHABLE"
 
   const val WINDFURY: String = "WINDFURY"

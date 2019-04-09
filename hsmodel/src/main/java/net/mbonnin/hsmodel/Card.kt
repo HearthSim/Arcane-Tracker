@@ -57,10 +57,10 @@ data class Card(
 
         val STANDARD_SETS = setOf(HSSet.CORE,
                 HSSet.EXPERT1,
-                HSSet.UNGORO,
-                HSSet.ICECROWN,
-                HSSet.LOOTAPALOOZA,
-                HSSet.GILNEAS
+                HSSet.GILNEAS, // WitchWood
+                HSSet.BOOMSDAY,
+                HSSet.TROLL, // Rastakhan's Rumble
+                HSSet.DALARAN  // Rise of Shadows
         )
         val HALL_OF_FAME_CARDS = setOf(
                 CardId.ICE_BLOCK,
@@ -71,8 +71,18 @@ data class Card(
                 CardId.RAGNAROS_THE_FIRELORD,
                 CardId.POWER_OVERWHELMING,
                 CardId.ICE_LANCE,
-                CardId.CONCEAL
+                CardId.CONCEAL,
+                CardId.DOOMGUARD,
+                CardId.NATURALIZE,
+                CardId.DIVINE_FAVOR,
+                CardId.BAKU_THE_MOONEATER,
+                CardId.GENN_GREYMANE,
+                CardId.GLOOM_STAG,
+                CardId.BLACK_CAT,
+                CardId.GLITTER_MOTH,
+                CardId.MURKSPARK_EEL
         )
+
         val UNDRAFTABLE_CARDS = setOf(CardId.VICIOUS_FLEDGLING,
                 // quests
                 CardId.JUNGLE_GIANTS,
