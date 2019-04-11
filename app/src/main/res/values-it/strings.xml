@@ -211,4 +211,9 @@
     <string name="total">Totale</string>
     <string name="opponent">Avversario</string>
     <string name="gameCount">%d Partite Giocate</string>
+    <string name="premium">Premium</string>
+    <string name="myReplays">I miei Replay</string>
+    <string name="meta">Meta</string>
+    <string name="exploreDecks">Esplora mazzi</string>
+    <string name="signOut">Esci</string>
 </resources>
