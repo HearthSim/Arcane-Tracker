@@ -6,6 +6,7 @@ import android.graphics.PixelFormat
 import android.graphics.Point
 import android.os.Build
 import android.view.*
+import com.crashlytics.android.Crashlytics
 import java.util.*
 
 /**
@@ -88,10 +89,10 @@ class ViewManager(context: Context) {
     }
 
     fun addModalAndFocusableView(view: View, params: Params) {
-        addModalViewIternal(view, params, 0)
+        addModalViewInternal(view, params, 0)
     }
 
-    fun addModalViewIternal(view: View, params: Params, extraFlags: Int) {
+    fun addModalViewInternal(view: View, params: Params, extraFlags: Int) {
         addViewInternal(view, params, WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH or extraFlags)
         view.setOnTouchListener { v, event ->
             if (event.actionMasked == MotionEvent.ACTION_OUTSIDE) {
@@ -102,13 +103,18 @@ class ViewManager(context: Context) {
     }
 
     fun addModalView(view: View, params: Params) {
-        addModalViewIternal(view, params, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+        addModalViewInternal(view, params, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
     }
 
     private fun addViewInternal(view: View, params: Params, flags: Int) {
         if (mViews.contains(view)) {
             return
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Crashlytics.setBool("canDrawOverlay", android.provider.Settings.canDrawOverlays(view.context))
+        }
+
         val layoutParams = WindowManager.LayoutParams(
                 params.w,
                 params.h,
