@@ -10,8 +10,8 @@
     <string name="autoAddExplanation">When a deck is incomplete, add cards played to the deck automatically so you don\'t have to edit the deck manually.</string>
     <string name="autoDetect">Auto detect deck</string>
     <string name="autoDetectExplanation">When the game begins, try to guess the best available deck and activate it automatically. This might fail if you have several deck of the same class.</string>
-    <string name="autoHide">Auto hide</string>
-    <string name="autoQuitExplanation">Try to detect when Hearthstone is not running anymore and hide the overlay automagically</string>
+    <string name="autoHideTitle">Auto hide</string>
+    <string name="autoHideExplanation">Arcane Tracker can unfortunately not detect when Hearthstone is closed. This setting will hide Arcane Tracker if your phone is in portrait mode. Note that Arcane Tracker will continue running in the background and might show its overlay again if you open another landscape app.</string>
     <string name="blessing_of_kings">Blessing of Kings - %s</string>
     <string name="blessing_of_kings_purchased">You\'ve blessed Arcane Tracker. Thanks! 👑</string>
     <string name="buttonSize">Buttons size</string>
@@ -187,7 +187,7 @@
     <string name="copyright">This app is not affiliated with Blizzard Entertainment</string>
     <string name="about">About</string>
     <string name="quitTimeout">Inactivity timeout:</string>
-    <string name="quitTimeoutExplanation">Arcane Tracker can unfortunately not detect when Hearthstone is closed. This setting will close Arcane Tracker if your phone is in portrait mode and Hearthstone has not written logs for the given time.</string>
+    <string name="quitTimeoutExplanation2">Closes Arcane Tracker if no Hearthstone logs are detected during this delay.</string>
     <string name="minutes"> %1$d minute(s)</string>
     <string name="never">Never</string>
     <string name="startScreenCaptureExplanation">In order to detect your rank and play mode (casual/ranked, wild/standard), Arcane Tracker will start to record your screen.\n\nYou can chose to say no in the next screen or in the settings at any time if you don\'t want to enable rank detection.</string>
@@ -240,4 +240,5 @@
     <string name="trackobotDeprecated">Deprecation notice: Please note that Track-o-Bot is no longer supported and will be removed in a future update.</string>
     <string name="collectionUpload">Collection Upload</string>
     <string name="collectionUploadExplanation">Unfortunately, due to the Android security restrictions, it is not possible to upload your collection from Arcane Tracker. You can still do it from a PC or mac.</string>
+    <string name="autoQuitTitle">Auto-Quit</string>
 </resources>

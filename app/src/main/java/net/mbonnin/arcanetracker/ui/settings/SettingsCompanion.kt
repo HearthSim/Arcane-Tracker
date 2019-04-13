@@ -1,5 +1,6 @@
 package net.mbonnin.arcanetracker.ui.settings
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -51,6 +52,24 @@ class SettingsCompanion(internal var settingsView: View) {
         }
     }
 
+    fun setTimeoutIndex(index: Int) {
+        val quitTimeoutExplanation = settingsView.findViewById<TextView>(R.id.quitTimeout)
+        val value = timeouts[index]
+        Settings.set(Settings.QUIT_TIMEOUT, index)
+        var explanation = settingsView.resources.getString(R.string.quitTimeout)
+        if (value >= 0) {
+            explanation += settingsView.resources.getString(R.string.minutes, value)
+        } else {
+            explanation += settingsView.resources.getString(R.string.never)
+        }
+        quitTimeoutExplanation.text = explanation
+    }
+
+
+
+    init {
+        init()
+    }
 
     private fun bbImageToFile(bbImage: ByteBufferImage): File {
         val now = DateFormat.format("yyyy_MM_dd_hh_mm_ss", Date())
@@ -74,7 +93,8 @@ class SettingsCompanion(internal var settingsView: View) {
         return file
     }
 
-    init {
+    @SuppressLint("NewApi")
+    private fun init() {
         val view = settingsView
         val context = ArcaneTrackerApplication.context
 
@@ -226,6 +246,30 @@ class SettingsCompanion(internal var settingsView: View) {
         screenCapture.setOnCheckedChangeListener { buttonView, isChecked ->
             Settings.set(Settings.SCREEN_CAPTURE_ENABLED, isChecked)
         }
+
+        val autoHide = view.findViewById<View>(R.id.autoHideCheckBox) as CheckBox
+        autoHide.isChecked = Settings.get(Settings.AUTO_HIDE, false)
+        autoHide.setOnCheckedChangeListener { buttonView, isChecked ->
+            Settings.set(Settings.AUTO_HIDE, isChecked)
+        }
+
+        val quitTimeoutSeekbar = view.findViewById<SeekBar>(R.id.quitTimeoutSeekbar)
+        quitTimeoutSeekbar.max = timeouts.size - 1
+        setTimeoutIndex(getTimeoutIndex())
+        quitTimeoutSeekbar.progress = getTimeoutIndex()
+        quitTimeoutSeekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                setTimeoutIndex(progress)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+
+            }
+        })
 
         val hsReplay1 = view.findViewById<View>(R.id.hsReplayButton1)
         val hsReplay2 = view.findViewById<View>(R.id.hsReplayButton2)
@@ -399,6 +443,22 @@ class SettingsCompanion(internal var settingsView: View) {
     }
 
     companion object {
+        val timeouts = arrayOf(3, 5, 10, 30, 60, -1)
+
+        fun getTimeoutIndex(): Int {
+            return Settings.get(Settings.QUIT_TIMEOUT, 1)
+        }
+
+        fun getTimeoutValue(): Int {
+            val index = getTimeoutIndex()
+            if (index < 0) {
+                return index
+            } else {
+                return timeouts[index]
+            }
+        }
+
+
         fun show() {
             val context = ArcaneTrackerApplication.context
             val viewManager = ViewManager.get()
