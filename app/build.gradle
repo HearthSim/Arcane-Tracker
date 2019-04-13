@@ -20,7 +20,7 @@ android {
 
     defaultConfig {
         applicationId "net.mbonnin.arcanetracker"
-        minSdkVersion 19
+        minSdkVersion Versions.minSdkVersion
         targetSdkVersion Versions.targetSdkVersion
         versionCode 408
         versionName "4.08"
