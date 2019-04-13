@@ -26,4 +26,5 @@
     <string name="changelog_403" translatable="false">Fixed an issue where replays where not shown in \'my replays\'\nUpdated Whizbang decks for Rastakhan\'s Rumble.</string>
     <string name="changelog_406" translatable="false">Add support for Madam Lazul.\nFixed some issues connecting to HSReplay.net.</string>
     <string name="changelog_407" translatable="false">Rise of the Shadow support.\nUpdated Whizbang recipes\nRemove auto-hide as it was sometimes triggering unexpectedly.</string>
+    <string name="changelog_409" translatable="false">Add back "Auto-Hide" as an opt-in setting. You can enable this if you want the overlay to hide in landscape mode.</string>
 </resources>
