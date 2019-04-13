@@ -308,6 +308,18 @@ class SettingsCompanion(internal var settingsView: View) {
     }
 
     private fun showRestartDialog() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && !android.provider.Settings.canDrawOverlays(settingsView.context)) {
+            /*
+             * We come here if we open the settings from the notification
+             * In that case, we might not have the overlay permissions.
+             * We won't show the restart dialog but that's most likely ok as
+             * the user will have to enable overlay permissions before seeing a card anyways
+             */
+            return
+        }
+
         val view2 = LayoutInflater.from(settingsView.context).inflate(R.layout.please_restart, null)
         view2.findViewById<View>(R.id.ok).setOnClickListener { v3 -> ViewManager.get().removeView(view2) }
 
