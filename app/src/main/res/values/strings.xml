@@ -240,5 +240,4 @@
     <string name="trackobotDeprecated">Deprecation notice: Please note that Track-o-Bot is no longer supported and will be removed in a future update.</string>
     <string name="collectionUpload">Collection Upload</string>
     <string name="collectionUploadExplanation">Unfortunately, due to the Android security restrictions, it is not possible to upload your collection from Arcane Tracker. You can still do it from a PC or mac.</string>
-    <string name="autoQuitTitle">Auto-Quit</string>
 </resources>

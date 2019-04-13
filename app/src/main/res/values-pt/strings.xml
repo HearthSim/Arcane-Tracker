@@ -47,9 +47,7 @@
   <string name="drawerSize">Tamanho do drawer</string>
   <string name="buttonSize">Tamanho dos botoes</string>
   <string name="overlayOpacity">Opacidade da lista</string>
-  <string name="autoHide">Esconder automaticamente</string>
-  <string name="autoQuitExplanation">Tentar detectar quando Hearthstone nao esta sendo executado mais e esconder a lista automagicamente.</string>
-  <string name="autoDetect">Detectar deck automaticamente</string>
+    <string name="autoDetect">Detectar deck automaticamente</string>
   <string name="autoDetectExplanation">Quando o jogo começar, tente adivinhar o melhor deck disponivel e ative-o automaticamente. Isso pode falhar se voce tem varios deck de uma classe.</string>
   <string name="autoAdd">Adicionar cartas automaticamente</string>
   <string name="autoAddExplanation">Quando um deck estiver incompleto, adicione cartas ao deck automaticamente para voce nao ter que adiciona-las manualmente.</string>

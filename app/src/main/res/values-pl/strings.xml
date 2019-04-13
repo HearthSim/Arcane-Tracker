@@ -9,8 +9,6 @@
     <string name="autoAddExplanation">Gdy talia jest niekompletna, dodaje zagrane karty automatycznie więc nie musisz edytować talii ręcznie.</string>
     <string name="autoDetect">Automatyczna detekcja talii</string>
     <string name="autoDetectExplanation">Gdy gra zacznie się, spróbuj zgadnąć najlepszą dostępną talię oraz aktywuj ją automatycznie. Może się nie powieść, gdy masz więcej talii jednej klasy.</string>
-    <string name="autoHide">Automatyczne ukrywanie</string>
-    <string name="autoQuitExplanation">Spróbuj wykryć kiedy Hearthstone przestał działać i ukryj nakładkę automatycznie</string>
     <string name="blessing_of_kings">Dar królów - %s</string>
     <string name="blessing_of_kings_purchased">Pobłogosławiłeś Arcane Tracker. Dziękuję! ??</string>
     <string name="buttonSize">Rozmiar przycisku</string>
@@ -186,7 +184,6 @@
     <string name="copyright">Ta aplikacja nie jest powiązana z firmą Blizzard Entertainment.</string>
     <string name="about">O programie</string>
     <string name="quitTimeout">Czas bezczynności:</string>
-    <string name="quitTimeoutExplanation">Arcane Tracker nie wykrywa, kiedy Hearthstone został zamknięty. Ta opcja zamknie Arcane Tracker jeżeli Twój telefon przełączy się tryb portretowy. Hearthstone nie zapisuje logów wskazanego czasu.</string>
     <string name="minutes"> %1$d minuta(y)</string>
     <string name="never">Nigdy</string>
     <string name="startScreenCaptureExplanation">Aby ranga i tryb gry (rozrywka/ranking, dzicz/standard) zostały wykryte, Arcane Tracker rozpocznie przechwytywanie i nagrywanie Twojego ekranu.\n\nMożesz wybrać nie w kolejny etapie lub zmienić opcje w ustawieniach aplikacji jeżeli nie chcesz aktywować wykrywania rangi.</string>

@@ -48,8 +48,6 @@
   <string name="drawerSize">Tamaño del tracker</string>
   <string name="buttonSize">Tamaño de los botones</string>
   <string name="overlayOpacity">Nivel de opacidad</string>
-  <string name="autoHide">Ocultar automáticamente</string>
-  <string name="autoQuitExplanation">Intentar detectar cuando Hearthstone ya no está funcionando y ocultar el tracker automáticamente</string>
   <string name="autoDetect">Detectar automáticamente el mazo</string>
   <string name="autoDetectExplanation">Cuando se inicia el juego, se intenta determinar el mejor mazo disponible y se activa automáticamente. Esto puede fallar si tienes muchos mazos de una misma clase.</string>
   <string name="autoAdd">Añadir cartas automáticamente</string>

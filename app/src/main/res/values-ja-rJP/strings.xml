@@ -9,8 +9,6 @@
     <string name="autoAddExplanation">デッキが不完全なときは、プレイしたカードを自動的にデッキに追加するので、手動でデッキを編集する必要はありません。</string>
     <string name="autoDetect">自動検知 デッキ</string>
     <string name="autoDetectExplanation">ゲームが始まると利用可能な最善のデッキを推測して自動的に有効にします。 同じクラスのデッキが複数ある場合、これは失敗するかもしれません。</string>
-    <string name="autoHide">自動的に隠す</string>
-    <string name="autoQuitExplanation">ハースストーンが起動していないことを検知できたら、オーバーレイを自動的に切ります</string>
     <string name="blessing_of_kings">王の祝福 - %s</string>
     <string name="blessing_of_kings_purchased">あなたはArcane Trackerを祝福しました。 ありがとう！ 👑</string>
     <string name="buttonSize">ボタンの大きさ</string>
@@ -186,7 +184,6 @@
     <string name="copyright">このアプリは Blizzard Entertainment と提携していません</string>
     <string name="about">About</string>
     <string name="quitTimeout">非アクティブ時のタイムアウト:</string>
-    <string name="quitTimeoutExplanation">Arcane Trackerは残念ながらハースストーンが閉じられたことを検出できません。この設定は、お使いのスマホがポートレートモードでハースストーンが指定された時間の間ログを書き込まなかった場合にArcane Trackerを閉じます。</string>
     <string name="minutes"> %1$d 分</string>
     <string name="never">永遠にしない</string>
     <string name="startScreenCaptureExplanation">ランクとプレイモード（カジュアル/ランク、ワイルド/スタンダード）を検出するために、Arcane Trackerはスクリーンキャプチャを開始します。\n\n次の画面または設定で、[いいえ]と選択することで、ランク検出を無効化できます。</string>

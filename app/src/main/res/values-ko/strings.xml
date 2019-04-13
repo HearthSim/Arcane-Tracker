@@ -47,9 +47,7 @@
   <string name="drawerSize">드로어 크기</string>
   <string name="buttonSize">버튼 크기</string>
   <string name="overlayOpacity">오버레이 투명도</string>
-  <string name="autoHide">자동 숨김</string>
-  <string name="autoQuitExplanation">하스스톤이 더이상 실행되지 않을 경우 자동적으로 오버레이 창을 숨깁니다.</string>
-  <string name="autoDetect">자동 덱 탐지</string>
+    <string name="autoDetect">자동 덱 탐지</string>
   <string name="autoDetectExplanation">게임이 시작되면, 어떤 덱을 사용하는지 자동으로 탐지합니다. 한 직업의 여러 덱을 돌리면 탐지에 실패할 수 있습니다.</string>
   <string name="autoAdd">자동 카드 추가</string>
   <string name="autoAddExplanation">덱이 불완전할 경우, 플레이한 카드를 자동으로 추가합니다. 따라서 수동으로 덱을 편집할 필요가 없습니다.</string>

@@ -9,8 +9,6 @@
     <string name="autoAddExplanation">Si un deck contient moins de 30 cartes, détecter les cartes manquantes automatiquement.</string>
     <string name="autoDetect">Détection automatique du deck</string>
     <string name="autoDetectExplanation">Quand la partie commence, utiliser le deck qui correspond à la classe et à la main de départ</string>
-    <string name="autoHide">Masquer automatiquement</string>
-    <string name="autoQuitExplanation">Quand Hearthstone n\'est plus au premier plan, masquer l\'overlay</string>
     <string name="blessing_of_kings">Bénédiction des rois - %s</string>
     <string name="blessing_of_kings_purchased">Merci pour votre Bénédiction. 👑</string>
     <string name="buttonSize">Taille des boutons</string>
@@ -186,7 +184,6 @@
     <string name="copyright">Cette app n\'est pas à affiliée à Blizzard Entertainment</string>
     <string name="about">A propos</string>
     <string name="quitTimeout">Fermeture automatique</string>
-    <string name="quitTimeoutExplanation">Hélas Arcane Tracker ne peut pas détecter lorsque vous quittez Hearthstone. Avec ce réglage, vous pouvez configurer le délai d\'inactivité après lequel Arcane Tracker se fermera automatiquement.</string>
     <string name="minutes"> %1$d minute(s)</string>
     <string name="never">Jamais</string>
     <string name="startScreenCaptureExplanation">Arcane Tracker a besoin de votre permission pour enregistrer l\'écran afin de détecter votre rang et celui de votre adversaire.</string>

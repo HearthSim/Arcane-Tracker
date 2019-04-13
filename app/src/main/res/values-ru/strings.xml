@@ -44,11 +44,8 @@
   <string name="drawerSize">Размер панели</string>
   <string name="buttonSize">Размер кнопок</string>
   <string name="overlayOpacity">Прозрачность</string>
-  <string name="autoHide">Авто скрытие</string>
 
-  <string name="autoQuitExplanation">Определяет, когда Hearthstone не используется и скрывает панель автоматически</string>
-
-  <string name="autoDetect">Отслеживание колоды</string>
+    <string name="autoDetect">Отслеживание колоды</string>
 
   <string name="autoDetectExplanation">Вначале игры пытается угадать вашу колоду из доступных и активирует её автоматически. Возможны трудности, если у вас есть несколько колод одного класса</string>
 

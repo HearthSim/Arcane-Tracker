@@ -9,8 +9,6 @@
     <string name="autoAddExplanation">Quando un mazzo è incompleto, aggiungi automaticamente le carte giocate al mazzo anche se tu non lo hai modificato manualmente.</string>
     <string name="autoDetect">Identifica il mazzo automaticamente</string>
     <string name="autoDetectExplanation">Quando il gioco inizia, proverà ad identificare il miglior mazzo disponibile e ad attivarlo automaticamente. Potrebbe sbagliare se hai diversi mazzi della stessa classe.</string>
-    <string name="autoHide">Nascondi automaticamente</string>
-    <string name="autoQuitExplanation">Cerca di rilevare quando Hearthstone non e\' più in esecuzione e nascondi automaticamente la sovrapposizione</string>
     <string name="blessing_of_kings">Benedizione dei Re - %s</string>
     <string name="blessing_of_kings_purchased">Hai Benedetto Arcane Tracker. Grazie ! 👑</string>
     <string name="buttonSize">Dimensione dei pulsanti</string>
@@ -186,7 +184,6 @@
     <string name="copyright">Questa app non e\' collegata con Blizzard Entertainment.</string>
     <string name="about">About</string>
     <string name="quitTimeout">Timeout inattivita\':</string>
-    <string name="quitTimeoutExplanation">Arcane Tracker sfortunatamente non puo\' rilevare quando Hearthstone e\' chiuso. Questa impostazione chiudera\' Arcane Tracker se il telefono e\' in modalita\' verticale e Hearthstone non ha scritto i logs nel tempo necessario.</string>
     <string name="minutes"> %1$d minuto(i)</string>
     <string name="never">Mai</string>
     <string name="startScreenCaptureExplanation">Per rilevare il tuo rank e la modalità di gioco (amichevole / classificata, selvaggia / standard), Arcane Tracker inizierà a registrare il tuo schermo. \n\nSi può scegliere di dire di no nella schermata successiva o nelle impostazioni in qualsiasi momento se non si vuole abilitare il rilevamento del rank</string>

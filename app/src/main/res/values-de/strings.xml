@@ -9,8 +9,6 @@
     <string name="autoAddExplanation">Wenn ein Deck unvollständig ist, füge ausgespielte Karten automatisch dem Deck hinzu, sodass du sie nicht manuell hinzufügen musst.</string>
     <string name="autoDetect">Deck automatisch erkennen</string>
     <string name="autoDetectExplanation">Versucht bei Spielbeginn das bestmögliche Deck zu erkennen und automatisch zu aktivieren. Kann fehlschlagen wenn du mehrere Decks derselben Klasse hast.</string>
-    <string name="autoHide">Automatisch verbergen</string>
-    <string name="autoQuitExplanation">Versucht zu erkennen ob Hearthstone nicht mehr läuft und versteckt die Oberfläche automagisch</string>
     <string name="blessing_of_kings">Segen der Könige - %s</string>
     <string name="blessing_of_kings_purchased">Du hast Arcane Tracker gesegnet. Danke ! 👑</string>
     <string name="buttonSize">Buttongröße</string>
@@ -186,7 +184,6 @@
     <string name="copyright">Diese App steht nicht in Verbindung mit Blizzard Entertainment</string>
     <string name="about">Über</string>
     <string name="quitTimeout">Inaktivität:</string>
-    <string name="quitTimeoutExplanation">Arcane Tracker kann unglücklicherweise nicht erkennen, ob Hearthstone beendet wurde. Diese Einstellung beendet Arcane Tracker falls dein Gerät im Hochformat ist und Hearthstone für eine bestimmte Zeit nichts in die Logs geschrieben hat.</string>
     <string name="minutes"> %1$d Minute(n)</string>
     <string name="never">Nie</string>
     <string name="startScreenCaptureExplanation">Um deinen Rang und den Spielmodus zu erkennen (Ungewertet/Gewertet, Wild/Standard), wird Arcane Tracker deinen Bildschirm aufnehmen.\n\nWenn du keine Rangerkennung willst, kannst du im nächsten Dialog oder später in den Einstellungen ablehnen.</string>

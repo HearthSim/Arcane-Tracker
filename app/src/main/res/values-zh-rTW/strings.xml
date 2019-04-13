@@ -47,9 +47,7 @@
   <string name="drawerSize">牌組大小</string>
   <string name="buttonSize">按鈕大小</string>
   <string name="overlayOpacity">牌組透明度</string>
-  <string name="autoHide">自動隱藏</string>
-  <string name="autoQuitExplanation">Try to detect when Hearthstone is not running anymore and hide the overlay automagically</string>
-  <string name="autoDetect">Auto detect deck</string>
+    <string name="autoDetect">Auto detect deck</string>
   <string name="autoDetectExplanation">當遊戲開始，嘗試使用最佳的可用牌組並自動執行。在你有多個重複職業的牌組時，這可能會失效</string>
   <string name="autoAdd">自動加入卡牌</string>
   <string name="autoAddExplanation">當牌組未完成時，自動加入你打出的卡牌，所以你不需要手動編輯牌組</string>
