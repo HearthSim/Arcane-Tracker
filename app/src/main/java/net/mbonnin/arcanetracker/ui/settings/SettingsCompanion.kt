@@ -107,7 +107,20 @@ class SettingsCompanion(internal var settingsView: View) {
 
             val arrayUri = ArrayList<Uri>()
             FileTree.get().sync()
-            arrayUri.add(FileProvider.getUriForFile(view.context, "net.mbonnin.arcanetracker.fileprovider", FileTree.get().file))
+            try {
+                arrayUri.add(FileProvider.getUriForFile(view.context, "net.mbonnin.arcanetracker.fileprovider", FileTree.get().file))
+            } catch (e: Exception) {
+                /**
+                 * Eat these errors silently. I'm not sure where this comes from and the whole storage APIs might change with Android Q anyways.
+                 * This seems to appear only on Huawei Honor anyways (DUK-AL20)
+                 *
+                 * Fatal Exception: java.lang.IllegalArgumentException: Failed to find configured root that contains /storage/0123-4567/Android/data/net.mbonnin.arcanetracker/files/ArcaneTracker.log
+                 * at androidx.core.content.FileProvider$SimplePathStrategy.getUriForFile(FileProvider.java:739)
+                 * at androidx.core.content.FileProvider.getUriForFile(FileProvider.java:418)
+                 * at net.mbonnin.arcanetracker.ui.settings.SettingsCompanion$1.onClick(SettingsCompanion.kt:90)
+                 */
+                Utils.reportNonFatal(e)
+            }
 
             val completable: Completable
             val screenCapture = ScreenCaptureHolder.getScreenCapture()
