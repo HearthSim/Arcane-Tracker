@@ -20,17 +20,12 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.iid.FirebaseInstanceId
-import io.reactivex.Completable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.*
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Settings
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.extension.finishAndRemoveTaskIfPossible
-import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.mbonnin.arcanetracker.hsreplay.HsReplayInterceptor
 import net.mbonnin.arcanetracker.ui.overlay.Overlay
 import timber.log.Timber
@@ -80,19 +75,17 @@ class MainActivity : AppCompatActivity() {
 
                 job?.cancel()
                 job = GlobalScope.launch(Dispatchers.Main) {
-                    val deferred = async {
-                        HsReplayInterceptor.configure(code)
-                    }
-                    val r = deferred.await()
-                    if (r != HsReplayInterceptor.Result.SUCCESS) {
-                        Toast.makeText(this@MainActivity, "Login Error: ${100 + r.ordinal}", Toast.LENGTH_LONG).show()
-                        updateState(state.copy(needLogin = true, loginLoading = false))
-                        return@launch
-                    }
+                    val result = ArcaneTrackerApplication.get().hsReplay.login(code)
 
-                    ArcaneTrackerApplication.get().hsReplay.getAccount()
-                    ArcaneTrackerApplication.get().hsReplay.claimToken()
-                    updateState(state.copy(loginLoading = false, needLogin = false))
+                    result.fold(
+                            onFailure = {
+                                Toast.makeText(this@MainActivity, it.message, Toast.LENGTH_LONG).show()
+                                updateState(state.copy(needLogin = true, loginLoading = false))
+                            },
+                            onSuccess = {
+                                updateState(state.copy(loginLoading = false, needLogin = false))
+                            }
+                    )
                 }
 
                 return

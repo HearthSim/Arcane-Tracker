@@ -1,20 +1,19 @@
 package net.mbonnin.arcanetracker.hsreplay
 
-import net.mbonnin.arcanetracker.hsreplay.model.Token
-import net.mbonnin.arcanetracker.hsreplay.model.TokenRequest
-import net.mbonnin.arcanetracker.hsreplay.model.Upload
-import net.mbonnin.arcanetracker.hsreplay.model.UploadRequest
-
-import io.reactivex.Observable
+import net.mbonnin.arcanetracker.hsreplay.model.legacy.Upload
+import net.mbonnin.arcanetracker.hsreplay.model.legacy.UploadRequest
+import net.mbonnin.arcanetracker.hsreplay.model.legacy.UploadToken
+import net.mbonnin.arcanetracker.hsreplay.model.legacy.UploadTokenRequest
+import retrofit2.Call
 import retrofit2.http.*
 
 interface LegacyService {
     @POST("tokens/")
-    fun createToken(@Body tokenRequest: TokenRequest): Observable<Token>
+    fun createToken(@Body uploadTokenRequest: UploadTokenRequest): Call<UploadToken>
 
     @POST
-    fun createUpload(@Url url: String, @Body uploadRequest: UploadRequest, @Header("Authorization") authorization: String): Observable<Upload>
+    fun createUpload(@Url url: String, @Body uploadRequest: UploadRequest, @Header("Authorization") authorization: String): Call<Upload>
 
     @GET("tokens/{token}/")
-    fun getToken(@Path("token") token: String): Observable<Token>
+    fun getToken(@Path("token") token: String): Call<UploadToken>
 }

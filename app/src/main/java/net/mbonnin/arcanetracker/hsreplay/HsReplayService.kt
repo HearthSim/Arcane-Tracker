@@ -1,9 +1,9 @@
 package net.mbonnin.arcanetracker.hsreplay
 
-import io.reactivex.Observable
 import net.mbonnin.arcanetracker.hsreplay.model.Account
-import net.mbonnin.arcanetracker.hsreplay.model.Token
+import net.mbonnin.arcanetracker.hsreplay.model.legacy.UploadToken
 import okhttp3.RequestBody
+import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -12,8 +12,8 @@ import retrofit2.http.POST
 interface HsReplayService {
 
     @POST("account/claim_token/")
-    fun claimToken(@Body tokenBody: RequestBody): Observable<retrofit2.Response<Token>>
+    fun claimToken(@Body tokenBody: RequestBody): Call<UploadToken>
 
     @GET("account/")
-    fun account(): Observable<Account>
+    fun account(): Call<Account>
 }

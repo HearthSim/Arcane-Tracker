@@ -1,76 +1,129 @@
 package net.mbonnin.arcanetracker.hsreplay
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.preference.PreferenceManager
 import androidx.core.content.edit
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
-import io.reactivex.Completable
-import io.reactivex.CompletableSource
-import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.*
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
-import net.mbonnin.arcanetracker.Settings
-import net.mbonnin.arcanetracker.hsreplay.model.*
-import okhttp3.*
+import net.mbonnin.arcanetracker.Utils
+import net.mbonnin.arcanetracker.hsreplay.model.Account
+import net.mbonnin.arcanetracker.hsreplay.model.legacy.UploadRequest
+import net.mbonnin.arcanetracker.hsreplay.model.legacy.UploadToken
+import net.mbonnin.arcanetracker.hsreplay.model.legacy.UploadTokenRequest
+import okhttp3.MediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import ru.gildor.coroutines.retrofit.await
 import timber.log.Timber
 import java.io.IOException
 
 class HSReplay(val context: Context, val userAgent: String) {
-    private val mS3Client: OkHttpClient
-    private var mLegacyToken: String? = null
-    private var mOauthervice: HsReplayService
-    private val mLegacyService: LegacyService
+    private var legacyToken: String? = null
 
-    fun user(): Observable<Lce<Token>> = legacyService().getToken(mLegacyToken!!)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .map<Lce<Token>> { Lce.data(it) }
-            .onErrorReturn { Lce.error(it) }
-            .startWith(Lce.loading())
+    private val S3Client by lazy {
+        OkHttpClient.Builder()
+                .addInterceptor(GzipInterceptor())
+                .build()
+    }
+    private val mOauthervice by lazy {
+        val oauthOkHttpClient = OkHttpClient.Builder()
+                .addInterceptor(HsReplayInterceptor())
+                .build()
 
+        Retrofit.Builder()
+                .baseUrl("https://api.hsreplay.net/v1/")
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+                .addConverterFactory(GsonConverterFactory.create(Gson()))
+                .client(oauthOkHttpClient)
+                .build()
+                .create(HsReplayService::class.java)
+    }
+    private val legacyService by lazy {
+        val legacyClient = OkHttpClient.Builder()
+                .addInterceptor(LegacyInterceptor(userAgent))
+                .build()
+
+        Retrofit.Builder()
+                .baseUrl("https://hsreplay.net/api/v1/")
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+                .addConverterFactory(GsonConverterFactory.create(Gson()))
+                .client(legacyClient)
+                .build()
+                .create(LegacyService::class.java)
+    }
     val sharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(context)
     }
 
-    fun uploadGame(uploadRequest: UploadRequest, gameStr: String): Single<Lce<String>> {
-        val hsReplayEnabled = token() != null
+    init {
 
-        Timber.w("uploadGame [hsReplayEnabled=%b] [token=%s]", hsReplayEnabled, mLegacyToken)
+        legacyToken = sharedPreferences.getString(KEY_HSREPLAY_LEGACY_TOKEN, null)
+        Timber.w("init token=${legacyToken != null}")
 
-        if (mLegacyToken == null) {
-            return Single.just(Lce.error(Exception("no token")))
+        if (HsReplayInterceptor.refreshToken != null) {
+            GlobalScope.launch {
+                if (legacyToken == null) {
+                    // This should never happen as the legacyToken must be set at login time
+                    Utils.reportNonFatal(Exception("no token for logged user ?"))
+                    createLegacyToken().getOrNull()?.let {
+                        legacyToken = it
+                        sharedPreferences.edit {
+                            putString(KEY_HSREPLAY_LEGACY_TOKEN, it)
+                        }
+                    }
+                }
+                val accountResult = account()
+                accountResult.getOrNull()?.let {
+                    sharedPreferences.edit {
+                        putBoolean(KEY_HSREPLAY_PREMIUM, it.is_premium ?: false)
+                        putString(KEY_HSREPLAY_BATTLETAG, it.battletag)
+                        putString(KEY_HSREPLAY_USERNAME, it.username)
+                    }
+                }
+            }
         }
+    }
 
-        if (!hsReplayEnabled) {
-            return Single.just(Lce.error(Exception("hsreplay not enabled")))
+    suspend fun uploadGame(uploadRequest: UploadRequest, gameStr: String): Result<String> {
+
+        Timber.w("uploadGame [token=$legacyToken]")
+
+        if (legacyToken == null) {
+            return Result.failure(Exception("no token"))
         }
 
         Timber.w("doUploadGame")
         FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("hsreplay_upload", null)
 
-        val authorization = "Token $mLegacyToken"
+        val authorization = "Token $legacyToken"
 
-        return legacyService().createUpload("https://upload.hsreplay.net/api/v1/replay/upload/request", uploadRequest, authorization)
-                .firstOrError()
-                .map {
-                    Timber.w("url is ${it.url}")
-                    Timber.w("put_url is ${it.put_url}")
+        val upload = try {
+            legacyService.createUpload("https://upload.hsreplay.net/api/v1/replay/upload/request", uploadRequest, authorization).await()
+        } catch (e: Exception) {
+            return Result.failure(e)
+        }
 
-                    putToS3(it.put_url, gameStr)
-                    it
-                }
-                .map { Lce.data(it.url!!) }
-                .onErrorReturn { Lce.error(it) }
+        Timber.w("url is ${upload.url}")
+        Timber.w("put_url is ${upload.put_url}")
+
+        val exception = withContext(Dispatchers.IO) {
+            putToS3(upload.put_url, gameStr).exceptionOrNull()
+        }
+        if (exception != null) {
+            return Result.failure(exception)
+        }
+
+        return Result.success(upload.url!!)
     }
 
-    private fun putToS3(putUrl: String?, gameStr: String) {
+    private fun putToS3(putUrl: String?, gameStr: String): Result<Unit> {
 
         if (putUrl == null) {
             throw Exception("no put_url")
@@ -84,120 +137,67 @@ class HSReplay(val context: Context, val userAgent: String) {
                 .build()
 
         try {
-            val response = mS3Client.newCall(request).execute()
+            val response = S3Client.newCall(request).execute()
             if (!response.isSuccessful) {
                 throw Exception("response not successful")
             }
         } catch (e: IOException) {
             e.printStackTrace()
+            return Result.failure(e)
+        }
+
+        return Result.success(Unit)
+    }
+
+    suspend fun uploadToken(): Result<UploadToken> {
+        try {
+            return Result.success(legacyService.getToken(legacyToken!!).await())
+        } catch (e: Exception) {
+            return Result.failure(e)
         }
     }
 
-    init {
-        val legacyClient = OkHttpClient.Builder()
-                .addInterceptor(LegacyInterceptor(userAgent))
-                .build()
+    suspend fun account(): Result<Account> {
+        return try {
+            Result.success(mOauthervice.account().await())
+        } catch (e: Exception) {
+            Result.failure(e)
 
-        mLegacyService = Retrofit.Builder()
-                .baseUrl("https://hsreplay.net/api/v1/")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-                .addConverterFactory(GsonConverterFactory.create(Gson()))
-                .client(legacyClient)
-                .build()
-                .create(LegacyService::class.java)
-
-        val oauthOkHttpClient = OkHttpClient.Builder()
-                .addInterceptor(HsReplayInterceptor())
-                .build()
-
-        mOauthervice = Retrofit.Builder()
-                .baseUrl("https://api.hsreplay.net/v1/")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-                .addConverterFactory(GsonConverterFactory.create(Gson()))
-                .client(oauthOkHttpClient)
-                .build()
-                .create(HsReplayService::class.java)
-
-
-        mS3Client = OkHttpClient.Builder()
-                .addInterceptor(GzipInterceptor())
-                .build()
-
-        mLegacyToken = sharedPreferences.getString(KEY_HSREPLAY_LEGACY_TOKEN, null)
-        Timber.w("init token=${mLegacyToken != null}")
-
-        if (HsReplayInterceptor.refreshToken != null) {
-            // if the user is a previous user of the app and he is already signed up
-            // or just to refresh values
-            val ignored = getAccount()
-                    .flatMapCompletable {
-                        if (Settings.get(Settings.NEED_TOKEN_CLAIM, false)) {
-                            claimToken()
-                        } else {
-                            Completable.complete()
-                        }
-                    }
-                    .subscribe({
-                Timber.d("account refreshed ${username()}")
-            }, Timber::e)
         }
     }
 
-    fun getAccount(): Observable<Account> {
-        return mOauthervice.account()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext {
-                    sharedPreferences.edit {
-                        putBoolean(KEY_HSREPLAY_PREMIUM, it.is_premium ?: false)
-                        putString(KEY_HSREPLAY_BATTLETAG, it.battletag)
-                        putString(KEY_HSREPLAY_USERNAME, it.username)
-                    }
-                }
+    suspend fun claimToken(): Result<Unit> {
+        val str = "{\"token\": \"$legacyToken\"}"
+        return try {
+            mOauthervice.claimToken(RequestBody.create(MediaType.parse("application/json"), str)).await()
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            return Result.failure(e)
+        }
     }
 
-    fun claimToken(): CompletableSource? {
-        val str = "{\"token\": \"$mLegacyToken\"}"
-        return mOauthervice.claimToken(RequestBody.create(MediaType.parse("application/json"), str))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .ignoreElements()
+    suspend fun createLegacyToken(): Result<String> {
+        val tokenRequest = UploadTokenRequest()
+
+        return try {
+            Result.success(legacyService.createToken(tokenRequest).await().key!!)
+        } catch (e: Exception) {
+            return Result.failure(e)
+        }
     }
 
     fun battleTag() = sharedPreferences.getString(KEY_HSREPLAY_BATTLETAG, null)
     fun username() = sharedPreferences.getString(KEY_HSREPLAY_USERNAME, null)
     fun isPremium() = sharedPreferences.getBoolean(KEY_HSREPLAY_PREMIUM, false)
 
-    private fun legacyService(): LegacyService {
-        return mLegacyService
-    }
-
     fun token(): String? {
-        return mLegacyToken
+        return legacyToken
     }
 
-    fun createToken(): Observable<Lce<String>> {
-        val tokenRequest = TokenRequest()
-
-        return legacyService().createToken(tokenRequest)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map { token ->
-                    if (token.key == null) {
-                        throw RuntimeException("null key")
-                    }
-                    mLegacyToken = token.key
-                    sharedPreferences.edit {
-                        putString(KEY_HSREPLAY_LEGACY_TOKEN, token.key)
-                    }
-                    Lce.data<String>(mLegacyToken!!)
-                }.onErrorReturn({ Lce.error(it) })
-                .startWith(Lce.loading())
-    }
-
-    fun unlink() {
-        HsReplayInterceptor.unlink()
-        mLegacyToken = null
+    fun logout() {
+        HsReplayInterceptor.logout()
+        legacyToken = null
         sharedPreferences.edit {
             remove(KEY_HSREPLAY_LEGACY_TOKEN)
             remove(KEY_HSREPLAY_PREMIUM)
@@ -206,6 +206,45 @@ class HSReplay(val context: Context, val userAgent: String) {
         }
     }
 
+
+    suspend fun login(code: String): Result<Unit> = coroutineScope {
+        val tokenDeferred = async {
+            createLegacyToken()
+        }
+
+        val oauthResult = HsReplayInterceptor.login(code)
+        if (oauthResult.isFailure) {
+            return@coroutineScope oauthResult.map { Unit }
+        }
+        val tokenResult = tokenDeferred.await()
+        if (tokenResult.isFailure) {
+            HsReplayInterceptor.logout()
+            return@coroutineScope tokenResult.map { Unit }
+        }
+
+        val claimResult = claimToken()
+        if (claimResult.isFailure) {
+            HsReplayInterceptor.logout()
+            return@coroutineScope claimResult.map { Unit }
+        }
+
+        val accountResult = account()
+        accountResult.getOrNull()?.let {
+            sharedPreferences.edit {
+                legacyToken = tokenResult.getOrNull()!!
+
+                putString(KEY_HSREPLAY_LEGACY_TOKEN, legacyToken!!)
+
+                putBoolean(KEY_HSREPLAY_PREMIUM, it.is_premium ?: false)
+                putString(KEY_HSREPLAY_BATTLETAG, it.battletag)
+                putString(KEY_HSREPLAY_USERNAME, it.username)
+            }
+
+            return@coroutineScope Result.success(Unit)
+        }
+
+        return@coroutineScope accountResult.map { Unit }
+    }
 
 
     companion object {

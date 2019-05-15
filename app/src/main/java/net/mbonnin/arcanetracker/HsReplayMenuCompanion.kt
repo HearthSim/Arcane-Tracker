@@ -6,7 +6,6 @@ import android.view.View
 import android.view.View.GONE
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.hsreplay_menu_view.*
-import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.mbonnin.arcanetracker.hsreplay.HsReplayInterceptor
 import net.mbonnin.arcanetracker.ui.main.LoginCompanion
 import net.mbonnin.arcanetracker.ui.main.MainActivity
@@ -26,7 +25,7 @@ class HsReplayMenuCompanion(override val containerView: View): LayoutContainer {
                 Overlay.hide()
 
                 Settings.get(Settings.IS_PRE_HEARTHSIM_USER, false)
-                ArcaneTrackerApplication.get().hsReplay.unlink()
+                ArcaneTrackerApplication.get().hsReplay.logout()
 
                 val intent = Intent()
                 intent.setClass(containerView.context, MainActivity::class.java)

@@ -10,9 +10,8 @@ import net.mbonnin.arcanetracker.detector.RANK_UNKNOWN
 import net.mbonnin.arcanetracker.helper.DeckStringHelper
 import net.mbonnin.arcanetracker.helper.WhizbangHelper
 import net.mbonnin.arcanetracker.helper.getClassIndex
-import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.mbonnin.arcanetracker.hsreplay.model.Lce
-import net.mbonnin.arcanetracker.hsreplay.model.UploadRequest
+import net.mbonnin.arcanetracker.hsreplay.model.legacy.UploadRequest
 import net.mbonnin.arcanetracker.model.GameSummary
 import net.mbonnin.arcanetracker.parser.Game
 import net.mbonnin.arcanetracker.parser.GameLogic

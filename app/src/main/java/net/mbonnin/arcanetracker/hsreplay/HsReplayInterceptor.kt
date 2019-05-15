@@ -7,7 +7,6 @@ import kotlinx.coroutines.withContext
 import net.mbonnin.arcanetracker.Settings
 import net.mbonnin.arcanetracker.Utils
 import okhttp3.*
-import timber.log.Timber
 
 class HsReplayInterceptor : Interceptor {
 
@@ -33,13 +32,6 @@ class HsReplayInterceptor : Interceptor {
         }
     }
 
-    enum class Result {
-        SUCCESS,
-        ERROR_BODY,
-        ERROR_JSON,
-        ERROR_NETWORK,
-        ERROR_HTTP
-    }
 
     companion object {
         const val A = "pk_live_iKPWQuznmNf2BbBCxZa1VzmP"
@@ -53,11 +45,12 @@ class HsReplayInterceptor : Interceptor {
         private val lock = Object()
 
 
-        private fun storeToken(response: Response): Result {
+        private fun storeToken(response: Response): Result<Unit> {
             val tokenResponse = response.body()?.string()
             if (tokenResponse == null) {
-                Utils.reportNonFatal(Exception("Body Error"))
-                return Result.ERROR_BODY
+                val e = Exception("Body Error")
+                Utils.reportNonFatal(e)
+                return Result.failure(e)
             }
 
             try {
@@ -66,13 +59,13 @@ class HsReplayInterceptor : Interceptor {
                 refreshToken = map.get("refresh_token")
             } catch (e: Exception) {
                 Utils.reportNonFatal(e)
-                return Result.ERROR_JSON
+                return Result.failure(e)
             }
 
             Settings.set(Settings.HSREPLAY_OAUTH_ACCESS_TOKEN, accessToken!!)
             Settings.set(Settings.HSREPLAY_OAUTH_REFRESH_TOKEN, refreshToken!!)
 
-            return Result.SUCCESS
+            return Result.success(Unit)
         }
 
         /**
@@ -80,7 +73,7 @@ class HsReplayInterceptor : Interceptor {
          * exchange the code and remember it for future usage.
          * This will block, do not call from main thread
          */
-        suspend fun configure(code: String): Result = withContext(Dispatchers.IO) {
+        suspend fun login(code: String): Result<Unit> = withContext(Dispatchers.IO) {
             val client = OkHttpClient()
 
             val httpUrl = HttpUrl.parse("https://hsreplay.net/oauth2/token/")!!
@@ -104,26 +97,27 @@ class HsReplayInterceptor : Interceptor {
                 client.newCall(request).execute()
             } catch (e: Exception) {
                 Utils.reportNonFatal(e)
-                return@withContext Result.ERROR_NETWORK
+                return@withContext Result.failure<Unit>(e)
             }
 
             if (!response.isSuccessful) {
-                Utils.reportNonFatal(Exception("HTTP error ${response.code()}"))
-                return@withContext Result.ERROR_HTTP
+                val e = Exception("HTTP error ${response.code()}")
+                Utils.reportNonFatal(e)
+                return@withContext Result.failure<Unit>(e)
             }
 
             synchronized(lock) {
                 val r = storeToken(response)
-                if (r != Result.SUCCESS) {
+                if (r.isFailure) {
                     return@withContext r
                 }
                 lock.notifyAll()
             }
 
-            return@withContext Result.SUCCESS
+            return@withContext Result.success(Unit)
         }
 
-        fun unlink() {
+        fun logout() {
             accessToken = null
             refreshToken = null
 
@@ -157,7 +151,7 @@ class HsReplayInterceptor : Interceptor {
                 throw Exception("HTTP token refresh error ${response.code()}")
             }
 
-            if (storeToken(response) != Result.SUCCESS) {
+            if (storeToken(response).isFailure) {
                 throw Exception("Cannot store token")
             }
         }

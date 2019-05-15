@@ -20,9 +20,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.detector.ByteBufferImage
-import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.mbonnin.arcanetracker.hsreplay.model.Lce
-import net.mbonnin.arcanetracker.hsreplay.model.Token
+import net.mbonnin.arcanetracker.hsreplay.model.legacy.UploadToken
 import net.mbonnin.arcanetracker.ui.licenses.LicensesActivity
 import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
 import timber.log.Timber
@@ -333,7 +332,7 @@ class SettingsCompanion(internal var settingsView: View) {
     }
 
     private fun checkUserName() {
-        ArcaneTrackerApplication.get().hsReplay.user()
+        ArcaneTrackerApplication.get().hsReplay.uploadToken()
                 .subscribe { handleUserLce(it)}
     }
 
@@ -345,7 +344,7 @@ class SettingsCompanion(internal var settingsView: View) {
         var claimUrlLoading: Boolean = false
     }
 
-    private fun handleUserLce(lce: Lce<Token>) {
+    private fun handleUserLce(lce: Lce<UploadToken>) {
         if (lce.isLoading) {
             mHsReplayState.userNameLoading = true
         } else if (lce.data != null) {
@@ -405,7 +404,7 @@ class SettingsCompanion(internal var settingsView: View) {
             } else {
                 mHsReplayCompanion2!!.setText(Utils.getString(R.string.hsReplayEnable)) { v ->
                     ArcaneTrackerApplication.get().hsReplay
-                            .createToken()
+                            .createLegacyToken()
                             .subscribe { this.handleTokenLce(it) }
                 }
             }
@@ -416,7 +415,7 @@ class SettingsCompanion(internal var settingsView: View) {
 
                 FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("hsreplay_disable", null)
 
-                ArcaneTrackerApplication.get().hsReplay.unlink()
+                ArcaneTrackerApplication.get().hsReplay.logout()
                 updateHsReplay()
             }
         }
