@@ -100,7 +100,6 @@ class HSReplay(val context: Context, val userAgent: String) {
         }
 
         Timber.w("doUploadGame")
-        FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("hsreplay_upload", null)
 
         val authorization = "Token $legacyToken"
 
@@ -187,6 +186,7 @@ class HSReplay(val context: Context, val userAgent: String) {
         }
     }
 
+    // Not sure how different this is from username
     fun battleTag() = sharedPreferences.getString(KEY_HSREPLAY_BATTLETAG, null)
     fun username() = sharedPreferences.getString(KEY_HSREPLAY_USERNAME, null)
     fun isPremium() = sharedPreferences.getBoolean(KEY_HSREPLAY_PREMIUM, false)

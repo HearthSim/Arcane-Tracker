@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.os.Handler
 import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.Single
-import io.reactivex.functions.BiFunction
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.await
 import net.mbonnin.arcanetracker.detector.RANK_UNKNOWN
 import net.mbonnin.arcanetracker.helper.DeckStringHelper
 import net.mbonnin.arcanetracker.helper.WhizbangHelper
 import net.mbonnin.arcanetracker.helper.getClassIndex
-import net.mbonnin.arcanetracker.hsreplay.model.Lce
 import net.mbonnin.arcanetracker.hsreplay.model.legacy.UploadRequest
 import net.mbonnin.arcanetracker.model.GameSummary
 import net.mbonnin.arcanetracker.parser.Game
@@ -203,32 +203,36 @@ class GameLogicListener private constructor() : GameLogic.Listener {
             }
         }
 
-        val insertGameSingle = insertGame(game)
-
-        val hsReplaySingle = if (ArcaneTrackerApplication.get().hsReplay.token() != null) {
-            ArcaneTrackerApplication.get().hsReplay.uploadGame(uploadRequest, gameStr)
-        } else {
-            Single.just(Lce.data(null))
-        }
-
-        Single.zip(insertGameSingle, hsReplaySingle, BiFunction<InsertResult, Lce<out String?>, Unit>  { insertResult, lce ->
-            if (lce.error != null) {
-                Timber.d(lce.error)
-                Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplayError))
-            } else if (lce.data != null) {
-                summary.hsreplayUrl = lce.data
-                GameSummary.sync()
-
-                if (insertResult.success) {
-                    RDatabaseSingleton.instance.gameDao().update(insertResult.id, lce.data)
-                }
-
-                Timber.d("hsreplay upload success")
-                Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplaySuccess))
+        GlobalScope.launch {
+            val insertResult = try {
+                insertGame(game).await()
+            } catch (e: Exception) {
+                null
             }
-        })
-                .subscribeOn(Schedulers.io())
-                .subscribe()
+            if (ArcaneTrackerApplication.get().hsReplay.token() != null) {
+                FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("hsreplay_upload", null)
+                val result = ArcaneTrackerApplication.get().hsReplay.uploadGame(uploadRequest, gameStr)
+                result.fold(
+                        onSuccess = {
+                            summary.hsreplayUrl = it
+                            GameSummary.sync()
+
+                            if (insertResult?.success == true) {
+                                RDatabaseSingleton.instance.gameDao().update(insertResult.id, it)
+                            }
+
+                            Timber.d("hsreplay upload success")
+                            Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplaySuccess))
+                        },
+                        onFailure = {
+                            Timber.d(result.exceptionOrNull())
+                            Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplayError))
+
+                        }
+                )
+            }
+
+        }
     }
 
     companion object {

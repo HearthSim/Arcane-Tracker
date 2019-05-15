@@ -204,26 +204,14 @@
                 android:layout_weight="1"
                 android:text="HSReplay.net"
                 android:textSize="20sp"
-                android:textStyle="bold"
-                android:visibility="gone" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/hsReplayDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:visibility="gone" />
-
-            <include
-                android:id="@+id/hsReplayButton1"
-                layout="@layout/loadable_button_view"
-                android:visibility="gone" />
-
-            <include
-                android:id="@+id/hsReplayButton2"
-                layout="@layout/loadable_button_view"
-                android:visibility="gone" />
+                android:layout_marginTop="5dp" />
 
             <TextView
                 android:id="@+id/collectionTitle"

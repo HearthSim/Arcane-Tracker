@@ -2,7 +2,7 @@ object Versions {
     const val minSdkVersion = 19
     const val targetSdkVersion = 28
     const val compileSdkVersion = 28
-    const val kotlin = "1.3.30"
+    const val kotlin = "1.3.31"
     const val androidPlugin = "3.2.1"
     const val fabricPlugin = "1.28.1"
     const val playServicesPlugin = "4.2.0"
@@ -56,5 +56,6 @@ object Libs {
     const val kotlinhslog = "net.hearthsim:kotlin-hslog:1.0"
     const val flexbox = "com.google.android:flexbox:1.1.0"
     const val archPaging = "android.arch.paging:runtime:1.0.1"
-    const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.30.2"
+    const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1"
+    const val coroutinesRx2 = "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.2.1"
 }

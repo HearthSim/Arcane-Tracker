@@ -9,19 +9,15 @@ import android.os.Build
 import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
-import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.detector.ByteBufferImage
-import net.mbonnin.arcanetracker.hsreplay.model.Lce
-import net.mbonnin.arcanetracker.hsreplay.model.legacy.UploadToken
 import net.mbonnin.arcanetracker.ui.licenses.LicensesActivity
 import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
 import timber.log.Timber
@@ -32,10 +28,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class SettingsCompanion(internal var settingsView: View) {
-    private var mHsReplayCompanion1: LoadableButtonCompanion? = null
-    internal var mHsReplayState = HsReplayState()
     private var firstTime: Boolean = false
-    private var mHsReplayCompanion2: LoadableButtonCompanion? = null
 
     private val mSeekBarChangeListener = object : SeekBar.OnSeekBarChangeListener {
         override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -63,8 +56,6 @@ class SettingsCompanion(internal var settingsView: View) {
         }
         quitTimeoutExplanation.text = explanation
     }
-
-
 
     init {
         init()
@@ -283,18 +274,10 @@ class SettingsCompanion(internal var settingsView: View) {
             }
         })
 
-        val hsReplay1 = view.findViewById<View>(R.id.hsReplayButton1)
-        val hsReplay2 = view.findViewById<View>(R.id.hsReplayButton2)
-
-        mHsReplayCompanion1 = LoadableButtonCompanion(hsReplay1)
-        mHsReplayCompanion2 = LoadableButtonCompanion(hsReplay2)
-
-        mHsReplayState.token = ArcaneTrackerApplication.get().hsReplay.token()
-        if (mHsReplayState.token != null) {
-            checkUserName()
-        }
-        updateHsReplay()
-
+        val hsreplayDescription = view.findViewById<TextView>(R.id.hsReplayDescription)
+        val hsReplay = ArcaneTrackerApplication.get().hsReplay
+        val enabled = if (hsReplay.token() != null) context.getString(R.string.enabled) else context.getString(R.string.disabled)
+        hsreplayDescription.setText(context.getString(R.string.hsreplayDescription, enabled, hsReplay.username()))
         val licensesButton = view.findViewById<Button>(R.id.licenses)
         licensesButton.setOnClickListener { v ->
             ViewManager.get().removeView(settingsView)
@@ -329,141 +312,6 @@ class SettingsCompanion(internal var settingsView: View) {
         params.y = ViewManager.get().height / 4
 
         ViewManager.get().addModalView(view2, params)
-    }
-
-    private fun checkUserName() {
-        ArcaneTrackerApplication.get().hsReplay.uploadToken()
-                .subscribe { handleUserLce(it)}
-    }
-
-    internal class HsReplayState {
-        var token: String? = null
-        var tokenLoading: Boolean = false
-        var userName: String? = null
-        var userNameLoading: Boolean = false
-        var claimUrlLoading: Boolean = false
-    }
-
-    private fun handleUserLce(lce: Lce<UploadToken>) {
-        if (lce.isLoading) {
-            mHsReplayState.userNameLoading = true
-        } else if (lce.data != null) {
-            mHsReplayState.userNameLoading = false
-            if (lce.data.user != null && lce.data.user!!.username != null) {
-                mHsReplayState.userName = lce.data.user!!.username
-            }
-        } else if (lce.error != null) {
-            mHsReplayState.userNameLoading = false
-            Utils.reportNonFatal(Exception("HsReplay username error", lce.error))
-            Toast.makeText(settingsView.context, Utils.getString(R.string.hsReplayUsernameError), Toast.LENGTH_LONG).show()
-        }
-        updateHsReplay()
-    }
-
-    private fun handleTokenLce(lce: net.mbonnin.arcanetracker.hsreplay.model.Lce<String>) {
-        if (lce.isLoading) {
-            mHsReplayState.tokenLoading = true
-        } else if (lce.error != null) {
-            mHsReplayState.tokenLoading = false
-            Utils.reportNonFatal(Exception("HsReplay token error", lce.error))
-            Toast.makeText(settingsView.context, Utils.getString(R.string.hsReplayTokenError), Toast.LENGTH_LONG).show()
-        } else {
-            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("hsreplay_enable", null)
-
-            mHsReplayState.tokenLoading = false
-            mHsReplayState.token = lce.data
-        }
-        updateHsReplay()
-
-    }
-
-    private fun updateHsReplay() {
-
-        val hsReplayDescription = settingsView.findViewById<View>(R.id.hsReplayDescription) as TextView
-
-        /*
-         * state of the description
-         */
-        if (mHsReplayState.token == null) {
-            hsReplayDescription.text = Utils.getString(R.string.hsReplayExplanation)
-        } else {
-            if (mHsReplayState.userName == null) {
-                hsReplayDescription.text = Utils.getString(R.string.hsReplayLogin)
-            } else {
-                hsReplayDescription.text = Utils.getString(R.string.hsReplayLogedIn, mHsReplayState.userName as String)
-            }
-        }
-
-        /*
-         * state of the 2nd button
-         * we do this one first because this is the enable/disable one (most important goes last)
-         */
-        if (mHsReplayState.token == null) {
-            if (mHsReplayState.tokenLoading) {
-                mHsReplayCompanion2!!.setLoading()
-            } else {
-                mHsReplayCompanion2!!.setText(Utils.getString(R.string.hsReplayEnable)) { v ->
-                    ArcaneTrackerApplication.get().hsReplay
-                            .createLegacyToken()
-                            .subscribe { this.handleTokenLce(it) }
-                }
-            }
-        } else {
-            mHsReplayCompanion2!!.setText(Utils.getString(R.string.hsReplayDisable)) { v ->
-                mHsReplayState.userName = null
-                mHsReplayState.token = null
-
-                FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("hsreplay_disable", null)
-
-                ArcaneTrackerApplication.get().hsReplay.logout()
-                updateHsReplay()
-            }
-        }
-
-        /*
-         * state of the 1st button
-         */
-        if (mHsReplayState.token == null) {
-            mHsReplayCompanion1!!.view().visibility = GONE
-        } else {
-            mHsReplayCompanion1!!.view().visibility = GONE
-            if (mHsReplayState.userNameLoading || mHsReplayState.claimUrlLoading) {
-                mHsReplayCompanion1!!.setLoading()
-            } else if (mHsReplayState.userName != null) {
-                mHsReplayCompanion1!!.setText(Utils.getString(R.string.openInBrowser)) { v ->
-                    ViewManager.get().removeView(settingsView)
-
-                    val i = Intent(Intent.ACTION_VIEW)
-                    i.data = Uri.parse("https://hsreplay.net/games/mine/")
-                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    ArcaneTrackerApplication.context.startActivity(i)
-                }
-            } else {
-                mHsReplayCompanion1!!.setText(Utils.getString(R.string.hsReplayClaim)) { v ->
-                    ViewManager.get().removeView(settingsView)
-                }
-            }
-        }
-    }
-
-    private fun handleClaimUrlLce(lce: net.mbonnin.arcanetracker.hsreplay.model.Lce<String>) {
-        if (lce.isLoading) {
-            mHsReplayState.claimUrlLoading = true
-        } else if (lce.error != null) {
-            mHsReplayState.claimUrlLoading = false
-            Toast.makeText(ArcaneTrackerApplication.context, Utils.getString(R.string.hsReplayClaimFailed), Toast.LENGTH_LONG).show()
-            Utils.reportNonFatal(Exception("HSReplay claim url", lce.error))
-        } else if (lce.data != null) {
-            mHsReplayState.claimUrlLoading = false
-
-            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("hsreplay_claimurl_opened", null)
-
-            ViewManager.get().removeView(settingsView)
-
-            Utils.openLink(lce.data)
-        }
-
-        updateHsReplay()
     }
 
     companion object {
