@@ -125,6 +125,7 @@ dependencies {
     implementation Libs.retrofitRx2
     implementation Libs.retrofitCoroutines
     implementation Libs.gson
+    implementation Libs.moshi
 
     implementation Libs.play_auth
     implementation Libs.play_firebase_core

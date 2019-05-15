@@ -94,7 +94,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         val bundle = Bundle()
         bundle.putString(EventParams.GAME_TYPE.value, currentGame!!.gameType)
         bundle.putString(EventParams.FORMAT_TYPE.value, currentGame!!.formatType)
-        bundle.putString(EventParams.HSREPLAY.value, (HSReplay.get().token() != null).toString())
+        bundle.putString(EventParams.HSREPLAY.value, (ArcaneTrackerApplication.get().hsReplay.token() != null).toString())
         FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("game_ended", bundle)
     }
 
@@ -206,8 +206,8 @@ class GameLogicListener private constructor() : GameLogic.Listener {
 
         val insertGameSingle = insertGame(game)
 
-        val hsReplaySingle = if (HSReplay.get().token() != null) {
-            HSReplay.get().uploadGame(uploadRequest, gameStr)
+        val hsReplaySingle = if (ArcaneTrackerApplication.get().hsReplay.token() != null) {
+            ArcaneTrackerApplication.get().hsReplay.uploadGame(uploadRequest, gameStr)
         } else {
             Single.just(Lce.data(null))
         }

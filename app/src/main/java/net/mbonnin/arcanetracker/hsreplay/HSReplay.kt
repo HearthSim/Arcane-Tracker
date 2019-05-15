@@ -22,7 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
 import java.io.IOException
 
-class HSReplay {
+class HSReplay(val context: Context, val userAgent: String) {
     private val mS3Client: OkHttpClient
     private var mLegacyToken: String? = null
     private var mOauthervice: HsReplayService
@@ -95,7 +95,7 @@ class HSReplay {
 
     init {
         val legacyClient = OkHttpClient.Builder()
-                .addInterceptor(LegacyInterceptor())
+                .addInterceptor(LegacyInterceptor(userAgent))
                 .build()
 
         mLegacyService = Retrofit.Builder()
@@ -132,7 +132,7 @@ class HSReplay {
             val ignored = getAccount()
                     .flatMapCompletable {
                         if (Settings.get(Settings.NEED_TOKEN_CLAIM, false)) {
-                            HSReplay.get().claimToken()
+                            claimToken()
                         } else {
                             Completable.complete()
                         }
@@ -213,19 +213,5 @@ class HSReplay {
         const val KEY_HSREPLAY_PREMIUM = "HSREPLAY_PREMIUM"
         const val KEY_HSREPLAY_BATTLETAG = "HSREPLAY_BATTLETAG"
         const val KEY_HSREPLAY_USERNAME = "HSREPLAY_USERNAME"
-
-        @SuppressLint("StaticFieldLeak")
-        private var sHSReplay: HSReplay? = null
-        var userAgent = "HDT"
-        @SuppressLint("StaticFieldLeak")
-        lateinit var context: Context
-
-        fun get(): HSReplay {
-            if (sHSReplay == null) {
-                sHSReplay = HSReplay()
-            }
-
-            return sHSReplay!!
-        }
     }
 }

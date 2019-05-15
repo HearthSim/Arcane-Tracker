@@ -30,6 +30,7 @@ import java.io.File
 import java.util.*
 
 class ArcaneTrackerApplication : MultiDexApplication() {
+    lateinit var hsReplay: HSReplay
     lateinit var picassoRamCache: LruCache
     lateinit var picassoHddCache: Cache
 
@@ -181,12 +182,10 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         val achievementLogReader = LogReader("Achievements.log", true)
         achievementLogReader.start(AchievementsParser())
 
-        HSReplay.userAgent = (ArcaneTrackerApplication.context.getPackageName() + "/" + BuildConfig.VERSION_NAME
+        val userAgent = (ArcaneTrackerApplication.context.getPackageName() + "/" + BuildConfig.VERSION_NAME
                 + "; Android " + Build.VERSION.RELEASE + ";")
-        HSReplay.context = this
-        if (HSReplay.get().token() == null) {
-            HSReplay.get().createToken().subscribe()
-        }
+
+        hsReplay = HSReplay(this, userAgent)
 
         MainService.start()
 

@@ -290,7 +290,7 @@ class SettingsCompanion(internal var settingsView: View) {
         mHsReplayCompanion1 = LoadableButtonCompanion(hsReplay1)
         mHsReplayCompanion2 = LoadableButtonCompanion(hsReplay2)
 
-        mHsReplayState.token = HSReplay.get().token()
+        mHsReplayState.token = ArcaneTrackerApplication.get().hsReplay.token()
         if (mHsReplayState.token != null) {
             checkUserName()
         }
@@ -333,7 +333,7 @@ class SettingsCompanion(internal var settingsView: View) {
     }
 
     private fun checkUserName() {
-        HSReplay.get().user()
+        ArcaneTrackerApplication.get().hsReplay.user()
                 .subscribe { handleUserLce(it)}
     }
 
@@ -404,9 +404,9 @@ class SettingsCompanion(internal var settingsView: View) {
                 mHsReplayCompanion2!!.setLoading()
             } else {
                 mHsReplayCompanion2!!.setText(Utils.getString(R.string.hsReplayEnable)) { v ->
-                    HSReplay.get()
+                    ArcaneTrackerApplication.get().hsReplay
                             .createToken()
-                            .subscribe({ this.handleTokenLce(it) })
+                            .subscribe { this.handleTokenLce(it) }
                 }
             }
         } else {
@@ -416,7 +416,7 @@ class SettingsCompanion(internal var settingsView: View) {
 
                 FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("hsreplay_disable", null)
 
-                HSReplay.get().unlink()
+                ArcaneTrackerApplication.get().hsReplay.unlink()
                 updateHsReplay()
             }
         }

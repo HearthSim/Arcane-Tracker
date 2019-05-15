@@ -1,6 +1,5 @@
 package net.mbonnin.arcanetracker.hsreplay
 
-import com.google.gson.JsonParser
 import com.squareup.moshi.Moshi
 import io.fabric.sdk.android.services.network.HttpRequest.HEADER_AUTHORIZATION
 import kotlinx.coroutines.Dispatchers

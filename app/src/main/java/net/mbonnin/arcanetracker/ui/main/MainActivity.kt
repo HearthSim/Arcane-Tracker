@@ -37,8 +37,8 @@ import timber.log.Timber
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
+    private var job: Job? = null
     lateinit var container: FrameLayout
-    val disposable = CompositeDisposable()
 
     var state = State(true, false, false)
 
@@ -77,7 +77,9 @@ class MainActivity : AppCompatActivity() {
             val code = Uri.parse(url).getQueryParameter("code")
             if (code != null) {
                 updateState(state.copy(needLogin = true, loginLoading = true))
-                val job = GlobalScope.launch(Dispatchers.Main) {
+
+                job?.cancel()
+                job = GlobalScope.launch(Dispatchers.Main) {
                     val deferred = async {
                         HsReplayInterceptor.configure(code)
                     }
@@ -88,24 +90,21 @@ class MainActivity : AppCompatActivity() {
                         return@launch
                     }
 
+                    ArcaneTrackerApplication.get().hsReplay.getAccount()
+                    ArcaneTrackerApplication.get().hsReplay.claimToken()
+                    updateState(state.copy(loginLoading = false, needLogin = false))
                 }
-                val d = Completable.fromAction {
 
-                }.andThen(HSReplay.get().getAccount())
-                        .flatMapCompletable { HSReplay.get().claimToken() }
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
-                            updateState(state.copy(loginLoading = false, needLogin = false))
-                        }, {
-                            Timber.e(it)
-                            Utils.reportNonFatal(Exception("cannot exchange code", it))
-                        })
-                disposable.add(d)
                 return
             }
         }
         updateState(state)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        job?.cancel()
     }
 
     fun updateState(newState: State) {
