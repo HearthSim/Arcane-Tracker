@@ -224,7 +224,6 @@
     <string name="exploreDecks">デッキを探す</string>
     <string name="premium">プレミアム</string>
     <string name="signOut">サインアウト</string>
-    <string name="permissionExplanation">Arcane Trackerは、ゲームの監視とオーバーレイを表示するためにストレージとオーバーレイの許可を必要とします。\nArcane Trackerはハースストーンを起動し、あなたと対戦相手がプレイするカードをバックグラウンドで監視します。\nオーバーレイには、プレイされた内容とデッキに残っているカードが表示されます。</string>
     <string name="signIn">HSReplay.netでサインイン</string>
     <string name="allowPermissions">権限を許可する</string>
     <string name="games">ゲーム履歴</string>

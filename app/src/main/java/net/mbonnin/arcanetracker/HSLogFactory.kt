@@ -24,72 +24,32 @@ object HSLogFactory {
     fun createHSLog(console: Console, cardJson: CardJson): HSLog {
         val hsLog = HSLog(console, cardJson)
 
-        hsLog.setListener(HSLogListener {hsLog.currentOrFinishedGame()})
+        hsLog.setListener(HSLogListener { hsLog.currentOrFinishedGame() })
 
         val handler = Handler()
-        /*
-         * we need to read the whole loading screen if we start the Tracker while in the 'tournament' play screen
-         * or arena screen already (and not in main menu)
-         */
-        val loadingScreenLogReader = LogReader("LoadingScreen.log", false)
-        loadingScreenLogReader.start(object : LogReader.LineConsumer {
-            var previousDataRead = false
-            override fun onLine(rawLine: String) {
-                handler.post {
-                    hsLog.processLoadingScreen(rawLine, previousDataRead)
-                }
+        LogReader("LoadingScreen.log").start { rawLine, isOldData ->
+            handler.post {
+                hsLog.processLoadingScreen(rawLine, isOldData)
             }
+        }
 
-            override fun onPreviousDataRead() {
-                previousDataRead = true
+        LogReader("Power.log").start { rawLine, isOldData ->
+            handler.post {
+                hsLog.processPower(rawLine, isOldData)
             }
-        })
+        }
 
-        /*
-         * Power.log, we just want the incremental changes
-         */
-        val powerLogReader = LogReader("Power.log", true)
-        powerLogReader.start(object : LogReader.LineConsumer {
-            var previousDataRead = false
-            override fun onLine(rawLine: String) {
-                handler.post {
-                    hsLog.processPower(rawLine, previousDataRead)
-                }
+        LogReader("Achievements.log").start { rawLine, isOldData ->
+            handler.post {
+                hsLog.processAchievement(rawLine, isOldData)
             }
+        }
 
-            override fun onPreviousDataRead() {
-                previousDataRead = true
+        LogReader("Decks.log").start { rawLine, isOldData ->
+            handler.post {
+                hsLog.processDecks(rawLine, isOldData)
             }
-        })
-
-
-        val achievementLogReader = LogReader("Achievements.log", true)
-        achievementLogReader.start(object : LogReader.LineConsumer {
-            var previousDataRead = false
-            override fun onLine(rawLine: String) {
-                handler.post {
-                    hsLog.processAchievement(rawLine, previousDataRead)
-                }
-            }
-
-            override fun onPreviousDataRead() {
-                previousDataRead = true
-            }
-        })
-
-        val decksLogReader = LogReader("Decks.log", false)
-        decksLogReader.start(object : LogReader.LineConsumer {
-            var previousDataRead = false
-            override fun onLine(rawLine: String) {
-                handler.post {
-                    hsLog.processDecks(rawLine, previousDataRead)
-                }
-            }
-
-            override fun onPreviousDataRead() {
-                previousDataRead = true
-            }
-        })
+        }
 
         return hsLog
     }

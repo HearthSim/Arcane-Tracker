@@ -222,7 +222,6 @@
     <string name="blurb">Deck- und Statistikenverlauf für Hearthstone</string>
     <string name="step1">Schritt 1/2</string>
     <string name="step2">Schritt 2/2</string>
-    <string name="permissionExplanation">Arcane Tracker benötigt Speicher- und Einblendeberechtigungen um das Spiel zu überwachen und die eigene Oberfläche anzuzeigen.\n\nArcane Tracker wird im Anschluss Hearthstone starten und die Karten, die du und dein Gegenspieler spielen, im Hintergrund aufzeichnen.\nDie Oberfläche wird Gespieltes und die restlichen Karten in deinem Deck über dem Spiel anzeigen.</string>
     <string name="history_delete_confirmation">Bist du sicher, dass du deinen Verlauf löschen möchtest?</string>
     <string name="delete_everything">Alles löschen</string>
     <string name="gameCount">%d gespielte Spiele</string>

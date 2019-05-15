@@ -93,7 +93,7 @@ class PackCardView @JvmOverloads constructor(context: Context, attrs: AttributeS
                 y = 0
                 x = (bitmap!!.width - croppedWidth)/2
             }
-            val croppedBitmap = Bitmap.createBitmap(bitmap, x, y, croppedWidth, croppedHeight)
+            val croppedBitmap = Bitmap.createBitmap(bitmap!!, x, y, croppedWidth, croppedHeight)
             val bitmapDrawable = RoundedBitmapDrawableFactory.create(context.resources, croppedBitmap)
             bitmapDrawable.cornerRadius = roundRectRadius
             bitmapDrawable.setAntiAlias(true)

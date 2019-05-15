@@ -55,7 +55,7 @@ class StartScreenCaptureActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == MainActivity.REQUEST_CODE_MEDIAPROJECTION) {
             if (resultCode == Activity.RESULT_OK) {
-                val projection = mProjectionManager!!.getMediaProjection(resultCode, data)
+                val projection = mProjectionManager!!.getMediaProjection(resultCode, data!!)
                 ScreenCaptureHolder.mediaProjectionCreated(projection)
                 finishAndRemoveTaskIfPossible()
             } else {

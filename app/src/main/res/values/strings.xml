@@ -228,7 +228,7 @@
     <string name="exploreDecks">Explore Decks</string>
     <string name="premium">Premium</string>
     <string name="signOut">Sign out</string>
-    <string name="permissionExplanation">Arcane Tracker needs storage and overlay permissions in order to monitor the game and display its overlay.  Arcane Tracker will then start Hearthstone and monitor the cards you and your opponent play in the background. The overlay will show what has been played as well as the cards remaining in your deck on top of the Game.</string>
+    <string name="permissionExplanation">Arcane Tracker needs overlay permissions in order to display its overlay.  Arcane Tracker will then start Hearthstone and monitor the cards you and your opponent play in the background. The overlay will show what has been played as well as the cards remaining in your deck on top of the Game.</string>
     <string name="signIn">Sign in with HSReplay.net</string>
     <string name="allowPermissions">Allow Permissions</string>
     <string name="games">Games</string>
@@ -243,4 +243,5 @@
     <string name="enabled">enabled</string>
     <string name="disabled">disabled</string>
     <string name="hsreplayDescription">Replays upload: %1$s\nReplays claimed by: %2$s</string>
+    <string name="cannot_write_log_config">Cannot configure Hearthstone logs</string>
 </resources>

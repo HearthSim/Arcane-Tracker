@@ -222,7 +222,7 @@
     <string name="exploreDecks">Decks du moment</string>
     <string name="premium">Premium</string>
     <string name="signOut">Déconnexion</string>
-    <string name="permissionExplanation">Arcane tracker a besoin des permissions d\'overlay et d\'accès au stockage. Ces permissions sont nécessaires pour pouvoir lire les logs du jeu et afficher l\'overlay. L\'overlay vous permet de voir les cartes que vous avez jouées en temps réel.</string>
+    <string name="permissionExplanation">Arcane tracker a besoin des permissions d\'overlay. Ces permissions sont nécessaires pour afficher l\'overlay qui affiche les cartes jouées en temps réel.</string>
     <string name="signIn">Connexion à HSReplay.net</string>
     <string name="allowPermissions">Authoriser</string>
     <string name="games">Parties</string>

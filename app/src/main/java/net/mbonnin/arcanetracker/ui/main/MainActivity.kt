@@ -32,7 +32,6 @@ import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.extension.finishAndRemoveTaskIfPossible
 import net.mbonnin.arcanetracker.ui.overlay.Overlay
 import timber.log.Timber
-import java.io.File
 
 class MainActivity : AppCompatActivity() {
     private var job: Job? = null
@@ -73,7 +72,6 @@ class MainActivity : AppCompatActivity() {
             val code = Uri.parse(url).getQueryParameter("code")
             if (code != null) {
                 updateState(state.copy(needLogin = true, loginLoading = true))
-
                 job?.cancel()
                 job = GlobalScope.launch(Dispatchers.Main) {
                     val result = ArcaneTrackerApplication.get().hsReplay.login(code)
@@ -135,7 +133,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun hasAllPermissions(): Boolean {
-        var has = checkCallingOrSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && checkCallingOrSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        var has = true
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             has = has and canReallyDrawOverlays()
@@ -178,10 +176,7 @@ class MainActivity : AppCompatActivity() {
         val context = ContextThemeWrapper(this, R.style.AppThemeLight)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkCallingOrSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || checkCallingOrSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_CODE_PERMISSIONS)
-                return
-            } else if (!canReallyDrawOverlays()) {
+            if (!canReallyDrawOverlays()) {
                 try {
                     val intent2 = Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + packageName))
                     startActivityForResult(intent2, REQUEST_CODE_GET_OVERLAY_PERMISSIONS)
@@ -228,20 +223,29 @@ class MainActivity : AppCompatActivity() {
         doLaunchGame()
     }
 
+    private fun writeLogConfig() {
+        val logConfig = resources.openRawResource(R.raw.log_config).bufferedReader().use { it.readText() }
+        val outputStream = contentResolver.openOutputStream(Uri.parse("content://com.blizzard.wtcg.hearthstone.exportedcontentprovider/log.config"))
+        if (outputStream == null) {
+            Snackbar.make(container, getString(R.string.cannot_write_log_config), Snackbar.LENGTH_LONG).show()
+            Utils.reportNonFatal(Exception("cannot write log.config"))
+        } else {
+            Timber.d("Wrote log.config from the ContentProvider")
+            outputStream.use {
+                val writer = it.writer()
+                writer.write(logConfig)
+                writer.flush()
+                writer.close()
+            }
+        }
+    }
+
     private fun doLaunchGame() {
         val hsIntent = packageManager.getLaunchIntentForPackage(HEARTHSTONE_PACKAGE_ID)
         if (hsIntent != null) {
             Settings.set(Settings.SHOW_NEXT_TIME, false)
 
-            try {
-                resources.openRawResource(R.raw.log_config).bufferedReader().use {
-                    val logConfig = it.readText()
-                    File(Utils.hsExternalDir + "log.config").writeText(logConfig)
-                }
-            } catch (e: Exception) {
-                Snackbar.make(container, getString(R.string.cannot_locate_heathstone_install), Snackbar.LENGTH_LONG).show()
-                Utils.reportNonFatal(Exception("cannot locate hearthstone install directory", e))
-            }
+            writeLogConfig()
 
             try {
                 packageManager.getPackageInfo(HEARTHSTONE_PACKAGE_ID, 0)?.let {
