@@ -58,4 +58,5 @@ object Libs {
     const val archPaging = "android.arch.paging:runtime:1.0.1"
     const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1"
     const val coroutinesRx2 = "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.2.1"
+    const val coroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1"
 }

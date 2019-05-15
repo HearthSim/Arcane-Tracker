@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.Single
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.await
@@ -203,7 +204,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
             }
         }
 
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.Main) {
             val insertResult = try {
                 insertGame(game).await()
             } catch (e: Exception) {
@@ -227,7 +228,6 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                         onFailure = {
                             Timber.d(result.exceptionOrNull())
                             Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplayError))
-
                         }
                 )
             }

@@ -3,11 +3,9 @@ package net.mbonnin.arcanetracker.hsreplay
 import android.content.Context
 import android.preference.PreferenceManager
 import androidx.core.content.edit
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.*
-import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.hsreplay.model.Account
 import net.mbonnin.arcanetracker.hsreplay.model.legacy.UploadRequest
@@ -165,14 +163,21 @@ class HSReplay(val context: Context, val userAgent: String) {
         }
     }
 
-    suspend fun claimToken(): Result<Unit> {
+    private suspend fun claimToken(legacyToken: String): Result<Unit> = coroutineScope {
         val str = "{\"token\": \"$legacyToken\"}"
-        return try {
-            mOauthervice.claimToken(RequestBody.create(MediaType.parse("application/json"), str)).await()
+        try {
+            launch(Dispatchers.IO) {
+                // The coroutines extensions for retrofit will fail on an empty body
+                // https://github.com/JakeWharton/retrofit2-kotlin-coroutines-adapter/issues/5
+                val response = mOauthervice.claimToken(RequestBody.create(MediaType.parse("application/json"), str)).execute()
+                if (!response.isSuccessful) {
+                    throw Exception("Cannot claim token: ${response.code()}")
+                }
+            }
 
             Result.success(Unit)
         } catch (e: Exception) {
-            return Result.failure(e)
+            Result.failure<Unit>(e)
         }
     }
 
@@ -222,14 +227,18 @@ class HSReplay(val context: Context, val userAgent: String) {
             return@coroutineScope tokenResult.map { Unit }
         }
 
-        val claimResult = claimToken()
+        val claimResult = claimToken(tokenResult.getOrNull()!!)
         if (claimResult.isFailure) {
             HsReplayInterceptor.logout()
             return@coroutineScope claimResult.map { Unit }
         }
 
         val accountResult = account()
-        accountResult.getOrNull()?.let {
+        if (accountResult.isFailure) {
+            HsReplayInterceptor.logout()
+            return@coroutineScope accountResult.map { Unit }
+        }
+        accountResult.getOrNull()!!.let {
             sharedPreferences.edit {
                 legacyToken = tokenResult.getOrNull()!!
 
@@ -239,11 +248,8 @@ class HSReplay(val context: Context, val userAgent: String) {
                 putString(KEY_HSREPLAY_BATTLETAG, it.battletag)
                 putString(KEY_HSREPLAY_USERNAME, it.username)
             }
-
-            return@coroutineScope Result.success(Unit)
         }
-
-        return@coroutineScope accountResult.map { Unit }
+        return@coroutineScope Result.success(Unit)
     }
 
 

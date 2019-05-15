@@ -5,7 +5,6 @@ import io.fabric.sdk.android.services.network.HttpRequest.HEADER_AUTHORIZATION
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.mbonnin.arcanetracker.Settings
-import net.mbonnin.arcanetracker.Utils
 import okhttp3.*
 
 class HsReplayInterceptor : Interceptor {
@@ -49,7 +48,6 @@ class HsReplayInterceptor : Interceptor {
             val tokenResponse = response.body()?.string()
             if (tokenResponse == null) {
                 val e = Exception("Body Error")
-                Utils.reportNonFatal(e)
                 return Result.failure(e)
             }
 
@@ -58,7 +56,6 @@ class HsReplayInterceptor : Interceptor {
                 accessToken = map.get("access_token")
                 refreshToken = map.get("refresh_token")
             } catch (e: Exception) {
-                Utils.reportNonFatal(e)
                 return Result.failure(e)
             }
 
@@ -96,13 +93,11 @@ class HsReplayInterceptor : Interceptor {
             val response = try {
                 client.newCall(request).execute()
             } catch (e: Exception) {
-                Utils.reportNonFatal(e)
                 return@withContext Result.failure<Unit>(e)
             }
 
             if (!response.isSuccessful) {
                 val e = Exception("HTTP error ${response.code()}")
-                Utils.reportNonFatal(e)
                 return@withContext Result.failure<Unit>(e)
             }
 

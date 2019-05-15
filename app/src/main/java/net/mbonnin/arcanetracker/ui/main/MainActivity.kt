@@ -20,7 +20,10 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.iid.FirebaseInstanceId
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Settings
@@ -79,6 +82,7 @@ class MainActivity : AppCompatActivity() {
 
                     result.fold(
                             onFailure = {
+                                Utils.reportNonFatal(it)
                                 Toast.makeText(this@MainActivity, it.message, Toast.LENGTH_LONG).show()
                                 updateState(state.copy(needLogin = true, loginLoading = false))
                             },
