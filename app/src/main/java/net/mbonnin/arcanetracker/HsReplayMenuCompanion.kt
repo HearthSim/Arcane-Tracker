@@ -7,14 +7,14 @@ import android.view.View.GONE
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.hsreplay_menu_view.*
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
-import net.mbonnin.arcanetracker.hsreplay.OauthInterceptor
+import net.mbonnin.arcanetracker.hsreplay.HsReplayInterceptor
 import net.mbonnin.arcanetracker.ui.main.LoginCompanion
 import net.mbonnin.arcanetracker.ui.main.MainActivity
 import net.mbonnin.arcanetracker.ui.overlay.Overlay
 
 class HsReplayMenuCompanion(override val containerView: View): LayoutContainer {
     init {
-        val isSignedIn = OauthInterceptor.refreshToken != null
+        val isSignedIn = HsReplayInterceptor.refreshToken != null
 
         if (isSignedIn) {
             battleTag.setText(HSReplay.get().username())

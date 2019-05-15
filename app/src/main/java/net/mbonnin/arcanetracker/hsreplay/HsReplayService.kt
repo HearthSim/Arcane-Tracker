@@ -9,7 +9,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 
 
-interface OauthService {
+interface HsReplayService {
 
     @POST("account/claim_token/")
     fun claimToken(@Body tokenBody: RequestBody): Observable<retrofit2.Response<Token>>

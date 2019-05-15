@@ -29,7 +29,7 @@ import net.mbonnin.arcanetracker.Settings
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.extension.finishAndRemoveTaskIfPossible
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
-import net.mbonnin.arcanetracker.hsreplay.OauthInterceptor
+import net.mbonnin.arcanetracker.hsreplay.HsReplayInterceptor
 import net.mbonnin.arcanetracker.ui.overlay.Overlay
 import timber.log.Timber
 import java.io.File
@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
 
         val mandatoryLogin = !Settings.get(Settings.IS_PRE_HEARTHSIM_USER, false)
 
-        val needLogin = OauthInterceptor.refreshToken == null && mandatoryLogin
+        val needLogin = HsReplayInterceptor.refreshToken == null && mandatoryLogin
 
         state = state.copy(showNextTime = Settings.get(Settings.SHOW_NEXT_TIME, true),
                 needLogin = needLogin)
@@ -71,12 +71,12 @@ class MainActivity : AppCompatActivity() {
 
     fun handleIntent(intent: Intent?) {
         val url = intent?.data?.toString()
-        if (url != null && url.startsWith(OauthInterceptor.CALLBACK_URL)) {
+        if (url != null && url.startsWith(HsReplayInterceptor.CALLBACK_URL)) {
             val code = Uri.parse(url).getQueryParameter("code")
             if (code != null) {
                 updateState(state.copy(needLogin = true, loginLoading = true))
                 val d = Completable.fromAction {
-                    OauthInterceptor.exchangeCode(code)
+                    HsReplayInterceptor.configure(code)
                 }.andThen(HSReplay.get().getAccount())
                         .flatMapCompletable { HSReplay.get().claimToken() }
                         .subscribeOn(Schedulers.io())

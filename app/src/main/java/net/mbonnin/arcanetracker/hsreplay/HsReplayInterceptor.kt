@@ -7,7 +7,7 @@ import net.mbonnin.arcanetracker.Utils
 import okhttp3.*
 import timber.log.Timber
 
-class OauthInterceptor : Interceptor {
+class HsReplayInterceptor : Interceptor {
 
     @Synchronized
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -40,9 +40,15 @@ class OauthInterceptor : Interceptor {
         private var accessToken: String? = Settings.getString(Settings.HSREPLAY_OAUTH_ACCESS_TOKEN, null)
         var refreshToken: String? = Settings.getString(Settings.HSREPLAY_OAUTH_REFRESH_TOKEN, null)
 
-        private val lock = java.lang.Object()
+        private val lock = Object()
 
-        fun exchangeCode(code: String) {
+
+        enum class Result {
+            SUCCESS,
+            ERROR
+        }
+
+        fun configure(code: String) {
             val client = OkHttpClient()
 
             val httpUrl = HttpUrl.parse("https://hsreplay.net/oauth2/token/")!!

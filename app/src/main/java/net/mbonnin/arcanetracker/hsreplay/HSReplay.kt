@@ -25,10 +25,10 @@ import java.io.IOException
 class HSReplay {
     private val mS3Client: OkHttpClient
     private var mLegacyToken: String? = null
-    private var mOauthervice: OauthService
+    private var mOauthervice: HsReplayService
     private val mLegacyService: LegacyService
 
-    fun user(): Observable<Lce<Token>> = legacyService().getToken(mLegacyToken)
+    fun user(): Observable<Lce<Token>> = legacyService().getToken(mLegacyToken!!)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .map<Lce<Token>> { Lce.data(it) }
@@ -55,7 +55,9 @@ class HSReplay {
         Timber.w("doUploadGame")
         FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("hsreplay_upload", null)
 
-        return legacyService().createUpload("https://upload.hsreplay.net/api/v1/replay/upload/request", uploadRequest)
+        val authorization = "Token $mLegacyToken"
+
+        return legacyService().createUpload("https://upload.hsreplay.net/api/v1/replay/upload/request", uploadRequest, authorization)
                 .firstOrError()
                 .map {
                     Timber.w("url is ${it.url}")
@@ -91,22 +93,6 @@ class HSReplay {
         }
     }
 
-    inner class LegacyInterceptor : Interceptor {
-        override fun intercept(chain: Interceptor.Chain): Response {
-            var request = chain.request()
-
-            val requestBuilder = request.newBuilder()
-            requestBuilder.addHeader("X-Api-Key", "8b27e53b-0256-4ff1-b134-f531009c05a3")
-            requestBuilder.addHeader("User-Agent", HSReplay.userAgent)
-            if (mLegacyToken != null) {
-                requestBuilder.addHeader("Authorization", "Token " + mLegacyToken!!)
-            }
-            request = requestBuilder.build()
-
-            return chain.proceed(request)
-        }
-    }
-
     init {
         val legacyClient = OkHttpClient.Builder()
                 .addInterceptor(LegacyInterceptor())
@@ -121,7 +107,7 @@ class HSReplay {
                 .create(LegacyService::class.java)
 
         val oauthOkHttpClient = OkHttpClient.Builder()
-                .addInterceptor(OauthInterceptor())
+                .addInterceptor(HsReplayInterceptor())
                 .build()
 
         mOauthervice = Retrofit.Builder()
@@ -130,7 +116,7 @@ class HSReplay {
                 .addConverterFactory(GsonConverterFactory.create(Gson()))
                 .client(oauthOkHttpClient)
                 .build()
-                .create(OauthService::class.java)
+                .create(HsReplayService::class.java)
 
 
         mS3Client = OkHttpClient.Builder()
@@ -140,7 +126,7 @@ class HSReplay {
         mLegacyToken = sharedPreferences.getString(KEY_HSREPLAY_LEGACY_TOKEN, null)
         Timber.w("init token=$mLegacyToken")
 
-        if (OauthInterceptor.refreshToken != null) {
+        if (HsReplayInterceptor.refreshToken != null) {
             // if the user is a previous user of the app and he is already signed up
             // or just to refresh values
             val ignored = getAccount()
@@ -210,7 +196,7 @@ class HSReplay {
     }
 
     fun unlink() {
-        OauthInterceptor.unlink()
+        HsReplayInterceptor.unlink()
         mLegacyToken = null
         sharedPreferences.edit {
             remove(KEY_HSREPLAY_LEGACY_TOKEN)

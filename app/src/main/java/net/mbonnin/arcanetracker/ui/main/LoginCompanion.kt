@@ -5,7 +5,7 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.login_view.*
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.helper.RandomHelper
-import net.mbonnin.arcanetracker.hsreplay.OauthInterceptor
+import net.mbonnin.arcanetracker.hsreplay.HsReplayInterceptor
 import okhttp3.HttpUrl
 
 class LoginCompanion(override val containerView: View) : LayoutContainer {
@@ -32,11 +32,11 @@ class LoginCompanion(override val containerView: View) : LayoutContainer {
 
     companion object {
         fun openHsReplayOauth() {
-            val url = HttpUrl.parse(OauthInterceptor.AUTHORIZE_URL)!!
+            val url = HttpUrl.parse(HsReplayInterceptor.AUTHORIZE_URL)!!
                     .newBuilder()
                     .addQueryParameter("response_type", "code")
-                    .addQueryParameter("client_id", OauthInterceptor.A)
-                    .addQueryParameter("redirect_uri", OauthInterceptor.CALLBACK_URL)
+                    .addQueryParameter("client_id", HsReplayInterceptor.A)
+                    .addQueryParameter("redirect_uri", HsReplayInterceptor.CALLBACK_URL)
                     .addQueryParameter("scope", "fullaccess")
                     .addQueryParameter("state", RandomHelper.random(16))
             Utils.openLink(url.toString())
