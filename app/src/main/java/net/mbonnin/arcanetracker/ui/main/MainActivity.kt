@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.common.ConnectionResult
@@ -23,6 +24,7 @@ import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.*
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Settings
@@ -41,8 +43,8 @@ class MainActivity : AppCompatActivity() {
     var state = State(true, false, false)
 
     data class State(val needLogin: Boolean,
-                val loginLoading: Boolean,
-                val showNextTime: Boolean)
+                     val loginLoading: Boolean,
+                     val showNextTime: Boolean)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,18 +77,29 @@ class MainActivity : AppCompatActivity() {
             val code = Uri.parse(url).getQueryParameter("code")
             if (code != null) {
                 updateState(state.copy(needLogin = true, loginLoading = true))
+                val job = GlobalScope.launch(Dispatchers.Main) {
+                    val deferred = async {
+                        HsReplayInterceptor.configure(code)
+                    }
+                    val r = deferred.await()
+                    if (r != HsReplayInterceptor.Result.SUCCESS) {
+                        Toast.makeText(this@MainActivity, "Login Error: ${100 + r.ordinal}", Toast.LENGTH_LONG).show()
+                        updateState(state.copy(needLogin = true, loginLoading = false))
+                        return@launch
+                    }
+
+                }
                 val d = Completable.fromAction {
-                    HsReplayInterceptor.configure(code)
+
                 }.andThen(HSReplay.get().getAccount())
                         .flatMapCompletable { HSReplay.get().claimToken() }
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe( {
+                        .subscribe({
                             updateState(state.copy(loginLoading = false, needLogin = false))
                         }, {
                             Timber.e(it)
                             Utils.reportNonFatal(Exception("cannot exchange code", it))
-                            updateState(state.copy(needLogin = true, loginLoading = false))
                         })
                 disposable.add(d)
                 return

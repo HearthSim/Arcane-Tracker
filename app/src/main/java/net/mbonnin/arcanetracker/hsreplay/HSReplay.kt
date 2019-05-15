@@ -112,7 +112,7 @@ class HSReplay {
 
         mOauthervice = Retrofit.Builder()
                 .baseUrl("https://api.hsreplay.net/v1/")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(io.reactivex.schedulers.Schedulers.io()))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
                 .addConverterFactory(GsonConverterFactory.create(Gson()))
                 .client(oauthOkHttpClient)
                 .build()
@@ -124,7 +124,7 @@ class HSReplay {
                 .build()
 
         mLegacyToken = sharedPreferences.getString(KEY_HSREPLAY_LEGACY_TOKEN, null)
-        Timber.w("init token=$mLegacyToken")
+        Timber.w("init token=${mLegacyToken != null}")
 
         if (HsReplayInterceptor.refreshToken != null) {
             // if the user is a previous user of the app and he is already signed up
@@ -145,8 +145,8 @@ class HSReplay {
 
     fun getAccount(): Observable<Account> {
         return mOauthervice.account()
-                .subscribeOn(io.reactivex.schedulers.Schedulers.io())
-                .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext {
                     sharedPreferences.edit {
                         putBoolean(KEY_HSREPLAY_PREMIUM, it.is_premium ?: false)
@@ -159,8 +159,8 @@ class HSReplay {
     fun claimToken(): CompletableSource? {
         val str = "{\"token\": \"$mLegacyToken\"}"
         return mOauthervice.claimToken(RequestBody.create(MediaType.parse("application/json"), str))
-                .subscribeOn(io.reactivex.schedulers.Schedulers.io())
-                .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .ignoreElements()
     }
 

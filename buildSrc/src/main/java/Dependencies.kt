@@ -40,6 +40,7 @@ object Libs {
     const val rxAndroid = "io.reactivex:rxandroid:1.2.1"
     const val rxAndroid2 = "io.reactivex.rxjava2:rxandroid:2.1.0"
     const val retrofit = "com.squareup.retrofit2:retrofit:2.4.0"
+    const val retrofitCoroutines = "ru.gildor.coroutines:kotlin-coroutines-retrofit:1.1.0"
     const val retrofitGson = "com.squareup.retrofit2:converter-gson:2.4.0"
     const val retrofitRx2 = "com.squareup.retrofit2:adapter-rxjava2:2.4.0"
     const val pngj = "ar.com.hjg:pngj:2.1.0"

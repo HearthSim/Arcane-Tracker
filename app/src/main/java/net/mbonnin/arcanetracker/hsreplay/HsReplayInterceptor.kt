@@ -3,6 +3,8 @@ package net.mbonnin.arcanetracker.hsreplay
 import com.google.gson.JsonParser
 import com.squareup.moshi.Moshi
 import io.fabric.sdk.android.services.network.HttpRequest.HEADER_AUTHORIZATION
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import net.mbonnin.arcanetracker.Settings
 import net.mbonnin.arcanetracker.Utils
 import okhttp3.*
@@ -32,6 +34,14 @@ class HsReplayInterceptor : Interceptor {
         }
     }
 
+    enum class Result {
+        SUCCESS,
+        ERROR_BODY,
+        ERROR_JSON,
+        ERROR_NETWORK,
+        ERROR_HTTP
+    }
+
     companion object {
         const val A = "pk_live_iKPWQuznmNf2BbBCxZa1VzmP"
         const val B = "sk_live_20180319oDB6PgKuHSwnDVs5B5SLBmh3"
@@ -43,14 +53,6 @@ class HsReplayInterceptor : Interceptor {
 
         private val lock = Object()
 
-
-        enum class Result {
-            SUCCESS,
-            ERROR_BODY,
-            ERROR_JSON,
-            ERROR_NETWORK,
-            ERROR_HTTP
-        }
 
         private fun storeToken(response: Response): Result {
             val tokenResponse = response.body()?.string()
@@ -74,7 +76,12 @@ class HsReplayInterceptor : Interceptor {
             return Result.SUCCESS
         }
 
-        fun configure(code: String): Result {
+        /**
+         * Configures the interceptor with a code got from a Oauth client flow. This will
+         * exchange the code and remember it for future usage.
+         * This will block, do not call from main thread
+         */
+        suspend fun configure(code: String): Result = withContext(Dispatchers.IO) {
             val client = OkHttpClient()
 
             val httpUrl = HttpUrl.parse("https://hsreplay.net/oauth2/token/")!!
@@ -98,23 +105,23 @@ class HsReplayInterceptor : Interceptor {
                 client.newCall(request).execute()
             } catch (e: Exception) {
                 Utils.reportNonFatal(e)
-                return Result.ERROR_NETWORK
+                return@withContext Result.ERROR_NETWORK
             }
 
             if (!response.isSuccessful) {
                 Utils.reportNonFatal(Exception("HTTP error ${response.code()}"))
-                return Result.ERROR_HTTP
+                return@withContext Result.ERROR_HTTP
             }
 
             synchronized(lock) {
                 val r = storeToken(response)
                 if (r != Result.SUCCESS) {
-                    return r
+                    return@withContext r
                 }
                 lock.notifyAll()
             }
 
-            return Result.SUCCESS
+            return@withContext Result.SUCCESS
         }
 
         fun unlink() {

@@ -122,8 +122,9 @@ dependencies {
     implementation Libs.rxjava2
     implementation Libs.rxAndroid2
     implementation Libs.retrofit
-    implementation Libs.gson
     implementation Libs.retrofitRx2
+    implementation Libs.retrofitCoroutines
+    implementation Libs.gson
 
     implementation Libs.play_auth
     implementation Libs.play_firebase_core
