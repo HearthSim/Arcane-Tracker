@@ -1,9 +1,9 @@
 package net.mbonnin.arcanetracker.ui.overlay.adapter
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.Flowable.zip
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
@@ -18,6 +18,7 @@ class PlayerDeckListAdapter : DeckListAdapter() {
     private var listener: ((deck: Deck) -> Unit)? = null
     private var list = mutableListOf<RDeck>()
     private var whizbangDeck: Deck? = null
+    private var zayleDeck: Deck? = null
 
     init {
         zip(
@@ -49,7 +50,14 @@ class PlayerDeckListAdapter : DeckListAdapter() {
     }
 
     override fun getItemCount(): Int {
-        return list.size + if (whizbangDeck == null) 0 else 1
+        var s =  list.size
+        if (whizbangDeck != null)
+            s += 1
+        if (zayleDeck != null) {
+            s += 1
+        }
+
+        return s
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -57,13 +65,26 @@ class PlayerDeckListAdapter : DeckListAdapter() {
             val rdeck = list[position]
 
             (holder as ViewHolder).bind(rdeck)
-        } else {
-            (holder as ViewHolder).bind(whizbangDeck)
+            return
         }
+
+        if (position == list.size) {
+            if (whizbangDeck != null) {
+                (holder as ViewHolder).bind(whizbangDeck)
+            } else {
+                (holder as ViewHolder).bind(zayleDeck)
+            }
+            return
+        }
+        (holder as ViewHolder).bind(zayleDeck)
     }
 
     fun setWhizbangDeck(whizbangDeck: Deck) {
         this.whizbangDeck = whizbangDeck
+    }
+
+    fun setZayleDeck(zayleDeck: Deck) {
+        this.zayleDeck = zayleDeck
     }
 
     inner class ViewHolder(override val containerView: View) : LayoutContainer, RecyclerView.ViewHolder(containerView) {

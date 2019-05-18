@@ -1,8 +1,8 @@
 package net.mbonnin.arcanetracker
 
+import net.hearthsim.kotlin.hslog.PowerParser
 import net.mbonnin.arcanetracker.parser.Game
 import net.mbonnin.arcanetracker.parser.GameLogic
-import net.mbonnin.arcanetracker.parser.power.PowerParser
 import net.mbonnin.hsmodel.CardJson
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -11,6 +11,7 @@ import org.junit.BeforeClass
 import org.junit.Test
 import timber.log.Timber
 import java.io.BufferedReader
+import java.io.InputStream
 import java.io.InputStreamReader
 import java.util.*
 
@@ -37,10 +38,24 @@ class TestParser {
         }
     }
 
-    private fun runParser(logFileName: String, listener: GameLogic.Listener) {
+    private fun runParser(inputStream: InputStream, listener: GameLogic.Listener) {
         GameLogic.get().addListener(listener)
         val powerParser = PowerParser({ tag -> GameLogic.get().handleRootTag(tag) }, null, null)
+        val br = BufferedReader(InputStreamReader(inputStream))
+        var line: String?
 
+        System.out.println("Running...")
+        while (true) {
+            line = br.readLine()
+            if (line == null) {
+                break
+            }
+            powerParser.process(line, processGameTags = true)
+        }
+        GameLogic.get().removeListener(listener)
+    }
+
+    private fun runParser(logFileName: String, listener: GameLogic.Listener) {
         val client = OkHttpClient()
         val request = Request.Builder().url("https://raw.githubusercontent.com/HearthSim/hsreplay-test-data/master/data/${logFileName}").get().build()
 
@@ -51,19 +66,7 @@ class TestParser {
         }
 
         val inputStream = response.body()!!.byteStream()
-
-        val br = BufferedReader(InputStreamReader(inputStream))
-        var line: String?
-
-        powerParser.onPreviousDataRead()
-        while (true) {
-            line = br.readLine()
-            if (line == null) {
-                break
-            }
-            powerParser.onLine(line)
-        }
-        GameLogic.get().removeListener(listener)
+        runParser(inputStream, listener)
     }
 
     @Test
@@ -80,6 +83,22 @@ class TestParser {
         runParser("spectator.log", listener)
 
         Assert.assertTrue(listener.gameOverCount == 1)
+    }
+
+    @Test
+    fun testZayle() {
+        class InterruptedListener : SimpleListener() {
+            override fun gameStarted(game: Game) {
+                super.gameStarted(game)
+
+                System.out.println("GameLogicListener.isPlayerZayle(game)=${GameLogicListener.isPlayerZayle(game)}")
+            }
+            override fun gameOver() {
+            }
+        }
+
+        val listener = InterruptedListener()
+        runParser("zayle.log", listener)
     }
 
     companion object {

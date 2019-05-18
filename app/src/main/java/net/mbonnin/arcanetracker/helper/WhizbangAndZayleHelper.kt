@@ -1,7 +1,10 @@
 package net.mbonnin.arcanetracker.helper
 
-object WhizbangHelper {
-    val recipes = listOf(
+import net.mbonnin.arcanetracker.Deck
+import net.mbonnin.arcanetracker.parser.Game
+
+object WhizbangAndZayleHelper {
+    val whizbangRecipes = listOf(
             "AAEBAZICBCT9AsX9AsOUAw3tA/cD5gWxCNfvAt/7AuH7Ar/9AtWDA7SJA86UA8qcA9OcAwA=", // Trees are friends
             "AAEBAZICBu0Fm/AC9fwCoIAD05QDypwDDEBWX5MExAaYB9UI8wz6/gK5lAPPlAO7nwMA", // Nature restauration
             "AAEBAR8CgPMC44sDDqgCtQPeBNkH6wfbCe0JgQqghQOiigOwiwPkiwOenQPHnQMA", // Animal Instincts
@@ -21,4 +24,37 @@ object WhizbangHelper {
             "AAEBAQcIkAf/B6IJ+wzeggP4hgOShwO9mQMLogSJ8QKb8wL09QKBhwOLhwPoiQPsiQOqiwPolAPCmQMA", // Wings of war
             "AAEBAQcI0gL8BLj2ApL4AqCAA5qHA5uKA/aWAwtLogSRBv8Hsgjy8QKb8wKO+wLYjAOWlAOZlAMA" // Dropping The Boom
     )
+
+    val zayleRecipes = listOf(
+            "AAECAa0GBO0B+ALQ/gKgrAMN3QTlBPYH1QilCdEK0gryDIOUA4eVA5ibA66bA4KdAwA=", // silence priest
+            "AAECAaIHCLICzQPtBef6AqCAA7SGA5KXA9KZAwu0Ae0CmwWIB90Ihgmm7wLOjAO0kQOPlwOQlwMA", //tempo rogue
+            "AAECAaoICrIGp+4C7/cCmfsCoIADwYkD0pgDuZkDxZkDhp0DCoEE9QTeBf4FrZEDtJEDipQDlZQDtJcDxpkDAA==", //control shaman
+            "AAECAf0GCtsG8wzC8QKc+ALN/AKggAOPggPShgOXlwOJnQMKkge2B8QIzAjF8wK09gLalgPCmQPamwODoAMA", // plot twist warlock
+            "AAECAQcKuuwCze8Cm/ACkvgCjvsCoIADmocDm5QDkpgDwJgDCp3wApfzAtH1Ap77ArP8AvH8AvWAA5eUA5qUA4OgAwA=" // bomb rush warrior
+    )
+
+    fun findWhizbangDeck(game: Game): Deck? {
+        return findDeck(game, whizbangRecipes)
+    }
+
+    fun finZayleDeck(game: Game): Deck? {
+        return findDeck(game, zayleRecipes)
+    }
+
+    private fun findDeck(game: Game, recipeCandidateList: List<String>): Deck? {
+        val playerEntityList = game.getEntityList { entity ->
+            game.player!!.entity!!.PlayerID == entity.extra.originalController
+                    && entity.card != null
+        }
+
+        val deck = recipeCandidateList
+                .asSequence()
+                .map { DeckStringHelper.parse(it) }
+                .filterNotNull()
+                .firstOrNull { deck2 ->
+                    playerEntityList.filter { !deck2.cards.containsKey(it.card!!.id) }.isEmpty()
+                }
+
+        return deck
+    }
 }

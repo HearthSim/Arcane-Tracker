@@ -9,11 +9,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.await
 import net.mbonnin.arcanetracker.detector.RANK_UNKNOWN
-import net.mbonnin.arcanetracker.helper.DeckStringHelper
-import net.mbonnin.arcanetracker.helper.WhizbangHelper
+import net.mbonnin.arcanetracker.helper.WhizbangAndZayleHelper
 import net.mbonnin.arcanetracker.helper.getClassIndex
 import net.mbonnin.arcanetracker.hsreplay.model.legacy.UploadRequest
 import net.mbonnin.arcanetracker.model.GameSummary
+import net.mbonnin.arcanetracker.parser.Entity
 import net.mbonnin.arcanetracker.parser.Game
 import net.mbonnin.arcanetracker.parser.GameLogic
 import net.mbonnin.arcanetracker.parser.LoadingScreenParser
@@ -29,6 +29,8 @@ import java.util.*
 class GameLogicListener private constructor() : GameLogic.Listener {
     private val mHandler: Handler
     var currentGame: Game? = null
+
+
 
     override fun gameStarted(game: Game) {
         Timber.w("gameStarted")
@@ -48,19 +50,8 @@ class GameLogicListener private constructor() : GameLogic.Listener {
             }
         }
 
-        if (!game.player!!.entity!!.tags["WHIZBANG_DECK_ID"].isNullOrBlank()) {
-            val playerEntityList = game.getEntityList { entity ->
-                game.player!!.entity!!.PlayerID == entity.extra.originalController
-                        && entity.card != null
-            }
-
-            val whizbangDeck = WhizbangHelper.recipes
-                    .asSequence()
-                    .map { DeckStringHelper.parse(it) }
-                    .filterNotNull()
-                    .firstOrNull { deck2 ->
-                        playerEntityList.filter { !deck2.cards.containsKey(it.card!!.id) }.isEmpty()
-                    }
+        if (isPlayerWhizbang(game)) {
+            val whizbangDeck = WhizbangAndZayleHelper.findWhizbangDeck(game)
 
             if (whizbangDeck != null) {
                 Timber.d("Found whizbang deck: ${whizbangDeck.name}")
@@ -68,6 +59,18 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                 whizbangDeck.name = CardUtil.getCard(CardId.WHIZBANG_THE_WONDERFUL).name
                 PlayerDeckListAdapter.get().setWhizbangDeck(whizbangDeck)
                 MainViewCompanion.playerCompanion.deck = whizbangDeck
+            }
+        }
+
+        if (isPlayerZayle(game)) {
+            val zayleDeck = WhizbangAndZayleHelper.finZayleDeck(game)
+
+            if (zayleDeck != null) {
+                Timber.d("Found whizbang deck: ${zayleDeck.name}")
+                zayleDeck.id = "rototo"
+                zayleDeck.name = CardUtil.getCard(CardId.ZAYLE_SHADOW_CLOAK).name
+                PlayerDeckListAdapter.get().setZayleDeck(zayleDeck)
+                MainViewCompanion.playerCompanion.deck = zayleDeck
             }
         }
         currentGame = game
@@ -245,6 +248,19 @@ class GameLogicListener private constructor() : GameLogic.Listener {
             }
 
             return sGameLogicListener!!
+        }
+
+        fun isPlayerWhizbang(game: Game): Boolean {
+            return !game.player!!.entity!!.tags["WHIZBANG_DECK_ID"].isNullOrBlank()
+        }
+
+        fun isPlayerZayle(game: Game): Boolean {
+            return game.getEntityList {
+                it.CardID == CardId.ZAYLE_SHADOW_CLOAK
+                        // We only set originalController for entities that start in a player's deck
+                        // && it.extra.originalController == game.player!!.entity!!.PlayerID
+                        && it.tags.get(Entity.KEY_ZONE) == Entity.ZONE_SETASIDE
+            }.isNotEmpty()
         }
     }
 }
