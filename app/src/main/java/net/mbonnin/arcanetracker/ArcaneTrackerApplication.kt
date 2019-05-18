@@ -189,6 +189,10 @@ class ArcaneTrackerApplication : MultiDexApplication() {
 
         MainService.start()
 
+        FirebaseAnalytics.getInstance(this).setUserProperty(FirebaseConstants.IS_LEGACY.name.toLowerCase(),
+                Settings.get(Settings.IS_PRE_HEARTHSIM_USER, true).toString())
+        FirebaseAnalytics.getInstance(this).setUserProperty(FirebaseConstants.IS_PREMIUM.name.toLowerCase(),
+                hsReplay.isPremium().toString())
         FirebaseAnalytics.getInstance(this).setUserProperty(FirebaseConstants.SCREEN_CAPTURE_ENABLED.name.toLowerCase(),
                 Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true).toString())
     }
