@@ -5,7 +5,9 @@ import io.fabric.sdk.android.services.network.HttpRequest.HEADER_AUTHORIZATION
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.mbonnin.arcanetracker.Settings
+import net.mbonnin.arcanetracker.Utils
 import okhttp3.*
+import java.io.IOException
 
 class HsReplayInterceptor : Interceptor {
 
@@ -21,7 +23,11 @@ class HsReplayInterceptor : Interceptor {
 
             var response = chain.proceed(request)
             if (!response.isSuccessful && accessToken != null && refreshToken != null) {
-                refreshToken()
+                val result = refreshToken()
+                if (result.e != null) {
+                    Utils.reportNonFatal(result.e)
+                    throw result.e
+                }
 
                 requestBuilder.header(HEADER_AUTHORIZATION, "Bearer ${accessToken}")
                 response = chain.proceed(requestBuilder.build())
@@ -31,6 +37,8 @@ class HsReplayInterceptor : Interceptor {
         }
     }
 
+
+    class RefreshResult(val e: IOException?, val recoverable: Boolean = true)
 
     companion object {
         const val A = "pk_live_iKPWQuznmNf2BbBCxZa1VzmP"
@@ -121,7 +129,7 @@ class HsReplayInterceptor : Interceptor {
 
         }
 
-        fun refreshToken() {
+        fun refreshToken(): RefreshResult {
             val client = OkHttpClient()
 
             val httpUrl = HttpUrl.parse("https://hsreplay.net/oauth2/token/")!!
@@ -140,15 +148,21 @@ class HsReplayInterceptor : Interceptor {
                     .url(httpUrl)
                     .build()
 
-            val response = client.newCall(request).execute()
+            val response = try {
+                client.newCall(request).execute()
+            } catch (e: IOException) {
+                return RefreshResult(e, recoverable = true)
+            }
 
             if (!response.isSuccessful) {
-                throw Exception("HTTP token refresh error ${response.code()}")
+                return RefreshResult(IOException("HTTP token refresh error ${response.code()}"), recoverable = false)
             }
 
             if (storeToken(response).isFailure) {
-                throw Exception("Cannot store token")
+                return RefreshResult(IOException("Cannot store token"), recoverable = false)
             }
+
+            return RefreshResult(null)
         }
     }
 }

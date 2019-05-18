@@ -159,7 +159,6 @@ class HSReplay(val context: Context, val userAgent: String) {
             Result.success(mOauthervice.account().await())
         } catch (e: Exception) {
             Result.failure(e)
-
         }
     }
 
