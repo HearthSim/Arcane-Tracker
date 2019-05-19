@@ -123,7 +123,7 @@ class HSReplay(val context: Context, val userAgent: String) {
     private fun putToS3(putUrl: String?, gameStr: String): Result<Unit> {
 
         if (putUrl == null) {
-            throw Exception("no put_url")
+            return Result.failure(Exception("not put url"))
         }
 
         val body = RequestBody.create(MediaType.parse("text/plain"), gameStr)
@@ -136,7 +136,7 @@ class HSReplay(val context: Context, val userAgent: String) {
         try {
             val response = S3Client.newCall(request).execute()
             if (!response.isSuccessful) {
-                throw Exception("response not successful")
+                return Result.failure(Exception("response not successful"))
             }
         } catch (e: IOException) {
             e.printStackTrace()
