@@ -11,7 +11,6 @@ import java.io.IOException
 
 class HsReplayInterceptor : Interceptor {
 
-    @Synchronized
     override fun intercept(chain: Interceptor.Chain): Response {
         synchronized(lock) {
             var request = chain.request()
@@ -23,12 +22,14 @@ class HsReplayInterceptor : Interceptor {
 
             var response = chain.proceed(request)
             if (!response.isSuccessful && accessToken != null && refreshToken != null) {
-                val result = refreshToken()
-                if (result.e != null) {
-                    Utils.reportNonFatal(result.e)
-                    throw result.e
+                val result = tryRefreshToken()
+                when (result) {
+                    is RefreshResult.RecoverableError -> throw IOException("no token, retry later")
+                    is RefreshResult.LoggedOut -> {
+                        logoutInternal()
+                        throw IOException("logged out")
+                    }
                 }
-
                 requestBuilder.header(HEADER_AUTHORIZATION, "Bearer ${accessToken}")
                 response = chain.proceed(requestBuilder.build())
             }
@@ -38,7 +39,11 @@ class HsReplayInterceptor : Interceptor {
     }
 
 
-    class RefreshResult(val e: IOException?, val recoverable: Boolean = true)
+    sealed class RefreshResult {
+        object Success : RefreshResult()
+        object LoggedOut : RefreshResult()
+        class RecoverableError(val e: Exception) : RefreshResult()
+    }
 
     companion object {
         const val A = "pk_live_iKPWQuznmNf2BbBCxZa1VzmP"
@@ -50,7 +55,6 @@ class HsReplayInterceptor : Interceptor {
         var refreshToken: String? = Settings.getString(Settings.HSREPLAY_OAUTH_REFRESH_TOKEN, null)
 
         private val lock = Object()
-
 
         private fun storeToken(response: Response): Result<Unit> {
             val tokenResponse = response.body()?.string()
@@ -121,12 +125,17 @@ class HsReplayInterceptor : Interceptor {
         }
 
         fun logout() {
+            synchronized(lock) {
+                logoutInternal()
+            }
+        }
+
+        fun logoutInternal() {
             accessToken = null
             refreshToken = null
 
             Settings.remove(Settings.HSREPLAY_OAUTH_ACCESS_TOKEN)
             Settings.remove(Settings.HSREPLAY_OAUTH_REFRESH_TOKEN)
-
         }
 
         fun refreshToken(): RefreshResult {
@@ -151,18 +160,48 @@ class HsReplayInterceptor : Interceptor {
             val response = try {
                 client.newCall(request).execute()
             } catch (e: IOException) {
-                return RefreshResult(e, recoverable = true)
+                return RefreshResult.RecoverableError(e)
             }
 
             if (!response.isSuccessful) {
-                return RefreshResult(IOException("HTTP token refresh error ${response.code()}"), recoverable = false)
+                when (response.code() / 100) {
+                    4 -> return RefreshResult.LoggedOut
+                    else -> return RefreshResult.RecoverableError(IOException("HTTP token refresh error ${response.code()}"))
+                }
             }
 
             if (storeToken(response).isFailure) {
-                return RefreshResult(IOException("Cannot store token"), recoverable = false)
+                return RefreshResult.RecoverableError(IOException("Cannot store token"))
             }
 
-            return RefreshResult(null)
+            return RefreshResult.Success
+        }
+
+        fun tryRefreshToken(): RefreshResult {
+            val delays = listOf(0, 0, 30, 60, 120, 240, 480)
+
+            delays.forEach {
+                try {
+                    Thread.sleep(it * 1000.toLong())
+                } catch (e: Exception) {
+                    // ignored
+                }
+                val result = refreshToken()
+                when (result) {
+                    is RefreshResult.Success -> return result
+                    is RefreshResult.LoggedOut -> {
+                        Utils.reportNonFatal(Exception("User Logged out"))
+                        return result
+                    }
+                    is RefreshResult.RecoverableError -> {
+                        Utils.reportNonFatal(result.e)
+                        // retry
+                    }
+                }
+            }
+
+            return RefreshResult.RecoverableError(Exception("cannot refresh token, maybe the user is offline or servers are down"))
+
         }
     }
 }
