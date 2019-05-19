@@ -105,7 +105,7 @@ class HsReplayInterceptor : Interceptor {
             }
 
             if (!response.isSuccessful) {
-                val e = Exception("HTTP error ${response.code()}")
+                val e = Exception("login HTTP error ${response.code()}")
                 return@withContext Result.failure<Unit>(e)
             }
 

@@ -164,20 +164,21 @@ class HSReplay(val context: Context, val userAgent: String) {
 
     private suspend fun claimToken(legacyToken: String): Result<Unit> = coroutineScope {
         val str = "{\"token\": \"$legacyToken\"}"
-        try {
-            launch(Dispatchers.IO) {
+        val claim = async(Dispatchers.IO) {
+            try {
                 // The coroutines extensions for retrofit will fail on an empty body
                 // https://github.com/JakeWharton/retrofit2-kotlin-coroutines-adapter/issues/5
                 val response = mOauthervice.claimToken(RequestBody.create(MediaType.parse("application/json"), str)).execute()
                 if (!response.isSuccessful) {
                     throw Exception("Cannot claim token: ${response.code()}")
                 }
+                Result.success(Unit)
+            } catch (e: Exception) {
+                Result.failure<Unit>(e)
             }
-
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure<Unit>(e)
         }
+
+        claim.await()
     }
 
     suspend fun createLegacyToken(): Result<String> {
@@ -192,6 +193,7 @@ class HSReplay(val context: Context, val userAgent: String) {
 
     // Not sure how different this is from username
     fun battleTag() = sharedPreferences.getString(KEY_HSREPLAY_BATTLETAG, null)
+
     fun username() = sharedPreferences.getString(KEY_HSREPLAY_USERNAME, null)
     fun isPremium() = sharedPreferences.getBoolean(KEY_HSREPLAY_PREMIUM, false)
 
