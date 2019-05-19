@@ -24,7 +24,9 @@ class HsReplayInterceptor : Interceptor {
             if (!response.isSuccessful && accessToken != null && refreshToken != null) {
                 val result = tryRefreshToken()
                 when (result) {
-                    is RefreshResult.RecoverableError -> throw IOException("no token, retry later")
+                    is RefreshResult.RecoverableError -> {
+                        throw IOException("no token, retry later")
+                    }
                     is RefreshResult.LoggedOut -> {
                         logoutInternal()
                         throw IOException("logged out")
