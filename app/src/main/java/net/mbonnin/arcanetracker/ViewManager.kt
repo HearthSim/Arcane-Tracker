@@ -94,7 +94,7 @@ class ViewManager(context: Context) {
 
     fun addModalViewInternal(view: View, params: Params, extraFlags: Int) {
         addViewInternal(view, params, WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH or extraFlags)
-        view.setOnTouchListener { v, event ->
+        view.setOnTouchListener { _, event ->
             if (event.actionMasked == MotionEvent.ACTION_OUTSIDE) {
                 removeView(view)
             }

@@ -33,7 +33,7 @@ class LogReader(private val mLog: String, private var mSkipPreviousData: Boolean
     override fun run() {
         var lastSize: Long
         while (!mCanceled) {
-            var myReader: MyVeryOwnReader? = null
+            var myReader: MyVeryOwnReader?
             val file = File(Utils.hsExternalDir + "/Logs/" + mLog)
 
             /*

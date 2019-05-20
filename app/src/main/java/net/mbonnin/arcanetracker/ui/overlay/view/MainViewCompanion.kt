@@ -66,7 +66,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
             Settings.set(Settings.ALPHA, progress)
         }
 
-    private val mHandlesViewTouchListener = View.OnTouchListener { v, ev ->
+    private val mHandlesViewTouchListener = View.OnTouchListener { _, ev ->
         if (ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
             mDownX = ev.getRawX()
             mDownY = ev.getRawY()
@@ -259,7 +259,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
 
         mAnimator.interpolator = LinearInterpolator()
         if (pixelPerMillisecond > 0) {
-            mAnimator.duration = (Math.abs(mX!! - targetX) / pixelPerMillisecond).toLong()
+            mAnimator.duration = (Math.abs(mX - targetX) / pixelPerMillisecond).toLong()
         } else {
             mAnimator.duration = 300
         }
@@ -286,8 +286,8 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
     private fun setX(x: Int) {
         //Timber.w("setX: %d", mX);
         mX = x
-        mainView.translationX = (-mWidth + mX!!).toFloat()
-        handlesView.params.x = mX!! + mPadding
+        mainView.translationX = (-mWidth + mX).toFloat()
+        handlesView.params.x = mX + mPadding
         handlesView.update()
         Onboarding.updateTranslation()
     }
@@ -380,7 +380,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
         handleView.setOnClickListener { v2 ->
             val view = LayoutInflater.from(v.context).inflate(R.layout.cog_menu, null)
 
-            view.findViewById<View>(R.id.settings).setOnClickListener { v3 ->
+            view.findViewById<View>(R.id.settings).setOnClickListener {
                 mViewManager.removeView(view)
 
                 FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("menu_settings", null)
@@ -388,7 +388,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
                 SettingsCompanion.show()
             }
 
-            view.findViewById<View>(R.id.games).setOnClickListener { v3 ->
+            view.findViewById<View>(R.id.games).setOnClickListener {
                 ViewManager.get().removeView(view)
 
                 FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("menu_history", null)
@@ -401,7 +401,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
 
             }
 
-            view.findViewById<View>(R.id.yourDecks).setOnClickListener { v3 ->
+            view.findViewById<View>(R.id.yourDecks).setOnClickListener {
                 mViewManager.removeView(view)
 
                 FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("menu_your_decks", null)
@@ -414,7 +414,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
                 ArcaneTrackerApplication.context.startActivity(intent)
             }
 
-            view.findViewById<View>(R.id.yourPacks).setOnClickListener { v3 ->
+            view.findViewById<View>(R.id.yourPacks).setOnClickListener {
                 mViewManager.removeView(view)
 
                 FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("menu_your_packs", null)
@@ -427,7 +427,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
                 ArcaneTrackerApplication.context.startActivity(intent)
             }
 
-            view.findViewById<View>(R.id.quit).setOnClickListener { v3 -> Utils.exitApp() }
+            view.findViewById<View>(R.id.quit).setOnClickListener { Utils.exitApp() }
 
             mViewManager.addMenu(view, v2)
         }

@@ -93,7 +93,7 @@ class PlayerDeckListAdapter : DeckListAdapter() {
         }
 
         fun bind(deck: Deck?) {
-            itemView.setOnClickListener { v ->
+            itemView.setOnClickListener {
                 if (deck != null) {
                     listener?.invoke(deck)
                 }

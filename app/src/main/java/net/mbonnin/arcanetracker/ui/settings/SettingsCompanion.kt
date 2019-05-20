@@ -252,7 +252,7 @@ class SettingsCompanion(internal var settingsView: View) {
 
         val autoHide = view.findViewById<View>(R.id.autoHideCheckBox) as CheckBox
         autoHide.isChecked = Settings.get(Settings.AUTO_HIDE, false)
-        autoHide.setOnCheckedChangeListener { buttonView, isChecked ->
+        autoHide.setOnCheckedChangeListener { _, isChecked ->
             Settings.set(Settings.AUTO_HIDE, isChecked)
         }
 
@@ -279,7 +279,7 @@ class SettingsCompanion(internal var settingsView: View) {
         val enabled = if (hsReplay.token() != null) context.getString(R.string.enabled) else context.getString(R.string.disabled)
         hsreplayDescription.setText(context.getString(R.string.hsreplayDescription, enabled, hsReplay.username()))
         val licensesButton = view.findViewById<Button>(R.id.licenses)
-        licensesButton.setOnClickListener { v ->
+        licensesButton.setOnClickListener {
             ViewManager.get().removeView(settingsView)
 
             val intent = Intent()
@@ -303,7 +303,7 @@ class SettingsCompanion(internal var settingsView: View) {
         }
 
         val view2 = LayoutInflater.from(settingsView.context).inflate(R.layout.please_restart, null)
-        view2.findViewById<View>(R.id.ok).setOnClickListener { v3 -> ViewManager.get().removeView(view2) }
+        view2.findViewById<View>(R.id.ok).setOnClickListener { ViewManager.get().removeView(view2) }
 
         val params = ViewManager.Params()
         params.w = (ViewManager.get().width * 0.6f).toInt()

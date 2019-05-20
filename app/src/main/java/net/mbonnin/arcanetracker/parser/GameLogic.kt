@@ -69,6 +69,7 @@ class GameLogic private constructor() {
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun handleBlockTag(tag: BlockTag) {}
 
     private fun handleBlockTag2(tag: BlockTag) {
@@ -186,6 +187,7 @@ class GameLogic private constructor() {
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun tagChanged2(entity: Entity, key: String, newValue: String?) {}
 
     private fun tagChanged(entity: Entity, key: String, newValue: String?) {
@@ -478,6 +480,7 @@ class GameLogic private constructor() {
         entity!!.extra.createdBy = blockEntity.CardID
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun handleFullEntityTag2(tag: FullEntityTag) {
 
     }

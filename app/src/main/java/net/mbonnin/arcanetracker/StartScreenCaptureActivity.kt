@@ -7,9 +7,9 @@ import android.content.Intent
 import android.media.projection.MediaProjectionManager
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import android.view.View
 import net.mbonnin.arcanetracker.databinding.StartScreenCaptureActivityBinding
 import net.mbonnin.arcanetracker.extension.finishAndRemoveTaskIfPossible
 import net.mbonnin.arcanetracker.extension.makeFullscreen
@@ -63,7 +63,7 @@ class StartScreenCaptureActivity : AppCompatActivity() {
                 AlertDialog.Builder(this)
                         .setTitle(getString(R.string.hi_there))
                         .setMessage(getString(R.string.noScreenCapture))
-                        .setPositiveButton(getString(R.string.ok)) { dialog, which -> dialog.dismiss() }
+                        .setPositiveButton(getString(R.string.ok)) { dialog, _ -> dialog.dismiss() }
                         .show()
                 finishAndRemoveTaskIfPossible()
             }

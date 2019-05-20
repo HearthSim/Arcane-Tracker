@@ -27,13 +27,13 @@ class LoadingScreenParser private constructor() : LogReader.LineConsumer {
     var gameplayMode: String? = MODE_UNKNOWN
         private set
 
-    override fun onLine(line: String) {
-        Timber.v(line)
+    override fun onLine(rawLine: String) {
+        Timber.v(rawLine)
 
         val pattern = Pattern.compile(".*LoadingScreen.OnSceneLoaded\\(\\) - prevMode=(.*) currMode=(.*)")
-        val matcher = pattern.matcher(line)
+        val matcher = pattern.matcher(rawLine)
         if (matcher.matches()) {
-            val prevMode = matcher.group(1)
+            //val prevMode = matcher.group(1)
             val currMode = matcher.group(2)
 
             mParsedMode = currMode
