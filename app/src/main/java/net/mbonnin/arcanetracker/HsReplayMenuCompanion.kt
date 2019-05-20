@@ -53,13 +53,13 @@ class HsReplayMenuCompanion(override val containerView: View): LayoutContainer {
             }
         }
 
-        myReplays.setOnClickListener { v3 ->
+        myReplays.setOnClickListener {
             ViewManager.get().removeView(containerView)
 
             Utils.openLink("https://hsreplay.net/games/mine/?utm_source=arcanetracker&utm_medium=client")
         }
 
-        meta.setOnClickListener { v3 ->
+        meta.setOnClickListener {
             ViewManager.get().removeView(containerView)
 
             Utils.openLink("https://hsreplay.net/meta/?utm_source=arcanetracker&utm_medium=client")

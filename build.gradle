@@ -22,5 +22,6 @@ allprojects {
         maven {
             url "https://dl.bintray.com/hearthsim/net.hearthsim"
         }
+        maven { url "https://dl.bintray.com/korlibs/korlibs" }
     }
 }

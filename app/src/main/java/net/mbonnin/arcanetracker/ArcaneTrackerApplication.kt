@@ -127,7 +127,7 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         val downloader = OkHttp3Downloader(okHttpClient)
 
         val picasso = Picasso.Builder(this)
-                .memoryCache(picassoRamCache!!)
+                .memoryCache(picassoRamCache)
                 .downloader(downloader)
                 .build()
 
@@ -150,16 +150,16 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         val loadingScreenLogReader = LogReader("LoadingScreen.log", false)
         loadingScreenLogReader.start(LoadingScreenParser.get())
 
-
         GameLogic.get().addListener(GameLogicListener.get())
         val handler = Handler()
-        val powerParser = PowerParser({ tag ->
+        val powerParser =  PowerParser({ tag ->
             handler.post { GameLogic.get().handleRootTag(tag) }
         }, { gameStr, gameStart ->
-            GameLogicListener.get().uploadGame(gameStr, gameStart)
+            GameLogicListener.get().uploadGame(gameStr, Date(gameStart))
         }, { format, args ->
             Timber.d(format, *args)
         })
+
         /*
          * Power.log, we just want the incremental changes
          */

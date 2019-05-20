@@ -1,0 +1,78 @@
+plugins {
+    id 'java'
+    id 'java-library'
+    id 'maven'
+    id "org.jetbrains.kotlin.jvm"
+    id "com.jfrog.bintray" version "1.8.2"
+}
+
+group 'net.hearthsim'
+version '1.0'
+
+def artifactId = "kotlin-hslog"
+def website = "https://github.com/Hearthsim/ktolin-hslog"
+def klockVersion = "1.4.0"
+
+sourceCompatibility = 1.7
+
+dependencies {
+    implementation Libs.kotlin_stdlib
+    implementation "com.soywiz.korlibs.klock:klock-jvm:$klockVersion"
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.6"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.6"
+}
+
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            name artifactId
+            url website
+            inceptionYear "2018"
+            scm {
+                connection website
+                developerConnection website
+                url website
+            }
+        }
+    }
+}
+
+def props = new Properties()
+def f = project.file('bintray.properties')
+if (f.exists()) {
+    props.load(f.newDataInputStream())
+}
+
+bintray {
+    user = props.getProperty("bintray.user")
+    key = props.getProperty("bintray.apikey")
+
+    configurations = ['archives']
+    pkg {
+        repo = "net.hearthsim"
+        name = artifactId
+        userOrg = "hearthsim"
+        websiteUrl = website
+        vcsUrl = website
+        licenses = website
+        publish = true
+        version {
+            name = project.version
+        }
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+}

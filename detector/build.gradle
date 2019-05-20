@@ -12,6 +12,12 @@ repositories {
 
 android {
     compileSdkVersion Versions.compileSdkVersion
+    splits {
+        abi {
+            reset()
+            include "arm64-v8a", "armeabi-v7a"
+        }
+    }
     defaultConfig {
         minSdkVersion Versions.minSdkVersion
         targetSdkVersion Versions.targetSdkVersion
