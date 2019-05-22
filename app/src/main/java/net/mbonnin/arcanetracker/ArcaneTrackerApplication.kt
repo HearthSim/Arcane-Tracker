@@ -32,8 +32,17 @@ import java.util.*
 
 class ArcaneTrackerApplication : MultiDexApplication() {
     lateinit var hsReplay: HSReplay
+        private set
     lateinit var picassoRamCache: LruCache
+        private set
     lateinit var picassoHddCache: Cache
+        private set
+    lateinit var cardJson: CardJson
+        private set
+    lateinit var gameLogicListener: GameLogicListener
+        private set
+    lateinit var hsLog: HSLog
+        private set
 
     var hearthstoneBuild = 0
 
@@ -46,7 +55,7 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         return cache
     }
 
-    val cardJson by lazy {
+    private fun createCardJson(): CardJson {
         val jsonName = Language.currentLanguage.jsonName
 
         val injectedCards = ArrayList<Card>()
@@ -61,12 +70,9 @@ class ArcaneTrackerApplication : MultiDexApplication() {
 
         val input = resources.openRawResource(R.raw.cards).asInput()
 
-        CardJson(jsonName, injectedCards, input)
+        return CardJson(jsonName, injectedCards, input)
     }
 
-    val gameLogicListener by lazy {
-        GameLogicListener(cardJson)
-    }
     @SuppressLint("NewApi", "CheckResult")
     override fun onCreate() {
         super.onCreate()
@@ -163,17 +169,32 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         HideDetector.get().start()
         ScreenCaptureHolder.start()
 
+        cardJson = createCardJson()
+        gameLogicListener = GameLogicListener(cardJson)
+        hsLog = HSLog()
+
+        val handler = Handler()
         /*
          * we need to read the whole loading screen if we start the Tracker while in the 'tournament' play screen
          * or arena screen already (and not in main menu)
          */
         val loadingScreenLogReader = LogReader("LoadingScreen.log", false)
-        loadingScreenLogReader.start(LoadingScreenParser.get())
+        loadingScreenLogReader.start(object : LogReader.LineConsumer {
+            var previousDataRead = false
+            override fun onLine(rawLine: String) {
+                handler.post {
+                    hsLog.processLoadingScreen(rawLine, previousDataRead)
+                }
+            }
+
+            override fun onPreviousDataRead() {
+                previousDataRead = true
+            }
+        })
 
         GameLogic.get().addListener(gameLogicListener)
-        val handler = Handler()
-        val powerParser =  PowerParser({ tag ->
-            handler.post { GameLogic.get().handleRootTag(tag) }
+        val powerParser = PowerParser({ tag ->
+            GameLogic.get().handleRootTag(tag)
         }, { gameStr, gameStart ->
             gameLogicListener.uploadGame(gameStr, Date(gameStart))
         }, { format, args ->

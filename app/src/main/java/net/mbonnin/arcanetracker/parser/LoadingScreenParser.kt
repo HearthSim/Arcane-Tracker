@@ -7,29 +7,27 @@ import java.util.regex.Pattern
  * Created by martin on 11/7/16.
  */
 
-class LoadingScreenParser private constructor() : LogReader.LineConsumer {
+class LoadingScreenParser {
 
-    private var mReadingPreviousData = true
+    private var isOldData = true
 
-    private var mParsedMode: String? = null
+    private var mParsedMode: String = MODE_UNKNOWN
 
     @Volatile
-    var mode: String? = MODE_UNKNOWN
+    var mode: String = MODE_UNKNOWN
         private set
 
     // the last mode before entering gameplay
-    /*
-     * this is called from multiple threads
-     * (main thread + screen capture thread)
-     * it should be ok to not synchronize it
-     */
-    @Volatile
-    var gameplayMode: String? = MODE_UNKNOWN
+    var gameplayMode: String = MODE_UNKNOWN
         private set
 
-    override fun onLine(rawLine: String) {
+    fun process(rawLine: String, isOldData: Boolean) {
         Timber.v(rawLine)
 
+        if (this.isOldData && !isOldData) {
+            setModeInternal(mParsedMode)
+            this.isOldData = true
+        }
         val pattern = Pattern.compile(".*LoadingScreen.OnSceneLoaded\\(\\) - prevMode=(.*) currMode=(.*)")
         val matcher = pattern.matcher(rawLine)
         if (matcher.matches()) {
@@ -37,7 +35,7 @@ class LoadingScreenParser private constructor() : LogReader.LineConsumer {
             val currMode = matcher.group(2)
 
             mParsedMode = currMode
-            if (!mReadingPreviousData) {
+            if (!isOldData) {
                 /*
                  * do not trigger the mode changes for previous modes, it selects the arena deck at startup always
                  */
@@ -46,7 +44,7 @@ class LoadingScreenParser private constructor() : LogReader.LineConsumer {
         }
     }
 
-    private fun setModeInternal(parsedMode: String?) {
+    private fun setModeInternal(parsedMode: String) {
         Timber.d("setModeInternal " + parsedMode)
 
         mode = parsedMode
@@ -61,15 +59,7 @@ class LoadingScreenParser private constructor() : LogReader.LineConsumer {
         }
     }
 
-    override fun onPreviousDataRead() {
-        Timber.d("onPreviousDataRead")
-        mReadingPreviousData = false
-        setModeInternal(mParsedMode)
-    }
-
     companion object {
-        private var sParser: LoadingScreenParser? = null
-
         val MODE_TOURNAMENT = "TOURNAMENT"
         val MODE_DRAFT = "DRAFT"
         val MODE_GAMEPLAY = "GAMEPLAY"
@@ -81,11 +71,5 @@ class LoadingScreenParser private constructor() : LogReader.LineConsumer {
         val MODE_TAVERN_BRAWL = "TAVERN_BRAWL"
         val MODE_UNKNOWN = "UNKNOWN"
 
-        fun get(): LoadingScreenParser {
-            if (sParser == null) {
-                sParser = LoadingScreenParser()
-            }
-            return sParser!!
-        }
     }
 }

@@ -15,7 +15,6 @@ import net.mbonnin.arcanetracker.model.GameSummary
 import net.mbonnin.arcanetracker.parser.Entity
 import net.mbonnin.arcanetracker.parser.Game
 import net.mbonnin.arcanetracker.parser.GameLogic
-import net.mbonnin.arcanetracker.parser.LoadingScreenParser
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RGame
 import net.mbonnin.arcanetracker.room.WLCounter
@@ -76,7 +75,7 @@ class GameLogicListener(val cardJson: CardJson) : GameLogic.Listener {
     }
 
     override fun gameOver() {
-        val mode = LoadingScreenParser.get().gameplayMode
+        val mode = ArcaneTrackerApplication.get().hsLog.loadingScreenMode()
 
         currentGame!!.playerRank = RankHolder.playerRank
         currentGame!!.opponentRank = RankHolder.opponentRank
