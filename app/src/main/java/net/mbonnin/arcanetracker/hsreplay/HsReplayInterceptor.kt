@@ -28,7 +28,7 @@ class HsReplayInterceptor : Interceptor {
                         throw IOException("no token, retry later")
                     }
                     is RefreshResult.LoggedOut -> {
-                        logoutInternal()
+                        //logoutInternal()
                         throw IOException("logged out")
                     }
                 }
