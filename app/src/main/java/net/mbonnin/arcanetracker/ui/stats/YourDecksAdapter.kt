@@ -1,19 +1,19 @@
 package net.mbonnin.arcanetracker.ui.stats
 
-import androidx.appcompat.widget.ListPopupWindow
-import androidx.recyclerview.widget.RecyclerView
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.widget.ListPopupWindow
+import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import net.mbonnin.arcanetracker.Deck
 import net.mbonnin.arcanetracker.DeckMapper
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
+import net.mbonnin.arcanetracker.hslog.Deck
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import timber.log.Timber
 
@@ -57,7 +57,7 @@ class YourDecksAdapter : RecyclerView.Adapter<YourDecksAdapter.ViewHolder>() {
         holder.deckName.setText(deck.name)
         holder.stats.setText("${deck.wins} - ${deck.losses}")
         holder.overflow.setOnClickListener {
-            displayPopup(it, deck.id)
+            displayPopup(it, deck.id!!)
         }
     }
 
@@ -107,7 +107,7 @@ class YourDecksAdapter : RecyclerView.Adapter<YourDecksAdapter.ViewHolder>() {
             view.setOnClickListener {
                 val position = adapterPosition
                 if (position >= 0) {
-                    onDeckClicked?.invoke(list[position].id)
+                    onDeckClicked?.invoke(list[position].id!!)
                 }
             }
         }

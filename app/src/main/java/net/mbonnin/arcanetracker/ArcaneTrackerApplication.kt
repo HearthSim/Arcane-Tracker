@@ -19,8 +19,12 @@ import com.squareup.picasso.Picasso
 import io.paperdb.Paper
 import kotlinx.io.streams.asInput
 import net.hearthsim.kotlin.hslog.PowerParser
+import net.mbonnin.arcanetracker.hslog.Console
+import net.mbonnin.arcanetracker.hslog.GameLogic
+import net.mbonnin.arcanetracker.hslog.HSLog
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.mbonnin.arcanetracker.parser.*
+import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
 import net.mbonnin.hsmodel.Card
 import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.enum.PlayerClass
@@ -39,12 +43,25 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         private set
     lateinit var cardJson: CardJson
         private set
-    lateinit var gameLogicListener: GameLogicListener
-        private set
     lateinit var hsLog: HSLog
         private set
 
     var hearthstoneBuild = 0
+
+    val console = object : Console {
+        override fun debug(message: String) {
+            Timber.d(message)
+        }
+
+        override fun error(message: String) {
+            Timber.e(message)
+        }
+
+        override fun error(throwable: Throwable) {
+            Timber.e(throwable)
+        }
+
+    }
 
     private fun defaultCacheDir(): File {
         val cache = File(cacheDir, "picasso_cache")
@@ -170,8 +187,19 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         ScreenCaptureHolder.start()
 
         cardJson = createCardJson()
-        gameLogicListener = GameLogicListener(cardJson)
-        hsLog = HSLog()
+        hsLog = HSLog(console, cardJson)
+        hsLog.onPlayerDeckChanged {
+            MainViewCompanion.playerCompanion.deck = it
+        }
+        hsLog.onOpponentDeckChanged {
+            MainViewCompanion.opponentCompanion.deck = it
+        }
+        hsLog.onRawGame { gameStr, gameStart ->
+            GameHelper.insertAndUploadGame(gameStr, Date(gameStart), hsLog)
+        }
+        hsLog.onGameEnd {
+            GameHelper.gameEnded(it)
+        }
 
         val handler = Handler()
         /*
@@ -192,15 +220,6 @@ class ArcaneTrackerApplication : MultiDexApplication() {
             }
         })
 
-        GameLogic.get().addListener(gameLogicListener)
-        val powerParser = PowerParser({ tag ->
-            GameLogic.get().handleRootTag(tag)
-        }, { gameStr, gameStart ->
-            gameLogicListener.uploadGame(gameStr, Date(gameStart))
-        }, { format, args ->
-            Timber.d(format, *args)
-        })
-
         /*
          * Power.log, we just want the incremental changes
          */
@@ -208,7 +227,7 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         powerLogReader.start(object : LogReader.LineConsumer {
             var previousDataRead = false
             override fun onLine(rawLine: String) {
-                powerParser.process(rawLine, previousDataRead)
+                hsLog.processPower(rawLine, previousDataRead)
             }
 
             override fun onPreviousDataRead() {

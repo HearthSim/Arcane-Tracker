@@ -1,16 +1,16 @@
 package net.mbonnin.arcanetracker.ui.overlay.view
 
 import android.graphics.Color
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import net.mbonnin.arcanetracker.Deck
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.ViewManager
+import net.mbonnin.arcanetracker.hslog.Deck
 import timber.log.Timber
 
 /**

@@ -4,9 +4,10 @@ package net.mbonnin.arcanetracker.ui.overlay.adapter
 import android.os.Handler
 import android.text.TextUtils
 import net.mbonnin.arcanetracker.*
-import net.mbonnin.arcanetracker.parser.Entity
-import net.mbonnin.arcanetracker.parser.Game
-import net.mbonnin.arcanetracker.parser.GameLogic
+import net.mbonnin.arcanetracker.hslog.Deck
+import net.mbonnin.arcanetracker.hslog.Entity
+import net.mbonnin.arcanetracker.hslog.Game
+import net.mbonnin.arcanetracker.hslog.GameLogic
 import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.enum.PlayerClass
 import net.mbonnin.hsmodel.enum.Rarity
@@ -14,7 +15,7 @@ import net.mbonnin.hsmodel.enum.Type
 import timber.log.Timber
 import java.util.*
 
-class Controller : GameLogic.Listener {
+class Controller  {
 
     val playerAdapter: ItemAdapter
     val opponentAdapter: ItemAdapter
@@ -130,11 +131,16 @@ class Controller : GameLogic.Listener {
         opponentAdapter = ItemAdapter()
         playerAdapter = ItemAdapter()
 
-        GameLogic.get().addListener(this)
+        ArcaneTrackerApplication.get().hsLog.onGameStart {
+            gameStarted(it)
+        }
+        ArcaneTrackerApplication.get().hsLog.whenSomethingChanges {
+            somethingChanged()
+        }
         mHandler = Handler()
     }
 
-    fun setPlayerCardMap(cardMap: HashMap<String, Int>) {
+    fun setPlayerCardMap(cardMap: Map<String, Int>) {
         mPlayerCardMap = cardMap
         update()
     }
@@ -321,7 +327,7 @@ class Controller : GameLogic.Listener {
 
 
 
-    override fun gameStarted(game: Game) {
+    fun gameStarted(game: Game) {
         mGame = game
         mPlayerId = mGame!!.player!!.entity!!.PlayerID
         mOpponentId = mGame!!.opponent!!.entity!!.PlayerID
@@ -329,11 +335,7 @@ class Controller : GameLogic.Listener {
         update()
     }
 
-    override fun gameOver() {
-
-    }
-
-    override fun somethingChanged() {
+    fun somethingChanged() {
         /*
          * we gate the notification so as not to flood the listeners
          */

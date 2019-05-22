@@ -8,7 +8,7 @@ import android.os.Handler
 import androidx.annotation.RequiresApi
 import net.mbonnin.arcanetracker.detector.ByteBufferImage
 import net.mbonnin.arcanetracker.detector.Detector
-import net.mbonnin.arcanetracker.parser.Entity
+import net.mbonnin.arcanetracker.hslog.Entity
 
 object ScreenCaptureHolder {
     @SuppressLint("StaticFieldLeak")
@@ -72,7 +72,7 @@ object ScreenCaptureHolder {
     }
 
     fun shouldDetectRank(): Boolean {
-        val game = ArcaneTrackerApplication.get().gameLogicListener.currentGame
+        val game = ArcaneTrackerApplication.get().hsLog.currentOrFinishedGame()
         return game != null
                 && game.gameEntity!!.tags[Entity.KEY_STEP] == Entity.STEP_BEGIN_MULLIGAN
                 && game.gameType == GameType.GT_RANKED.name

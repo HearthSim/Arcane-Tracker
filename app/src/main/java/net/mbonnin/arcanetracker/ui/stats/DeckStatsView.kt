@@ -8,9 +8,9 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import net.mbonnin.arcanetracker.Deck
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
+import net.mbonnin.arcanetracker.hslog.Deck
 import net.mbonnin.arcanetracker.ui.overlay.adapter.Controller
 import net.mbonnin.arcanetracker.ui.overlay.adapter.ItemAdapter
 import net.mbonnin.arcanetracker.ui.overlay.adapter.OpponentsAdapter
@@ -42,7 +42,7 @@ class DeckStatsView(context: Context, val deck: Deck): ConstraintLayout(context)
         itemAdapter.setList(Controller.getCardMapList(deck.cards))
         deckRecyclerView.setAdapter(itemAdapter)
 
-        opponentRecyclerView.adapter = OpponentsAdapter(deck.id)
+        opponentRecyclerView.adapter = OpponentsAdapter(deck.id!!)
 
     }
 }

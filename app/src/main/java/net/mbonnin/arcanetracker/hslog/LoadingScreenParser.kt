@@ -1,4 +1,4 @@
-package net.mbonnin.arcanetracker.parser
+package net.mbonnin.arcanetracker.hslog
 
 import timber.log.Timber
 import java.util.regex.Pattern

@@ -4,11 +4,11 @@ import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import net.hearthsim.kotlin.hslog.LogLine
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
-import net.mbonnin.arcanetracker.helper.DeckStringHelper
-import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
 import net.mbonnin.arcanetracker.R
+import net.mbonnin.arcanetracker.helper.DeckStringHelper
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RDeck
+import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
 import timber.log.Timber
 
 class DecksParser: LogReader.LineConsumer {
@@ -55,8 +55,8 @@ class DecksParser: LogReader.LineConsumer {
                                     .subscribe()
                         }
 
-                        val rdeck = RDeck(id = deck.id,
-                                name = deck.name,
+                        val rdeck = RDeck(id = deck.id!!,
+                                name = deck.name!!,
                                 deck_string = result.deckString,
                                 arena = state == State.ARENA)
 

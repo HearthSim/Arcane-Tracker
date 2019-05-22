@@ -1,4 +1,4 @@
-package net.mbonnin.arcanetracker.parser
+package net.mbonnin.arcanetracker.hslog
 
 /*
  * Created by martin on 11/11/16.
@@ -10,16 +10,23 @@ import net.mbonnin.arcanetracker.SecretLogic
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.hsmodel.enum.CardId
 import net.mbonnin.hsmodel.enum.Type
-import timber.log.Timber
-import java.util.*
 
-class GameLogic private constructor() {
 
-    private val mListenerList = ArrayList<Listener>()
+
+class GameLogic(private val console: Console) {
+
+    private val gameStartListenerList = mutableListOf<(Game) -> Unit>()
+    private val gameEndListenerList = mutableListOf<(Game) -> Unit>()
+    private val somethingChangedListenerList = mutableListOf<(Game) -> Unit>()
     private var mGame: Game? = null
     private var mCurrentTurn: Int = 0
     private var mLastTag: Boolean = false
     private var spectator = false
+
+    /**
+     * This is the exposed game. As long as one game has started, this will always be non-null
+     */
+    var currentOrFinishedGame: Game? = null
 
     fun handleRootTag(tag: Tag) {
         //Timber.d("handle tag: " + tag);
@@ -41,8 +48,8 @@ class GameLogic private constructor() {
             if (mLastTag) {
                 if (mGame!!.isStarted) {
                     mGame!!.victory = Entity.PLAYSTATE_WON == mGame!!.player!!.entity!!.tags[Entity.KEY_PLAYSTATE]
-                    for (listener in mListenerList) {
-                        listener.gameOver()
+                    for (listener in gameEndListenerList) {
+                        listener(mGame!!)
                     }
                 }
 
@@ -70,7 +77,8 @@ class GameLogic private constructor() {
     }
 
     @Suppress("UNUSED_PARAMETER")
-    private fun handleBlockTag(tag: BlockTag) {}
+    private fun handleBlockTag(tag: BlockTag) {
+    }
 
     private fun handleBlockTag2(tag: BlockTag) {
         val game = mGame!!
@@ -78,14 +86,14 @@ class GameLogic private constructor() {
         if (BlockTag.TYPE_PLAY == tag.BlockType) {
             val playedEntity = mGame!!.findEntitySafe(tag.Entity!!)
             if (playedEntity!!.CardID == null) {
-                Timber.e("no CardID for play")
+                console.error("no CardID for play")
                 return
             }
 
             val isOpponent = game.findController(playedEntity).isOpponent
 
             mGame!!.lastPlayedCardId = playedEntity.CardID
-            Timber.i("%s played %s", if (isOpponent) "opponent" else "I", playedEntity.CardID)
+            console.debug("${if (isOpponent) "opponent" else "I"} played ${playedEntity.CardID}")
 
             SecretLogic.blockPlayed(game, tag.Target, playedEntity)
 
@@ -118,7 +126,7 @@ class GameLogic private constructor() {
     private fun handlePlayerMapping(tag: PlayerMappingTag) {
         val player = mGame!!.playerMap[tag.playerId]
         if (player == null) {
-            Timber.e("Cannot find player Id '%s'", tag.playerId)
+            console.error("Cannot find player Id '${tag.playerId}'")
             return
         }
 
@@ -130,7 +138,7 @@ class GameLogic private constructor() {
             player.entity!!.tags.putAll(battleTagEntity.tags)
         }
 
-        Timber.w(tag.playerName + " now points to entity " + player.entity!!.EntityID)
+        console.debug("${tag.playerName} now points to entity ${player.entity!!.EntityID}")
 
         player.battleTag = tag.playerName
 
@@ -165,7 +173,7 @@ class GameLogic private constructor() {
         val entity = mGame!!.findEntitySafe(tag.Entity!!)
 
         if (!Utils.isEmpty(entity!!.CardID) && entity.CardID != tag.CardID) {
-            Timber.e("[Inconsistent] entity " + entity + " changed cardId " + entity.CardID + " -> " + tag.CardID)
+            console.error("[Inconsistent] entity $entity changed cardId ${entity.CardID}  -> ${tag.CardID}")
         }
         entity.setCardId(tag.CardID!!)
 
@@ -184,7 +192,8 @@ class GameLogic private constructor() {
     }
 
     @Suppress("UNUSED_PARAMETER")
-    private fun tagChanged2(entity: Entity, key: String, newValue: String?) {}
+    private fun tagChanged2(entity: Entity, key: String, newValue: String?) {
+    }
 
     private fun tagChanged(entity: Entity, key: String, newValue: String?) {
         val oldValue = entity.tags[key]
@@ -195,18 +204,19 @@ class GameLogic private constructor() {
             if (Entity.KEY_TURN == key) {
                 try {
                     mCurrentTurn = Integer.parseInt(newValue)
-                    Timber.d("turn: " + mCurrentTurn)
+                    console.debug("turn: $mCurrentTurn")
                 } catch (e: Exception) {
-                    Timber.e(e)
+                    console.error(e)
                 }
 
             } else if (Entity.KEY_STEP == key) {
                 if (Entity.STEP_BEGIN_MULLIGAN == newValue) {
                     gameStepBeginMulligan()
                     if (mGame!!.isStarted) {
-                        for (listener in mListenerList) {
-                            listener.gameStarted(mGame!!)
+                        for (listener in gameStartListenerList) {
+                            listener.invoke(mGame!!)
                         }
+                        currentOrFinishedGame = mGame!!
                     }
                 } else if (Entity.STEP_FINAL_GAMEOVER == newValue) {
                     // do not set mGame = null here, we might be part of a block where other tag handlers
@@ -265,7 +275,7 @@ class GameLogic private constructor() {
         mLastTag = false
 
         if (mGame != null && tag.gameEntity.tags[Entity.KEY_TURN] != null) {
-            Timber.w("CREATE_GAME during an existing one, resuming")
+            console.debug("CREATE_GAME during an existing one, resuming")
         } else {
             mGame = Game()
 
@@ -292,10 +302,6 @@ class GameLogic private constructor() {
         }
     }
 
-    fun removeListener(listener: Listener) {
-        mListenerList.remove(listener)
-    }
-
     interface Listener {
         /**
          * when gameStarted is called, game.player and game.opponent are set
@@ -303,17 +309,14 @@ class GameLogic private constructor() {
          */
         fun gameStarted(game: Game)
 
-        fun gameOver()
-
         /**
          * this is called whenever something changes :)
          */
         fun somethingChanged()
+
+        fun gameOver()
     }
 
-    fun addListener(listener: Listener) {
-        mListenerList.add(listener)
-    }
 
     private fun gameStepBeginMulligan() {
 
@@ -324,7 +327,7 @@ class GameLogic private constructor() {
         val player2 = mGame!!.playerMap["2"]
 
         if (player1 == null || player2 == null) {
-            Timber.e("cannot find players")
+            console.error("cannot find players")
             return
         }
 
@@ -350,8 +353,8 @@ class GameLogic private constructor() {
 
     private fun notifyListeners() {
         if (mGame != null && mGame!!.isStarted) {
-            for (listener in mListenerList) {
-                listener.somethingChanged()
+            for (listener in somethingChangedListenerList) {
+                listener(mGame!!)
             }
         }
     }
@@ -502,7 +505,7 @@ class GameLogic private constructor() {
         val cardType = entity.tags[Entity.KEY_CARDTYPE]
         val player = mGame!!.findController(entity)
 
-        Timber.i("entity created %s controller=%s zone=%s ", entity.EntityID, playerId, entity.tags[Entity.KEY_ZONE])
+        console.debug("entity created ${entity.EntityID} controller=${playerId} zone=${entity.tags[Entity.KEY_ZONE]} ")
 
         if (Type.HERO == cardType) {
             player.hero = entity
@@ -521,14 +524,30 @@ class GameLogic private constructor() {
         }
     }
 
-    companion object {
-        private var sGameLogic: GameLogic? = null
+    fun onGameStart(block: (Game) -> Unit) {
+        gameStartListenerList.add(block)
+    }
 
-        fun get(): GameLogic {
-            if (sGameLogic == null) {
-                sGameLogic = GameLogic()
-            }
-            return sGameLogic!!
+    fun whenSomethingChanges(block: (Game) -> Unit) {
+        somethingChangedListenerList.add(block)
+    }
+
+    fun onGameEnd(block: (Game) -> Unit) {
+        gameEndListenerList.add(block)
+    }
+
+    companion object {
+        fun isPlayerWhizbang(game: Game): Boolean {
+            return !game.player!!.entity!!.tags["WHIZBANG_DECK_ID"].isNullOrBlank()
+        }
+
+        fun isPlayerZayle(game: Game): Boolean {
+            return game.getEntityList {
+                it.CardID == CardId.ZAYLE_SHADOW_CLOAK
+                        // We only set originalController for entities that start in a player's deck
+                        // && it.extra.originalController == game.player!!.entity!!.PlayerID
+                        && it.tags.get(Entity.KEY_ZONE) == Entity.ZONE_SETASIDE
+            }.isNotEmpty()
         }
 
         fun gameTurnToHumanTurn(turn: Int): Int {

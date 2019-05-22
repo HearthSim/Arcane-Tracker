@@ -2,8 +2,8 @@ package net.mbonnin.arcanetracker
 
 import kotlinx.io.streams.asInput
 import net.hearthsim.kotlin.hslog.PowerParser
-import net.mbonnin.arcanetracker.parser.Game
-import net.mbonnin.arcanetracker.parser.GameLogic
+import net.mbonnin.arcanetracker.hslog.Game
+import net.mbonnin.arcanetracker.hslog.GameLogic
 import net.mbonnin.hsmodel.CardJson
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -92,7 +92,7 @@ class TestParser {
             override fun gameStarted(game: Game) {
                 super.gameStarted(game)
 
-                System.out.println("GameLogicListener.isPlayerZayle(game)=${GameLogicListener.isPlayerZayle(game)}")
+                System.out.println("GameLogicListener.isPlayerZayle(game)=${GameLogic.isPlayerZayle(game)}")
             }
             override fun gameOver() {
             }

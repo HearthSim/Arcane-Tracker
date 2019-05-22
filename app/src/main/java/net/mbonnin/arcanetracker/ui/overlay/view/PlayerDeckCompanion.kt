@@ -12,6 +12,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.deck_view.*
 import net.mbonnin.arcanetracker.*
+import net.mbonnin.arcanetracker.hslog.Deck
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.WLCounter
 import net.mbonnin.arcanetracker.ui.overlay.adapter.Controller
@@ -80,7 +81,7 @@ class PlayerDeckCompanion(override val containerView: View) : DeckCompanion(cont
 
             Timber.d("setDeck ${value.name}")
 
-            disposable = WLCounter.watch(value.id)
+            disposable = WLCounter.watch(value.id!!)
                     .startWith(WLCounter(0, 0))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -103,13 +104,13 @@ class PlayerDeckCompanion(override val containerView: View) : DeckCompanion(cont
                 view2.findViewById<View>(R.id.ok).setOnClickListener {
                     mViewManager.removeView(view2)
 
-                    WLCounter.set(value.id, win.value, losses.value)
+                    WLCounter.set(value.id!!, win.value, losses.value)
                 }
                 view2.findViewById<View>(R.id.cancel).setOnClickListener { mViewManager.removeView(view2) }
 
                 mViewManager.addCenteredView(view2)
             }
 
-            Controller.get().setPlayerCardMap(value.cards)
+            Controller.get().setPlayerCardMap(value.cards!!)
         }
 }

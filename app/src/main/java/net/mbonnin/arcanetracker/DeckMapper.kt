@@ -1,6 +1,7 @@
 package net.mbonnin.arcanetracker
 
 import net.mbonnin.arcanetracker.helper.DeckStringHelper
+import net.mbonnin.arcanetracker.hslog.Deck
 import net.mbonnin.arcanetracker.room.RDeck
 
 object DeckMapper {

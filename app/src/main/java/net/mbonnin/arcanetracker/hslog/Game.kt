@@ -1,4 +1,4 @@
-package net.mbonnin.arcanetracker.parser
+package net.mbonnin.arcanetracker.hslog
 
 import net.mbonnin.arcanetracker.Utils
 import timber.log.Timber

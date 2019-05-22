@@ -1,7 +1,8 @@
-package net.mbonnin.arcanetracker.parser
+package net.mbonnin.arcanetracker.hslog
 
 import net.mbonnin.arcanetracker.CardUtil
 import net.mbonnin.arcanetracker.helper.getClassIndex
+import net.mbonnin.arcanetracker.hslog.Entity
 
 /**
  * Created by martin on 11/7/16.

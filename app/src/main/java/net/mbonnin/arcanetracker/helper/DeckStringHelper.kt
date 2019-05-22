@@ -3,7 +3,7 @@ package net.mbonnin.arcanetracker.helper
 import android.util.Base64
 import net.hearthsim.java.deckstrings.Deckstrings
 import net.mbonnin.arcanetracker.CardUtil
-import net.mbonnin.arcanetracker.Deck
+import net.mbonnin.arcanetracker.hslog.Deck
 import java.util.*
 
 class DeckStringHelper {

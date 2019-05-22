@@ -1,17 +1,15 @@
-package net.mbonnin.arcanetracker.parser
+package net.mbonnin.arcanetracker.hslog
 
 import net.mbonnin.arcanetracker.CardUtil
 import net.mbonnin.hsmodel.Card
-import java.util.*
 
+@Suppress("PropertyName")
 class Entity {
-
-
     var EntityID: String? = null
     var CardID: String? = null // might be null if the entity is not revealed yet
     var PlayerID: String? = null // only valid for player entities
 
-    var tags: HashMap<String, String> = HashMap()
+    val tags = mutableMapOf<String, String>()
 
     /**
      * extra information added by us
@@ -20,7 +18,12 @@ class Entity {
     var card: Card? = null
 
     override fun toString(): String {
-        return String.format(Locale.ENGLISH, "CardEntity [id=%s][CardID=%s]%s", EntityID, CardID, if (card != null) "(" + card!!.name + ")" else "")
+        val name = if (card != null) {
+            "(${card!!.name})"
+        } else {
+            ""
+        }
+        return String.format("CardEntity [id=$EntityID][CardID=$CardID]$name")
     }
 
     fun setCardId(cardID: String) {

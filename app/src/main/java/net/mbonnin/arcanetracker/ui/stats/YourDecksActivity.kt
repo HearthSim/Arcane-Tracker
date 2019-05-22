@@ -2,7 +2,7 @@ package net.mbonnin.arcanetracker.ui.stats
 
 import android.app.Activity
 import android.os.Bundle
-import net.mbonnin.arcanetracker.Deck
+import net.mbonnin.arcanetracker.hslog.Deck
 
 class YourDecksActivity : Activity() {
     var isInStats = false

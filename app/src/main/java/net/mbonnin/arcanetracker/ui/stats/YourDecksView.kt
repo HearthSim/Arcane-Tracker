@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.util.DisplayMetrics
-import net.mbonnin.arcanetracker.Deck
+import net.mbonnin.arcanetracker.hslog.Deck
 import net.mbonnin.arcanetracker.SpacesItemDecoration
 
 
