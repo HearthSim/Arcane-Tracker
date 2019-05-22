@@ -1,5 +1,6 @@
 package net.mbonnin.arcanetracker
 
+import kotlinx.io.streams.asInput
 import net.hearthsim.kotlin.hslog.PowerParser
 import net.mbonnin.arcanetracker.parser.Game
 import net.mbonnin.arcanetracker.parser.GameLogic
@@ -11,9 +12,9 @@ import org.junit.BeforeClass
 import org.junit.Test
 import timber.log.Timber
 import java.io.BufferedReader
+import java.io.File
 import java.io.InputStream
 import java.io.InputStreamReader
-import java.util.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -106,7 +107,8 @@ class TestParser {
         @BeforeClass
         fun beforeClass() {
             Timber.plant(TestTree())
-            CardJson.init("enUS", ArrayList())
+            val input = File("/home/martin/git/Arcane-Tracker/app/src/main/res/raw/cards.json").inputStream().asInput()
+            CardJson.init("enUS", null, input)
         }
     }
 

@@ -23,13 +23,7 @@ data class Card(
         val mechanics: kotlin.collections.Set<String> = emptySet(),
         val features: DoubleArray? = null,
         val goldenFeatures: DoubleArray? = null
-) : Comparable<String> {
-
-
-    override fun compareTo(other: String): Int {
-        return id.compareTo(other)
-    }
-
+) {
     override fun toString(): String {
         return "$name($id)"
     }
@@ -43,7 +37,7 @@ data class Card(
     // https://us.battle.net/forums/en/hearthstone/topic/20758787441
     fun isDraftable(): Boolean {
         return isStandard()
-                && !(type == Type.HERO) // DK heroes are not available
+                && type != Type.HERO // DK heroes are not available
                 && !(UNDRAFTABLE_CARDS.contains(id))
     }
 

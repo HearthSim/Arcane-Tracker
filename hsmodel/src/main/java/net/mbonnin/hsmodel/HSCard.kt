@@ -1,22 +1,22 @@
 package net.mbonnin.hsmodel
 
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class HSCard(val id: String,
-                  val text: Map<String, String>?,
-                  val name: Map<String, String>?,
-                  val cardClass: String?,
-                  val rarity: String?,
-                  val type: String?,
-                  val race: String?,
-                  val set: String?,
-                  val dbfId: Int?,
-                  val cost: Int?,
-                  val attack: Int?,
-                  val health: Int?,
-                  val durability: Int?,
-                  val collectible: Boolean?,
-                  val multiClassGroup: String?,
-                  val mechanics: List<String>?
+                  val text: Map<String, String>? = null,
+                  val name: Map<String, String>? = null,
+                  val cardClass: String? = null,
+                  val rarity: String? = null,
+                  val type: String? = null,
+                  val race: String? = null,
+                  val set: String? = null,
+                  val dbfId: Int? = null,
+                  val cost: Int? = null,
+                  val attack: Int? = null,
+                  val health: Int? = null,
+                  val durability: Int? = null,
+                  val collectible: Boolean? = null,
+                  val multiClassGroup: String? = null,
+                  val mechanics: List<String>? = null
 )

@@ -17,6 +17,7 @@ import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.LruCache
 import com.squareup.picasso.Picasso
 import io.paperdb.Paper
+import kotlinx.io.streams.asInput
 import net.hearthsim.kotlin.hslog.PowerParser
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.mbonnin.arcanetracker.parser.*
@@ -203,14 +204,16 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         val injectedCards = ArrayList<Card>()
 
         /*
-         * these are 3 fake cards needed for CardRender
+         * these are fake cards needed for CardRender
          */
         injectedCards.add(CardUtil.secret(PlayerClass.PALADIN))
         injectedCards.add(CardUtil.secret(PlayerClass.HUNTER))
         injectedCards.add(CardUtil.secret(PlayerClass.MAGE))
         injectedCards.add(CardUtil.secret(PlayerClass.ROGUE))
 
-        CardJson.init(jsonName, injectedCards)
+        val input = resources.openRawResource(R.raw.cards).asInput()
+
+        CardJson.init(jsonName, injectedCards, input)
     }
 
     companion object {
