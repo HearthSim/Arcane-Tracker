@@ -6,7 +6,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.list
 
 
-object CardJson {
+class CardJson(lang: String, injectedCards: List<Card>? = null, input: Input) {
     private val allCards = mutableListOf<Card>()
     private val INVALID_PLAYER_CLASS = "INVALID_PLAYER_CLASS"
     private val INVALID_DFB_ID = Int.MIN_VALUE
@@ -34,7 +34,7 @@ object CardJson {
         )
     }
 
-    fun init(lang: String, injectedCards: List<Card>? = null, input: Input) {
+    init {
         val str = input.readText()
 
         val cardList = Json.nonstrict.parse(HSCard.serializer().list, str).map { mapToCard(it, lang) }

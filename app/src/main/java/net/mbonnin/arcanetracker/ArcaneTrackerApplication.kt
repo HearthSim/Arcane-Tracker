@@ -46,6 +46,24 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         return cache
     }
 
+    val cardJson by lazy {
+        val jsonName = Language.currentLanguage.jsonName
+
+        val injectedCards = ArrayList<Card>()
+
+        /*
+         * these are fake cards needed for CardRender
+         */
+        injectedCards.add(CardUtil.secret(PlayerClass.PALADIN))
+        injectedCards.add(CardUtil.secret(PlayerClass.HUNTER))
+        injectedCards.add(CardUtil.secret(PlayerClass.MAGE))
+        injectedCards.add(CardUtil.secret(PlayerClass.ROGUE))
+
+        val input = resources.openRawResource(R.raw.cards).asInput()
+
+        CardJson(jsonName, injectedCards, input)
+    }
+
     @SuppressLint("NewApi", "CheckResult")
     override fun onCreate() {
         super.onCreate()
@@ -142,8 +160,6 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         HideDetector.get().start()
         ScreenCaptureHolder.start()
 
-        initCardJson()
-
         /*
          * we need to read the whole loading screen if we start the Tracker while in the 'tournament' play screen
          * or arena screen already (and not in main menu)
@@ -196,24 +212,6 @@ class ArcaneTrackerApplication : MultiDexApplication() {
                 hsReplay.isPremium().toString())
         FirebaseAnalytics.getInstance(this).setUserProperty(FirebaseConstants.SCREEN_CAPTURE_ENABLED.name.toLowerCase(),
                 Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true).toString())
-    }
-
-    private fun initCardJson() {
-        val jsonName = Language.currentLanguage.jsonName
-
-        val injectedCards = ArrayList<Card>()
-
-        /*
-         * these are fake cards needed for CardRender
-         */
-        injectedCards.add(CardUtil.secret(PlayerClass.PALADIN))
-        injectedCards.add(CardUtil.secret(PlayerClass.HUNTER))
-        injectedCards.add(CardUtil.secret(PlayerClass.MAGE))
-        injectedCards.add(CardUtil.secret(PlayerClass.ROGUE))
-
-        val input = resources.openRawResource(R.raw.cards).asInput()
-
-        CardJson.init(jsonName, injectedCards, input)
     }
 
     companion object {

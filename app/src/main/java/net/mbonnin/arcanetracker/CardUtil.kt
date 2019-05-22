@@ -2,7 +2,6 @@ package net.mbonnin.arcanetracker
 
 
 import net.mbonnin.hsmodel.Card
-import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.enum.*
 
 object CardUtil {
@@ -69,7 +68,7 @@ object CardUtil {
 
     fun getCard(dbfId: Int): Card? {
 
-        for (card in CardJson.allCards()) {
+        for (card in ArcaneTrackerApplication.get().cardJson.allCards()) {
             if (card.dbfId == dbfId) {
                 return card
             }
@@ -79,12 +78,12 @@ object CardUtil {
     }
 
     fun getCard(key: String): Card {
-        return CardJson.getCard(key) ?: UNKNOWN
+        return ArcaneTrackerApplication.get().cardJson.getCard(key) ?: UNKNOWN
     }
 
     fun possibleSecretList(playerClass: String?, gameType: String?, formatType: String?): Collection<String> {
 
-        var secrets = CardJson.allCards().filter {
+        var secrets = ArcaneTrackerApplication.get().cardJson.allCards().filter {
             it.mechanics.contains(Mechanic.SECRET)
                     && it.playerClass == playerClass
                     && (formatType != FormatType.FT_STANDARD.name || it.isStandard())
