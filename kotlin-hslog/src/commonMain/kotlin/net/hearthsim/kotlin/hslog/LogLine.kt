@@ -1,7 +1,5 @@
 package net.hearthsim.kotlin.hslog
 
-import java.util.regex.Pattern
-
 class LogLine(
         val level: String,
         val line: String,
@@ -16,9 +14,9 @@ class LogLine(
             }
 
             var sec = 0
-            sec += Integer.parseInt(a[0]) * 3600
-            sec += Integer.parseInt(a[1]) * 60
-            sec += java.lang.Float.parseFloat(a[2]).toInt()
+            sec += a[0].toInt() * 3600
+            sec += a[1].toInt() * 60
+            sec += a[2].toFloat().toInt()
 
             return sec
         }
