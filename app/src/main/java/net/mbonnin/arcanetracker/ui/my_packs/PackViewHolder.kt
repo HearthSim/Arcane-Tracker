@@ -1,14 +1,15 @@
 package net.mbonnin.arcanetracker.ui.my_packs
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_pack.*
 import net.mbonnin.arcanetracker.CardUtil
 import net.mbonnin.arcanetracker.helper.SetHelper
 import net.mbonnin.arcanetracker.room.RPack
 import net.mbonnin.arcanetracker.ui.stats.toPixel
+import net.mbonnin.hsmodel.CardJson
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -40,7 +41,7 @@ class PackViewHolder(override val containerView: View) : LayoutContainer, Recycl
 
 
             } else {
-                packCardView.setCard(CardUtil.UNKNOWN, false)
+                packCardView.setCard(CardJson.UNKNOWN, false)
             }
         }
 

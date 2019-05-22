@@ -64,6 +64,9 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         CardJson(jsonName, injectedCards, input)
     }
 
+    val gameLogicListener by lazy {
+        GameLogicListener(cardJson)
+    }
     @SuppressLint("NewApi", "CheckResult")
     override fun onCreate() {
         super.onCreate()
@@ -167,12 +170,12 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         val loadingScreenLogReader = LogReader("LoadingScreen.log", false)
         loadingScreenLogReader.start(LoadingScreenParser.get())
 
-        GameLogic.get().addListener(GameLogicListener.get())
+        GameLogic.get().addListener(gameLogicListener)
         val handler = Handler()
         val powerParser =  PowerParser({ tag ->
             handler.post { GameLogic.get().handleRootTag(tag) }
         }, { gameStr, gameStart ->
-            GameLogicListener.get().uploadGame(gameStr, Date(gameStart))
+            gameLogicListener.uploadGame(gameStr, Date(gameStart))
         }, { format, args ->
             Timber.d(format, *args)
         })

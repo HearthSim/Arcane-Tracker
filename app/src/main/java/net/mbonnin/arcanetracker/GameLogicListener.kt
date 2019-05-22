@@ -21,11 +21,12 @@ import net.mbonnin.arcanetracker.room.RGame
 import net.mbonnin.arcanetracker.room.WLCounter
 import net.mbonnin.arcanetracker.ui.overlay.adapter.PlayerDeckListAdapter
 import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
+import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.enum.CardId
 import timber.log.Timber
 import java.util.*
 
-class GameLogicListener private constructor() : GameLogic.Listener {
+class GameLogicListener(val cardJson: CardJson) : GameLogic.Listener {
     private val mHandler: Handler
     var currentGame: Game? = null
 
@@ -54,7 +55,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
             if (whizbangDeck != null) {
                 Timber.d("Found whizbang deck: ${whizbangDeck.name}")
                 whizbangDeck.id = "rototo"
-                whizbangDeck.name = CardUtil.getCard(CardId.WHIZBANG_THE_WONDERFUL).name
+                whizbangDeck.name = cardJson.getCard(CardId.WHIZBANG_THE_WONDERFUL).name
                 PlayerDeckListAdapter.get().setWhizbangDeck(whizbangDeck)
                 MainViewCompanion.playerCompanion.deck = whizbangDeck
             }
@@ -66,7 +67,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
             if (zayleDeck != null) {
                 Timber.d("Found whizbang deck: ${zayleDeck.name}")
                 zayleDeck.id = "rototo"
-                zayleDeck.name = CardUtil.getCard(CardId.ZAYLE_SHADOW_CLOAK).name
+                zayleDeck.name = cardJson.getCard(CardId.ZAYLE_SHADOW_CLOAK).name
                 PlayerDeckListAdapter.get().setZayleDeck(zayleDeck)
                 MainViewCompanion.playerCompanion.deck = zayleDeck
             }
@@ -241,17 +242,6 @@ class GameLogicListener private constructor() : GameLogic.Listener {
     }
 
     companion object {
-
-        private var sGameLogicListener: GameLogicListener? = null
-
-        fun get(): GameLogicListener {
-            if (sGameLogicListener == null) {
-                sGameLogicListener = GameLogicListener()
-            }
-
-            return sGameLogicListener!!
-        }
-
         fun isPlayerWhizbang(game: Game): Boolean {
             return !game.player!!.entity!!.tags["WHIZBANG_DECK_ID"].isNullOrBlank()
         }

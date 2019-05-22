@@ -2,29 +2,10 @@ package net.mbonnin.arcanetracker
 
 
 import net.mbonnin.hsmodel.Card
+import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.enum.*
 
 object CardUtil {
-    @JvmField
-    val UNKNOWN = unknown()
-
-    fun unknown(name: String? = null): Card {
-        val card = Card(
-                id = "?",
-                name = name ?: "?",
-                playerClass = "?",
-                cost = Card.UNKNOWN_COST,
-                rarity = "?",
-                type = Card.UNKNOWN_TYPE,
-                text = "?",
-                race = "?",
-                collectible = false,
-                dbfId = 0,
-                set = HSSet.CORE
-        )
-        return card
-    }
-
     fun secret(playerClass: String): Card {
         val id: String
         val cost: Int
@@ -51,7 +32,7 @@ object CardUtil {
                 cost = 3
                 pClass = PlayerClass.MAGE
             }
-            else -> return unknown()
+            else -> return CardJson.unknown()
         }
 
         return Card(
@@ -78,7 +59,7 @@ object CardUtil {
     }
 
     fun getCard(key: String): Card {
-        return ArcaneTrackerApplication.get().cardJson.getCard(key) ?: UNKNOWN
+        return ArcaneTrackerApplication.get().cardJson.getCard(key)
     }
 
     fun possibleSecretList(playerClass: String?, gameType: String?, formatType: String?): Collection<String> {

@@ -7,6 +7,7 @@ import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.parser.Entity
 import net.mbonnin.arcanetracker.parser.Game
 import net.mbonnin.arcanetracker.parser.GameLogic
+import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.enum.PlayerClass
 import net.mbonnin.hsmodel.enum.Rarity
 import net.mbonnin.hsmodel.enum.Type
@@ -47,7 +48,7 @@ class Controller : GameLogic.Listener {
                 displayedEntity.extra.drawTurn = entity.extra.drawTurn
 
                 DeckEntryItem(
-                        card = CardUtil.unknown("#${drawTurn}${mulliganed}"),
+                        card = CardJson.unknown("#${drawTurn}${mulliganed}"),
                         gift = false,
                         count = 1,
                         entityList = listOf(displayedEntity)
@@ -299,7 +300,7 @@ class Controller : GameLogic.Listener {
         val deckEntryList = map.map {
             val cardId = it.key.cardId
             val card = if (cardId == null) {
-                CardUtil.UNKNOWN
+                CardJson.UNKNOWN
             } else {
                 CardUtil.getCard(cardId)
             }

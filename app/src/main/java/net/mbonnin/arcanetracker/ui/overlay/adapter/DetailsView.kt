@@ -197,18 +197,19 @@ class DetailsView(context: Context) : ViewGroup(context) {
         }
     }
 
+    @Suppress("ConstantConditionIf")
     private fun appendPossibleSecrets(flexboxLayout: FlexboxLayout, entity: Entity) {
-        val game = GameLogicListener.get().currentGame
+        val game = ArcaneTrackerApplication.get().gameLogicListener.currentGame
 
         val possibleSecrets: Collection<String>
 
-        if (TestSwitch.SECRET_LAYOUT) {
-            possibleSecrets = CardUtil.possibleSecretList(entity.tags[Entity.KEY_CLASS], GameType.GT_RANKED.name, FormatType.FT_WILD.name)
+        possibleSecrets = if (TestSwitch.SECRET_LAYOUT) {
+            CardUtil.possibleSecretList(entity.tags[Entity.KEY_CLASS], GameType.GT_RANKED.name, FormatType.FT_WILD.name)
         } else {
             if (game == null) {
                 return
             }
-            possibleSecrets = CardUtil.possibleSecretList(entity.tags[Entity.KEY_CLASS], game.gameType, game.formatType)
+            CardUtil.possibleSecretList(entity.tags[Entity.KEY_CLASS], game.gameType, game.formatType)
         }
 
         val list = possibleSecrets.map {

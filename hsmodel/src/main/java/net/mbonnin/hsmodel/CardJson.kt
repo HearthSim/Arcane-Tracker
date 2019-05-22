@@ -4,6 +4,7 @@ import kotlinx.io.core.Input
 import kotlinx.io.core.readText
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.list
+import net.mbonnin.hsmodel.enum.HSSet
 
 
 class CardJson(lang: String, injectedCards: List<Card>? = null, input: Input) {
@@ -34,6 +35,8 @@ class CardJson(lang: String, injectedCards: List<Card>? = null, input: Input) {
         )
     }
 
+
+
     init {
         val str = input.readText()
 
@@ -54,14 +57,34 @@ class CardJson(lang: String, injectedCards: List<Card>? = null, input: Input) {
         return allCards
     }
 
-    fun getCard(id: String): Card? {
+    fun getCard(id: String): Card {
         val index = allCards.binarySearch {
             it.id.compareTo(id)
         }
         return if (index < 0) {
-            null
+            UNKNOWN
         } else {
             allCards[index]
+        }
+    }
+
+    companion object {
+        val UNKNOWN = unknown()
+
+        fun unknown(name: String? = null): Card {
+            return Card(
+                    id = "?",
+                    name = name ?: "?",
+                    playerClass = "?",
+                    cost = Card.UNKNOWN_COST,
+                    rarity = "?",
+                    type = Card.UNKNOWN_TYPE,
+                    text = "?",
+                    race = "?",
+                    collectible = false,
+                    dbfId = 0,
+                    set = HSSet.CORE
+            )
         }
     }
 }
