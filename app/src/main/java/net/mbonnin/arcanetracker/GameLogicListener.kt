@@ -3,11 +3,10 @@ package net.mbonnin.arcanetracker
 import android.os.Bundle
 import android.os.Handler
 import com.google.firebase.analytics.FirebaseAnalytics
-import io.reactivex.Single
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.rx2.await
+import kotlinx.coroutines.withContext
 import net.mbonnin.arcanetracker.detector.RANK_UNKNOWN
 import net.mbonnin.arcanetracker.helper.WhizbangAndZayleHelper
 import net.mbonnin.arcanetracker.helper.getClassIndex
@@ -29,7 +28,6 @@ import java.util.*
 class GameLogicListener private constructor() : GameLogic.Listener {
     private val mHandler: Handler
     var currentGame: Game? = null
-
 
 
     override fun gameStarted(game: Game) {
@@ -103,10 +101,10 @@ class GameLogicListener private constructor() : GameLogic.Listener {
 
     class InsertResult(val id: Long, val success: Boolean)
 
-    private fun insertGame(game: Game): Single<InsertResult> {
+    private suspend fun insertGame(game: Game): InsertResult {
         val deck = MainViewCompanion.playerCompanion.deck
         if (deck == null) {
-            return Single.just(InsertResult(-1L, false))
+            return InsertResult(-1L, false)
         }
 
         val rgame = RGame(
@@ -122,8 +120,13 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                 deck_name = deck.name
         )
 
-        return Single.fromCallable {
-            InsertResult(RDatabaseSingleton.instance.gameDao().insert(rgame), true)
+        return withContext(Dispatchers.IO) {
+            try {
+                val id = RDatabaseSingleton.instance.gameDao().insert(rgame)
+                InsertResult(id, true)
+            } catch (e: Exception) {
+                InsertResult(-1, false)
+            }
         }
     }
 
@@ -208,11 +211,8 @@ class GameLogicListener private constructor() : GameLogic.Listener {
         }
 
         GlobalScope.launch(Dispatchers.Main) {
-            val insertResult = try {
-                insertGame(game).await()
-            } catch (e: Exception) {
-                null
-            }
+            val insertResult = insertGame(game)
+
             if (ArcaneTrackerApplication.get().hsReplay.token() != null) {
                 FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("hsreplay_upload", null)
                 val result = ArcaneTrackerApplication.get().hsReplay.uploadGame(uploadRequest, gameStr)
@@ -221,8 +221,10 @@ class GameLogicListener private constructor() : GameLogic.Listener {
                             summary.hsreplayUrl = it
                             GameSummary.sync()
 
-                            if (insertResult?.success == true) {
-                                RDatabaseSingleton.instance.gameDao().update(insertResult.id, it)
+                            if (insertResult.success) {
+                                withContext(Dispatchers.IO) {
+                                    RDatabaseSingleton.instance.gameDao().update(insertResult.id, it)
+                                }
                             }
 
                             Timber.d("hsreplay upload success")
@@ -241,7 +243,7 @@ class GameLogicListener private constructor() : GameLogic.Listener {
     companion object {
 
         private var sGameLogicListener: GameLogicListener? = null
-        
+
         fun get(): GameLogicListener {
             if (sGameLogicListener == null) {
                 sGameLogicListener = GameLogicListener()

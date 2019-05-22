@@ -9,7 +9,6 @@ import kotlinx.coroutines.*
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.hsreplay.model.Account
 import net.mbonnin.arcanetracker.hsreplay.model.legacy.UploadRequest
-import net.mbonnin.arcanetracker.hsreplay.model.legacy.UploadToken
 import net.mbonnin.arcanetracker.hsreplay.model.legacy.UploadTokenRequest
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
@@ -144,14 +143,6 @@ class HSReplay(val context: Context, val userAgent: String) {
         }
 
         return Result.success(Unit)
-    }
-
-    suspend fun uploadToken(): Result<UploadToken> {
-        try {
-            return Result.success(legacyService.getToken(legacyToken!!).await())
-        } catch (e: Exception) {
-            return Result.failure(e)
-        }
     }
 
     suspend fun account(): Result<Account> {

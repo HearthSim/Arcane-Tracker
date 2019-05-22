@@ -5,7 +5,10 @@ import net.mbonnin.arcanetracker.hsreplay.model.legacy.UploadRequest
 import net.mbonnin.arcanetracker.hsreplay.model.legacy.UploadToken
 import net.mbonnin.arcanetracker.hsreplay.model.legacy.UploadTokenRequest
 import retrofit2.Call
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.Header
+import retrofit2.http.POST
+import retrofit2.http.Url
 
 interface LegacyService {
     @POST("tokens/")
@@ -13,7 +16,4 @@ interface LegacyService {
 
     @POST
     fun createUpload(@Url url: String, @Body uploadRequest: UploadRequest, @Header("Authorization") authorization: String): Call<Upload>
-
-    @GET("tokens/{token}/")
-    fun getToken(@Path("token") token: String): Call<UploadToken>
 }
