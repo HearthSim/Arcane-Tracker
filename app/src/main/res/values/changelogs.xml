@@ -28,4 +28,5 @@
     <string name="changelog_407" translatable="false">Rise of the Shadow support.\nUpdated Whizbang recipes\nRemove auto-hide as it was sometimes triggering unexpectedly.</string>
     <string name="changelog_409" translatable="false">Add back "Auto-Hide" as an opt-in setting. You can enable this if you want the overlay to hide in landscape mode.</string>
     <string name="changelog_410" translatable="false">Support for Zayle shadow cloak.</string>
+    <string name="changelog_412" translatable="false">Updated for nerfs.\nFixed a bug where the detailed stats where not updated.</string>
 </resources>
