@@ -15,7 +15,6 @@ class Game {
     var player: Player? = null
     var opponent: Player? = null
 
-    var plays = ArrayList<Play>()
     var victory: Boolean = false
 
     var lastPlayedCardId: String? = null

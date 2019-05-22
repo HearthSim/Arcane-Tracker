@@ -82,17 +82,13 @@ class GameLogic private constructor() {
                 return
             }
 
-            val play = Play()
-            play.turn = mCurrentTurn
-            play.cardId = playedEntity.CardID
-            play.isOpponent = game.findController(playedEntity).isOpponent
+            val isOpponent = game.findController(playedEntity).isOpponent
 
-            mGame!!.lastPlayedCardId = play.cardId
-            Timber.i("%s played %s", if (play.isOpponent) "opponent" else "I", play.cardId)
+            mGame!!.lastPlayedCardId = playedEntity.CardID
+            Timber.i("%s played %s", if (isOpponent) "opponent" else "I", playedEntity.CardID)
 
             SecretLogic.blockPlayed(game, tag.Target, playedEntity)
 
-            game.plays.add(play)
         } else if (BlockTag.TYPE_ATTACK == tag.BlockType) {
 
             SecretLogic.blockAttack(game, tag)
