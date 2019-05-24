@@ -7,8 +7,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.mbonnin.arcanetracker.detector.RANK_UNKNOWN
-import net.mbonnin.arcanetracker.hslog.Game
+import net.mbonnin.arcanetracker.hslog.power.Game
 import net.mbonnin.arcanetracker.hslog.HSLog
+import net.mbonnin.arcanetracker.hslog.power.fromFormatTypeString
 import net.mbonnin.arcanetracker.hsreplay.model.legacy.UploadRequest
 import net.mbonnin.arcanetracker.model.GameSummary
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
@@ -31,8 +32,8 @@ object GameHelper {
                 deck_id = deck.id,
                 victory = game.victory,
                 coin = game.player!!.hasCoin,
-                player_class = game.player!!.playerClass(),
-                opponent_class = game.opponent!!.playerClass(),
+                player_class = game.player!!.playerClass!!,
+                opponent_class = game.opponent!!.playerClass!!,
                 date = System.currentTimeMillis(),
                 format_type = game.formatType!!,
                 game_type = game.gameType!!,
@@ -64,8 +65,8 @@ object GameHelper {
 
         summary.coin = game.player!!.hasCoin
         summary.win = game.victory
-        summary.hero = game.player!!.classIndex()
-        summary.opponentHero = game.opponent!!.classIndex()
+        summary.hero = game.player!!.classIndex!!
+        summary.opponentHero = game.opponent!!.classIndex!!
         summary.date = Utils.ISO8601DATEFORMAT.format(Date())
         summary.deckName = MainViewCompanion.playerCompanion.deck?.name
 

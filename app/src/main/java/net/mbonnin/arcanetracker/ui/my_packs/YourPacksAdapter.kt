@@ -12,7 +12,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
 import net.mbonnin.arcanetracker.CardUtil
 import net.mbonnin.arcanetracker.R
-import net.mbonnin.arcanetracker.parser.AchievementsParser
+import net.mbonnin.arcanetracker.hslog.achievements.AchievementsParser
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RPack
 import net.mbonnin.hsmodel.enum.CardId

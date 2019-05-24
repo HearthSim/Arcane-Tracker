@@ -1,13 +1,8 @@
-package net.mbonnin.arcanetracker.hslog
+package net.mbonnin.arcanetracker.hslog.loadingscreen
 
-import timber.log.Timber
-import java.util.regex.Pattern
+import net.mbonnin.arcanetracker.hslog.Console
 
-/**
- * Created by martin on 11/7/16.
- */
-
-class LoadingScreenParser {
+class LoadingScreenParser(val console: Console) {
 
     private var isOldData = true
 
@@ -22,17 +17,17 @@ class LoadingScreenParser {
         private set
 
     fun process(rawLine: String, isOldData: Boolean) {
-        Timber.v(rawLine)
+        console.debug(rawLine)
 
         if (this.isOldData && !isOldData) {
             setModeInternal(mParsedMode)
             this.isOldData = true
         }
-        val pattern = Pattern.compile(".*LoadingScreen.OnSceneLoaded\\(\\) - prevMode=(.*) currMode=(.*)")
-        val matcher = pattern.matcher(rawLine)
-        if (matcher.matches()) {
+        val pattern = Regex(".*LoadingScreen.OnSceneLoaded\\(\\) - prevMode=(.*) currMode=(.*)")
+        val matcher = pattern.matchEntire(rawLine)
+        if (matcher != null) {
             //val prevMode = matcher.group(1)
-            val currMode = matcher.group(2)
+            val currMode = matcher.groupValues[2]
 
             mParsedMode = currMode
             if (!isOldData) {
@@ -45,7 +40,7 @@ class LoadingScreenParser {
     }
 
     private fun setModeInternal(parsedMode: String) {
-        Timber.d("setModeInternal " + parsedMode)
+        console.debug("setModeInternal $parsedMode")
 
         mode = parsedMode
 

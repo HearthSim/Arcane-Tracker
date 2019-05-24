@@ -2,8 +2,8 @@ package net.mbonnin.arcanetracker
 
 import net.hearthsim.kotlin.hslog.BlockTag
 import net.hearthsim.kotlin.hslog.MetaDataTag
-import net.mbonnin.arcanetracker.hslog.Entity
-import net.mbonnin.arcanetracker.hslog.Game
+import net.mbonnin.arcanetracker.hslog.power.Entity
+import net.mbonnin.arcanetracker.hslog.power.Game
 import net.mbonnin.hsmodel.enum.CardId
 import net.mbonnin.hsmodel.enum.Rarity
 import net.mbonnin.hsmodel.enum.Type

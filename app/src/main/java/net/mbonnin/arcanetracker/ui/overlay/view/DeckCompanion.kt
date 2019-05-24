@@ -7,10 +7,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import net.mbonnin.arcanetracker.CardUtil
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.ViewManager
+import net.mbonnin.arcanetracker.helper.getClassIndex
+import net.mbonnin.arcanetracker.helper.getPlayerClass
 import net.mbonnin.arcanetracker.hslog.Deck
+import net.mbonnin.hsmodel.Card
 import timber.log.Timber
 
 /**
@@ -28,6 +32,21 @@ open class DeckCompanion(v: View) {
 
     private val mParams: ViewManager.Params
     private val mRecyclerViewParams: ViewManager.Params
+
+    fun checkClassIndex(deck: Deck) {
+        for (cardId in deck.cards.keys) {
+            val (_, _, _, playerClass) = CardUtil.getCard(cardId)
+            val ci = getClassIndex(playerClass)
+            if (ci >= 0 && ci < Card.CLASS_INDEX_NEUTRAL) {
+                if (deck.classIndex != ci) {
+                    Timber.e("inconsistent class index, force to" + getPlayerClass(ci))
+                    deck.classIndex = ci
+                }
+                return
+            }
+        }
+    }
+
     open var deck: Deck? = null
         set(value) {
             field = value
@@ -36,7 +55,7 @@ open class DeckCompanion(v: View) {
                 return
             }
 
-            value.checkClassIndex()
+            checkClassIndex(value)
 
             background.setImageDrawable(Utils.getDrawableForClassIndex(value.classIndex))
             deckName.text = value.name

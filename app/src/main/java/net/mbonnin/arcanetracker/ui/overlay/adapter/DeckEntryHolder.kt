@@ -14,7 +14,7 @@ import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.ViewManager
-import net.mbonnin.arcanetracker.hslog.Entity
+import net.mbonnin.arcanetracker.hslog.power.Entity
 import net.mbonnin.hsmodel.Card
 import net.mbonnin.hsmodel.enum.Rarity
 

@@ -1,6 +1,6 @@
 package net.mbonnin.arcanetracker.ui.overlay.adapter
 
-import net.mbonnin.arcanetracker.hslog.Entity
+import net.mbonnin.arcanetracker.hslog.power.Entity
 import net.mbonnin.hsmodel.Card
 
 

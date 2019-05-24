@@ -1,4 +1,4 @@
-package net.mbonnin.arcanetracker
+package net.mbonnin.arcanetracker.hslog.power
 
 enum class GameType {
     GT_RANKED,

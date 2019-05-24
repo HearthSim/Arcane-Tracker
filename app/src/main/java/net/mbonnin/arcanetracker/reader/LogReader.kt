@@ -1,4 +1,4 @@
-package net.mbonnin.arcanetracker.parser
+package net.mbonnin.arcanetracker.reader
 
 import android.Manifest
 import android.content.pm.PackageManager

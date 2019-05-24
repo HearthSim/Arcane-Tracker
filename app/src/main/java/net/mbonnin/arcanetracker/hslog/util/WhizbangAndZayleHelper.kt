@@ -1,7 +1,8 @@
-package net.mbonnin.arcanetracker.helper
+package net.mbonnin.arcanetracker.hslog.util
 
+import net.mbonnin.arcanetracker.helper.DeckStringHelper
 import net.mbonnin.arcanetracker.hslog.Deck
-import net.mbonnin.arcanetracker.hslog.Game
+import net.mbonnin.arcanetracker.hslog.power.Game
 
 object WhizbangAndZayleHelper {
     val whizbangRecipes = listOf(

@@ -1,10 +1,8 @@
-package net.mbonnin.arcanetracker.hslog
+package net.mbonnin.arcanetracker.hslog.power
 
-import net.mbonnin.arcanetracker.Utils
-import timber.log.Timber
-import java.util.*
+import net.mbonnin.arcanetracker.hslog.Console
 
-class Game {
+class Game(private val console: Console) {
 
     var entityMap = HashMap<String, Entity>()
     var battleTags = ArrayList<String>()
@@ -36,7 +34,7 @@ class Game {
     fun findPlayer(playerId: String): Player {
         val player = playerMap[playerId]
         if (player == null) {
-            Timber.e("cannot find player $playerId")
+            console.error("cannot find player $playerId")
             /**
              * do not crash...
              */
@@ -65,16 +63,16 @@ class Game {
             return gameEntity
         }
 
-        if (Utils.isEmpty(IdOrBattleTag)) {
+        if (IdOrBattleTag.isNullOrEmpty()) {
             return unknownEntity("empty")
         }
 
         // this must be a battleTag
         entity = entityMap[IdOrBattleTag]
         if (entity == null) {
-            Timber.w("Adding battleTag $IdOrBattleTag")
+            console.debug("Adding battleTag $IdOrBattleTag")
             if (battleTags.size >= 2) {
-                Timber.e("[Inconsistent] too many battleTags")
+                console.error("[Inconsistent] too many battleTags")
             }
             battleTags.add(IdOrBattleTag)
 
@@ -86,7 +84,7 @@ class Game {
     }
 
     private fun unknownEntity(entityId: String): Entity {
-        Timber.e("unknown entity $entityId")
+        console.error("unknown entity $entityId")
         val entity = Entity()
         entity.EntityID = entityId
         return entity

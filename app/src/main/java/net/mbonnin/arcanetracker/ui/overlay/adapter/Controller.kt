@@ -5,9 +5,9 @@ import android.os.Handler
 import android.text.TextUtils
 import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.hslog.Deck
-import net.mbonnin.arcanetracker.hslog.Entity
-import net.mbonnin.arcanetracker.hslog.Game
-import net.mbonnin.arcanetracker.hslog.GameLogic
+import net.mbonnin.arcanetracker.hslog.power.Entity
+import net.mbonnin.arcanetracker.hslog.power.Game
+import net.mbonnin.arcanetracker.hslog.power.GameLogic
 import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.enum.PlayerClass
 import net.mbonnin.hsmodel.enum.Rarity

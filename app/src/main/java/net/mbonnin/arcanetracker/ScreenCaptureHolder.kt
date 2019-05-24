@@ -8,7 +8,8 @@ import android.os.Handler
 import androidx.annotation.RequiresApi
 import net.mbonnin.arcanetracker.detector.ByteBufferImage
 import net.mbonnin.arcanetracker.detector.Detector
-import net.mbonnin.arcanetracker.hslog.Entity
+import net.mbonnin.arcanetracker.hslog.power.Entity
+import net.mbonnin.arcanetracker.hslog.power.GameType
 
 object ScreenCaptureHolder {
     @SuppressLint("StaticFieldLeak")

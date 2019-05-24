@@ -1,4 +1,4 @@
-package net.mbonnin.arcanetracker.parser
+package net.mbonnin.arcanetracker.hslog.decks
 
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -6,6 +6,7 @@ import net.hearthsim.kotlin.hslog.LogLine
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.helper.DeckStringHelper
+import net.mbonnin.arcanetracker.reader.LogReader
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RDeck
 import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion

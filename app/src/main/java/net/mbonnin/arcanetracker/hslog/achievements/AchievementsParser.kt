@@ -1,17 +1,17 @@
-package net.mbonnin.arcanetracker.parser
+package net.mbonnin.arcanetracker.hslog.achievements
 
 import io.reactivex.Completable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import net.mbonnin.arcanetracker.CardUtil
+import net.mbonnin.arcanetracker.hslog.Console
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RPack
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
-import java.util.regex.Pattern
 
-class AchievementsParser : LogReader.LineConsumer {
-    private val CARD_GAINED = Pattern.compile(".*NotifyOfCardGained:.*cardId=(.*) .* (.*) [0-9]*")
+class AchievementsParser(val console: Console) {
+    private val CARD_GAINED = Regex(".*NotifyOfCardGained:.*cardId=(.*) .* (.*) [0-9]*")
     private val cardList = mutableListOf<CardGained>()
     private var disposable: Disposable? = null
 
@@ -25,19 +25,22 @@ class AchievementsParser : LogReader.LineConsumer {
         }
     }
 
-    override fun onLine(rawLine: String) {
+    fun process(rawLine: String, isOldData: Boolean) {
+        if (isOldData) {
+            return
+        }
         //D 20:44:22.9979440 NotifyOfCardGained: [name=Eviscerate cardId=EX1_124 type=SPELL] NORMAL 3
-        Timber.d(rawLine)
-        val matcher = CARD_GAINED.matcher(rawLine)
+        console.debug(rawLine)
+        val matcher = CARD_GAINED.matchEntire(rawLine)
 
-        if (matcher.matches()) {
+        if (matcher != null) {
             synchronized(this) {
-                val cardId = matcher.group(1)
-                val isGolden = matcher.group(2) == "GOLDEN"
+                val cardId = matcher.groupValues[1]
+                val isGolden = matcher.groupValues[2] == "GOLDEN"
                 cardList.add(CardGained(cardId, isGolden))
             }
 
-            Timber.d("Opened card: ${matcher.group(1)}")
+            console.debug("Opened card: ${matcher.groupValues[1]}")
 
             // if some delay pass without a new card incoming, we consider the pack done
             disposable?.dispose()
@@ -61,6 +64,4 @@ class AchievementsParser : LogReader.LineConsumer {
         }
     }
 
-    override fun onPreviousDataRead() {
-    }
 }

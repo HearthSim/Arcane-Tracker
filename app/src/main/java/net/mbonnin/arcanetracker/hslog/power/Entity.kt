@@ -1,6 +1,5 @@
-package net.mbonnin.arcanetracker.hslog
+package net.mbonnin.arcanetracker.hslog.power
 
-import net.mbonnin.arcanetracker.CardUtil
 import net.mbonnin.hsmodel.Card
 
 @Suppress("PropertyName")
@@ -26,9 +25,9 @@ class Entity {
         return String.format("CardEntity [id=$EntityID][CardID=$CardID]$name")
     }
 
-    fun setCardId(cardID: String) {
+    fun setCardId(cardID: String, card: Card) {
         this.CardID = cardID
-        this.card = CardUtil.getCard(cardID)
+        this.card = card
     }
 
     class Extra {

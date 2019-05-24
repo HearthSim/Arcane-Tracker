@@ -13,7 +13,6 @@ import net.mbonnin.hsmodel.enum.PlayerClass.ROGUE
 import net.mbonnin.hsmodel.enum.PlayerClass.SHAMAN
 import net.mbonnin.hsmodel.enum.PlayerClass.WARLOCK
 import net.mbonnin.hsmodel.enum.PlayerClass.WARRIOR
-import java.util.regex.Pattern
 
 fun allHeroes(): Array<String> {
     return arrayOf(WARRIOR, SHAMAN, ROGUE, PALADIN, HUNTER, DRUID, WARLOCK, MAGE, PRIEST, NEUTRAL)
@@ -55,27 +54,6 @@ fun getClassIndex(playerClass: String): Int {
 
 fun getHeroId(classIndex: Int): String {
     return String.format("hero_%02d", sanitizeIndex(classIndex) + 1)
-}
-
-fun heroIdToClassIndex(heroId: String): Int {
-
-    val pattern = Pattern.compile("hero_([0-9]*)[a-zA-Z]*", Pattern.CASE_INSENSITIVE)
-    val matcher = pattern.matcher(heroId)
-    if (matcher.matches()) {
-        try {
-            var i = Integer.parseInt(matcher.group(1))
-            i--
-
-            if (i >= 0 && i < 9) {
-                return i
-            }
-
-        } catch (e: Exception) {
-        }
-
-    }
-
-    return -1
 }
 
 object HeroUtil {

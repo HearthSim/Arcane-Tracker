@@ -1,16 +1,15 @@
 package net.mbonnin.arcanetracker.hslog
 
 import net.hearthsim.kotlin.hslog.PowerParser
-import net.mbonnin.arcanetracker.GameType
-import net.mbonnin.arcanetracker.R
-import net.mbonnin.arcanetracker.Utils
-import net.mbonnin.arcanetracker.helper.WhizbangAndZayleHelper
 import net.mbonnin.arcanetracker.helper.getClassIndex
-import net.mbonnin.arcanetracker.ui.overlay.adapter.PlayerDeckListAdapter
-import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
+import net.mbonnin.arcanetracker.hslog.achievements.AchievementsParser
+import net.mbonnin.arcanetracker.hslog.loadingscreen.LoadingScreenParser
+import net.mbonnin.arcanetracker.hslog.power.Game
+import net.mbonnin.arcanetracker.hslog.power.GameLogic
+import net.mbonnin.arcanetracker.hslog.power.GameType
+import net.mbonnin.arcanetracker.hslog.util.WhizbangAndZayleHelper
 import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.enum.CardId
-import timber.log.Timber
 
 interface Console {
     fun debug(message: String)
@@ -22,13 +21,14 @@ typealias DeckChangedListener = (deck: Deck) -> Unit
 typealias RawGameListener = (gameStr: String, gameStart: Long) -> Unit
 
 class HSLog(private val console: Console, private val cardJson: CardJson) {
-    private val loadingScreenParser = LoadingScreenParser()
-    private val gameLogic = GameLogic(console)
+    private val loadingScreenParser = LoadingScreenParser(console)
+    private val achievementsParser = AchievementsParser(console)
+    private val gameLogic = GameLogic(console, cardJson)
     private val playerDeckChangedListenerList = mutableListOf<DeckChangedListener>()
     private val opponentDeckChangedListenerList = mutableListOf<DeckChangedListener>()
     private val rawGameListenerList = mutableListOf<RawGameListener>()
 
-    val powerParser = PowerParser(
+    private val powerParser = PowerParser(
             mTagConsumer = { tag ->
                 gameLogic.handleRootTag(tag)
             },
@@ -52,6 +52,10 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
 
     fun processPower(rawLine: String, isOldData: Boolean) {
         powerParser.process(rawLine, isOldData)
+    }
+
+    fun processAchievement(rawLine: String, isOldData: Boolean) {
+        achievementsParser.process(rawLine, isOldData)
     }
 
     fun onGameStart(block: (Game) -> Unit) {
@@ -84,13 +88,11 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
 
     private fun selectDecks(game: Game) {
         val opponentDeck = Deck()
-        opponentDeck.classIndex = game.opponent!!.classIndex()
+        opponentDeck.classIndex = game.opponent!!.classIndex!!
 
         opponentDeckChangedListenerList.forEach {
             it(opponentDeck)
         }
-
-        MainViewCompanion.opponentCompanion.deck = opponentDeck
 
         var playerDeck: Deck? = null
 
@@ -98,9 +100,9 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
             GameType.GT_TAVERNBRAWL.name,
             GameType.GT_VS_AI.name -> {
                 val emptyDeck = Deck()
-                emptyDeck.name = Utils.getString(R.string.deck)
+                emptyDeck.name = ""
                 emptyDeck.id = "rototo"
-                emptyDeck.classIndex = getClassIndex(game.player!!.playerClass())
+                emptyDeck.classIndex = getClassIndex(game.player!!.playerClass!!)
                 playerDeck = emptyDeck
             }
         }
@@ -109,10 +111,9 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
             val whizbangDeck = WhizbangAndZayleHelper.findWhizbangDeck(game)
 
             if (whizbangDeck != null) {
-                Timber.d("Found whizbang deck: ${whizbangDeck.name}")
+                console.debug("Found whizbang deck: ${whizbangDeck.name}")
                 whizbangDeck.id = "rototo"
                 whizbangDeck.name = cardJson.getCard(CardId.WHIZBANG_THE_WONDERFUL).name
-                PlayerDeckListAdapter.get().setWhizbangDeck(whizbangDeck)
                 playerDeck = whizbangDeck
             }
         }
@@ -121,10 +122,9 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
             val zayleDeck = WhizbangAndZayleHelper.finZayleDeck(game)
 
             if (zayleDeck != null) {
-                Timber.d("Found whizbang deck: ${zayleDeck.name}")
+                console.debug("Found whizbang deck: ${zayleDeck.name}")
                 zayleDeck.id = "rototo"
                 zayleDeck.name = cardJson.getCard(CardId.ZAYLE_SHADOW_CLOAK).name
-                PlayerDeckListAdapter.get().setZayleDeck(zayleDeck)
                 playerDeck = zayleDeck
             }
         }

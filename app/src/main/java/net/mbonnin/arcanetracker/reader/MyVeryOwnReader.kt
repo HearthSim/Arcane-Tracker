@@ -1,4 +1,4 @@
-package net.mbonnin.arcanetracker.parser
+package net.mbonnin.arcanetracker.reader
 
 import timber.log.Timber
 import java.io.File

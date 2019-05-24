@@ -18,12 +18,11 @@ import com.squareup.picasso.LruCache
 import com.squareup.picasso.Picasso
 import io.paperdb.Paper
 import kotlinx.io.streams.asInput
-import net.hearthsim.kotlin.hslog.PowerParser
 import net.mbonnin.arcanetracker.hslog.Console
-import net.mbonnin.arcanetracker.hslog.GameLogic
 import net.mbonnin.arcanetracker.hslog.HSLog
+import net.mbonnin.arcanetracker.hslog.decks.DecksParser
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
-import net.mbonnin.arcanetracker.parser.*
+import net.mbonnin.arcanetracker.reader.*
 import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
 import net.mbonnin.hsmodel.Card
 import net.mbonnin.hsmodel.CardJson
@@ -189,6 +188,9 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         cardJson = createCardJson()
         hsLog = HSLog(console, cardJson)
         hsLog.onPlayerDeckChanged {
+            if (it.name.isNullOrBlank()) {
+                it.name = Utils.getString(R.string.deck)
+            }
             MainViewCompanion.playerCompanion.deck = it
         }
         hsLog.onOpponentDeckChanged {
@@ -236,13 +238,22 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         })
 
 
+        val achievementLogReader = LogReader("Achievements.log", true)
+        achievementLogReader.start(object : LogReader.LineConsumer {
+            var previousDataRead = false
+            override fun onLine(rawLine: String) {
+                hsLog.processAchievement(rawLine, previousDataRead)
+            }
+
+            override fun onPreviousDataRead() {
+                previousDataRead = true
+            }
+        })
+
         val decksLogReader = LogReader("Decks.log", false)
         decksLogReader.start(DecksParser.get())
 
-        val achievementLogReader = LogReader("Achievements.log", true)
-        achievementLogReader.start(AchievementsParser())
-
-        val userAgent = (ArcaneTrackerApplication.context.getPackageName() + "/" + BuildConfig.VERSION_NAME
+        val userAgent = (ArcaneTrackerApplication.context.packageName + "/" + BuildConfig.VERSION_NAME
                 + "; Android " + Build.VERSION.RELEASE + ";")
 
         hsReplay = HSReplay(this, userAgent)

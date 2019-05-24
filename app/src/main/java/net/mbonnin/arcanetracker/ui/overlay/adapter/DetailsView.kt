@@ -16,8 +16,10 @@ import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.databinding.EntityViewWithSecretsBinding
-import net.mbonnin.arcanetracker.hslog.Entity
-import net.mbonnin.arcanetracker.hslog.GameLogic
+import net.mbonnin.arcanetracker.hslog.power.Entity
+import net.mbonnin.arcanetracker.hslog.power.GameLogic
+import net.mbonnin.arcanetracker.hslog.power.FormatType
+import net.mbonnin.arcanetracker.hslog.power.GameType
 import net.mbonnin.hsmodel.enum.Type
 
 class DetailsView(context: Context) : ViewGroup(context) {

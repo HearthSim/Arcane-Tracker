@@ -1,5 +1,8 @@
 package net.mbonnin.arcanetracker
 
+import net.mbonnin.arcanetracker.hslog.power.FormatType
+import net.mbonnin.arcanetracker.hslog.power.GameType
+
 enum class BnetGameType(val intValue: Int) {
     BGT_UNKNOWN(0),
     BGT_FRIENDS(1),

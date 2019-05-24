@@ -1,7 +1,7 @@
 package net.mbonnin.arcanetracker.hsreplay.model.legacy
 
 import net.mbonnin.arcanetracker.BnetGameType
-import net.mbonnin.arcanetracker.FormatType
+import net.mbonnin.arcanetracker.hslog.power.FormatType
 import net.mbonnin.arcanetracker.hsreplay.model.HSPlayer
 
 

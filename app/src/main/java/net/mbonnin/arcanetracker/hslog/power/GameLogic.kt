@@ -1,4 +1,4 @@
-package net.mbonnin.arcanetracker.hslog
+package net.mbonnin.arcanetracker.hslog.power
 
 /*
  * Created by martin on 11/11/16.
@@ -7,13 +7,16 @@ package net.mbonnin.arcanetracker.hslog
 import net.hearthsim.kotlin.hslog.*
 import net.hearthsim.kotlin.hslog.BlockTag.Companion.TYPE_TRIGGER
 import net.mbonnin.arcanetracker.SecretLogic
-import net.mbonnin.arcanetracker.Utils
+import net.mbonnin.arcanetracker.helper.getClassIndex
+import net.mbonnin.arcanetracker.helper.getPlayerClass
+import net.mbonnin.arcanetracker.hslog.Console
+import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.enum.CardId
 import net.mbonnin.hsmodel.enum.Type
 
 
 
-class GameLogic(private val console: Console) {
+class GameLogic(private val console: Console, private val cardJson: CardJson) {
 
     private val gameStartListenerList = mutableListOf<(Game) -> Unit>()
     private val gameEndListenerList = mutableListOf<(Game) -> Unit>()
@@ -172,10 +175,10 @@ class GameLogic(private val console: Console) {
     private fun handleShowEntityTag(tag: ShowEntityTag) {
         val entity = mGame!!.findEntitySafe(tag.Entity!!)
 
-        if (!Utils.isEmpty(entity!!.CardID) && entity.CardID != tag.CardID) {
+        if (!entity!!.CardID.isNullOrBlank() && entity.CardID != tag.CardID) {
             console.error("[Inconsistent] entity $entity changed cardId ${entity.CardID}  -> ${tag.CardID}")
         }
-        entity.setCardId(tag.CardID!!)
+        entity.setCardId(tag.CardID!!, cardJson.getCard(tag.CardID!!))
 
         for (key in tag.tags.keys) {
             tagChanged(entity, key, tag.tags[key])
@@ -277,7 +280,7 @@ class GameLogic(private val console: Console) {
         if (mGame != null && tag.gameEntity.tags[Entity.KEY_TURN] != null) {
             console.debug("CREATE_GAME during an existing one, resuming")
         } else {
-            mGame = Game()
+            mGame = Game(console)
 
             var player: Player
             var entity: Entity
@@ -334,7 +337,7 @@ class GameLogic(private val console: Console) {
         val entities = mGame!!.getEntityList { entity -> "1" == entity.tags[Entity.KEY_CONTROLLER] && Entity.ZONE_HAND == entity.tags[Entity.KEY_ZONE] }
 
         for (entity in entities) {
-            if (!Utils.isEmpty(entity.CardID)) {
+            if (!entity.CardID.isNullOrBlank()) {
                 knownCardsInHand++
             }
             totalCardsInHand++
@@ -377,7 +380,7 @@ class GameLogic(private val console: Console) {
         val blockEntity = mGame!!.findEntitySafe(blockTag.Entity!!)
         val entity = mGame!!.findEntitySafe(fullEntityTag.ID!!)
 
-        if (Utils.isEmpty(blockEntity!!.CardID)) {
+        if (blockEntity!!.CardID.isNullOrBlank()) {
             return
         }
 
@@ -471,8 +474,8 @@ class GameLogic(private val console: Console) {
             }
         }
 
-        if (!Utils.isEmpty(guessedId)) {
-            entity!!.setCardId(guessedId!!)
+        if (!guessedId.isNullOrBlank()) {
+            entity!!.setCardId(guessedId!!, cardJson.getCard(guessedId!!))
         }
 
         // even if we don't know the guessedId, record that this was createdBy this entity
@@ -492,8 +495,8 @@ class GameLogic(private val console: Console) {
             mGame!!.entityMap.put(tag.ID!!, entity)
         }
         entity.EntityID = tag.ID
-        if (!Utils.isEmpty(tag.CardID)) {
-            entity.setCardId(tag.CardID!!)
+        if (!tag.CardID.isNullOrEmpty()) {
+            entity.setCardId(tag.CardID!!, cardJson.getCard(tag.CardID!!))
         }
         entity.tags.putAll(tag.tags)
 
@@ -509,6 +512,8 @@ class GameLogic(private val console: Console) {
 
         if (Type.HERO == cardType) {
             player.hero = entity
+            player.classIndex = getClassIndex(entity.CardID!!)
+            player.playerClass = getPlayerClass(player.classIndex!!)
         } else if (Type.HERO_POWER == cardType) {
             player.heroPower = entity
         } else {
@@ -517,7 +522,7 @@ class GameLogic(private val console: Console) {
                     entity.extra.originalController = entity.tags[Entity.KEY_CONTROLLER]
                 } else if (Entity.ZONE_HAND == entity.tags[Entity.KEY_ZONE]) {
                     // this must be the coin
-                    entity.setCardId(CardId.THE_COIN)
+                    entity.setCardId(CardId.THE_COIN, cardJson.getCard(CardId.THE_COIN))
                     entity.extra.drawTurn = 0
                 }
             }
