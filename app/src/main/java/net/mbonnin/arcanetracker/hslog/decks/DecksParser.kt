@@ -6,24 +6,23 @@ import net.hearthsim.kotlin.hslog.LogLine
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.helper.DeckStringHelper
-import net.mbonnin.arcanetracker.reader.LogReader
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RDeck
 import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
 import timber.log.Timber
 
-class DecksParser: LogReader.LineConsumer {
+class DecksParser {
     enum class State {
         DEFAULT,
         ARENA,
         GAME
     }
 
-    val deckStringHelper = DeckStringHelper()
+    private val deckStringHelper = DeckStringHelper()
     var state = State.DEFAULT
 
 
-    override fun onLine(rawLine: String) {
+    fun process(rawLine: String, isOldData: Boolean) {
         Timber.d(rawLine)
         if (rawLine.contains("Deck Contents Received:")) {
             state = State.DEFAULT
@@ -70,20 +69,6 @@ class DecksParser: LogReader.LineConsumer {
                 }
 
             }
-        }
-    }
-
-    override fun onPreviousDataRead() {
-    }
-
-    companion object {
-        var instance: DecksParser? = null
-        fun get(): DecksParser {
-            if (instance == null) {
-                instance = DecksParser()
-            }
-
-            return instance!!
         }
     }
 }

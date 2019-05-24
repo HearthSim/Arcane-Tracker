@@ -251,7 +251,16 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         })
 
         val decksLogReader = LogReader("Decks.log", false)
-        decksLogReader.start(DecksParser.get())
+        decksLogReader.start(object : LogReader.LineConsumer {
+            var previousDataRead = false
+            override fun onLine(rawLine: String) {
+                hsLog.processDecks(rawLine, previousDataRead)
+            }
+
+            override fun onPreviousDataRead() {
+                previousDataRead = true
+            }
+        })
 
         val userAgent = (ArcaneTrackerApplication.context.packageName + "/" + BuildConfig.VERSION_NAME
                 + "; Android " + Build.VERSION.RELEASE + ";")

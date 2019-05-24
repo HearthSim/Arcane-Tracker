@@ -3,6 +3,7 @@ package net.mbonnin.arcanetracker.hslog
 import net.hearthsim.kotlin.hslog.PowerParser
 import net.mbonnin.arcanetracker.helper.getClassIndex
 import net.mbonnin.arcanetracker.hslog.achievements.AchievementsParser
+import net.mbonnin.arcanetracker.hslog.decks.DecksParser
 import net.mbonnin.arcanetracker.hslog.loadingscreen.LoadingScreenParser
 import net.mbonnin.arcanetracker.hslog.power.Game
 import net.mbonnin.arcanetracker.hslog.power.GameLogic
@@ -21,13 +22,14 @@ typealias DeckChangedListener = (deck: Deck) -> Unit
 typealias RawGameListener = (gameStr: String, gameStart: Long) -> Unit
 
 class HSLog(private val console: Console, private val cardJson: CardJson) {
-    private val loadingScreenParser = LoadingScreenParser(console)
-    private val achievementsParser = AchievementsParser(console)
     private val gameLogic = GameLogic(console, cardJson)
     private val playerDeckChangedListenerList = mutableListOf<DeckChangedListener>()
     private val opponentDeckChangedListenerList = mutableListOf<DeckChangedListener>()
     private val rawGameListenerList = mutableListOf<RawGameListener>()
 
+    private val loadingScreenParser = LoadingScreenParser(console)
+    private val achievementsParser = AchievementsParser(console)
+    private val decksParser = DecksParser()
     private val powerParser = PowerParser(
             mTagConsumer = { tag ->
                 gameLogic.handleRootTag(tag)
@@ -56,6 +58,10 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
 
     fun processAchievement(rawLine: String, isOldData: Boolean) {
         achievementsParser.process(rawLine, isOldData)
+    }
+
+    fun processDecks(rawLine: String, isOldData: Boolean) {
+        decksParser.process(rawLine, isOldData)
     }
 
     fun onGameStart(block: (Game) -> Unit) {
