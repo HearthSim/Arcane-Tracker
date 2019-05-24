@@ -20,15 +20,23 @@ interface Console {
 
 typealias DeckChangedListener = (deck: Deck) -> Unit
 typealias RawGameListener = (gameStr: String, gameStart: Long) -> Unit
+typealias CardGainedListener = (cardGained: AchievementsParser.CardGained) -> Unit
 
 class HSLog(private val console: Console, private val cardJson: CardJson) {
     private val gameLogic = GameLogic(console, cardJson)
     private val playerDeckChangedListenerList = mutableListOf<DeckChangedListener>()
     private val opponentDeckChangedListenerList = mutableListOf<DeckChangedListener>()
     private val rawGameListenerList = mutableListOf<RawGameListener>()
+    private val cardGainedListenerList = mutableListOf<CardGainedListener>()
 
     private val loadingScreenParser = LoadingScreenParser(console)
-    private val achievementsParser = AchievementsParser(console)
+    private val achievementsParser = AchievementsParser(console,
+            onCard = {cardGained ->
+                cardGainedListenerList.forEach {
+                    it(cardGained)
+                }
+            }
+    )
     private val decksParser = DecksParser()
     private val powerParser = PowerParser(
             mTagConsumer = { tag ->
@@ -86,6 +94,10 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
 
     fun onRawGame(listener: RawGameListener) {
         rawGameListenerList.add(listener)
+    }
+
+    fun onCardGained(listener: CardGainedListener) {
+        cardGainedListenerList.add(listener)
     }
 
     fun currentOrFinishedGame(): Game? {
