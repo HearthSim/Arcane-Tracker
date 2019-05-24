@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Point
 import android.os.Build
-import android.os.Handler
 import android.util.DisplayMetrics
 import android.view.ContextThemeWrapper
 import androidx.multidex.MultiDexApplication
@@ -17,19 +16,10 @@ import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.LruCache
 import com.squareup.picasso.Picasso
 import io.paperdb.Paper
-import io.reactivex.Completable
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.io.streams.asInput
 import net.mbonnin.arcanetracker.hslog.Console
 import net.mbonnin.arcanetracker.hslog.HSLog
-import net.mbonnin.arcanetracker.hslog.achievements.AchievementsParser
-import net.mbonnin.arcanetracker.hslog.decks.DecksParser
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
-import net.mbonnin.arcanetracker.reader.*
-import net.mbonnin.arcanetracker.room.RDatabaseSingleton
-import net.mbonnin.arcanetracker.room.RPack
-import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
 import net.mbonnin.hsmodel.Card
 import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.enum.PlayerClass
@@ -38,7 +28,6 @@ import okhttp3.OkHttpClient
 import timber.log.Timber
 import java.io.File
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 class ArcaneTrackerApplication : MultiDexApplication() {
     lateinit var hsReplay: HSReplay
@@ -96,35 +85,6 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         return CardJson(jsonName, injectedCards, input)
     }
 
-    private val cardList = mutableListOf<AchievementsParser.CardGained>()
-    private var disposable: Disposable? = null
-
-
-    fun cardGained(cardGained: AchievementsParser.CardGained) {
-        synchronized(this) {
-            cardList.add(AchievementsParser.CardGained(cardGained.id, cardGained.golden))
-        }
-
-        // if some delay pass without a new card incoming, we consider the pack done
-        disposable?.dispose()
-        disposable = Completable.complete().delay(2000, TimeUnit.MILLISECONDS)
-                .observeOn(Schedulers.io())
-                .subscribe {
-                    synchronized(this) {
-                        if (cardList.size == 5) {
-                            val dust = cardList.sumBy {
-                                val card = CardUtil.getCard(it.id)
-                                CardUtil.getDust(card.rarity, it.golden)
-                            }
-                            val rPack = RPack(cardList = cardList.map { it.toString() }.joinToString(","), dust = dust)
-                            RDatabaseSingleton.instance.packDao().insert(rPack)
-                        } else {
-                            Timber.e("wrong number of cards in pack: ${cardList.size}")
-                        }
-                        cardList.clear()
-                    }
-                }
-    }
 
     @SuppressLint("NewApi", "CheckResult")
     override fun onCreate() {
@@ -223,84 +183,7 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         ScreenCaptureHolder.start()
 
         cardJson = createCardJson()
-        hsLog = HSLog(console, cardJson)
-        hsLog.onPlayerDeckChanged {
-            if (it.name.isNullOrBlank()) {
-                it.name = Utils.getString(R.string.deck)
-            }
-            MainViewCompanion.playerCompanion.deck = it
-        }
-        hsLog.onOpponentDeckChanged {
-            MainViewCompanion.opponentCompanion.deck = it
-        }
-        hsLog.onRawGame { gameStr, gameStart ->
-            GameHelper.insertAndUploadGame(gameStr, Date(gameStart), hsLog)
-        }
-        hsLog.onGameEnd {
-            GameHelper.gameEnded(it)
-        }
-        hsLog.onCardGained {
-            cardGained(it)
-        }
-
-        val handler = Handler()
-        /*
-         * we need to read the whole loading screen if we start the Tracker while in the 'tournament' play screen
-         * or arena screen already (and not in main menu)
-         */
-        val loadingScreenLogReader = LogReader("LoadingScreen.log", false)
-        loadingScreenLogReader.start(object : LogReader.LineConsumer {
-            var previousDataRead = false
-            override fun onLine(rawLine: String) {
-                handler.post {
-                    hsLog.processLoadingScreen(rawLine, previousDataRead)
-                }
-            }
-
-            override fun onPreviousDataRead() {
-                previousDataRead = true
-            }
-        })
-
-        /*
-         * Power.log, we just want the incremental changes
-         */
-        val powerLogReader = LogReader("Power.log", true)
-        powerLogReader.start(object : LogReader.LineConsumer {
-            var previousDataRead = false
-            override fun onLine(rawLine: String) {
-                hsLog.processPower(rawLine, previousDataRead)
-            }
-
-            override fun onPreviousDataRead() {
-                previousDataRead = true
-            }
-        })
-
-
-        val achievementLogReader = LogReader("Achievements.log", true)
-        achievementLogReader.start(object : LogReader.LineConsumer {
-            var previousDataRead = false
-            override fun onLine(rawLine: String) {
-                hsLog.processAchievement(rawLine, previousDataRead)
-            }
-
-            override fun onPreviousDataRead() {
-                previousDataRead = true
-            }
-        })
-
-        val decksLogReader = LogReader("Decks.log", false)
-        decksLogReader.start(object : LogReader.LineConsumer {
-            var previousDataRead = false
-            override fun onLine(rawLine: String) {
-                hsLog.processDecks(rawLine, previousDataRead)
-            }
-
-            override fun onPreviousDataRead() {
-                previousDataRead = true
-            }
-        })
+        hsLog = HSLogFactory.createHSLog(console, cardJson)
 
         val userAgent = (ArcaneTrackerApplication.context.packageName + "/" + BuildConfig.VERSION_NAME
                 + "; Android " + Build.VERSION.RELEASE + ";")

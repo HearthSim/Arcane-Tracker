@@ -21,6 +21,7 @@ interface Console {
 typealias DeckChangedListener = (deck: Deck) -> Unit
 typealias RawGameListener = (gameStr: String, gameStart: Long) -> Unit
 typealias CardGainedListener = (cardGained: AchievementsParser.CardGained) -> Unit
+typealias NewDeckFoundListener = (deck: Deck, deckString: String, isArena: Boolean) -> Unit
 
 class HSLog(private val console: Console, private val cardJson: CardJson) {
     private val gameLogic = GameLogic(console, cardJson)
@@ -28,16 +29,29 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
     private val opponentDeckChangedListenerList = mutableListOf<DeckChangedListener>()
     private val rawGameListenerList = mutableListOf<RawGameListener>()
     private val cardGainedListenerList = mutableListOf<CardGainedListener>()
+    private val newDeckFoundListenerList = mutableListOf<NewDeckFoundListener>()
 
     private val loadingScreenParser = LoadingScreenParser(console)
     private val achievementsParser = AchievementsParser(console,
-            onCard = {cardGained ->
+            onCard = { cardGained ->
                 cardGainedListenerList.forEach {
                     it(cardGained)
                 }
             }
     )
-    private val decksParser = DecksParser()
+    private val decksParser = DecksParser(
+            cardJson = cardJson,
+            onNewDeckFound = { deck, deckstring, isArena ->
+                newDeckFoundListenerList.forEach {
+                    it(deck, deckstring, isArena)
+                }
+            },
+            onPlayerDeckChanged = { deck ->
+                playerDeckChangedListenerList.forEach {
+                    it(deck)
+                }
+            }
+    )
     private val powerParser = PowerParser(
             mTagConsumer = { tag ->
                 gameLogic.handleRootTag(tag)
@@ -100,6 +114,10 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
         cardGainedListenerList.add(listener)
     }
 
+    fun onNewDeckFound(listener: NewDeckFoundListener) {
+        newDeckFoundListenerList.add(listener)
+    }
+
     fun currentOrFinishedGame(): Game? {
         return gameLogic.currentOrFinishedGame
     }
@@ -126,7 +144,7 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
         }
 
         if (GameLogic.isPlayerWhizbang(game)) {
-            val whizbangDeck = WhizbangAndZayleHelper.findWhizbangDeck(game)
+            val whizbangDeck = WhizbangAndZayleHelper.findWhizbangDeck(game, cardJson)
 
             if (whizbangDeck != null) {
                 console.debug("Found whizbang deck: ${whizbangDeck.name}")
@@ -137,7 +155,7 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
         }
 
         if (GameLogic.isPlayerZayle(game)) {
-            val zayleDeck = WhizbangAndZayleHelper.finZayleDeck(game)
+            val zayleDeck = WhizbangAndZayleHelper.finZayleDeck(game, cardJson)
 
             if (zayleDeck != null) {
                 console.debug("Found whizbang deck: ${zayleDeck.name}")
@@ -153,6 +171,4 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
             }
         }
     }
-
-
 }

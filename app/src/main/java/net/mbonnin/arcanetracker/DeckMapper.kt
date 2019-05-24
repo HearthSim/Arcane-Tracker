@@ -1,12 +1,13 @@
 package net.mbonnin.arcanetracker
 
-import net.mbonnin.arcanetracker.helper.DeckStringHelper
 import net.mbonnin.arcanetracker.hslog.Deck
+import net.mbonnin.arcanetracker.hslog.decks.DeckStringHelper
 import net.mbonnin.arcanetracker.room.RDeck
+import net.mbonnin.hsmodel.CardJson
 
 object DeckMapper {
     fun fromRDeck(rdeck: RDeck): Deck? {
-        val deck = DeckStringHelper.parse(rdeck.deck_string)
+        val deck = DeckStringHelper.parse(rdeck.deck_string, ArcaneTrackerApplication.get().cardJson)
         if (deck == null) {
             return null
         }

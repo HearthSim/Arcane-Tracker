@@ -68,6 +68,17 @@ class CardJson(lang: String, injectedCards: List<Card>? = null, input: Input) {
         }
     }
 
+    fun getCard(dbfId: Int): Card? {
+
+        for (card in allCards) {
+            if (card.dbfId == dbfId) {
+                return card
+            }
+        }
+
+        return null
+    }
+
     companion object {
         val UNKNOWN = unknown()
 

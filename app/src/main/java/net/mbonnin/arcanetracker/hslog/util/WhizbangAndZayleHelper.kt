@@ -1,8 +1,9 @@
 package net.mbonnin.arcanetracker.hslog.util
 
-import net.mbonnin.arcanetracker.helper.DeckStringHelper
 import net.mbonnin.arcanetracker.hslog.Deck
+import net.mbonnin.arcanetracker.hslog.decks.DeckStringHelper
 import net.mbonnin.arcanetracker.hslog.power.Game
+import net.mbonnin.hsmodel.CardJson
 
 object WhizbangAndZayleHelper {
     val whizbangRecipes = listOf(
@@ -34,15 +35,15 @@ object WhizbangAndZayleHelper {
             "AAECAQcKuuwCze8Cm/ACkvgCjvsCoIADmocDm5QDkpgDwJgDCp3wApfzAtH1Ap77ArP8AvH8AvWAA5eUA5qUA4OgAwA=" // bomb rush warrior
     )
 
-    fun findWhizbangDeck(game: Game): Deck? {
-        return findDeck(game, whizbangRecipes)
+    fun findWhizbangDeck(game: Game, cardJson: CardJson): Deck? {
+        return findDeck(game, whizbangRecipes, cardJson)
     }
 
-    fun finZayleDeck(game: Game): Deck? {
-        return findDeck(game, zayleRecipes)
+    fun finZayleDeck(game: Game, cardJson: CardJson): Deck? {
+        return findDeck(game, zayleRecipes, cardJson)
     }
 
-    private fun findDeck(game: Game, recipeCandidateList: List<String>): Deck? {
+    private fun findDeck(game: Game, recipeCandidateList: List<String>, cardJson: CardJson): Deck? {
         val playerEntityList = game.getEntityList { entity ->
             game.player!!.entity!!.PlayerID == entity.extra.originalController
                     && entity.card != null
@@ -50,7 +51,7 @@ object WhizbangAndZayleHelper {
 
         val deck = recipeCandidateList
                 .asSequence()
-                .map { DeckStringHelper.parse(it) }
+                .map { DeckStringHelper.parse(it, cardJson) }
                 .filterNotNull()
                 .firstOrNull { deck2 ->
                     playerEntityList.filter { !deck2.cards.containsKey(it.card!!.id) }.isEmpty()

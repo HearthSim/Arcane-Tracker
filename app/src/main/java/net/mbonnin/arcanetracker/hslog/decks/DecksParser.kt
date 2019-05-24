@@ -1,17 +1,13 @@
 package net.mbonnin.arcanetracker.hslog.decks
 
-import io.reactivex.Completable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import net.hearthsim.kotlin.hslog.LogLine
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.R
-import net.mbonnin.arcanetracker.helper.DeckStringHelper
-import net.mbonnin.arcanetracker.room.RDatabaseSingleton
-import net.mbonnin.arcanetracker.room.RDeck
-import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
+import net.mbonnin.arcanetracker.hslog.Deck
+import net.mbonnin.hsmodel.CardJson
 import timber.log.Timber
 
-class DecksParser {
+class DecksParser(private val cardJson: CardJson, val onPlayerDeckChanged: (Deck) -> Unit, val onNewDeckFound: (Deck, String, Boolean) -> Unit) {
     enum class State {
         DEFAULT,
         ARENA,
@@ -38,7 +34,7 @@ class DecksParser {
                 val result = deckStringHelper.parseLine(logLine.line)
 
                 if (result?.id != null) {
-                    val deck = DeckStringHelper.parse(result.deckString)
+                    val deck = DeckStringHelper.parse(result.deckString, cardJson)
                     if (deck != null) {
                         deck.id = result.id
                         if (state == State.ARENA) {
@@ -48,23 +44,9 @@ class DecksParser {
                         }
 
                         if (state == State.ARENA || state == State.GAME) {
-                            Completable.fromAction {
-                                MainViewCompanion.playerCompanion.deck = deck
-                            }
-                                    .subscribeOn(AndroidSchedulers.mainThread())
-                                    .subscribe()
+                            onPlayerDeckChanged(deck)
                         }
-
-                        val rdeck = RDeck(id = deck.id!!,
-                                name = deck.name!!,
-                                deck_string = result.deckString,
-                                arena = state == State.ARENA)
-
-                        try {
-                            RDatabaseSingleton.instance.deckDao().insert(rdeck)
-                        } catch (e: Exception) {
-                            RDatabaseSingleton.instance.deckDao().updateNameAndContents(rdeck.id, rdeck.name, rdeck.deck_string, rdeck.accessMillis)
-                        }
+                        onNewDeckFound(deck, result.deckString, state == DecksParser.State.ARENA)
                     }
                 }
 

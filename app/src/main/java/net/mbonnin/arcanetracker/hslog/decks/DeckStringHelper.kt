@@ -1,10 +1,10 @@
-package net.mbonnin.arcanetracker.helper
+package net.mbonnin.arcanetracker.hslog.decks
 
-import android.util.Base64
+import decodeBase64
 import net.hearthsim.java.deckstrings.Deckstrings
-import net.mbonnin.arcanetracker.CardUtil
+import net.mbonnin.arcanetracker.helper.getClassIndex
 import net.mbonnin.arcanetracker.hslog.Deck
-import java.util.*
+import net.mbonnin.hsmodel.CardJson
 
 class DeckStringHelper {
     var name: String? = null
@@ -25,22 +25,22 @@ class DeckStringHelper {
     }
 
     companion object {
-        fun parse(deckstring: String): Deck? {
+        fun parse(deckstring: String, cardJson: CardJson): Deck? {
             try {
-                return parseUnsafe(deckstring)
+                return parseUnsafe(deckstring, cardJson)
             } catch (e: Exception) {
                 return null
             }
         }
 
-        private fun parseUnsafe(deckstring: String): Deck? {
+        private fun parseUnsafe(deckstring: String, cardJson: CardJson): Deck? {
             val deck = Deck()
 
-            val data = Base64.decode(deckstring, Base64.DEFAULT)
+            val data = deckstring.toByteArray().decodeBase64()
             val result = Deckstrings.decode(data)
 
             deck.classIndex = result.heroes.map {
-                val card = CardUtil.getCard(it);
+                val card = cardJson.getCard(it)
                 card?.playerClass?.let { getClassIndex(it) } ?: -1
             }.firstOrNull() ?: -1
 
@@ -49,7 +49,7 @@ class DeckStringHelper {
             }
 
             val map = result.cards.map {
-                val card = CardUtil.getCard(it.dbfId)
+                val card = cardJson.getCard(it.dbfId)
 
                 if (card == null) {
                     null

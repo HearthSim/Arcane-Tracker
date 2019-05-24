@@ -49,16 +49,6 @@ object CardUtil {
         )
     }
 
-    fun getCard(dbfId: Int): Card? {
-
-        for (card in ArcaneTrackerApplication.get().cardJson.allCards()) {
-            if (card.dbfId == dbfId) {
-                return card
-            }
-        }
-
-        return null
-    }
 
     fun getCard(key: String): Card {
         return ArcaneTrackerApplication.get().cardJson.getCard(key)
