@@ -1,15 +1,13 @@
-package net.mbonnin.arcanetracker
+package net.mbonnin.arcanetracker.hslog.power
 
 import net.hearthsim.kotlin.hslog.BlockTag
 import net.hearthsim.kotlin.hslog.MetaDataTag
-import net.mbonnin.arcanetracker.hslog.power.Entity
-import net.mbonnin.arcanetracker.hslog.power.Game
+import net.mbonnin.arcanetracker.hslog.Console
 import net.mbonnin.hsmodel.enum.CardId
 import net.mbonnin.hsmodel.enum.Rarity
 import net.mbonnin.hsmodel.enum.Type
-import timber.log.Timber
 
-object SecretLogic {
+class SecretLogic(val console: Console) {
     private fun secretEntityList(game: Game): List<Entity> {
         return game.getEntityList { shouldTrack(game, it) }
     }
@@ -21,7 +19,7 @@ object SecretLogic {
 
     }
 
-    fun exclude(game: Game, cardId: String) {
+    private fun exclude(game: Game, cardId: String) {
         secretEntityList(game).forEach {
             it.extra.excludedSecretList.add(cardId)
         }
@@ -223,7 +221,7 @@ object SecretLogic {
                 }
             }
         } catch (e: Exception) {
-            Timber.e(e)
+            console.error(e)
         }
 
     }

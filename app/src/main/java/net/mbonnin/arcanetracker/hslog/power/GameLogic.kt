@@ -6,7 +6,6 @@ package net.mbonnin.arcanetracker.hslog.power
 
 import net.hearthsim.kotlin.hslog.*
 import net.hearthsim.kotlin.hslog.BlockTag.Companion.TYPE_TRIGGER
-import net.mbonnin.arcanetracker.SecretLogic
 import net.mbonnin.arcanetracker.helper.getClassIndex
 import net.mbonnin.arcanetracker.helper.getPlayerClass
 import net.mbonnin.arcanetracker.hslog.Console
@@ -25,6 +24,7 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
     private var mCurrentTurn: Int = 0
     private var mLastTag: Boolean = false
     private var spectator = false
+    private val secretLogic = SecretLogic(console)
 
     /**
      * This is the exposed game. As long as one game has started, this will always be non-null
@@ -98,11 +98,11 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
             mGame!!.lastPlayedCardId = playedEntity.CardID
             console.debug("${if (isOpponent) "opponent" else "I"} played ${playedEntity.CardID}")
 
-            SecretLogic.blockPlayed(game, tag.Target, playedEntity)
+            secretLogic.blockPlayed(game, tag.Target, playedEntity)
 
         } else if (BlockTag.TYPE_ATTACK == tag.BlockType) {
 
-            SecretLogic.blockAttack(game, tag)
+            secretLogic.blockAttack(game, tag)
         }
     }
 
@@ -168,7 +168,7 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
 
     private fun handleMetaDataTag2(tag: MetaDataTag) {
         if (MetaDataTag.META_DAMAGE == tag.Meta) {
-            SecretLogic.damage(mGame!!, tag)
+            secretLogic.damage(mGame!!, tag)
         }
     }
 
@@ -252,7 +252,7 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
                 entity.extra.playTurn = mCurrentTurn
             } else if (Entity.ZONE_PLAY == oldValue && Entity.ZONE_GRAVEYARD == newValue) {
                 entity.extra.diedTurn = mCurrentTurn
-                SecretLogic.minionDied(mGame!!, entity)
+                secretLogic.minionDied(mGame!!, entity)
             } else if (Entity.ZONE_HAND == oldValue && Entity.ZONE_DECK == newValue) {
                 /*
                  * card was put back in the deck (most likely from mulligan)
@@ -270,7 +270,7 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
         }
 
         if (Entity.KEY_TURN == key) {
-            SecretLogic.newTurn(mGame!!)
+            secretLogic.newTurn(mGame!!)
         }
     }
 
