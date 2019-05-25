@@ -1,13 +1,14 @@
 package net.mbonnin.arcanetracker.hslog.decks
 
 import net.hearthsim.kotlin.hslog.LogLine
-import net.mbonnin.arcanetracker.ArcaneTrackerApplication
-import net.mbonnin.arcanetracker.R
+import net.mbonnin.arcanetracker.hslog.Console
 import net.mbonnin.arcanetracker.hslog.Deck
 import net.mbonnin.hsmodel.CardJson
-import timber.log.Timber
 
-class DecksParser(private val cardJson: CardJson, val onPlayerDeckChanged: (Deck) -> Unit, val onNewDeckFound: (Deck, String, Boolean) -> Unit) {
+class DecksParser(private val console: Console,
+                  private val cardJson: CardJson,
+                  val onPlayerDeckChanged: (Deck) -> Unit,
+                  val onNewDeckFound: (Deck, String, Boolean) -> Unit) {
     enum class State {
         DEFAULT,
         ARENA,
@@ -19,7 +20,7 @@ class DecksParser(private val cardJson: CardJson, val onPlayerDeckChanged: (Deck
 
 
     fun process(rawLine: String, isOldData: Boolean) {
-        Timber.d(rawLine)
+        console.debug(rawLine)
         if (rawLine.contains("Deck Contents Received:")) {
             state = State.DEFAULT
         } else if (rawLine.contains("Finished Editing Deck:")) {
@@ -38,7 +39,7 @@ class DecksParser(private val cardJson: CardJson, val onPlayerDeckChanged: (Deck
                     if (deck != null) {
                         deck.id = result.id
                         if (state == State.ARENA) {
-                            deck.name = ArcaneTrackerApplication.get().getString(R.string.arenaDeck)
+                            deck.name = "Arena"
                         } else {
                             deck.name = result.name ?: "?"
                         }

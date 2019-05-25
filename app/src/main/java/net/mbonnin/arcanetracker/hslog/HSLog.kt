@@ -40,6 +40,7 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
             }
     )
     private val decksParser = DecksParser(
+            console = console,
             cardJson = cardJson,
             onNewDeckFound = { deck, deckstring, isArena ->
                 newDeckFoundListenerList.forEach {

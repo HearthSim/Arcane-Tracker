@@ -10,7 +10,6 @@ import kotlinx.coroutines.launch
 import net.mbonnin.arcanetracker.hslog.Console
 import net.mbonnin.arcanetracker.hslog.HSLog
 import net.mbonnin.arcanetracker.hslog.achievements.AchievementsParser
-import net.mbonnin.arcanetracker.hslog.decks.DecksParser
 import net.mbonnin.arcanetracker.reader.LogReader
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RDeck
@@ -83,7 +82,9 @@ object HSLogFactory {
         powerLogReader.start(object : LogReader.LineConsumer {
             var previousDataRead = false
             override fun onLine(rawLine: String) {
-                hsLog.processPower(rawLine, previousDataRead)
+                handler.post {
+                    hsLog.processPower(rawLine, previousDataRead)
+                }
             }
 
             override fun onPreviousDataRead() {
@@ -96,7 +97,9 @@ object HSLogFactory {
         achievementLogReader.start(object : LogReader.LineConsumer {
             var previousDataRead = false
             override fun onLine(rawLine: String) {
-                hsLog.processAchievement(rawLine, previousDataRead)
+                handler.post {
+                    hsLog.processAchievement(rawLine, previousDataRead)
+                }
             }
 
             override fun onPreviousDataRead() {
@@ -108,7 +111,9 @@ object HSLogFactory {
         decksLogReader.start(object : LogReader.LineConsumer {
             var previousDataRead = false
             override fun onLine(rawLine: String) {
-                hsLog.processDecks(rawLine, previousDataRead)
+                handler.post {
+                    hsLog.processDecks(rawLine, previousDataRead)
+                }
             }
 
             override fun onPreviousDataRead() {
