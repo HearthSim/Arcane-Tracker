@@ -15,8 +15,8 @@ To update it from the root of the repo:
 
 The hsmodel submodule contains the cards database as well as some enums (CardIds, PlayerClass, etc..). It typically needs updating for every patch.
 
-To update it from the root of the repo:
+To update it from the root of the repo (This requires [kscript](https://github.com/holgerbrandl/kscript))
 
-    ./gradlew :hsmodel:updateCardsJson
+    ./script/update_card_json.kts
 
 
