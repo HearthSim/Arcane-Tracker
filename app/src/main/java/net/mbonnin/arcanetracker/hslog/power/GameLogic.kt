@@ -6,9 +6,9 @@ package net.mbonnin.arcanetracker.hslog.power
 
 import net.hearthsim.kotlin.hslog.*
 import net.hearthsim.kotlin.hslog.BlockTag.Companion.TYPE_TRIGGER
-import net.mbonnin.arcanetracker.helper.getClassIndex
-import net.mbonnin.arcanetracker.helper.getPlayerClass
 import net.mbonnin.arcanetracker.hslog.Console
+import net.mbonnin.arcanetracker.hslog.util.getClassIndex
+import net.mbonnin.arcanetracker.hslog.util.getPlayerClass
 import net.mbonnin.hsmodel.CardJson
 import net.mbonnin.hsmodel.enum.CardId
 import net.mbonnin.hsmodel.enum.Type

@@ -15,7 +15,7 @@ import io.reactivex.schedulers.Schedulers
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.helper.HeroUtil
-import net.mbonnin.arcanetracker.helper.allHeroes
+import net.mbonnin.arcanetracker.hslog.util.allHeroes
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.hsmodel.enum.PlayerClass
 import timber.log.Timber

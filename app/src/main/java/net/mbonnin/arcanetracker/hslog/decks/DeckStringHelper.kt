@@ -2,7 +2,7 @@ package net.mbonnin.arcanetracker.hslog.decks
 
 import decodeBase64
 import net.hearthsim.java.deckstrings.Deckstrings
-import net.mbonnin.arcanetracker.helper.getClassIndex
+import net.mbonnin.arcanetracker.hslog.util.getClassIndex
 import net.mbonnin.arcanetracker.hslog.Deck
 import net.mbonnin.hsmodel.CardJson
 

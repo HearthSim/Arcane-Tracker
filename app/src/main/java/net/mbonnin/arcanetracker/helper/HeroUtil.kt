@@ -3,20 +3,17 @@ package net.mbonnin.arcanetracker.helper
 import android.graphics.drawable.Drawable
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
+import net.mbonnin.arcanetracker.hslog.util.allHeroes
+import net.mbonnin.arcanetracker.hslog.util.getClassIndex
 import net.mbonnin.hsmodel.enum.PlayerClass.DRUID
 import net.mbonnin.hsmodel.enum.PlayerClass.HUNTER
 import net.mbonnin.hsmodel.enum.PlayerClass.MAGE
-import net.mbonnin.hsmodel.enum.PlayerClass.NEUTRAL
 import net.mbonnin.hsmodel.enum.PlayerClass.PALADIN
 import net.mbonnin.hsmodel.enum.PlayerClass.PRIEST
 import net.mbonnin.hsmodel.enum.PlayerClass.ROGUE
 import net.mbonnin.hsmodel.enum.PlayerClass.SHAMAN
 import net.mbonnin.hsmodel.enum.PlayerClass.WARLOCK
 import net.mbonnin.hsmodel.enum.PlayerClass.WARRIOR
-
-fun allHeroes(): Array<String> {
-    return arrayOf(WARRIOR, SHAMAN, ROGUE, PALADIN, HUNTER, DRUID, WARLOCK, MAGE, PRIEST, NEUTRAL)
-}
 
 fun getDisplayName(classIndex: Int): String {
     val index = sanitizeIndex(classIndex)
@@ -42,14 +39,6 @@ fun sanitizeIndex(classIndex: Int): Int {
         return allHeroes().size - 1
     }
     return  classIndex
-}
-
-fun getPlayerClass(classIndex: Int): String {
-    return allHeroes()[sanitizeIndex(classIndex)]
-}
-
-fun getClassIndex(playerClass: String): Int {
-    return allHeroes().indexOf(playerClass)
 }
 
 fun getHeroId(classIndex: Int): String {
