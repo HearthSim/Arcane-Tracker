@@ -1,0 +1,57 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.multiplatform'
+}
+
+group 'net.hearthsim'
+version '1.0'
+
+def artifactId = "kotlin-deckstring"
+def website = "https://github.com/Hearthsim/ktolin-hslog"
+def klockVersion = "1.4.0"
+
+sourceCompatibility = 1.7
+
+dependencies {
+    // Specify Kotlin/JVM stdlib dependency.
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
+
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
+}
+
+kotlin {
+    targets {
+        fromPreset(presets.android, 'androidLib')
+    }
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-stdlib-common'
+                api "org.jetbrains.kotlinx:kotlinx-io:0.1.8"
+            }
+        }
+        jvmMain {
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+                api "org.jetbrains.kotlinx:kotlinx-io-jvm:0.1.8"
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-test-common'
+                implementation 'org.jetbrains.kotlin:kotlin-test-annotations-common'
+            }
+        }
+    }
+}
+
+android {
+    compileSdkVersion Versions.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion Versions.minSdkVersion
+    }
+}

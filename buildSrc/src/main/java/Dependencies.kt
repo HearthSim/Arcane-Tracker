@@ -25,7 +25,7 @@ object Libs {
     const val gson = "com.google.code.gson:gson:2.8.5"
     const val moshi = "com.squareup.moshi:moshi:1.6.0"
     const val moshi_codegen = "com.squareup.moshi:moshi-kotlin-codegen:1.6.0"
-    const val timber = "com.jakewharton.timber:timber:4.7.1"
+    const val timber = "com.jakewharton.timber:timber:4.99.1"
     const val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin}"
     const val rxjava2 = "io.reactivex.rxjava2:rxjava:2.2.2"
     const val junit = "junit:junit:4.12"

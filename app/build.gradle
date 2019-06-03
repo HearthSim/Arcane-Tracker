@@ -149,7 +149,6 @@ dependencies {
     implementation Libs.crashlytics
     implementation Libs.room
     implementation Libs.rxRoom
-    implementation Libs.javadeckstrings
     implementation Libs.flexbox
     implementation Libs.archPaging
     implementation Libs.coroutines
@@ -161,6 +160,8 @@ dependencies {
     implementation project(":detector")
     implementation project(":hsmodel")
     implementation project(":kotlin-hslog")
+    implementation project(":kotlin-deckstring")
+
 
     testImplementation Libs.junit
     testImplementation Libs.okhttp
