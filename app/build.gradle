@@ -30,8 +30,8 @@ android {
         applicationId "net.mbonnin.arcanetracker"
         minSdkVersion Versions.minSdkVersion
         targetSdkVersion Versions.targetSdkVersion
-        versionCode 412
-        versionName "4.12"
+        versionCode 413
+        versionName "4.13"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
