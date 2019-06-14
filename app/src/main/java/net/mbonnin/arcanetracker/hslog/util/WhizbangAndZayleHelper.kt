@@ -3,7 +3,7 @@ package net.mbonnin.arcanetracker.hslog.util
 import net.mbonnin.arcanetracker.hslog.Deck
 import net.mbonnin.arcanetracker.hslog.decks.DeckStringHelper
 import net.mbonnin.arcanetracker.hslog.power.Game
-import net.mbonnin.hsmodel.CardJson
+import net.hearthsim.hsmodel.CardJson
 
 object WhizbangAndZayleHelper {
     val whizbangRecipes = listOf(

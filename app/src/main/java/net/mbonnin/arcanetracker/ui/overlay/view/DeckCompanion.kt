@@ -14,7 +14,7 @@ import net.mbonnin.arcanetracker.ViewManager
 import net.mbonnin.arcanetracker.hslog.util.getClassIndex
 import net.mbonnin.arcanetracker.hslog.util.getPlayerClass
 import net.mbonnin.arcanetracker.hslog.Deck
-import net.mbonnin.hsmodel.Card
+import net.hearthsim.hsmodel.Card
 import timber.log.Timber
 
 /**

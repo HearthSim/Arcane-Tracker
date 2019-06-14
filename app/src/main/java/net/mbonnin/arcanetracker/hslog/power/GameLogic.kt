@@ -9,9 +9,9 @@ import net.hearthsim.hslog.parser.power.BlockTag.Companion.TYPE_TRIGGER
 import net.mbonnin.arcanetracker.hslog.Console
 import net.mbonnin.arcanetracker.hslog.util.getClassIndex
 import net.mbonnin.arcanetracker.hslog.util.getPlayerClass
-import net.mbonnin.hsmodel.CardJson
-import net.mbonnin.hsmodel.enum.CardId
-import net.mbonnin.hsmodel.enum.Type
+import net.hearthsim.hsmodel.CardJson
+import net.hearthsim.hsmodel.enum.CardId
+import net.hearthsim.hsmodel.enum.Type
 
 
 class GameLogic(private val console: Console, private val cardJson: CardJson) {

@@ -17,7 +17,7 @@ import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.helper.RarityHelper
 import net.mbonnin.arcanetracker.ui.stats.toPixel
 import net.mbonnin.arcanetracker.ui.stats.toPixelFloat
-import net.mbonnin.hsmodel.Card
+import net.hearthsim.hsmodel.Card
 
 class PackCardView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : View(context, attrs, defStyleAttr), Target {

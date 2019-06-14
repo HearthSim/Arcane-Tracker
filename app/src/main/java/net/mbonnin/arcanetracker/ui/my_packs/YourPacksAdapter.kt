@@ -15,7 +15,7 @@ import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.hslog.achievements.AchievementsParser
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RPack
-import net.mbonnin.hsmodel.enum.CardId
+import net.hearthsim.hsmodel.enum.CardId
 import java.util.*
 
 class YourPacksAdapter(val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {

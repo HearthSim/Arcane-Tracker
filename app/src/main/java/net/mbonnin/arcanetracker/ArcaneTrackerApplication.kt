@@ -20,9 +20,9 @@ import kotlinx.io.streams.asInput
 import net.mbonnin.arcanetracker.hslog.Console
 import net.mbonnin.arcanetracker.hslog.HSLog
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
-import net.mbonnin.hsmodel.Card
-import net.mbonnin.hsmodel.CardJson
-import net.mbonnin.hsmodel.enum.PlayerClass
+import net.hearthsim.hsmodel.Card
+import net.hearthsim.hsmodel.CardJson
+import net.hearthsim.hsmodel.enum.PlayerClass
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import timber.log.Timber

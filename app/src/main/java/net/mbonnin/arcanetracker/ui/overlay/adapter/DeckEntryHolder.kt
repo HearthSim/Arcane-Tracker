@@ -15,8 +15,8 @@ import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.ViewManager
 import net.mbonnin.arcanetracker.hslog.power.Entity
-import net.mbonnin.hsmodel.Card
-import net.mbonnin.hsmodel.enum.Rarity
+import net.hearthsim.hsmodel.Card
+import net.hearthsim.hsmodel.enum.Rarity
 
 internal class DeckEntryHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnTouchListener {
     private val mHandler: Handler

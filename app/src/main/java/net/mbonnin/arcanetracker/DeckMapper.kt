@@ -3,7 +3,7 @@ package net.mbonnin.arcanetracker
 import net.mbonnin.arcanetracker.hslog.Deck
 import net.mbonnin.arcanetracker.hslog.decks.DeckStringHelper
 import net.mbonnin.arcanetracker.room.RDeck
-import net.mbonnin.hsmodel.CardJson
+import net.hearthsim.hsmodel.CardJson
 
 object DeckMapper {
     fun fromRDeck(rdeck: RDeck): Deck? {

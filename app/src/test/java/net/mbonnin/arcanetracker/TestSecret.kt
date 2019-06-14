@@ -1,7 +1,7 @@
 package net.mbonnin.arcanetracker
 
 import kotlinx.io.streams.asInput
-import net.mbonnin.hsmodel.CardJson
+import net.hearthsim.hsmodel.CardJson
 import org.junit.Assert
 import org.junit.Test
 import java.io.File

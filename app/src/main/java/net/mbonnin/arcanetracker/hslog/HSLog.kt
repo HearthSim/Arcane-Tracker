@@ -9,8 +9,8 @@ import net.mbonnin.arcanetracker.hslog.power.Game
 import net.mbonnin.arcanetracker.hslog.power.GameLogic
 import net.mbonnin.arcanetracker.hslog.power.GameType
 import net.mbonnin.arcanetracker.hslog.util.WhizbangAndZayleHelper
-import net.mbonnin.hsmodel.CardJson
-import net.mbonnin.hsmodel.enum.CardId
+import net.hearthsim.hsmodel.CardJson
+import net.hearthsim.hsmodel.enum.CardId
 
 interface Console {
     fun debug(message: String)

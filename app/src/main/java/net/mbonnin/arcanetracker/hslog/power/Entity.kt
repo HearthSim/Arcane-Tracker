@@ -1,6 +1,6 @@
 package net.mbonnin.arcanetracker.hslog.power
 
-import net.mbonnin.hsmodel.Card
+import net.hearthsim.hsmodel.Card
 
 @Suppress("PropertyName")
 class Entity {

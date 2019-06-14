@@ -15,7 +15,7 @@ import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RDeck
 import net.mbonnin.arcanetracker.room.RPack
 import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
-import net.mbonnin.hsmodel.CardJson
+import net.hearthsim.hsmodel.CardJson
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit

@@ -3,9 +3,9 @@ package net.mbonnin.arcanetracker.hslog.power
 import net.hearthsim.hslog.parser.power.BlockTag
 import net.hearthsim.hslog.parser.power.MetaDataTag
 import net.mbonnin.arcanetracker.hslog.Console
-import net.mbonnin.hsmodel.enum.CardId
-import net.mbonnin.hsmodel.enum.Rarity
-import net.mbonnin.hsmodel.enum.Type
+import net.hearthsim.hsmodel.enum.CardId
+import net.hearthsim.hsmodel.enum.Rarity
+import net.hearthsim.hsmodel.enum.Type
 
 class SecretLogic(val console: Console) {
     private fun secretEntityList(game: Game): List<Entity> {

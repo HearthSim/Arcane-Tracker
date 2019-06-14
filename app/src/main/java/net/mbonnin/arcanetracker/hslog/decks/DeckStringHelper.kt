@@ -1,9 +1,9 @@
 package net.mbonnin.arcanetracker.hslog.decks
 
-import net.hearthsim.kotlin.deckstring.Deckstring
+import net.hearthsim.deckstring.Deckstring
 import net.mbonnin.arcanetracker.hslog.Deck
 import net.mbonnin.arcanetracker.hslog.util.getClassIndex
-import net.mbonnin.hsmodel.CardJson
+import net.hearthsim.hsmodel.CardJson
 
 class DeckStringHelper {
     var name: String? = null

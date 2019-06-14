@@ -3,9 +3,9 @@ package net.mbonnin.arcanetracker
 
 import net.mbonnin.arcanetracker.hslog.power.FormatType
 import net.mbonnin.arcanetracker.hslog.power.GameType
-import net.mbonnin.hsmodel.Card
-import net.mbonnin.hsmodel.CardJson
-import net.mbonnin.hsmodel.enum.*
+import net.hearthsim.hsmodel.Card
+import net.hearthsim.hsmodel.CardJson
+import net.hearthsim.hsmodel.enum.*
 
 object CardUtil {
     fun secret(playerClass: String): Card {

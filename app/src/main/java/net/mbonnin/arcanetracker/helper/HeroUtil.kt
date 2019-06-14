@@ -5,15 +5,15 @@ import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.hslog.util.allHeroes
 import net.mbonnin.arcanetracker.hslog.util.getClassIndex
-import net.mbonnin.hsmodel.enum.PlayerClass.DRUID
-import net.mbonnin.hsmodel.enum.PlayerClass.HUNTER
-import net.mbonnin.hsmodel.enum.PlayerClass.MAGE
-import net.mbonnin.hsmodel.enum.PlayerClass.PALADIN
-import net.mbonnin.hsmodel.enum.PlayerClass.PRIEST
-import net.mbonnin.hsmodel.enum.PlayerClass.ROGUE
-import net.mbonnin.hsmodel.enum.PlayerClass.SHAMAN
-import net.mbonnin.hsmodel.enum.PlayerClass.WARLOCK
-import net.mbonnin.hsmodel.enum.PlayerClass.WARRIOR
+import net.hearthsim.hsmodel.enum.PlayerClass.DRUID
+import net.hearthsim.hsmodel.enum.PlayerClass.HUNTER
+import net.hearthsim.hsmodel.enum.PlayerClass.MAGE
+import net.hearthsim.hsmodel.enum.PlayerClass.PALADIN
+import net.hearthsim.hsmodel.enum.PlayerClass.PRIEST
+import net.hearthsim.hsmodel.enum.PlayerClass.ROGUE
+import net.hearthsim.hsmodel.enum.PlayerClass.SHAMAN
+import net.hearthsim.hsmodel.enum.PlayerClass.WARLOCK
+import net.hearthsim.hsmodel.enum.PlayerClass.WARRIOR
 
 fun getDisplayName(classIndex: Int): String {
     val index = sanitizeIndex(classIndex)

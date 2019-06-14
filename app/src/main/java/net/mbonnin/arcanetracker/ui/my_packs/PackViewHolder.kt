@@ -9,7 +9,7 @@ import net.mbonnin.arcanetracker.CardUtil
 import net.mbonnin.arcanetracker.helper.SetHelper
 import net.mbonnin.arcanetracker.room.RPack
 import net.mbonnin.arcanetracker.ui.stats.toPixel
-import net.mbonnin.hsmodel.CardJson
+import net.hearthsim.hsmodel.CardJson
 import java.text.SimpleDateFormat
 import java.util.*
 

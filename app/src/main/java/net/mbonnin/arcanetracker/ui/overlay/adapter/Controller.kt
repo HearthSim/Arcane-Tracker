@@ -8,10 +8,10 @@ import net.mbonnin.arcanetracker.hslog.Deck
 import net.mbonnin.arcanetracker.hslog.power.Entity
 import net.mbonnin.arcanetracker.hslog.power.Game
 import net.mbonnin.arcanetracker.hslog.power.GameLogic
-import net.mbonnin.hsmodel.CardJson
-import net.mbonnin.hsmodel.enum.PlayerClass
-import net.mbonnin.hsmodel.enum.Rarity
-import net.mbonnin.hsmodel.enum.Type
+import net.hearthsim.hsmodel.CardJson
+import net.hearthsim.hsmodel.enum.PlayerClass
+import net.hearthsim.hsmodel.enum.Rarity
+import net.hearthsim.hsmodel.enum.Type
 import timber.log.Timber
 import java.util.*
 
