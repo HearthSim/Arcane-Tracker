@@ -7,6 +7,9 @@ fun allHeroes(): Array<String> {
 }
 
 fun getPlayerClass(classIndex: Int): String {
+    if (classIndex < 0) {
+        return PlayerClass.NEUTRAL
+    }
     return allHeroes()[classIndex]
 }
 

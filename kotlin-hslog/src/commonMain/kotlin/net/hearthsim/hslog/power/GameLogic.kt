@@ -511,8 +511,10 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
 
         if (Type.HERO == cardType) {
             player.hero = entity
-            player.classIndex = getClassIndex(entity.CardID!!)
-            player.playerClass = getPlayerClass(player.classIndex!!)
+
+            val card = cardJson.getCard(entity.CardID!!)
+            player.classIndex = getClassIndex(card.playerClass)
+            player.playerClass = card.playerClass
         } else if (Type.HERO_POWER == cardType) {
             player.heroPower = entity
         } else {

@@ -1,5 +1,6 @@
 package net.hearthsim.deckstring
 
+import decodeBase64
 import kotlinx.io.core.ByteReadPacket
 import kotlinx.io.core.Input
 import kotlinx.io.core.toByteArray
@@ -47,7 +48,7 @@ object Deckstring {
      * @throws Exception
      */
     fun decode(deckString: String): Result {
-        return decode(ByteReadPacket(deckString.toByteArray()))
+        return decode(ByteReadPacket(deckString.toByteArray().decodeBase64()))
     }
 
     /**
