@@ -1,6 +1,6 @@
 package net.mbonnin.arcanetracker.hslog
 
-import net.hearthsim.kotlin.parser.power.PowerParser
+import net.hearthsim.hslog.parser.power.PowerParser
 import net.mbonnin.arcanetracker.hslog.util.getClassIndex
 import net.mbonnin.arcanetracker.hslog.achievements.AchievementsParser
 import net.mbonnin.arcanetracker.hslog.decks.DecksParser

@@ -1,8 +1,8 @@
-package net.mbonnin.hsmodel
+package net.hearthsim.hsmodel
 
-import net.mbonnin.hsmodel.enum.CardId
-import net.mbonnin.hsmodel.enum.HSSet
-import net.mbonnin.hsmodel.enum.Type
+import net.hearthsim.hsmodel.enum.CardId
+import net.hearthsim.hsmodel.enum.HSSet
+import net.hearthsim.hsmodel.enum.Type
 
 data class Card(
         val id: String,

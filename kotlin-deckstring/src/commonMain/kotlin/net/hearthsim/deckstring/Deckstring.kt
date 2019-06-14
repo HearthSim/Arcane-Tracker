@@ -1,4 +1,4 @@
-package net.hearthsim.kotlin.deckstring
+package net.hearthsim.deckstring
 
 import kotlinx.io.core.ByteReadPacket
 import kotlinx.io.core.Input

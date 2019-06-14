@@ -1,4 +1,4 @@
-package net.hearthsim.kotlin.parser
+package net.hearthsim.hslog.parser
 
 class LogLine(
         val level: String,

@@ -1,4 +1,4 @@
-package net.hearthsim.kotlin.parser.power
+package net.hearthsim.hslog.parser.power
 
 sealed class Tag
 data class SpectatorTag(val spectator: Boolean) : Tag()

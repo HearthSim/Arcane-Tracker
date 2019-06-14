@@ -1,10 +1,10 @@
-package net.mbonnin.hsmodel
+package net.hearthsim.hsmodel
 
 import kotlinx.io.core.Input
 import kotlinx.io.core.readText
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.list
-import net.mbonnin.hsmodel.enum.HSSet
+import net.hearthsim.hsmodel.enum.HSSet
 
 
 class CardJson(lang: String, injectedCards: List<Card>? = null, input: Input) {

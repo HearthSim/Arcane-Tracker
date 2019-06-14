@@ -1,7 +1,7 @@
 package net.mbonnin.arcanetracker.hslog.power
 
-import net.hearthsim.kotlin.parser.power.BlockTag
-import net.hearthsim.kotlin.parser.power.MetaDataTag
+import net.hearthsim.hslog.parser.power.BlockTag
+import net.hearthsim.hslog.parser.power.MetaDataTag
 import net.mbonnin.arcanetracker.hslog.Console
 import net.mbonnin.hsmodel.enum.CardId
 import net.mbonnin.hsmodel.enum.Rarity

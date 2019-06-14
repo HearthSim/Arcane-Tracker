@@ -1,6 +1,6 @@
 package net.mbonnin.arcanetracker.hslog.decks
 
-import net.hearthsim.kotlin.parser.LogLine
+import net.hearthsim.hslog.parser.LogLine
 import net.mbonnin.arcanetracker.hslog.Console
 import net.mbonnin.arcanetracker.hslog.Deck
 import net.mbonnin.hsmodel.CardJson

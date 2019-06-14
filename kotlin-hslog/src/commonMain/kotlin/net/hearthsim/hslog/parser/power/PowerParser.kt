@@ -1,7 +1,7 @@
-package net.hearthsim.kotlin.parser.power
+package net.hearthsim.hslog.parser.power
 
 import com.soywiz.klock.DateTime
-import net.hearthsim.kotlin.parser.LogLine
+import net.hearthsim.hslog.parser.LogLine
 
 /**
  * Created by martin on 10/27/16.

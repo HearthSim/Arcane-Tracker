@@ -1,4 +1,4 @@
-package net.mbonnin.hsmodel
+package net.hearthsim.hsmodel
 
 import kotlinx.serialization.Serializable
 
