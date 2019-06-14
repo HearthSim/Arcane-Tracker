@@ -14,7 +14,6 @@ import net.mbonnin.hsmodel.enum.CardId
 import net.mbonnin.hsmodel.enum.Type
 
 
-
 class GameLogic(private val console: Console, private val cardJson: CardJson) {
 
     private val gameStartListenerList = mutableListOf<(Game) -> Unit>()

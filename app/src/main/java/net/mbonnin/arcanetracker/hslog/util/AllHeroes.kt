@@ -1,6 +1,5 @@
 package net.mbonnin.arcanetracker.hslog.util
 
-import net.mbonnin.arcanetracker.helper.sanitizeIndex
 import net.mbonnin.hsmodel.enum.PlayerClass
 
 fun allHeroes(): Array<String> {
@@ -8,7 +7,7 @@ fun allHeroes(): Array<String> {
 }
 
 fun getPlayerClass(classIndex: Int): String {
-    return allHeroes()[sanitizeIndex(classIndex)]
+    return allHeroes()[classIndex]
 }
 
 fun getClassIndex(playerClass: String): Int {
