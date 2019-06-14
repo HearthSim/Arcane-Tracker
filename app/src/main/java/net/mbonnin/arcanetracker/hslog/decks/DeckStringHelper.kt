@@ -1,10 +1,13 @@
 package net.mbonnin.arcanetracker.hslog.decks
 
 import decodeBase64
+import kotlinx.io.core.ByteReadPacket
+import kotlinx.io.core.IoBuffer
 import net.hearthsim.kotlin.deckstring.Deckstring
 import net.mbonnin.arcanetracker.hslog.Deck
 import net.mbonnin.arcanetracker.hslog.util.getClassIndex
 import net.mbonnin.hsmodel.CardJson
+import java.nio.ByteBuffer
 
 class DeckStringHelper {
     var name: String? = null
@@ -38,7 +41,8 @@ class DeckStringHelper {
             val deck = Deck()
 
             val data = deckstring.toByteArray().decodeBase64()
-            val result = Deckstring.decode(data)
+
+            val result = Deckstring.decode(ByteReadPacket(data))
 
             deck.classIndex = result.heroes.map {
                 val card = cardJson.getCard(it)

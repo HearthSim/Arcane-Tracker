@@ -1,6 +1,6 @@
 package net.hearthsim.kotlin.deckstring
 
-import kotlinx.io.core.IoBuffer
+import kotlinx.io.core.Input
 
 
 object Deckstring {
@@ -15,7 +15,7 @@ object Deckstring {
         var cards: MutableList<Card> = mutableListOf()
     }
 
-    private fun getVarInt(src: IoBuffer): Int {
+    private fun getVarInt(src: Input): Int {
         var result = 0
         var shift = 0
         var b: Int
@@ -46,7 +46,7 @@ object Deckstring {
      * @return
      * @throws Exception
      */
-    fun decode(data: IoBuffer): Result {
+    fun decode(data: Input): Result {
         val result = Result()
         
         data.readByte()
@@ -57,14 +57,14 @@ object Deckstring {
 
         result.format = getVarInt(data)
         if (result.format != FT_STANDARD && result.format != FT_WILD) {
-            throw ParseException("bad format: " + result.format!!)
+            throw ParseException("bad format: " + result.format)
         }
 
 
         val heroCount = getVarInt(data)
         result.heroes = ArrayList()
         for (i in 0 until heroCount) {
-            result.heroes!!.add(getVarInt(data))
+            result.heroes.add(getVarInt(data))
         }
 
         result.cards = mutableListOf()
@@ -78,11 +78,11 @@ object Deckstring {
                 } else {
                     count = i
                 }
-                result.cards!!.add(Card(dbfId, count))
+                result.cards.add(Card(dbfId, count))
             }
         }
 
-        result.cards!!.sortedBy {
+        result.cards.sortedBy {
             it.dbfId
         }
 

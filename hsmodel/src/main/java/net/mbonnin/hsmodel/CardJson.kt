@@ -5,7 +5,6 @@ import kotlinx.io.core.readText
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.list
 import net.mbonnin.hsmodel.enum.HSSet
-import java.nio.ByteBuffer
 
 
 class CardJson(lang: String, injectedCards: List<Card>? = null, input: Input) {
@@ -40,8 +39,6 @@ class CardJson(lang: String, injectedCards: List<Card>? = null, input: Input) {
 
     init {
         val str = input.readText()
-        val  b: ByteBuffer? = null
-        b!!.get()
         val cardList = Json.nonstrict.parse(HSCard.serializer().list, str).map { mapToCard(it, lang) }
 
         allCards.addAll(
