@@ -1,7 +1,7 @@
 package net.mbonnin.arcanetracker
 
 import kotlinx.io.streams.asInput
-import net.hearthsim.kotlin.hslog.PowerParser
+import net.hearthsim.kotlin.parser.power.PowerParser
 import net.mbonnin.arcanetracker.hslog.power.Game
 import net.mbonnin.arcanetracker.hslog.power.GameLogic
 import net.mbonnin.hsmodel.CardJson

@@ -4,8 +4,8 @@ package net.mbonnin.arcanetracker.hslog.power
  * Created by martin on 11/11/16.
  */
 
-import net.hearthsim.kotlin.hslog.*
-import net.hearthsim.kotlin.hslog.BlockTag.Companion.TYPE_TRIGGER
+import net.hearthsim.kotlin.parser.power.*
+import net.hearthsim.kotlin.parser.power.BlockTag.Companion.TYPE_TRIGGER
 import net.mbonnin.arcanetracker.hslog.Console
 import net.mbonnin.arcanetracker.hslog.util.getClassIndex
 import net.mbonnin.arcanetracker.hslog.util.getPlayerClass
