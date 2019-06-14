@@ -2,6 +2,8 @@ plugins {
     id 'org.jetbrains.kotlin.multiplatform'
 }
 
+apply plugin: 'kotlinx-serialization'
+
 sourceCompatibility = 1.7
 
 kotlin {
@@ -14,6 +16,7 @@ kotlin {
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-stdlib-common'
                 api "org.jetbrains.kotlinx:kotlinx-io:0.1.8"
+                implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.11.0"
             }
         }
         jvmMain {

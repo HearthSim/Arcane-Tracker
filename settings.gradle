@@ -1,1 +1,1 @@
-include ':app', ':detector', ':hsmodel', 'kotlin-hslog', 'kotlin-deckstring'
+include ':app', ':detector', ':kotlin-hsmodel', ':kotlin-hslog', ':kotlin-deckstring'

@@ -13,5 +13,5 @@
 .externalNativeBuild
 /buildSrc/build
 /hsmodel/build
-/.idea/*
+.idea
 /*/build
