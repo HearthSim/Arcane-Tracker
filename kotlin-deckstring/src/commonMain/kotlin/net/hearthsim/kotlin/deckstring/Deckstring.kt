@@ -1,6 +1,8 @@
 package net.hearthsim.kotlin.deckstring
 
+import kotlinx.io.core.ByteReadPacket
 import kotlinx.io.core.Input
+import kotlinx.io.core.toByteArray
 
 
 object Deckstring {
@@ -37,12 +39,20 @@ object Deckstring {
 
     class ParseException internal constructor(message: String) : Exception(message)
 
+
     /**
      *
-     * @param data the base64 decoded data. This method intentionnaly does not
-     * decode Base64 as implementation differ greatly between android and
-     * other JVM. See https://github.com/auth0/java-jwt/issues/131 for more
-     * details
+     * @param deckString the base64 encoded deckstring as you would copy/past in the game
+     * @return
+     * @throws Exception
+     */
+    fun decode(deckString: String): Result {
+        return decode(ByteReadPacket(deckString.toByteArray()))
+    }
+
+    /**
+     *
+     * @param data the base64 decoded data.
      * @return
      * @throws Exception
      */

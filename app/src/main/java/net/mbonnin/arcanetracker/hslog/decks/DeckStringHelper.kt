@@ -40,9 +40,7 @@ class DeckStringHelper {
         private fun parseUnsafe(deckstring: String, cardJson: CardJson): Deck? {
             val deck = Deck()
 
-            val data = deckstring.toByteArray().decodeBase64()
-
-            val result = Deckstring.decode(ByteReadPacket(data))
+            val result = Deckstring.decode(deckstring)
 
             deck.classIndex = result.heroes.map {
                 val card = cardJson.getCard(it)
