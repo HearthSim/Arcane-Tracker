@@ -1,6 +1,6 @@
-package net.mbonnin.arcanetracker.hslog.achievements
+package net.hearthsim.hslog.achievements
 
-import net.mbonnin.arcanetracker.hslog.Console
+import net.hearthsim.hslog.Console
 
 class AchievementsParser(val console: Console, val onCard: (CardGained) -> Unit) {
     private val CARD_GAINED = Regex(".*NotifyOfCardGained:.*cardId=(.*) .* (.*) [0-9]*")

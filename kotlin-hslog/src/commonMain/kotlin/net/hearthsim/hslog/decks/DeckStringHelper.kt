@@ -1,8 +1,8 @@
-package net.mbonnin.arcanetracker.hslog.decks
+package net.hearthsim.hslog.decks
 
 import net.hearthsim.deckstring.Deckstring
-import net.mbonnin.arcanetracker.hslog.Deck
-import net.mbonnin.arcanetracker.hslog.util.getClassIndex
+import net.hearthsim.hslog.Deck
+import net.hearthsim.hslog.util.getClassIndex
 import net.hearthsim.hsmodel.CardJson
 
 class DeckStringHelper {
@@ -28,7 +28,6 @@ class DeckStringHelper {
             try {
                 return parseUnsafe(deckstring, cardJson)
             } catch (e: Exception) {
-                e.printStackTrace()
                 return null
             }
         }

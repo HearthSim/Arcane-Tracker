@@ -2,8 +2,8 @@ package net.mbonnin.arcanetracker
 
 import kotlinx.io.streams.asInput
 import net.hearthsim.hslog.parser.power.PowerParser
-import net.mbonnin.arcanetracker.hslog.power.Game
-import net.mbonnin.arcanetracker.hslog.power.GameLogic
+import net.hearthsim.hslog.power.Game
+import net.hearthsim.hslog.power.GameLogic
 import net.hearthsim.hsmodel.CardJson
 import okhttp3.OkHttpClient
 import okhttp3.Request

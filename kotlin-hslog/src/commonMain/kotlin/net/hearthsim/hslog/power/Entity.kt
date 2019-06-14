@@ -1,4 +1,4 @@
-package net.mbonnin.arcanetracker.hslog.power
+package net.hearthsim.hslog.power
 
 import net.hearthsim.hsmodel.Card
 
@@ -22,7 +22,7 @@ class Entity {
         } else {
             ""
         }
-        return String.format("CardEntity [id=$EntityID][CardID=$CardID]$name")
+        return "CardEntity [id=$EntityID][CardID=$CardID]$name"
     }
 
     fun setCardId(cardID: String, card: Card) {

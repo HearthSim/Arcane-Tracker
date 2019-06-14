@@ -7,9 +7,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.mbonnin.arcanetracker.detector.RANK_UNKNOWN
-import net.mbonnin.arcanetracker.hslog.power.Game
-import net.mbonnin.arcanetracker.hslog.HSLog
-import net.mbonnin.arcanetracker.hslog.power.fromFormatTypeString
+import net.hearthsim.hslog.power.Game
+import net.hearthsim.hslog.HSLog
+import net.hearthsim.hslog.power.fromFormatTypeString
 import net.mbonnin.arcanetracker.hsreplay.model.legacy.UploadRequest
 import net.mbonnin.arcanetracker.model.GameSummary
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton

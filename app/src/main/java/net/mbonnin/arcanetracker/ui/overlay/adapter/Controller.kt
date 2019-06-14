@@ -4,10 +4,10 @@ package net.mbonnin.arcanetracker.ui.overlay.adapter
 import android.os.Handler
 import android.text.TextUtils
 import net.mbonnin.arcanetracker.*
-import net.mbonnin.arcanetracker.hslog.Deck
-import net.mbonnin.arcanetracker.hslog.power.Entity
-import net.mbonnin.arcanetracker.hslog.power.Game
-import net.mbonnin.arcanetracker.hslog.power.GameLogic
+import net.hearthsim.hslog.Deck
+import net.hearthsim.hslog.power.Entity
+import net.hearthsim.hslog.power.Game
+import net.hearthsim.hslog.power.GameLogic
 import net.hearthsim.hsmodel.CardJson
 import net.hearthsim.hsmodel.enum.PlayerClass
 import net.hearthsim.hsmodel.enum.Rarity

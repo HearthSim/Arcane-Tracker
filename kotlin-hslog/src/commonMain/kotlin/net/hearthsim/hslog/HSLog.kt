@@ -1,14 +1,14 @@
-package net.mbonnin.arcanetracker.hslog
+package net.hearthsim.hslog
 
 import net.hearthsim.hslog.parser.power.PowerParser
-import net.mbonnin.arcanetracker.hslog.util.getClassIndex
-import net.mbonnin.arcanetracker.hslog.achievements.AchievementsParser
-import net.mbonnin.arcanetracker.hslog.decks.DecksParser
-import net.mbonnin.arcanetracker.hslog.loadingscreen.LoadingScreenParser
-import net.mbonnin.arcanetracker.hslog.power.Game
-import net.mbonnin.arcanetracker.hslog.power.GameLogic
-import net.mbonnin.arcanetracker.hslog.power.GameType
-import net.mbonnin.arcanetracker.hslog.util.WhizbangAndZayleHelper
+import net.hearthsim.hslog.util.getClassIndex
+import net.hearthsim.hslog.achievements.AchievementsParser
+import net.hearthsim.hslog.decks.DecksParser
+import net.hearthsim.hslog.loadingscreen.LoadingScreenParser
+import net.hearthsim.hslog.power.Game
+import net.hearthsim.hslog.power.GameLogic
+import net.hearthsim.hslog.power.GameType
+import net.hearthsim.hslog.util.WhizbangAndZayleHelper
 import net.hearthsim.hsmodel.CardJson
 import net.hearthsim.hsmodel.enum.CardId
 

@@ -1,4 +1,4 @@
-package net.mbonnin.arcanetracker.hslog.power
+package net.hearthsim.hslog.power
 
 /*
  * Created by martin on 11/11/16.
@@ -6,9 +6,9 @@ package net.mbonnin.arcanetracker.hslog.power
 
 import net.hearthsim.hslog.parser.power.*
 import net.hearthsim.hslog.parser.power.BlockTag.Companion.TYPE_TRIGGER
-import net.mbonnin.arcanetracker.hslog.Console
-import net.mbonnin.arcanetracker.hslog.util.getClassIndex
-import net.mbonnin.arcanetracker.hslog.util.getPlayerClass
+import net.hearthsim.hslog.Console
+import net.hearthsim.hslog.util.getClassIndex
+import net.hearthsim.hslog.util.getPlayerClass
 import net.hearthsim.hsmodel.CardJson
 import net.hearthsim.hsmodel.enum.CardId
 import net.hearthsim.hsmodel.enum.Type
@@ -205,7 +205,7 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
         if (Entity.ENTITY_ID_GAME == entity.EntityID) {
             if (Entity.KEY_TURN == key) {
                 try {
-                    mCurrentTurn = Integer.parseInt(newValue)
+                    mCurrentTurn = newValue.toInt()
                     console.debug("turn: $mCurrentTurn")
                 } catch (e: Exception) {
                     console.error(e)

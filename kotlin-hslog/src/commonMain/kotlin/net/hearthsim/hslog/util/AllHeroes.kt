@@ -1,4 +1,4 @@
-package net.mbonnin.arcanetracker.hslog.util
+package net.hearthsim.hslog.util
 
 import net.hearthsim.hsmodel.enum.PlayerClass
 

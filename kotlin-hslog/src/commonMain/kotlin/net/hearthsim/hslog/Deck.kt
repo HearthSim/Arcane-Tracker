@@ -1,4 +1,4 @@
-package net.mbonnin.arcanetracker.hslog
+package net.hearthsim.hslog
 
 class Deck {
 

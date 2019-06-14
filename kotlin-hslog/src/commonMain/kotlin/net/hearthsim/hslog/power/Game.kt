@@ -1,6 +1,8 @@
-package net.mbonnin.arcanetracker.hslog.power
+package net.hearthsim.hslog.power
 
-import net.mbonnin.arcanetracker.hslog.Console
+import net.hearthsim.hslog.Console
+import net.hearthsim.hslog.power.Entity
+import net.hearthsim.hslog.power.Player
 
 class Game(private val console: Console) {
 

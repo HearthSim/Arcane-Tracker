@@ -12,7 +12,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.deck_view.*
 import net.mbonnin.arcanetracker.*
-import net.mbonnin.arcanetracker.hslog.Deck
+import net.hearthsim.hslog.Deck
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.WLCounter
 import net.mbonnin.arcanetracker.ui.overlay.adapter.Controller

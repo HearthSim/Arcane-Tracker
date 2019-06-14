@@ -1,8 +1,8 @@
-package net.mbonnin.arcanetracker.hslog.util
+package net.hearthsim.hslog.util
 
-import net.mbonnin.arcanetracker.hslog.Deck
-import net.mbonnin.arcanetracker.hslog.decks.DeckStringHelper
-import net.mbonnin.arcanetracker.hslog.power.Game
+import net.hearthsim.hslog.Deck
+import net.hearthsim.hslog.decks.DeckStringHelper
+import net.hearthsim.hslog.power.Game
 import net.hearthsim.hsmodel.CardJson
 
 object WhizbangAndZayleHelper {

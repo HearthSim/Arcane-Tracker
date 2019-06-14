@@ -7,9 +7,9 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import net.mbonnin.arcanetracker.hslog.Console
-import net.mbonnin.arcanetracker.hslog.HSLog
-import net.mbonnin.arcanetracker.hslog.achievements.AchievementsParser
+import net.hearthsim.hslog.Console
+import net.hearthsim.hslog.HSLog
+import net.hearthsim.hslog.achievements.AchievementsParser
 import net.mbonnin.arcanetracker.reader.LogReader
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RDeck

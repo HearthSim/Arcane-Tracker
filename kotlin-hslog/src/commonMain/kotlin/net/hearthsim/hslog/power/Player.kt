@@ -1,4 +1,4 @@
-package net.mbonnin.arcanetracker.hslog.power
+package net.hearthsim.hslog.power
 
 class Player {
     var entity: Entity? = null

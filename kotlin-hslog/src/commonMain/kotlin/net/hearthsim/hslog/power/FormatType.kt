@@ -1,4 +1,4 @@
-package net.mbonnin.arcanetracker.hslog.power
+package net.hearthsim.hslog.power
 
 enum class FormatType(val intValue: Int) {
     FT_UNKNOWN(0),

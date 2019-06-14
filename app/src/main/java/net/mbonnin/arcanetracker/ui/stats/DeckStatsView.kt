@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
-import net.mbonnin.arcanetracker.hslog.Deck
+import net.hearthsim.hslog.Deck
 import net.mbonnin.arcanetracker.ui.overlay.adapter.Controller
 import net.mbonnin.arcanetracker.ui.overlay.adapter.ItemAdapter
 import net.mbonnin.arcanetracker.ui.overlay.adapter.OpponentsAdapter

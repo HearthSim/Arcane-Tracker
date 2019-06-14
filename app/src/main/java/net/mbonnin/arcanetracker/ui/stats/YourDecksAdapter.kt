@@ -13,7 +13,7 @@ import io.reactivex.schedulers.Schedulers
 import net.mbonnin.arcanetracker.DeckMapper
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
-import net.mbonnin.arcanetracker.hslog.Deck
+import net.hearthsim.hslog.Deck
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import timber.log.Timber
 

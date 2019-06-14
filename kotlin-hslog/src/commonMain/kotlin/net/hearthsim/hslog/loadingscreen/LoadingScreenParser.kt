@@ -1,6 +1,7 @@
-package net.mbonnin.arcanetracker.hslog.loadingscreen
+package net.hearthsim.hslog.loadingscreen
 
-import net.mbonnin.arcanetracker.hslog.Console
+import net.hearthsim.hslog.Console
+import kotlin.jvm.Volatile
 
 class LoadingScreenParser(val console: Console) {
 

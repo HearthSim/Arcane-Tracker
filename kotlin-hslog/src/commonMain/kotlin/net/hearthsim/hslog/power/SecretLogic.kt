@@ -1,8 +1,9 @@
-package net.mbonnin.arcanetracker.hslog.power
+package net.hearthsim.hslog.power
 
 import net.hearthsim.hslog.parser.power.BlockTag
 import net.hearthsim.hslog.parser.power.MetaDataTag
-import net.mbonnin.arcanetracker.hslog.Console
+import net.hearthsim.hslog.power.Game
+import net.hearthsim.hslog.Console
 import net.hearthsim.hsmodel.enum.CardId
 import net.hearthsim.hsmodel.enum.Rarity
 import net.hearthsim.hsmodel.enum.Type
@@ -208,7 +209,7 @@ class SecretLogic(val console: Console) {
 
     fun damage(game: Game, tag: MetaDataTag) {
         try {
-            val damage = Integer.parseInt(tag.Data)
+            val damage = tag.Data?.toInt() ?: 0
             if (damage > 0) {
                 for (id in tag.Info) {
                     val damagedEntity = game.findEntitySafe(id)

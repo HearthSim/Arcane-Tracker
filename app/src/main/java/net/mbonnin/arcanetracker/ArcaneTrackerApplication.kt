@@ -17,8 +17,8 @@ import com.squareup.picasso.LruCache
 import com.squareup.picasso.Picasso
 import io.paperdb.Paper
 import kotlinx.io.streams.asInput
-import net.mbonnin.arcanetracker.hslog.Console
-import net.mbonnin.arcanetracker.hslog.HSLog
+import net.hearthsim.hslog.Console
+import net.hearthsim.hslog.HSLog
 import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.hearthsim.hsmodel.Card
 import net.hearthsim.hsmodel.CardJson

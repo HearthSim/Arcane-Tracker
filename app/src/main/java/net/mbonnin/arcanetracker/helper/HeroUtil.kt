@@ -3,8 +3,8 @@ package net.mbonnin.arcanetracker.helper
 import android.graphics.drawable.Drawable
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
-import net.mbonnin.arcanetracker.hslog.util.allHeroes
-import net.mbonnin.arcanetracker.hslog.util.getClassIndex
+import net.hearthsim.hslog.util.allHeroes
+import net.hearthsim.hslog.util.getClassIndex
 import net.hearthsim.hsmodel.enum.PlayerClass.DRUID
 import net.hearthsim.hsmodel.enum.PlayerClass.HUNTER
 import net.hearthsim.hsmodel.enum.PlayerClass.MAGE
