@@ -33,8 +33,8 @@ class HSLogListener(val currentOrFinishedGame: () -> Game?): HSLog.Listener {
         GameHelper.gameEnded(game)
     }
 
-    override fun onRawGame(gameString: String, gameStart: Long) {
-        GameHelper.insertAndUploadGame(gameString, Date(gameStart), currentOrFinishedGame)
+    override fun onRawGame(gameString: String, gameStartMillis: Long) {
+        GameHelper.insertAndUploadGame(gameString, Date(gameStartMillis), currentOrFinishedGame)
     }
 
     override fun onCardGained(cardGained: AchievementsParser.CardGained) {

@@ -36,7 +36,7 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
         /**
          *
          */
-        fun onRawGame(gameString: String, gameStart: Long)
+        fun onRawGame(gameString: String, gameStartMillis: Long)
 
         /**
          *
