@@ -124,11 +124,10 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
     }
 
     private fun selectDecks(game: Game) {
-        val opponentDeck = Deck()
-        opponentDeck.classIndex = game.opponent!!.classIndex!!
+        val opponentclassIndex = game.opponent!!.classIndex!!
 
         opponentDeckChangedListenerList.forEach {
-            it(opponentDeck)
+            it(Deck.create(cards = emptyMap(), classIndex = opponentclassIndex, cardJson = cardJson))
         }
 
         var playerDeck: Deck? = null
@@ -136,10 +135,12 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
         when (game.gameType) {
             GameType.GT_TAVERNBRAWL.name,
             GameType.GT_VS_AI.name -> {
-                val emptyDeck = Deck()
-                emptyDeck.name = ""
-                emptyDeck.id = "rototo"
-                emptyDeck.classIndex = getClassIndex(game.player!!.playerClass!!)
+                val emptyDeck = Deck.create(
+                        cards = emptyMap(),
+                        classIndex = getClassIndex(game.player!!.playerClass!!),
+                        name = "",
+                        id = "rototo",
+                        cardJson = cardJson)
                 playerDeck = emptyDeck
             }
         }

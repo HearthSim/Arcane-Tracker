@@ -34,17 +34,6 @@ open class DeckCompanion(v: View) {
     private val mRecyclerViewParams: ViewManager.Params
 
     fun checkClassIndex(deck: Deck) {
-        for (cardId in deck.cards.keys) {
-            val (_, _, _, playerClass) = CardUtil.getCard(cardId)
-            val ci = getClassIndex(playerClass)
-            if (ci >= 0 && ci < Card.CLASS_INDEX_NEUTRAL) {
-                if (deck.classIndex != ci) {
-                    Timber.e("inconsistent class index, force to" + getPlayerClass(ci))
-                    deck.classIndex = ci
-                }
-                return
-            }
-        }
     }
 
     open var deck: Deck? = null

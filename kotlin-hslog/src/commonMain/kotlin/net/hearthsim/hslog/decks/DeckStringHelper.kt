@@ -33,16 +33,14 @@ class DeckStringHelper {
         }
 
         private fun parseUnsafe(deckstring: String, cardJson: CardJson): Deck? {
-            val deck = Deck()
-
             val result = Deckstring.decode(deckstring)
 
-            deck.classIndex = result.heroes.map {
+            val classIndex = result.heroes.map {
                 val card = cardJson.getCard(it)
                 card?.playerClass?.let { getClassIndex(it) } ?: -1
             }.firstOrNull() ?: -1
 
-            if (deck.classIndex < 0) {
+            if (classIndex < 0) {
                 return null
             }
 
@@ -57,9 +55,9 @@ class DeckStringHelper {
             }.filterNotNull()
                     .toMap()
 
-            deck.cards = HashMap(map)
-
-            return deck
+            return Deck.create(cards = map,
+                    classIndex = classIndex,
+                    cardJson = cardJson)
         }
     }
 }
