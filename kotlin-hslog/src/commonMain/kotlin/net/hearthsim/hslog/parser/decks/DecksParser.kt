@@ -47,7 +47,7 @@ class DecksParser(private val console: Console,
                         if (state == State.ARENA || state == State.GAME) {
                             onPlayerDeckChanged(deck)
                         }
-                        onNewDeckFound(deck, result.deckString, state == DecksParser.State.ARENA)
+                        onNewDeckFound(deck, result.deckString, state == State.ARENA)
                     }
                 }
 
