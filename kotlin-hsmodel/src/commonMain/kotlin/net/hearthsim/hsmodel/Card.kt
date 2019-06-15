@@ -20,9 +20,7 @@ data class Card(
         val durability: Int? = null,
         val multiClassGroup: String? = null,
         val collectible: Boolean = false,
-        val mechanics: kotlin.collections.Set<String> = emptySet(),
-        val features: DoubleArray? = null,
-        val goldenFeatures: DoubleArray? = null
+        val mechanics: Set<String> = emptySet()
 ) {
     override fun toString(): String {
         return "$name($id)"
