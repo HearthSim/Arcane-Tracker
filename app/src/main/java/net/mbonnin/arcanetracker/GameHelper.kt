@@ -8,7 +8,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.mbonnin.arcanetracker.detector.RANK_UNKNOWN
 import net.hearthsim.hslog.power.Game
-import net.hearthsim.hslog.HSLog
 import net.hearthsim.hslog.power.fromFormatTypeString
 import net.mbonnin.arcanetracker.hsreplay.model.legacy.UploadRequest
 import net.mbonnin.arcanetracker.model.GameSummary
@@ -51,9 +50,9 @@ object GameHelper {
         }
     }
 
-    fun insertAndUploadGame(gameStr: String, gameStart: Date, hsLog: HSLog) {
+    fun insertAndUploadGame(gameStr: String, gameStart: Date, currentOrFinishedGame: () -> Game?) {
         val summary = GameSummary()
-        val game = hsLog.currentOrFinishedGame()
+        val game = currentOrFinishedGame()
 
         if (game == null) {
             return

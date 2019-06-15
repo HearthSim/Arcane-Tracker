@@ -12,39 +12,75 @@ import net.hearthsim.hslog.util.WhizbangAndZayleHelper
 import net.hearthsim.hsmodel.CardJson
 import net.hearthsim.hsmodel.enum.CardId
 
-typealias DeckChangedListener = (deck: Deck) -> Unit
-typealias RawGameListener = (gameStr: String, gameStart: Long) -> Unit
-typealias CardGainedListener = (cardGained: AchievementsParser.CardGained) -> Unit
-typealias NewDeckFoundListener = (deck: Deck, deckString: String, isArena: Boolean) -> Unit
 
 class HSLog(private val console: Console, private val cardJson: CardJson) {
+    interface Listener {
+        /**
+         * called when a game starts, just after the mulligan
+         * @param game: the game
+         */
+        fun onGameStart(game: Game)
+
+        /**
+         * called when a new entity has been revealed, a play has been done or something else changed
+         * @param game: the game
+         */
+        fun onGameChanged(game: Game)
+
+        /**
+         * called when the game ends
+         * @param game: the game
+         */
+        fun onGameEnd(game: Game)
+
+        /**
+         *
+         */
+        fun onRawGame(gameString: String, gameStart: Long)
+
+        /**
+         *
+         */
+        fun onCardGained(cardGained: AchievementsParser.CardGained)
+
+        /**
+         *
+         */
+        fun onDeckFound(deck: Deck, deckString: String, isArena: Boolean)
+
+        /**
+         * called when the player deck is detected
+         *      - from Decks.log in ranked/casual/arena/practice
+         *      - guessed from the initial mulligan cards in the Zayle/Whizbang cases
+         *      - empty for adventures/dungeons and other solo modes
+         * @param deck: the new deck
+         */
+        fun onPlayerDeckChanged(deck: Deck)
+
+        /**
+         * called to reset the opponent deck to an empty deck at the start of a game
+         * @param deck: the new deck
+         */
+        fun onOpponentDeckChanged(deck: Deck)
+    }
+
+    private var listener: Listener? = null
     private val gameLogic = GameLogic(console, cardJson)
-    private val playerDeckChangedListenerList = mutableListOf<DeckChangedListener>()
-    private val opponentDeckChangedListenerList = mutableListOf<DeckChangedListener>()
-    private val rawGameListenerList = mutableListOf<RawGameListener>()
-    private val cardGainedListenerList = mutableListOf<CardGainedListener>()
-    private val newDeckFoundListenerList = mutableListOf<NewDeckFoundListener>()
 
     private val loadingScreenParser = LoadingScreenParser(console)
     private val achievementsParser = AchievementsParser(console,
             onCard = { cardGained ->
-                cardGainedListenerList.forEach {
-                    it(cardGained)
-                }
+                listener?.onCardGained(cardGained)
             }
     )
     private val decksParser = DecksParser(
             console = console,
             cardJson = cardJson,
             onNewDeckFound = { deck, deckstring, isArena ->
-                newDeckFoundListenerList.forEach {
-                    it(deck, deckstring, isArena)
-                }
+                listener?.onDeckFound(deck, deckstring, isArena)
             },
             onPlayerDeckChanged = { deck ->
-                playerDeckChangedListenerList.forEach {
-                    it(deck)
-                }
+                listener?.onPlayerDeckChanged(deck)
             }
     )
     private val powerParser = PowerParser(
@@ -52,15 +88,22 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
                 gameLogic.handleRootTag(tag)
             },
             mRawGameConsumer = { gameStr, gameStart ->
-                rawGameListenerList.forEach { it(gameStr, gameStart) }
+                listener?.onRawGame(gameStr, gameStart)
             },
             //console = console
             logger = { format, args -> console.debug(message = format) }
     )
 
     init {
-        onGameStart {
-            selectDecks(it)
+        gameLogic.onGameStart {game ->
+            selectDecks(game)
+            listener?.onGameStart(game)
+        }
+        gameLogic.whenSomethingChanges {game ->
+            listener?.onGameChanged(game)
+        }
+        gameLogic.onGameEnd {game ->
+            listener?.onGameEnd(game)
         }
     }
 
@@ -81,38 +124,6 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
         decksParser.process(rawLine, isOldData)
     }
 
-    fun onGameStart(block: (Game) -> Unit) {
-        gameLogic.onGameStart(block)
-    }
-
-    fun whenSomethingChanges(block: (Game) -> Unit) {
-        gameLogic.whenSomethingChanges(block)
-    }
-
-    fun onGameEnd(block: (Game) -> Unit) {
-        gameLogic.onGameEnd(block)
-    }
-
-    fun onPlayerDeckChanged(listener: DeckChangedListener) {
-        playerDeckChangedListenerList.add(listener)
-    }
-
-    fun onOpponentDeckChanged(listener: DeckChangedListener) {
-        opponentDeckChangedListenerList.add(listener)
-    }
-
-    fun onRawGame(listener: RawGameListener) {
-        rawGameListenerList.add(listener)
-    }
-
-    fun onCardGained(listener: CardGainedListener) {
-        cardGainedListenerList.add(listener)
-    }
-
-    fun onNewDeckFound(listener: NewDeckFoundListener) {
-        newDeckFoundListenerList.add(listener)
-    }
-
     fun currentOrFinishedGame(): Game? {
         return gameLogic.currentOrFinishedGame
     }
@@ -120,9 +131,7 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
     private fun selectDecks(game: Game) {
         val opponentclassIndex = game.opponent!!.classIndex!!
 
-        opponentDeckChangedListenerList.forEach {
-            it(Deck.create(cards = emptyMap(), classIndex = opponentclassIndex, cardJson = cardJson))
-        }
+        listener?.onOpponentDeckChanged(Deck.create(cards = emptyMap(), classIndex = opponentclassIndex, cardJson = cardJson))
 
         var playerDeck: Deck? = null
 
@@ -162,9 +171,11 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
         }
 
         if (playerDeck != null) {
-            playerDeckChangedListenerList.forEach {
-                it(playerDeck)
-            }
+            listener?.onPlayerDeckChanged(playerDeck)
         }
+    }
+
+    fun setListener(listener: Listener) {
+        this.listener = listener
     }
 }

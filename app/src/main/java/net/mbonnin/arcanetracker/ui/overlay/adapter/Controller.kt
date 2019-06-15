@@ -131,12 +131,6 @@ class Controller  {
         opponentAdapter = ItemAdapter()
         playerAdapter = ItemAdapter()
 
-        ArcaneTrackerApplication.get().hsLog.onGameStart {
-            gameStarted(it)
-        }
-        ArcaneTrackerApplication.get().hsLog.whenSomethingChanges {
-            somethingChanged()
-        }
         mHandler = Handler()
     }
 
