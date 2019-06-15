@@ -1,4 +1,4 @@
-package net.hearthsim.hslog.decks
+package net.hearthsim.hslog.parser.decks
 
 import net.hearthsim.hslog.parser.LogLine
 import net.hearthsim.hslog.Console

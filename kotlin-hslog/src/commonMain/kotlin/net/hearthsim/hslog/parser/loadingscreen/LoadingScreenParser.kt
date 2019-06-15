@@ -1,4 +1,4 @@
-package net.hearthsim.hslog.loadingscreen
+package net.hearthsim.hslog.parser.loadingscreen
 
 import net.hearthsim.hslog.Console
 import kotlin.jvm.Volatile

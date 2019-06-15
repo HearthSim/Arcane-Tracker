@@ -2,21 +2,15 @@ package net.hearthsim.hslog
 
 import net.hearthsim.hslog.parser.power.PowerParser
 import net.hearthsim.hslog.util.getClassIndex
-import net.hearthsim.hslog.achievements.AchievementsParser
-import net.hearthsim.hslog.decks.DecksParser
-import net.hearthsim.hslog.loadingscreen.LoadingScreenParser
+import net.hearthsim.hslog.parser.achievements.AchievementsParser
+import net.hearthsim.hslog.parser.decks.DecksParser
+import net.hearthsim.hslog.parser.loadingscreen.LoadingScreenParser
 import net.hearthsim.hslog.power.Game
 import net.hearthsim.hslog.power.GameLogic
 import net.hearthsim.hslog.power.GameType
 import net.hearthsim.hslog.util.WhizbangAndZayleHelper
 import net.hearthsim.hsmodel.CardJson
 import net.hearthsim.hsmodel.enum.CardId
-
-interface Console {
-    fun debug(message: String)
-    fun error(message: String)
-    fun error(throwable: Throwable)
-}
 
 typealias DeckChangedListener = (deck: Deck) -> Unit
 typealias RawGameListener = (gameStr: String, gameStart: Long) -> Unit

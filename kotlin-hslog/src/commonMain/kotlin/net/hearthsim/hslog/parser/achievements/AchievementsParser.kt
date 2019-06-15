@@ -1,4 +1,4 @@
-package net.hearthsim.hslog.achievements
+package net.hearthsim.hslog.parser.achievements
 
 import net.hearthsim.hslog.Console
 

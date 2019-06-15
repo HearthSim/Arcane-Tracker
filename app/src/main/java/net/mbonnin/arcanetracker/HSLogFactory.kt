@@ -9,7 +9,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.hearthsim.hslog.Console
 import net.hearthsim.hslog.HSLog
-import net.hearthsim.hslog.achievements.AchievementsParser
+import net.hearthsim.hslog.parser.achievements.AchievementsParser
 import net.mbonnin.arcanetracker.reader.LogReader
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RDeck
