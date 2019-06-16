@@ -1,11 +1,13 @@
 package net.mbonnin.arcanetracker.hsreplay
 
+import android.media.session.MediaSession
 import com.squareup.moshi.Moshi
 import io.fabric.sdk.android.services.network.HttpRequest.HEADER_AUTHORIZATION
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import net.hearthsim.hsreplay.HsReplayApi
+import net.hearthsim.hsreplay.model.Token
 import net.mbonnin.arcanetracker.Settings
 import net.mbonnin.arcanetracker.Utils
 import okhttp3.*
@@ -88,7 +90,15 @@ class HsReplayInterceptor : Interceptor {
          */
         suspend fun login(code: String): Result<Unit> = withContext(Dispatchers.IO) {
             val token = runBlocking {
-                HsReplayApi().login(code)
+                try {
+                    HsReplayApi().login(code)
+                } catch (e: Exception) {
+                    e
+                }
+            }
+
+            if (token !is Token) {
+                return@withContext Result.failure<Unit>(token as java.lang.Exception)
             }
 
             synchronized(lock) {
