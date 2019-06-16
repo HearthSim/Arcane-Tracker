@@ -12,20 +12,14 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation 'org.jetbrains.kotlin:kotlin-stdlib-common'
-                api "org.jetbrains.kotlinx:kotlinx-io:0.1.8"
+                implementation Libs.stdlibCommon
+                api Libs.kotlinxIo
             }
         }
         jvmMain {
             dependencies {
-                implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-                api "org.jetbrains.kotlinx:kotlinx-io-jvm:0.1.8"
-            }
-        }
-        commonTest {
-            dependencies {
-                implementation 'org.jetbrains.kotlin:kotlin-test-common'
-                implementation 'org.jetbrains.kotlin:kotlin-test-annotations-common'
+                implementation Libs.stdlibJdk8
+                api Libs.kotlinxIoJvm
             }
         }
     }

@@ -2,8 +2,6 @@ plugins {
     id 'org.jetbrains.kotlin.multiplatform'
 }
 
-def klockVersion = "1.4.0"
-
 sourceCompatibility = 1.7
 
 kotlin {
@@ -14,21 +12,16 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation 'org.jetbrains.kotlin:kotlin-stdlib-common'
-                implementation "com.soywiz.korlibs.klock:klock:$klockVersion"
-                implementation project(":kotlin-hsmodel")
+                implementation Libs.stdlibCommon
+                implementation Libs.klock
                 implementation project(":kotlin-deckstring")
+                api project(":kotlin-hsmodel")
+                api project(":kotlin-hsreplay-api")
             }
         }
         jvmMain {
             dependencies {
-                implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-            }
-        }
-        commonTest {
-            dependencies {
-                implementation 'org.jetbrains.kotlin:kotlin-test-common'
-                implementation 'org.jetbrains.kotlin:kotlin-test-annotations-common'
+                implementation Libs.stdlibJdk8
             }
         }
     }

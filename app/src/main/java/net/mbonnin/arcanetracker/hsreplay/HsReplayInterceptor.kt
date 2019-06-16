@@ -3,7 +3,9 @@ package net.mbonnin.arcanetracker.hsreplay
 import com.squareup.moshi.Moshi
 import io.fabric.sdk.android.services.network.HttpRequest.HEADER_AUTHORIZATION
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import net.hearthsim.hsreplay.HsReplayApi
 import net.mbonnin.arcanetracker.Settings
 import net.mbonnin.arcanetracker.Utils
 import okhttp3.*
@@ -85,41 +87,15 @@ class HsReplayInterceptor : Interceptor {
          * This will block, do not call from main thread
          */
         suspend fun login(code: String): Result<Unit> = withContext(Dispatchers.IO) {
-            val client = OkHttpClient()
-
-            val httpUrl = HttpUrl.parse("https://hsreplay.net/oauth2/token/")!!
-                    .newBuilder()
-                    .addQueryParameter("code", code)
-                    .addQueryParameter("client_id", A)
-                    .addQueryParameter("client_secret", B)
-                    .addQueryParameter("grant_type", "authorization_code")
-                    .addQueryParameter("redirect_uri", CALLBACK_URL)
-                    .build()
-
-            val body = FormBody.Builder()
-                    .build()
-
-            val request = Request.Builder()
-                    .post(body)
-                    .url(httpUrl)
-                    .build()
-
-            val response = try {
-                client.newCall(request).execute()
-            } catch (e: Exception) {
-                return@withContext Result.failure<Unit>(e)
-            }
-
-            if (!response.isSuccessful) {
-                val e = Exception("login HTTP error ${response.code()}")
-                return@withContext Result.failure<Unit>(e)
+            val token = runBlocking {
+                HsReplayApi().login(code)
             }
 
             synchronized(lock) {
-                val r = storeToken(response)
-                if (r.isFailure) {
-                    return@withContext r
-                }
+                accessToken = token.access_token
+                refreshToken = token.refresh_token
+                Settings.set(Settings.HSREPLAY_OAUTH_ACCESS_TOKEN, token.access_token)
+                Settings.set(Settings.HSREPLAY_OAUTH_REFRESH_TOKEN, token.refresh_token)
                 lock.notifyAll()
             }
 

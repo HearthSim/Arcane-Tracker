@@ -15,15 +15,25 @@ kotlin {
         commonMain {
             dependencies {
                 implementation Libs.stdlibCommon
-                api Libs.kotlinxIo
+                implementation Libs.corountinesCommon
                 implementation Libs.serializationRuntimeCommon
+
+                implementation Libs.ktorClientCore
+                implementation Libs.ktorClientJson
+                implementation Libs.ktorClientSerialization
             }
         }
         jvmMain {
             dependencies {
                 implementation Libs.stdlibJdk8
-                api Libs.kotlinxIoJvm
+
+                implementation Libs.coroutines
                 implementation Libs.serializationRuntime
+                implementation Libs.ktorClientSerializationJvm
+
+                implementation Libs.ktorClientCoreJvm
+                implementation Libs.ktorClientJsonJvm
+                implementation Libs.ktorClientOkhttp
             }
         }
     }

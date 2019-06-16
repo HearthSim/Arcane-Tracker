@@ -6,7 +6,8 @@ object Versions {
     const val androidPlugin = "3.2.1"
     const val fabricPlugin = "1.28.1"
     const val playServicesPlugin = "4.2.0"
-
+    const val coroutines = "1.2.1"
+    const val ktor = "1.2.1"
 }
 
 object Libs {
@@ -26,7 +27,6 @@ object Libs {
     const val moshi = "com.squareup.moshi:moshi:1.6.0"
     const val moshi_codegen = "com.squareup.moshi:moshi-kotlin-codegen:1.6.0"
     const val timber = "com.jakewharton.timber:timber:4.7.1"
-    const val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin}"
     const val rxjava2 = "io.reactivex.rxjava2:rxjava:2.2.2"
     const val junit = "junit:junit:4.12"
     const val espresso = "com.android.support.test.espresso:espresso-core:3.0.2"
@@ -56,7 +56,28 @@ object Libs {
     const val kotlinhslog = "net.hearthsim:kotlin-hslog:1.0"
     const val flexbox = "com.google.android:flexbox:1.1.0"
     const val archPaging = "android.arch.paging:runtime:1.0.1"
-    const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1"
-    const val coroutinesRx2 = "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.2.1"
-    const val coroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1"
+
+    const val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin}"
+    const val stdlibCommon = "org.jetbrains.kotlin:kotlin-stdlib-common"
+    const val stdlibJdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    const val corountinesCommon = "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:${Versions.coroutines}"
+    const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
+    const val coroutinesRx2 = "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${Versions.coroutines}"
+    const val coroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
+    const val serializationRuntimeCommon = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:0.11.0"
+    const val serializationRuntime = "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.11.0"
+
+    const val ktorClientCore = "io.ktor:ktor-client-core:${Versions.ktor}"
+    const val ktorClientCoreJvm = "io.ktor:ktor-client-core-jvm:${Versions.ktor}"
+    const val ktorClientJson = "io.ktor:ktor-client-json:${Versions.ktor}"
+    const val ktorClientJsonJvm = "io.ktor:ktor-client-json-jvm:${Versions.ktor}"
+    const val ktorClientSerialization = "io.ktor:ktor-client-serialization:${Versions.ktor}"
+    const val ktorClientSerializationJvm = "io.ktor:ktor-client-serialization-jvm:${Versions.ktor}"
+    const val ktorClientOkhttp = "io.ktor:ktor-client-okhttp:${Versions.ktor}"
+
+    const val kotlinxIo = "org.jetbrains.kotlinx:kotlinx-io:0.1.8"
+    const val kotlinxIoJvm = "org.jetbrains.kotlinx:kotlinx-io-jvm:0.1.8"
+
+    const val klock = "com.soywiz.korlibs.klock:klock:1.4.0"
 }
