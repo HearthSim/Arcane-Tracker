@@ -8,7 +8,6 @@ import net.hearthsim.hslog.parser.power.*
 import net.hearthsim.hslog.parser.power.BlockTag.Companion.TYPE_TRIGGER
 import net.hearthsim.hslog.Console
 import net.hearthsim.hslog.util.getClassIndex
-import net.hearthsim.hslog.util.getPlayerClass
 import net.hearthsim.hsmodel.CardJson
 import net.hearthsim.hsmodel.enum.CardId
 import net.hearthsim.hsmodel.enum.Type

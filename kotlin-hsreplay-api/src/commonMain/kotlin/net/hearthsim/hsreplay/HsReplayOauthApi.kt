@@ -5,11 +5,12 @@ import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.post
+import io.ktor.client.response.HttpResponse
 import io.ktor.http.Parameters
 import kotlinx.serialization.json.Json
 import net.hearthsim.hsreplay.model.Token
 
-class HsReplayApi {
+class HsReplayOauthApi {
     private val client = HttpClient {
         install(JsonFeature) {
             serializer = KotlinxSerializer(Json.nonstrict).apply {
@@ -31,7 +32,16 @@ class HsReplayApi {
             append("client_id", A)
             append("client_secret", B)
             append("grant_type", "authorization_code")
-            append("redirect_uri", CALLBACK_URL)
+            append("redirect_uri", CALLBACK_URL) // not sure we need redirect_uri but it's working so I'm leaving it
+        })
+    }
+
+    suspend fun refresh(refreshToken: String): HttpResponse = client.post("https://hsreplay.net/oauth2/token/") {
+        body = FormDataContent(Parameters.build {
+            append("client_id", A)
+            append("client_secret", B)
+            append("grant_type", "refresh_token")
+            append("refresh_token", refreshToken)
         })
     }
 }

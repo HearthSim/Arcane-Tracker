@@ -18,7 +18,7 @@ kotlin {
                 implementation Libs.corountinesCommon
                 implementation Libs.serializationRuntimeCommon
 
-                implementation Libs.ktorClientCore
+                api Libs.ktorClientCore
                 implementation Libs.ktorClientJson
                 implementation Libs.ktorClientSerialization
             }
@@ -31,7 +31,7 @@ kotlin {
                 implementation Libs.serializationRuntime
                 implementation Libs.ktorClientSerializationJvm
 
-                implementation Libs.ktorClientCoreJvm
+                api Libs.ktorClientCoreJvm
                 implementation Libs.ktorClientJsonJvm
                 implementation Libs.ktorClientOkhttp
             }

@@ -1,12 +1,12 @@
 package net.mbonnin.arcanetracker.hsreplay
 
-import android.media.session.MediaSession
 import com.squareup.moshi.Moshi
 import io.fabric.sdk.android.services.network.HttpRequest.HEADER_AUTHORIZATION
+import io.ktor.client.response.HttpResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import net.hearthsim.hsreplay.HsReplayApi
+import net.hearthsim.hsreplay.HsReplayOauthApi
 import net.hearthsim.hsreplay.model.Token
 import net.mbonnin.arcanetracker.Settings
 import net.mbonnin.arcanetracker.Utils
@@ -89,12 +89,10 @@ class HsReplayInterceptor : Interceptor {
          * This will block, do not call from main thread
          */
         suspend fun login(code: String): Result<Unit> = withContext(Dispatchers.IO) {
-            val token = runBlocking {
-                try {
-                    HsReplayApi().login(code)
-                } catch (e: Exception) {
-                    e
-                }
+            val token = try {
+                HsReplayOauthApi().login(code)
+            } catch (e: Exception) {
+                e
             }
 
             if (token !is Token) {
@@ -127,35 +125,21 @@ class HsReplayInterceptor : Interceptor {
         }
 
         fun refreshToken(): RefreshResult {
-            val client = OkHttpClient()
-
-            val httpUrl = HttpUrl.parse("https://hsreplay.net/oauth2/token/")!!
-                    .newBuilder()
-                    .build()
-
-            val body = FormBody.Builder()
-                    .add("client_id", A)
-                    .add("client_secret", B)
-                    .add("grant_type", "refresh_token")
-                    .add("refresh_token", refreshToken!!)
-                    .build()
-
-            val request = Request.Builder()
-                    .post(body)
-                    .url(httpUrl)
-                    .build()
-
-            val response = try {
-                client.newCall(request).execute()
-            } catch (e: IOException) {
-                return RefreshResult.RecoverableError(e)
+            val response = runBlocking {
+                try {
+                    HsReplayOauthApi().refresh(refreshToken!!)
+                } catch (e: Exception) {
+                    e
+                }
             }
 
-            if (!response.isSuccessful) {
-                when (response.code() / 100) {
-                    4 -> return RefreshResult.LoggedOut
-                    else -> return RefreshResult.RecoverableError(IOException("HTTP token refresh error ${response.code()}"))
-                }
+            if (response !is HttpResponse) {
+                return RefreshResult.RecoverableError(response as Exception)
+            }
+
+            when (response.status.value / 100) {
+                4 -> return RefreshResult.LoggedOut
+                else -> return RefreshResult.RecoverableError(IOException("HTTP token refresh error ${response.status.value}"))
             }
 
             if (storeToken(response).isFailure) {
