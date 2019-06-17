@@ -20,7 +20,7 @@ class HsReplayNewApi(val accessToken: () -> String) {
                 setMapper(Account::class, Account.serializer())
             }
         }
-        this.defaultRequest {
+        this.install(OauthFeature.Feature) {
             header("Authorization", accessToken())
         }
     }

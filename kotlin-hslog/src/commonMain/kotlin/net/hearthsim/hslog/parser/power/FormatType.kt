@@ -1,4 +1,4 @@
-package net.hearthsim.hslog.power
+package net.hearthsim.hslog.parser.power
 
 enum class FormatType(val intValue: Int) {
     FT_UNKNOWN(0),
