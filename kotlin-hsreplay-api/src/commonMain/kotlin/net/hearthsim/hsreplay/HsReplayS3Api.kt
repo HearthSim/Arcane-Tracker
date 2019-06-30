@@ -5,7 +5,7 @@ import io.ktor.client.request.header
 import io.ktor.client.request.put
 import net.hearthsim.hsreplay.model.Token
 
-class HsReplayS3Api {
+class HsReplayS3Api(val userAgent: String) {
     private val client = HttpClient {
     }
 
@@ -14,5 +14,7 @@ class HsReplayS3Api {
 
         header("User-Agent", userAgent)
         header("Content-Type", "text/plain")
+
+        header("User-Agent", userAgent)
     }
 }

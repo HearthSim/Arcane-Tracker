@@ -15,7 +15,7 @@ class AccessTokenProvider(val preferences: Preferences, val oauthApi: HsReplayOa
     private var refreshToken = preferences.getString(HSREPLAY_OAUTH_REFRESH_TOKEN)
 
     suspend fun accessToken() = mutex.withLock {
-        accessToken
+        accessToken!!
     }
 
     suspend fun refreshToken() = mutex.withLock {

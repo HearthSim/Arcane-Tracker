@@ -3,18 +3,18 @@ package net.hearthsim.hsreplay
 import io.ktor.client.HttpClient
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
-import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.header
 import io.ktor.client.request.post
-import io.ktor.client.response.HttpResponse
-import io.ktor.http.Parameters
+import io.ktor.http.ContentType
+import io.ktor.http.content.OutgoingContent
+import kotlinx.coroutines.io.ByteWriteChannel
+import kotlinx.coroutines.io.writeStringUtf8
 import kotlinx.serialization.json.Json
-import net.hearthsim.hsreplay.model.Token
 import net.hearthsim.hsreplay.model.legacy.Upload
 import net.hearthsim.hsreplay.model.legacy.UploadRequest
 import net.hearthsim.hsreplay.model.legacy.UploadToken
 
-class HsReplayLegacyApi {
+class HsReplayLegacyApi(val userAgent: String) {
     private val client = HttpClient {
         install(JsonFeature) {
             serializer = KotlinxSerializer(Json.nonstrict).apply {
@@ -24,10 +24,25 @@ class HsReplayLegacyApi {
         }
     }
 
-    suspend fun createUploadToken(): UploadToken = client.post("https://hsreplay.net/api/v1/tokens")
+    suspend fun createUploadToken(): UploadToken = client.post("https://hsreplay.net/api/v1/tokens/") {
+        body = object : OutgoingContent.WriteChannelContent() {
+            override suspend fun writeTo(channel: ByteWriteChannel) {
+                channel.writeStringUtf8("{}")
+            }
+
+            override val contentType: ContentType?
+                get() = ContentType.parse("application/json")
+        }
+
+        header("X-Api-Key", "8b27e53b-0256-4ff1-b134-f531009c05a3")
+        header("User-Agent", userAgent)
+    }
 
     suspend fun createUpload(uploadRequest: UploadRequest, authorization: String): Upload = client.post("https://upload.hsreplay.net/api/v1/replay/upload/request") {
         header("Authorization", authorization)
         body = uploadRequest
+
+        header("X-Api-Key", "8b27e53b-0256-4ff1-b134-f531009c05a3")
+        header("User-Agent", userAgent)
     }
 }

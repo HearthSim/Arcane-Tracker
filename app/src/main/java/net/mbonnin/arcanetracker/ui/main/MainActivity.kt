@@ -60,9 +60,7 @@ class MainActivity : AppCompatActivity() {
             Timber.e(e)
         }
 
-        val mandatoryLogin = !Settings.get(Settings.IS_PRE_HEARTHSIM_USER, false)
-
-        val needLogin = HsReplayInterceptor.refreshToken == null && mandatoryLogin
+        val needLogin = ArcaneTrackerApplication.get().hsReplay.account() == null
 
         state = state.copy(showNextTime = Settings.get(Settings.SHOW_NEXT_TIME, true),
                 needLogin = needLogin)

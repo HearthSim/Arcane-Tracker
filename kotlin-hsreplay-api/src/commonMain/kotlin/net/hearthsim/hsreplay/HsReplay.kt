@@ -1,9 +1,7 @@
 package net.hearthsim.hsreplay
 
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.withContext
 import net.hearthsim.console.Console
 import net.hearthsim.hsreplay.Preferences.Companion.KEY_HSREPLAY_BATTLETAG
 import net.hearthsim.hsreplay.Preferences.Companion.KEY_HSREPLAY_LEGACY_TOKEN
@@ -15,17 +13,17 @@ import net.hearthsim.hsreplay.model.new.Account
 import net.hearthsim.hsreplay.model.new.ClaimInput
 
 class HsReplay(val preferences: Preferences, val console: Console, val userAgent: String) {
-    private val oauthApi = HsReplayOauthApi()
-    private val legacyApi = HsReplayLegacyApi()
+    private val oauthApi = HsReplayOauthApi(userAgent)
+    private val legacyApi = HsReplayLegacyApi(userAgent)
     private val accessTokenProvider = AccessTokenProvider(preferences, oauthApi)
-    private val newApi = HsReplayNewApi(accessTokenProvider)
-    private val s3Api = HsReplayS3Api()
+    private val newApi = HsReplayNewApi(userAgent, accessTokenProvider)
+    private val s3Api = HsReplayS3Api(userAgent)
 
     private var account: Account? = null
-    private var uploadToken: String? = null
+    private var uploadTokenKey: String? = null
 
     init {
-        uploadToken = preferences.getString(KEY_HSREPLAY_LEGACY_TOKEN)
+        uploadTokenKey = preferences.getString(KEY_HSREPLAY_LEGACY_TOKEN)
 
         val battletag = preferences.getString(KEY_HSREPLAY_BATTLETAG)
         val username = preferences.getString(KEY_HSREPLAY_USERNAME)
@@ -43,7 +41,7 @@ class HsReplay(val preferences: Preferences, val console: Console, val userAgent
         if (!accessTokenProvider.isLoggedIn()) {
             return null
         }
-        if (uploadToken == null) {
+        if (uploadTokenKey == null) {
             return null
         }
         return account
@@ -75,7 +73,7 @@ class HsReplay(val preferences: Preferences, val console: Console, val userAgent
             try {
                 legacyApi.createUploadToken()
             } catch (e: Exception) {
-                return@async Result.failure<Unit>(e)
+                return@async e
             }
         }
 
@@ -106,6 +104,7 @@ class HsReplay(val preferences: Preferences, val console: Console, val userAgent
             return@coroutineScope Result.failure<Unit>(e)
         }
 
+        uploadTokenKey = uploadToken.key
         preferences.putString(KEY_HSREPLAY_LEGACY_TOKEN, uploadToken.key)
 
         preferences.putBoolean(KEY_HSREPLAY_PREMIUM, account!!.is_premium)
@@ -116,13 +115,13 @@ class HsReplay(val preferences: Preferences, val console: Console, val userAgent
     }
 
     suspend fun uploadGame(uploadRequest: UploadRequest, gameStr: String): Result<String> {
-        console.debug("uploadGame [token=$uploadToken]")
+        console.debug("uploadGame [token=$uploadTokenKey]")
 
-        if (uploadToken == null) {
+        if (uploadTokenKey == null) {
             return Result.failure(Exception("no token"))
         }
 
-        val authorization = "Token $uploadToken"
+        val authorization = "Token $uploadTokenKey"
 
         val upload = try {
             legacyApi.createUpload(uploadRequest, authorization)

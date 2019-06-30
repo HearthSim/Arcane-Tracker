@@ -90,7 +90,7 @@ class HsReplayInterceptor : Interceptor {
          */
         suspend fun login(code: String): Result<Unit> = withContext(Dispatchers.IO) {
             val token = try {
-                HsReplayOauthApi().login(code)
+                HsReplayOauthApi("").login(code)
             } catch (e: Exception) {
                 e
             }
@@ -127,7 +127,7 @@ class HsReplayInterceptor : Interceptor {
         fun refreshToken(): RefreshResult {
             val response = runBlocking {
                 try {
-                    HsReplayOauthApi().refresh(refreshToken!!)
+                    HsReplayOauthApi("").refresh(refreshToken!!)
                 } catch (e: Exception) {
                     e
                 }

@@ -12,8 +12,8 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.util.AttributeKey
 
 class OauthFeature(val accessTokenProvider: AccessTokenProvider) {
-    suspend private fun accessToken() {
-        accessTokenProvider.accessToken()
+    suspend private fun accessToken(): String {
+        return accessTokenProvider.accessToken()
     }
 
     suspend private fun refreshToken() {
@@ -41,7 +41,7 @@ class OauthFeature(val accessTokenProvider: AccessTokenProvider) {
             scope.feature(HttpSend)!!.intercept { origin ->
                 var call = origin
 
-                while (call.response.status == HttpStatusCode.Unauthorized) {
+                if (call.response.status == HttpStatusCode.Unauthorized) {
                     feature.refreshToken()
 
                     val request = HttpRequestBuilder()
