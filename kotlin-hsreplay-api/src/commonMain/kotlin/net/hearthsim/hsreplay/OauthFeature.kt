@@ -2,58 +2,58 @@ package net.hearthsim.hsreplay
 
 import io.ktor.client.HttpClient
 import io.ktor.client.features.HttpClientFeature
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.json.defaultSerializer
+import io.ktor.client.features.HttpSend
+import io.ktor.client.features.feature
+import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.HttpRequestPipeline
-import io.ktor.client.request.accept
-import io.ktor.client.response.HttpResponseContainer
-import io.ktor.client.response.HttpResponsePipeline
-import io.ktor.client.utils.EmptyContent
+import io.ktor.client.request.takeFrom
 import io.ktor.http.HttpHeaders
-import io.ktor.http.contentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.util.AttributeKey
-import kotlinx.coroutines.io.ByteReadChannel
-import kotlinx.coroutines.io.readRemaining
 
-class OauthFeature {
+class OauthFeature(val accessTokenProvider: AccessTokenProvider) {
+    suspend private fun accessToken() {
+        accessTokenProvider.accessToken()
+    }
+
+    suspend private fun refreshToken() {
+        accessTokenProvider.refreshToken()
+    }
+
     class Config {
+        lateinit var accessTokenProvider: AccessTokenProvider
     }
 
     companion object Feature : HttpClientFeature<Config, OauthFeature> {
         override val key: AttributeKey<OauthFeature> = AttributeKey("Oauth")
 
-        override fun prepare(block: OauthFeature.Config.() -> Unit): OauthFeature {
-            val config = OauthFeature.Config().apply(block)
+        override fun prepare(block: Config.() -> Unit): OauthFeature {
+            val config = Config().apply(block)
 
-            return OauthFeature()
+            return OauthFeature(config.accessTokenProvider)
         }
 
         override fun install(feature: OauthFeature, scope: HttpClient) {
-            scope.requestPipeline.intercept(HttpRequestPipeline.Send) { payload ->
-                context.headers.remove(HttpHeaders.ContentType)
-
-                val serializedContent = when (payload) {
-                    is EmptyContent -> feature.serializer.write(Unit, contentType)
-                    else -> feature.serializer.write(payload, contentType)
-                }
-
-                val subject = proceedWith(serializedContent)
-                subject
+            scope.requestPipeline.intercept(HttpRequestPipeline.State) {
+                context.headers.append(HttpHeaders.Authorization, "Bearer ${feature.accessToken()}")
             }
 
-            scope.responsePipeline.intercept(HttpResponsePipeline.Transform) { (info, body) ->
-                if (body !is ByteReadChannel) return@intercept
+            scope.feature(HttpSend)!!.intercept { origin ->
+                var call = origin
 
-                if (feature.acceptContentTypes.none { context.response.contentType()?.match(it) == true })
-                    return@intercept
-                try {
-                    proceedWith(HttpResponseContainer(info, feature.serializer.read(info, body.readRemaining())))
-                } finally {
-                    context.close()
+                while (call.response.status == HttpStatusCode.Unauthorized) {
+                    feature.refreshToken()
+
+                    val request = HttpRequestBuilder()
+                    request.takeFrom(call.request)
+                    request.headers.append(HttpHeaders.Authorization, "Bearer ${feature.accessToken()}")
+
+                    call.close()
+                    call = execute(request)
                 }
+
+                return@intercept call
             }
         }
     }
-
-
 }

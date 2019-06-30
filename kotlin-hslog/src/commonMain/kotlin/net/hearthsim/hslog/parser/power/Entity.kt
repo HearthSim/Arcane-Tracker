@@ -1,4 +1,4 @@
-package net.hearthsim.hslog.power
+package net.hearthsim.hslog.parser.power
 
 import net.hearthsim.hsmodel.Card
 

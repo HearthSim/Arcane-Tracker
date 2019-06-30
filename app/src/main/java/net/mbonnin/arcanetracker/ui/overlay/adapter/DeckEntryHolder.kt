@@ -10,13 +10,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import net.hearthsim.hslog.parser.power.Entity
+import net.hearthsim.hsmodel.Card
+import net.hearthsim.hsmodel.enum.Rarity
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.ViewManager
-import net.hearthsim.hslog.power.Entity
-import net.hearthsim.hsmodel.Card
-import net.hearthsim.hsmodel.enum.Rarity
 
 internal class DeckEntryHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnTouchListener {
     private val mHandler: Handler

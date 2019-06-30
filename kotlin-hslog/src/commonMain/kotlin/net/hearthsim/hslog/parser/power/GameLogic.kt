@@ -1,10 +1,9 @@
-package net.hearthsim.hslog.power
+package net.hearthsim.hslog.parser.power
 
 /*
  * Created by martin on 11/11/16.
  */
 
-import net.hearthsim.hslog.parser.power.*
 import net.hearthsim.hslog.parser.power.BlockTag.Companion.TYPE_TRIGGER
 import net.hearthsim.hslog.Console
 import net.hearthsim.hslog.util.getClassIndex

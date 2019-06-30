@@ -12,7 +12,7 @@ import kotlinx.serialization.json.Json
 import net.hearthsim.hsreplay.model.new.Account
 import net.hearthsim.hsreplay.model.new.ClaimInput
 
-class HsReplayNewApi(val accessToken: () -> String) {
+class HsReplayNewApi(val accessTokenProvider: AccessTokenProvider) {
     private val client = HttpClient {
         install(JsonFeature) {
             serializer = KotlinxSerializer(Json.nonstrict).apply {
@@ -21,7 +21,7 @@ class HsReplayNewApi(val accessToken: () -> String) {
             }
         }
         this.install(OauthFeature.Feature) {
-            header("Authorization", accessToken())
+            accessTokenProvider = this@HsReplayNewApi.accessTokenProvider
         }
     }
 

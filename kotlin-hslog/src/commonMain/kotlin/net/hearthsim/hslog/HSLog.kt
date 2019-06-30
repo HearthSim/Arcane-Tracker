@@ -6,8 +6,8 @@ import net.hearthsim.hslog.parser.achievements.AchievementsParser
 import net.hearthsim.hslog.parser.decks.DecksParser
 import net.hearthsim.hslog.parser.loadingscreen.LoadingScreenParser
 import net.hearthsim.hslog.parser.power.Game
-import net.hearthsim.hslog.power.GameLogic
-import net.hearthsim.hslog.power.GameType
+import net.hearthsim.hslog.parser.power.GameLogic
+import net.hearthsim.hslog.parser.power.GameType
 import net.hearthsim.hslog.util.WhizbangAndZayleHelper
 import net.hearthsim.hsmodel.CardJson
 import net.hearthsim.hsmodel.enum.CardId

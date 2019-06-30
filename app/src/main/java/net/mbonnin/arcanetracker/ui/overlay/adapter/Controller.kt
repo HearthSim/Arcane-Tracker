@@ -5,9 +5,9 @@ import android.os.Handler
 import android.text.TextUtils
 import net.mbonnin.arcanetracker.*
 import net.hearthsim.hslog.Deck
-import net.hearthsim.hslog.power.Entity
-import net.hearthsim.hslog.power.Game
-import net.hearthsim.hslog.power.GameLogic
+import net.hearthsim.hslog.parser.power.Entity
+import net.hearthsim.hslog.parser.power.Game
+import net.hearthsim.hslog.parser.power.GameLogic
 import net.hearthsim.hsmodel.CardJson
 import net.hearthsim.hsmodel.enum.PlayerClass
 import net.hearthsim.hsmodel.enum.Rarity

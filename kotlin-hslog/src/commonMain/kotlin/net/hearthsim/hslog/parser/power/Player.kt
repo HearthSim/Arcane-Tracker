@@ -1,4 +1,4 @@
-package net.hearthsim.hslog.power
+package net.hearthsim.hslog.parser.power
 
 class Player {
     var entity: Entity? = null

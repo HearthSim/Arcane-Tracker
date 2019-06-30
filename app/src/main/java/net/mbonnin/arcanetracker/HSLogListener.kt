@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 import net.hearthsim.hslog.Deck
 import net.hearthsim.hslog.HSLog
 import net.hearthsim.hslog.parser.achievements.AchievementsParser
-import net.hearthsim.hslog.power.Game
+import net.hearthsim.hslog.parser.power.Game
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RDeck
 import net.mbonnin.arcanetracker.room.RPack

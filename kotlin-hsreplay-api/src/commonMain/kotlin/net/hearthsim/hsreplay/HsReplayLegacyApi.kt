@@ -24,7 +24,7 @@ class HsReplayLegacyApi {
         }
     }
 
-    suspend fun createToken(code: String): UploadToken = client.post("https://hsreplay.net/api/v1/tokens")
+    suspend fun createUploadToken(): UploadToken = client.post("https://hsreplay.net/api/v1/tokens")
 
     suspend fun createUpload(uploadRequest: UploadRequest, authorization: String): Upload = client.post("https://upload.hsreplay.net/api/v1/replay/upload/request") {
         header("Authorization", authorization)

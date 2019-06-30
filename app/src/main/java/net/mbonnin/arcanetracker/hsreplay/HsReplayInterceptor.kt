@@ -142,7 +142,8 @@ class HsReplayInterceptor : Interceptor {
                 else -> return RefreshResult.RecoverableError(IOException("HTTP token refresh error ${response.status.value}"))
             }
 
-            if (storeToken(response).isFailure) {
+            // Martin: this crashes but I'm going to remove it anyways
+            if (storeToken(response as Response).isFailure) {
                 return RefreshResult.RecoverableError(IOException("Cannot store token"))
             }
 

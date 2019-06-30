@@ -1,8 +1,8 @@
 package net.mbonnin.arcanetracker
 
 
-import net.hearthsim.hslog.power.FormatType
-import net.hearthsim.hslog.power.GameType
+import net.hearthsim.hslog.parser.power.FormatType
+import net.hearthsim.hslog.parser.power.GameType
 import net.hearthsim.hsmodel.Card
 import net.hearthsim.hsmodel.CardJson
 import net.hearthsim.hsmodel.enum.*

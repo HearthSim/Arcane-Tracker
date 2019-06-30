@@ -14,13 +14,13 @@ import androidx.core.view.children
 import com.google.android.flexbox.FlexboxLayout
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
+import net.hearthsim.hslog.parser.power.Entity
+import net.hearthsim.hslog.parser.power.FormatType
+import net.hearthsim.hslog.parser.power.GameLogic
+import net.hearthsim.hslog.parser.power.GameType
+import net.hearthsim.hsmodel.enum.Type
 import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.databinding.EntityViewWithSecretsBinding
-import net.hearthsim.hslog.power.Entity
-import net.hearthsim.hslog.power.GameLogic
-import net.hearthsim.hslog.power.FormatType
-import net.hearthsim.hslog.power.GameType
-import net.hearthsim.hsmodel.enum.Type
 
 class DetailsView(context: Context) : ViewGroup(context) {
 

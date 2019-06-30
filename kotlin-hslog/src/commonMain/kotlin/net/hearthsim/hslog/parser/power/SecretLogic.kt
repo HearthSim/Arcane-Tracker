@@ -1,8 +1,5 @@
-package net.hearthsim.hslog.power
+package net.hearthsim.hslog.parser.power
 
-import net.hearthsim.hslog.parser.power.BlockTag
-import net.hearthsim.hslog.parser.power.MetaDataTag
-import net.hearthsim.hslog.parser.power.Game
 import net.hearthsim.hslog.Console
 import net.hearthsim.hsmodel.enum.CardId
 import net.hearthsim.hsmodel.enum.Rarity

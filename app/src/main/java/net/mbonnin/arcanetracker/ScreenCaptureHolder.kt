@@ -6,10 +6,10 @@ import android.media.projection.MediaProjection
 import android.os.Build
 import android.os.Handler
 import androidx.annotation.RequiresApi
+import net.hearthsim.hslog.parser.power.Entity
+import net.hearthsim.hslog.parser.power.GameType
 import net.mbonnin.arcanetracker.detector.ByteBufferImage
 import net.mbonnin.arcanetracker.detector.Detector
-import net.hearthsim.hslog.power.Entity
-import net.hearthsim.hslog.power.GameType
 
 object ScreenCaptureHolder {
     @SuppressLint("StaticFieldLeak")
