@@ -1,6 +1,6 @@
 package net.hearthsim.hslog.parser.loadingscreen
 
-import net.hearthsim.hslog.Console
+import net.hearthsim.console.Console
 import kotlin.jvm.Volatile
 
 class LoadingScreenParser(val console: Console) {

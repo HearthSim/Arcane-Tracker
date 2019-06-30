@@ -7,7 +7,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import net.hearthsim.hslog.Console
+import net.hearthsim.console.Console
 import net.hearthsim.hslog.HSLog
 import net.hearthsim.hslog.parser.achievements.AchievementsParser
 import net.mbonnin.arcanetracker.reader.LogReader

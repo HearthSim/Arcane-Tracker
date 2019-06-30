@@ -1,6 +1,6 @@
 package net.hearthsim.hslog.parser.achievements
 
-import net.hearthsim.hslog.Console
+import net.hearthsim.console.Console
 
 class AchievementsParser(val console: Console, val onCard: (CardGained) -> Unit) {
     private val CARD_GAINED = Regex(".*NotifyOfCardGained:.*cardId=(.*) .* (.*) [0-9]*")

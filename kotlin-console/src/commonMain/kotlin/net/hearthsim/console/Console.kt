@@ -1,4 +1,4 @@
-package net.hearthsim.hslog
+package net.hearthsim.console
 
 interface Console {
     fun debug(message: String)

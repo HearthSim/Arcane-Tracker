@@ -6,17 +6,16 @@ import android.view.View
 import android.view.View.GONE
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.hsreplay_menu_view.*
-import net.mbonnin.arcanetracker.hsreplay.HsReplayInterceptor
 import net.mbonnin.arcanetracker.ui.main.LoginCompanion
 import net.mbonnin.arcanetracker.ui.main.MainActivity
 import net.mbonnin.arcanetracker.ui.overlay.Overlay
 
 class HsReplayMenuCompanion(override val containerView: View): LayoutContainer {
     init {
-        val isSignedIn = HsReplayInterceptor.refreshToken != null
+        val account = ArcaneTrackerApplication.get().hsReplay.account()
 
-        if (isSignedIn) {
-            battleTag.setText(ArcaneTrackerApplication.get().hsReplay.username())
+        if (account != null) {
+            battleTag.setText(account.username)
             battleTag.setOnClickListener {
                 ViewManager.get().removeView(containerView)
                 Utils.openLink("https://hsreplay.net/account/?utm_source=arcanetracker&utm_medium=client")
@@ -32,7 +31,7 @@ class HsReplayMenuCompanion(override val containerView: View): LayoutContainer {
                 containerView.context.startActivity(intent)
             }
 
-            if (ArcaneTrackerApplication.get().hsReplay.isPremium()) {
+            if (account.is_premium == true) {
                 battleTag.setTextColor(Color.parseColor("#FFB00D"))
                 premium.visibility = GONE
             } else {

@@ -1,6 +1,7 @@
 package net.hearthsim.hslog.parser.power
 
-import net.hearthsim.hslog.Console
+import net.hearthsim.console.Console
+
 
 class Game(private val console: Console) {
 

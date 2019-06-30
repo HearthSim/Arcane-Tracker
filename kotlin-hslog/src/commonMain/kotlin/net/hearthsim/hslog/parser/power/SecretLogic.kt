@@ -1,6 +1,6 @@
 package net.hearthsim.hslog.parser.power
 
-import net.hearthsim.hslog.Console
+import net.hearthsim.console.Console
 import net.hearthsim.hsmodel.enum.CardId
 import net.hearthsim.hsmodel.enum.Rarity
 import net.hearthsim.hsmodel.enum.Type

@@ -19,8 +19,6 @@ kotlin {
                 implementation Libs.serializationRuntimeCommon
 
                 api Libs.ktorClientCore
-                api project(":kotlin-console")
-
                 implementation Libs.ktorClientJson
                 implementation Libs.ktorClientSerialization
             }

@@ -17,12 +17,12 @@ import com.squareup.picasso.LruCache
 import com.squareup.picasso.Picasso
 import io.paperdb.Paper
 import kotlinx.io.streams.asInput
-import net.hearthsim.hslog.Console
+import net.hearthsim.console.Console
 import net.hearthsim.hslog.HSLog
-import net.mbonnin.arcanetracker.hsreplay.HSReplay
 import net.hearthsim.hsmodel.Card
 import net.hearthsim.hsmodel.CardJson
 import net.hearthsim.hsmodel.enum.PlayerClass
+import net.hearthsim.hsreplay.HsReplay
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import timber.log.Timber
@@ -30,7 +30,7 @@ import java.io.File
 import java.util.*
 
 class ArcaneTrackerApplication : MultiDexApplication() {
-    lateinit var hsReplay: HSReplay
+    lateinit var hsReplay: HsReplay
         private set
     lateinit var picassoRamCache: LruCache
         private set
@@ -188,14 +188,18 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         val userAgent = (ArcaneTrackerApplication.context.packageName + "/" + BuildConfig.VERSION_NAME
                 + "; Android " + Build.VERSION.RELEASE + ";")
 
-        hsReplay = HSReplay(this, userAgent)
+        hsReplay = HsReplay(HsReplayPreferences(this), console, userAgent)
 
         MainService.start()
 
         FirebaseAnalytics.getInstance(this).setUserProperty(FirebaseConstants.IS_LEGACY.name.toLowerCase(),
                 Settings.get(Settings.IS_PRE_HEARTHSIM_USER, true).toString())
-        FirebaseAnalytics.getInstance(this).setUserProperty(FirebaseConstants.IS_PREMIUM.name.toLowerCase(),
-                hsReplay.isPremium().toString())
+
+        val account = hsReplay.account()
+        if (account != null) {
+            FirebaseAnalytics.getInstance(this).setUserProperty(FirebaseConstants.IS_PREMIUM.name.toLowerCase(),
+                    account.is_premium.toString())
+        }
         FirebaseAnalytics.getInstance(this).setUserProperty(FirebaseConstants.SCREEN_CAPTURE_ENABLED.name.toLowerCase(),
                 Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true).toString())
     }

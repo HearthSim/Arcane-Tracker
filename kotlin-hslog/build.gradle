@@ -17,6 +17,7 @@ kotlin {
                 implementation project(":kotlin-deckstring")
                 api project(":kotlin-hsmodel")
                 api project(":kotlin-hsreplay-api")
+                api project(":kotlin-console")
             }
         }
         jvmMain {

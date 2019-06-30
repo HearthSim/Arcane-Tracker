@@ -4,8 +4,10 @@ interface Preferences {
     /**
      * pass null to remove
      */
-    fun put(key: String, value: String?)
-    fun get(key: String): String?
+    fun putString(key: String, value: String?)
+    fun getString(key: String): String?
+    fun putBoolean(key: String, value: Boolean?)
+    fun getBoolean(key: String): Boolean?
 
     companion object {
         const val HSREPLAY_OAUTH_REFRESH_TOKEN = "HSREPLAY_OAUTH_REFRESH_TOKEN"

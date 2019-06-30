@@ -1,6 +1,5 @@
 package net.hearthsim.hsreplay
 
-import kotlinx.coroutines.io.readFully
 import kotlinx.coroutines.io.readRemaining
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -12,8 +11,8 @@ import net.hearthsim.hsreplay.model.Token
 class AccessTokenProvider(val preferences: Preferences, val oauthApi: HsReplayOauthApi) {
     val mutex = Mutex()
 
-    private var accessToken = preferences.get(HSREPLAY_OAUTH_ACCESS_TOKEN)
-    private var refreshToken = preferences.get(HSREPLAY_OAUTH_REFRESH_TOKEN)
+    private var accessToken = preferences.getString(HSREPLAY_OAUTH_ACCESS_TOKEN)
+    private var refreshToken = preferences.getString(HSREPLAY_OAUTH_REFRESH_TOKEN)
 
     suspend fun accessToken() = mutex.withLock {
         accessToken
@@ -31,15 +30,19 @@ class AccessTokenProvider(val preferences: Preferences, val oauthApi: HsReplayOa
     fun remember(accessToken: String, refreshToken: String) {
         this.accessToken = accessToken
         this.refreshToken = refreshToken
-        preferences.put(HSREPLAY_OAUTH_ACCESS_TOKEN, accessToken)
-        preferences.put(HSREPLAY_OAUTH_REFRESH_TOKEN, refreshToken)
+        preferences.putString(HSREPLAY_OAUTH_ACCESS_TOKEN, accessToken)
+        preferences.putString(HSREPLAY_OAUTH_REFRESH_TOKEN, refreshToken)
     }
 
     fun forget() {
         this.accessToken = null
         this.refreshToken = null
-        preferences.put(HSREPLAY_OAUTH_ACCESS_TOKEN, null)
-        preferences.put(HSREPLAY_OAUTH_REFRESH_TOKEN, null)
+        preferences.putString(HSREPLAY_OAUTH_ACCESS_TOKEN, null)
+        preferences.putString(HSREPLAY_OAUTH_REFRESH_TOKEN, null)
 
+    }
+
+    fun isLoggedIn(): Boolean {
+        return accessToken != null && refreshToken != null
     }
 }

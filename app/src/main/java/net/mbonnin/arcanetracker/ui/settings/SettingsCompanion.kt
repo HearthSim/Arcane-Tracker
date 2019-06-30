@@ -276,8 +276,9 @@ class SettingsCompanion(internal var settingsView: View) {
 
         val hsreplayDescription = view.findViewById<TextView>(R.id.hsReplayDescription)
         val hsReplay = ArcaneTrackerApplication.get().hsReplay
-        val enabled = if (hsReplay.token() != null) context.getString(R.string.enabled) else context.getString(R.string.disabled)
-        hsreplayDescription.setText(context.getString(R.string.hsreplayDescription, enabled, hsReplay.username()))
+        val account = hsReplay.account()
+        val enabled = if (account != null) context.getString(R.string.enabled) else context.getString(R.string.disabled)
+        hsreplayDescription.setText(context.getString(R.string.hsreplayDescription, enabled, account?.username))
         val licensesButton = view.findViewById<Button>(R.id.licenses)
         licensesButton.setOnClickListener {
             ViewManager.get().removeView(settingsView)

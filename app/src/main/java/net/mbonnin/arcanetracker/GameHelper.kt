@@ -9,7 +9,9 @@ import kotlinx.coroutines.withContext
 import net.mbonnin.arcanetracker.detector.RANK_UNKNOWN
 import net.hearthsim.hslog.parser.power.Game
 import net.hearthsim.hslog.parser.power.fromFormatTypeString
-import net.mbonnin.arcanetracker.hsreplay.model.legacy.UploadRequest
+import net.hearthsim.hsreplay.model.legacy.HSPlayer
+import net.hearthsim.hsreplay.model.legacy.UploadRequest
+import net.mbonnin.arcanetracker.RankHolder.opponentRank
 import net.mbonnin.arcanetracker.model.GameSummary
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RGame
@@ -17,6 +19,7 @@ import net.mbonnin.arcanetracker.room.WLCounter
 import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
 import timber.log.Timber
 import java.util.*
+import kotlin.collections.ArrayList
 
 object GameHelper {
     class InsertResult(val id: Long, val success: Boolean)
@@ -71,43 +74,46 @@ object GameHelper {
 
         GameSummary.addFirst(summary)
 
-        val uploadRequest = UploadRequest()
-        uploadRequest.match_start = Utils.ISO8601DATEFORMAT.format(gameStart)
-        uploadRequest.build = ArcaneTrackerApplication.get().hearthstoneBuild
-        uploadRequest.spectator_mode = game.spectator
-        uploadRequest.friendly_player = game.player!!.entity!!.PlayerID
-        uploadRequest.format = fromFormatTypeString(game.formatType).intValue
-        uploadRequest.game_type = fromGameAndFormat(game.gameType, game.formatType!!).intValue
+        val friendlyPlayer = game.player?.entity?.PlayerID ?: "1"
 
-        val player = if (uploadRequest.friendly_player == "1") uploadRequest.player1 else uploadRequest.player2
-        val opponent = if (uploadRequest.friendly_player == "1") uploadRequest.player2 else uploadRequest.player1
 
-        val playerRank = game.playerRank
-        if (playerRank != RANK_UNKNOWN) {
-            player.rank = playerRank
-        }
-
-        val opponentRank = RankHolder.opponentRank
-        if (opponentRank != RANK_UNKNOWN) {
-            opponent.rank = opponentRank
-        }
-
-        MainViewCompanion.playerCompanion.deck?.id?.toLongOrNull()?.let {
-            player.deck_id = it
-        }
-
-        MainViewCompanion.playerCompanion.deck?.let {
-            it.cards.forEach {
-                for (i in 0 until it.value) {
-                    player.deck.add(it.key)
-                }
+        val deck = MainViewCompanion.playerCompanion.deck?.let {
+            it.cards.flatMap {entry->
+                Array(entry.value, {entry.key}).toList()
             }
         }
+
+        val player = HSPlayer(
+                rank = if ( game.playerRank != RANK_UNKNOWN)  game.playerRank else null,
+                deck_id =MainViewCompanion.playerCompanion.deck?.id?.toLongOrNull(),
+                deck = deck ?: emptyList()
+        )
+
+        val opponent = HSPlayer(
+                rank = if ( RankHolder.opponentRank != RANK_UNKNOWN) RankHolder.opponentRank else null,
+                deck_id = null,
+                deck = emptyList()
+        )
+
+        val player1 = if (friendlyPlayer == "1") player else opponent
+        val player2 = if (friendlyPlayer == "1") opponent else player
+
+
+        val uploadRequest = UploadRequest(
+                match_start = Utils.ISO8601DATEFORMAT.format(gameStart),
+                build = ArcaneTrackerApplication.get().hearthstoneBuild,
+                spectator_mode = game.spectator,
+                friendly_player = friendlyPlayer,
+                format = fromFormatTypeString(game.formatType).intValue,
+                game_type = fromGameAndFormat(game.gameType, game.formatType!!).intValue,
+                player1 = player1,
+                player2 = player2
+                )
 
         GlobalScope.launch(Dispatchers.Main) {
             val insertResult = insertGame(game)
 
-            if (ArcaneTrackerApplication.get().hsReplay.token() != null) {
+            if (ArcaneTrackerApplication.get().hsReplay.account() != null) {
                 FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("hsreplay_upload", null)
                 val result = ArcaneTrackerApplication.get().hsReplay.uploadGame(uploadRequest, gameStr)
                 result.fold(
@@ -151,7 +157,7 @@ object GameHelper {
         val bundle = Bundle()
         bundle.putString(EventParams.GAME_TYPE.value, game.gameType)
         bundle.putString(EventParams.FORMAT_TYPE.value, game.formatType)
-        bundle.putString(EventParams.HSREPLAY.value, (ArcaneTrackerApplication.get().hsReplay.token() != null).toString())
+        bundle.putString(EventParams.HSREPLAY.value, (ArcaneTrackerApplication.get().hsReplay.account() != null).toString())
         FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("game_ended", bundle)
     }
 
