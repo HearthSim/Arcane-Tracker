@@ -133,11 +133,15 @@ class HsReplay(val preferences: Preferences, val console: Console, val userAgent
         console.debug("url is ${upload.url}")
         console.debug("put_url is ${upload.put_url}")
 
-        try {
+        val response = try {
             s3Api.put(putUrl = upload.put_url, gameString = gameStr, userAgent = userAgent)
         } catch (e: Exception) {
             console.error(Exception(e))
             return Result.failure(e)
+        }
+
+        if (response.status.value/100 != 2) {
+            return Result.failure(Exception("Bad status: ${response.status.value}"))
         }
 
         return Result.success(upload.url)

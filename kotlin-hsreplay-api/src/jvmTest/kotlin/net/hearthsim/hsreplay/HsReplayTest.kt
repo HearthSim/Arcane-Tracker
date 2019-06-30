@@ -51,21 +51,17 @@ class HsReplayTest {
                 preferences = preferences)
 
         val uploadRequest = UploadRequest(
-                match_start = "2019-06-30T12:00:00Z",
+                match_start = "2019-06-30T23:05:44+0200",
                 spectator_mode = false,
                 game_type = 2, // ranked_standard
                 format = 2, // standard
                 build = 31353,
                 friendly_player = "2",
                 player1 = HSPlayer(
-                        deck_id = null,
-                        rank = 5,
-                        deck = emptyList()
+                        rank = 5
                 ),
                 player2 = HSPlayer(
-                        deck_id = null,
-                        rank = 5,
-                        deck = emptyList()
+                        rank = 5
                 )
         )
 
@@ -73,7 +69,10 @@ class HsReplayTest {
 
         val text = File(dir, "src/jvmTest/files/power.log").readText()
         runBlocking {
-            hsReplay.uploadGame(uploadRequest, text)
+            val result = hsReplay.uploadGame(uploadRequest, text)
+            if (result.isFailure) {
+                result.exceptionOrNull()!!.printStackTrace()
+            }
         }
 
     }
