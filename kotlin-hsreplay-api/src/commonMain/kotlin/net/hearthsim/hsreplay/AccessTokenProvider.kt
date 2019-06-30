@@ -1,5 +1,6 @@
 package net.hearthsim.hsreplay
 
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.io.readRemaining
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -15,16 +16,43 @@ class AccessTokenProvider(val preferences: Preferences, val oauthApi: HsReplayOa
     private var refreshToken = preferences.getString(HSREPLAY_OAUTH_REFRESH_TOKEN)
 
     suspend fun accessToken() = mutex.withLock {
-        accessToken!!
+        accessToken
     }
 
     suspend fun refreshToken() = mutex.withLock {
-        val response = oauthApi.refresh(refreshToken!!)
+        val delays = listOf(0, 0, 30, 60, 120, 240, 480)
 
-        val text= response.content.readRemaining().readText()
-        val token = Json.nonstrict.parse(Token.serializer(), text)
+        delays.forEach {
+            delay(it * 1000.toLong())
+            val response = try {
+                oauthApi.refresh(refreshToken!!)
+            } catch (e: Exception) {
+                return@forEach
+            }
 
-        remember(token.access_token, token.refresh_token)
+            when(response.status.value/100) {
+                2 -> Unit
+                4 -> {
+                    // a 4xx response means the token is bad. In these cases, we should logout the user and have him log in again
+                    //forget()
+                    return@withLock
+                }
+                else -> {
+                    //  other errors are usually non fatal. Try again
+                    return@forEach
+                }
+            }
+            val text= response.content.readRemaining().readText()
+            val token = try {
+                Json.nonstrict.parse(Token.serializer(), text)
+            } catch (e: Exception) {
+                // a parsing error is usually non fatal. Try again
+                return@forEach
+            }
+
+            remember(token.access_token, token.refresh_token)
+            return@withLock
+        }
     }
 
     fun remember(accessToken: String, refreshToken: String) {

@@ -16,6 +16,8 @@ import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.LruCache
 import com.squareup.picasso.Picasso
 import io.paperdb.Paper
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.io.streams.asInput
 import net.hearthsim.console.Console
 import net.hearthsim.hslog.HSLog
@@ -199,6 +201,11 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         if (account != null) {
             FirebaseAnalytics.getInstance(this).setUserProperty(FirebaseConstants.IS_PREMIUM.name.toLowerCase(),
                     account.is_premium.toString())
+        } else {
+            GlobalScope.launch {
+                // Update the name in the background. It's not the end of the world if the status is wrong during a few seconds
+                hsReplay.refreshAccountInformation()
+            }
         }
         FirebaseAnalytics.getInstance(this).setUserProperty(FirebaseConstants.SCREEN_CAPTURE_ENABLED.name.toLowerCase(),
                 Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true).toString())

@@ -12,7 +12,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.util.AttributeKey
 
 class OauthFeature(val accessTokenProvider: AccessTokenProvider) {
-    suspend private fun accessToken(): String {
+    suspend private fun accessToken(): String? {
         return accessTokenProvider.accessToken()
     }
 
