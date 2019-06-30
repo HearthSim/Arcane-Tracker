@@ -54,6 +54,7 @@ class HsReplay(val preferences: Preferences, val console: Console, val userAgent
             preferences.putString(KEY_HSREPLAY_BATTLETAG, account!!.battletag)
             preferences.putString(KEY_HSREPLAY_USERNAME, account!!.username)
         } catch (e: Exception) {
+            console.error(Exception(e))
         }
 
     }
@@ -133,7 +134,7 @@ class HsReplay(val preferences: Preferences, val console: Console, val userAgent
         console.debug("put_url is ${upload.put_url}")
 
         try {
-            s3Api.put(putUrl = upload.url, gameString = gameStr, userAgent = userAgent)
+            s3Api.put(putUrl = upload.put_url, gameString = gameStr, userAgent = userAgent)
         } catch (e: Exception) {
             console.error(Exception(e))
             return Result.failure(e)

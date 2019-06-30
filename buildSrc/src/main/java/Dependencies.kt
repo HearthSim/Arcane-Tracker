@@ -75,9 +75,16 @@ object Libs {
     const val ktorClientSerialization = "io.ktor:ktor-client-serialization:${Versions.ktor}"
     const val ktorClientSerializationJvm = "io.ktor:ktor-client-serialization-jvm:${Versions.ktor}"
     const val ktorClientOkhttp = "io.ktor:ktor-client-okhttp:${Versions.ktor}"
+    const val ktorClientEncoding = "io.ktor:ktor-client-encoding:${Versions.ktor}"
+    const val ktorClientEncodingJvm = "io.ktor:ktor-client-encoding-jvm:${Versions.ktor}"
 
     const val kotlinxIo = "org.jetbrains.kotlinx:kotlinx-io:0.1.8"
     const val kotlinxIoJvm = "org.jetbrains.kotlinx:kotlinx-io-jvm:0.1.8"
 
     const val klock = "com.soywiz.korlibs.klock:klock:1.4.0"
+
+    const val kotlinTestCommon = "org.jetbrains.kotlin:kotlin-test-common"
+    const val kotlinTestAnnotationCommon = "org.jetbrains.kotlin:kotlin-test-annotations-common"
+    const val kotlinTestJvm = "org.jetbrains.kotlin:kotlin-test-junit"
+    const val kotlinTestAnnotationJvm = "org.jetbrains.kotlin:kotlin-test-annotations"
 }

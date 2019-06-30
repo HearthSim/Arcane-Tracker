@@ -7,6 +7,7 @@ import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.http.ContentType
 import io.ktor.http.content.OutgoingContent
+import io.ktor.http.contentType
 import kotlinx.coroutines.io.ByteWriteChannel
 import kotlinx.coroutines.io.writeStringUtf8
 import kotlinx.serialization.json.Json
@@ -41,6 +42,7 @@ class HsReplayLegacyApi(val userAgent: String) {
     suspend fun createUpload(uploadRequest: UploadRequest, authorization: String): Upload = client.post("https://upload.hsreplay.net/api/v1/replay/upload/request") {
         header("Authorization", authorization)
         body = uploadRequest
+        contentType(ContentType.Application.Json)
 
         header("X-Api-Key", "8b27e53b-0256-4ff1-b134-f531009c05a3")
         header("User-Agent", userAgent)

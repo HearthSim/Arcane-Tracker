@@ -23,6 +23,14 @@ kotlin {
 
                 implementation Libs.ktorClientJson
                 implementation Libs.ktorClientSerialization
+                implementation Libs.ktorClientEncoding
+            }
+        }
+        jvmTest {
+            dependencies {
+                implementation Libs.coroutines
+                implementation Libs.kotlinTestJvm
+                implementation Libs.kotlinTestAnnotationJvm
             }
         }
         jvmMain {
@@ -36,6 +44,7 @@ kotlin {
                 api Libs.ktorClientCoreJvm
                 implementation Libs.ktorClientJsonJvm
                 implementation Libs.ktorClientOkhttp
+                implementation Libs.ktorClientEncodingJvm
             }
         }
     }

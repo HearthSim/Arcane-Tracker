@@ -2,10 +2,7 @@ package net.mbonnin.arcanetracker
 
 import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import net.mbonnin.arcanetracker.detector.RANK_UNKNOWN
 import net.hearthsim.hslog.parser.power.Game
 import net.hearthsim.hslog.parser.power.fromFormatTypeString
