@@ -4,11 +4,14 @@ import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import net.hearthsim.kotlin.hslog.LogLine
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
+import net.mbonnin.arcanetracker.CardUtil
 import net.mbonnin.arcanetracker.helper.DeckStringHelper
 import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
 import net.mbonnin.arcanetracker.R
+import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RDeck
+import net.mbonnin.hsmodel.CardJson
 import timber.log.Timber
 
 class DecksParser: LogReader.LineConsumer {
@@ -45,6 +48,12 @@ class DecksParser: LogReader.LineConsumer {
                             deck.name = ArcaneTrackerApplication.get().getString(R.string.arenaDeck)
                         } else {
                             deck.name = result.name ?: "?"
+                        }
+
+
+                        val nonCollectible = deck.cards.keys.firstOrNull { CardJson.getCard(it)?.collectible != true }
+                        if (nonCollectible != null) {
+                            Utils.reportNonFatal(Exception("InvalidDeck ? ($nonCollectible) (${logLine.line})"))
                         }
 
                         if (state == State.ARENA || state == State.GAME) {
