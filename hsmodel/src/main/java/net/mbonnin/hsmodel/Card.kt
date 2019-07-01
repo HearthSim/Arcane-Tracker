@@ -120,7 +120,7 @@ data class Card(
                 CardId.SACRIFICIAL_PACT,
                 CardId.SENSE_DEMONS,
                 CardId.FACELESS_SUMMONER,
-                CardId.SUCCUBUS,
+                CardId.FELSTALKER,
                 CardId.SAVAGERY,
                 CardId.SOUL_OF_THE_FOREST,
                 CardId.MARK_OF_NATURE,
