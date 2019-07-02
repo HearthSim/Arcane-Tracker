@@ -31,4 +31,5 @@
     <string name="changelog_412" translatable="false">Updated for nerfs.\nFixed a bug where the detailed stats where not updated.</string>
     <string name="changelog_413" translatable="false">Updated for buffs and SN1P-SN4P.</string>
     <string name="changelog_414" translatable="false">Updated for patch 14.6. Farewell Mind Blast...</string>
+    <string name="changelog_415" translatable="false">Disable screen capture until Hearthstone stops disconnecting</string>
 </resources>

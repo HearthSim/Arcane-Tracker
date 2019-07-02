@@ -13,6 +13,8 @@ import android.view.ContextThemeWrapper
 import androidx.multidex.MultiDexApplication
 import com.google.android.gms.security.ProviderInstaller
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.LruCache
 import com.squareup.picasso.Picasso
@@ -195,6 +197,13 @@ class ArcaneTrackerApplication : MultiDexApplication() {
                 hsReplay.isPremium().toString())
         FirebaseAnalytics.getInstance(this).setUserProperty(FirebaseConstants.SCREEN_CAPTURE_ENABLED.name.toLowerCase(),
                 Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true).toString())
+
+        FirebaseRemoteConfig.getInstance().setDefaults(mapOf(
+                "enable_screen_capture" to true
+        ))
+        val settings = FirebaseRemoteConfigSettings.Builder().setMinimumFetchIntervalInSeconds(10).build()
+        FirebaseRemoteConfig.getInstance().setConfigSettingsAsync(settings)
+        FirebaseRemoteConfig.getInstance().fetchAndActivate()
     }
 
     private fun initCardJson() {

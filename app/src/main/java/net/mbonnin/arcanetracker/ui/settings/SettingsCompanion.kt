@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -245,7 +246,8 @@ class SettingsCompanion(internal var settingsView: View) {
         })
 
         val screenCapture = view.findViewById<View>(R.id.screenCaptureCheckBox) as CheckBox
-        screenCapture.isChecked = Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true)
+        screenCapture.isChecked = Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true) && FirebaseRemoteConfig.getInstance().getBoolean("enable_screen_capture")
+        screenCapture.isEnabled = FirebaseRemoteConfig.getInstance().getBoolean("enable_screen_capture")
         screenCapture.setOnCheckedChangeListener { buttonView, isChecked ->
             Settings.set(Settings.SCREEN_CAPTURE_ENABLED, isChecked)
         }

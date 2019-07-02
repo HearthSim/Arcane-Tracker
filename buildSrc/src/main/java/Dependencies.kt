@@ -20,6 +20,7 @@ object Libs {
     const val play_auth = "com.google.android.gms:play-services-auth:16.0.1"
     const val play_firebase_core = "com.google.firebase:firebase-core:16.0.4"
     const val play_firebase_messaging = "com.google.firebase:firebase-messaging:17.3.3"
+    const val play_firebase_config = "com.google.firebase:firebase-config:18.0.0"
 
     const val crashlytics = "com.crashlytics.sdk.android:crashlytics:2.9.5"
     const val gson = "com.google.code.gson:gson:2.8.5"

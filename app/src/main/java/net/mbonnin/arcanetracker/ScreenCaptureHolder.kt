@@ -6,6 +6,7 @@ import android.media.projection.MediaProjection
 import android.os.Build
 import android.os.Handler
 import androidx.annotation.RequiresApi
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import net.mbonnin.arcanetracker.detector.ByteBufferImage
 import net.mbonnin.arcanetracker.detector.Detector
 import net.mbonnin.arcanetracker.parser.Entity
@@ -22,7 +23,8 @@ object ScreenCaptureHolder {
         override fun run() {
             if (!screenCaptureStarting) {
                 if (shouldDetectRank()
-                        && Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true)) {
+                        && Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true)
+                        && FirebaseRemoteConfig.getInstance().getBoolean("enable_screen_capture")) {
                     if (screenCapture == null) {
                         screenCaptureStarting = true
                         val intent = Intent()
