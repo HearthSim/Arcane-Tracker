@@ -30,8 +30,8 @@ android {
         applicationId "net.mbonnin.arcanetracker"
         minSdkVersion Versions.minSdkVersion
         targetSdkVersion Versions.targetSdkVersion
-        versionCode 415
-        versionName "4.15"
+        versionCode 416
+        versionName "4.16"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
@@ -137,7 +137,6 @@ dependencies {
 
     implementation Libs.play_auth
     implementation Libs.play_firebase_core
-    implementation Libs.play_firebase_messaging
     implementation Libs.play_firebase_config
 
     implementation Libs.multidex
