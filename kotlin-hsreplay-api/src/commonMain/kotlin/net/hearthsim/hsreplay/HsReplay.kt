@@ -2,6 +2,7 @@ package net.hearthsim.hsreplay
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import net.hearthsim.analytics.Analytics
 import net.hearthsim.console.Console
 import net.hearthsim.hsreplay.Preferences.Companion.KEY_HSREPLAY_BATTLETAG
 import net.hearthsim.hsreplay.Preferences.Companion.KEY_HSREPLAY_LEGACY_TOKEN
@@ -12,10 +13,10 @@ import net.hearthsim.hsreplay.model.legacy.UploadToken
 import net.hearthsim.hsreplay.model.new.Account
 import net.hearthsim.hsreplay.model.new.ClaimInput
 
-class HsReplay(val preferences: Preferences, val console: Console, val userAgent: String) {
+class HsReplay(val preferences: Preferences, val console: Console, val analytics: Analytics, val userAgent: String) {
     private val oauthApi = HsReplayOauthApi(userAgent)
     private val legacyApi = HsReplayLegacyApi(userAgent)
-    private val accessTokenProvider = AccessTokenProvider(preferences, oauthApi)
+    private val accessTokenProvider = AccessTokenProvider(preferences, oauthApi, analytics)
     private val newApi = HsReplayNewApi(userAgent, accessTokenProvider)
     private val s3Api = HsReplayS3Api(userAgent)
 

@@ -332,13 +332,13 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
             when (newState) {
                 STATE_PLAYER -> {
                     playerView.visibility = View.VISIBLE
-                    FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("state_player", null)
+                    ArcaneTrackerApplication.get().analytics.logEvent("state_player")
 
                     Onboarding.playerHandleClicked()
                 }
                 STATE_OPPONENT -> {
                     opponentView.visibility = View.VISIBLE
-                    FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("state_opponent", null)
+                    ArcaneTrackerApplication.get().analytics.logEvent("state_opponent")
 
                     Onboarding.opponentHandleClicked()
                 }
@@ -383,7 +383,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
             view.findViewById<View>(R.id.settings).setOnClickListener {
                 mViewManager.removeView(view)
 
-                FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("menu_settings", null)
+                ArcaneTrackerApplication.get().analytics.logEvent("menu_settings")
 
                 SettingsCompanion.show()
             }
@@ -391,7 +391,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
             view.findViewById<View>(R.id.games).setOnClickListener {
                 ViewManager.get().removeView(view)
 
-                FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("menu_history", null)
+                ArcaneTrackerApplication.get().analytics.logEvent("menu_history")
 
                 val intent = Intent()
                 intent.setClass(ArcaneTrackerApplication.context, YourGamesActivity::class.java)
@@ -404,7 +404,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
             view.findViewById<View>(R.id.yourDecks).setOnClickListener {
                 mViewManager.removeView(view)
 
-                FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("menu_your_decks", null)
+                ArcaneTrackerApplication.get().analytics.logEvent("menu_your_decks")
 
 
                 val intent = Intent()
@@ -417,7 +417,7 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
             view.findViewById<View>(R.id.yourPacks).setOnClickListener {
                 mViewManager.removeView(view)
 
-                FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("menu_your_packs", null)
+                ArcaneTrackerApplication.get().analytics.logEvent("menu_your_packs")
 
 
                 val intent = Intent()

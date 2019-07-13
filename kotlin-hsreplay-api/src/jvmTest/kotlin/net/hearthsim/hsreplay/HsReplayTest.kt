@@ -5,24 +5,11 @@ import net.hearthsim.console.Console
 import net.hearthsim.hsreplay.model.legacy.HSPlayer
 import net.hearthsim.hsreplay.model.legacy.UploadRequest
 import kotlinx.coroutines.*
+import net.hearthsim.console.DefaultConsole
 import org.junit.Test
 import java.io.File
 
 class HsReplayTest {
-    val console = object : Console {
-        override fun debug(message: String) {
-            println(message)
-        }
-
-        override fun error(message: String) {
-            println(message)
-        }
-
-        override fun error(throwable: Throwable) {
-            throwable.printStackTrace()
-        }
-    }
-
     val preferences = object : Preferences {
         override fun putString(key: String, value: String?) {
 
@@ -47,7 +34,7 @@ class HsReplayTest {
     @Test
     fun testUpload() {
         val hsReplay = HsReplay(userAgent = "net.mbonnin.arcanetracker/4.13; Android 9;",
-                console = console,
+                console = DefaultConsole(),
                 preferences = preferences)
 
         val uploadRequest = UploadRequest(

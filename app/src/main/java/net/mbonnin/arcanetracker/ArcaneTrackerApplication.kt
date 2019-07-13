@@ -19,6 +19,7 @@ import io.paperdb.Paper
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.io.streams.asInput
+import net.hearthsim.analytics.Analytics
 import net.hearthsim.console.Console
 import net.hearthsim.hslog.HSLog
 import net.hearthsim.hsmodel.Card
@@ -42,6 +43,8 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         private set
     lateinit var hsLog: HSLog
         private set
+    lateinit var analytics: Analytics
+        private set
 
     var hearthstoneBuild = 0
 
@@ -57,7 +60,6 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         override fun error(throwable: Throwable) {
             Timber.e(throwable)
         }
-
     }
 
     private fun defaultCacheDir(): File {
@@ -185,12 +187,13 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         ScreenCaptureHolder.start()
 
         cardJson = createCardJson()
+        analytics = ArcaneTrackerAnalytics()
         hsLog = HSLogFactory.createHSLog(console, cardJson)
 
         val userAgent = (ArcaneTrackerApplication.context.packageName + "/" + BuildConfig.VERSION_NAME
                 + "; Android " + Build.VERSION.RELEASE + ";")
 
-        hsReplay = HsReplay(HsReplayPreferences(this), console, userAgent)
+        hsReplay = HsReplay(HsReplayPreferences(this), console, analytics, userAgent)
 
         MainService.start()
 

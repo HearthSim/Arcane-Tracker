@@ -29,7 +29,7 @@ class PlayerDeckCompanion(override val containerView: View) : DeckCompanion(cont
 
 
         settings.setOnClickListener({ v2 ->
-            FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("edit_swap", null)
+            ArcaneTrackerApplication.get().analytics.logEvent("edit_swap")
 
             val a = IntArray(2)
             settings.getLocationOnScreen(a)

@@ -5,11 +5,13 @@ import kotlinx.coroutines.io.readRemaining
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.json.Json
+import net.hearthsim.analytics.Analytics
+import net.hearthsim.console.Console
 import net.hearthsim.hsreplay.Preferences.Companion.HSREPLAY_OAUTH_ACCESS_TOKEN
 import net.hearthsim.hsreplay.Preferences.Companion.HSREPLAY_OAUTH_REFRESH_TOKEN
 import net.hearthsim.hsreplay.model.Token
 
-class AccessTokenProvider(val preferences: Preferences, val oauthApi: HsReplayOauthApi) {
+class AccessTokenProvider(val preferences: Preferences, val oauthApi: HsReplayOauthApi, val analytics: Analytics) {
     val mutex = Mutex()
 
     private var accessToken = preferences.getString(HSREPLAY_OAUTH_ACCESS_TOKEN)
@@ -34,11 +36,13 @@ class AccessTokenProvider(val preferences: Preferences, val oauthApi: HsReplayOa
                 2 -> Unit
                 4 -> {
                     // a 4xx response means the token is bad. In these cases, we should logout the user and have him log in again
-                    //forget()
+                    forget()
+                    analytics.logEvent("user_logged_out", mapOf("status" to response.status.value.toString()))
                     return@withLock
                 }
                 else -> {
                     //  other errors are usually non fatal. Try again
+                    analytics.logEvent("refresh_error", mapOf("status" to response.status.value.toString()))
                     return@forEach
                 }
             }

@@ -111,7 +111,7 @@ object GameHelper {
             val insertResult = insertGame(game)
 
             if (ArcaneTrackerApplication.get().hsReplay.account() != null) {
-                FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("hsreplay_upload", null)
+                ArcaneTrackerApplication.get().analytics.logEvent("hsreplay_upload")
                 val result = ArcaneTrackerApplication.get().hsReplay.uploadGame(uploadRequest, gameStr)
                 result.fold(
                         onSuccess = {
@@ -151,11 +151,14 @@ object GameHelper {
 
         FileTree.get().sync()
 
-        val bundle = Bundle()
-        bundle.putString(EventParams.GAME_TYPE.value, game.gameType)
-        bundle.putString(EventParams.FORMAT_TYPE.value, game.formatType)
-        bundle.putString(EventParams.HSREPLAY.value, (ArcaneTrackerApplication.get().hsReplay.account() != null).toString())
-        FirebaseAnalytics.getInstance(ArcaneTrackerApplication.context).logEvent("game_ended", bundle)
+        ArcaneTrackerApplication.get().analytics.logEvent(
+                "game_ended",
+                mapOf(
+                        EventParams.GAME_TYPE.value to game.gameType,
+                        EventParams.FORMAT_TYPE.value to game.formatType,
+                        EventParams.HSREPLAY.value to (ArcaneTrackerApplication.get().hsReplay.account() != null).toString()
+                )
+        )
     }
 
 
