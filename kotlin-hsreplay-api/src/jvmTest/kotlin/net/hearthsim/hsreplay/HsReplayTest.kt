@@ -74,6 +74,5 @@ class HsReplayTest {
                 result.exceptionOrNull()!!.printStackTrace()
             }
         }
-
     }
 }

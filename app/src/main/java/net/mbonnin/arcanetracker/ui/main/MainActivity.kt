@@ -24,6 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import net.hearthsim.hsreplay.HsReplayOauthApi
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Settings
@@ -69,7 +70,7 @@ class MainActivity : AppCompatActivity() {
 
     fun handleIntent(intent: Intent?) {
         val url = intent?.data?.toString()
-        if (url != null && url.startsWith(HsReplayInterceptor.CALLBACK_URL)) {
+        if (url != null && url.startsWith(HsReplayOauthApi.CALLBACK_URL)) {
             val code = Uri.parse(url).getQueryParameter("code")
             if (code != null) {
                 updateState(state.copy(needLogin = true, loginLoading = true))
