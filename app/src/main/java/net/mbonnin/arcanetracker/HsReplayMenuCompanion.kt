@@ -23,7 +23,6 @@ class HsReplayMenuCompanion(override val containerView: View): LayoutContainer {
             signout.setOnClickListener {
                 Overlay.hide()
 
-                Settings.get(Settings.IS_PRE_HEARTHSIM_USER, false)
                 ArcaneTrackerApplication.get().hsReplay.logout()
 
                 val intent = Intent()

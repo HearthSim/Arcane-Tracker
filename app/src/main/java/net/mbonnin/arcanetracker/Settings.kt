@@ -31,12 +31,10 @@ object Settings {
     val ONBOARDING_FINISHED = "ONBOARDING_FINISHED"
     val HSREPLAY_OAUTH_REFRESH_TOKEN = "HSREPLAY_OAUTH_REFRESH_TOKEN"
     val HSREPLAY_OAUTH_ACCESS_TOKEN = "HSREPLAY_OAUTH_ACCESS_TOKEN"
-    val IS_PRE_HEARTHSIM_USER = "IS_PRE_HEARTHSIM_USER"
     val AUTO_HIDE = "AUTO_HIDE"
 
     private val preferences: SharedPreferences
         get() = PreferenceManager.getDefaultSharedPreferences(ArcaneTrackerApplication.context)
-    val NEED_TOKEN_CLAIM = "NEED_TOKEN_CLAIM"
 
     operator fun get(key: String, defaultValue: Boolean): Boolean {
         return preferences.getBoolean(key, defaultValue)

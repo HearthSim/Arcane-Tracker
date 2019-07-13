@@ -123,17 +123,6 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         }
 
         val oldVersion = Settings[Settings.VERSION, 0]
-        if (oldVersion in 1..399
-                && BuildConfig.VERSION_CODE >= 400) {
-            Settings.set(Settings.IS_PRE_HEARTHSIM_USER, true)
-        }
-        if (oldVersion in 1..402
-                && BuildConfig.VERSION_CODE >= 403) {
-            Settings.set(Settings.NEED_TOKEN_CLAIM, true)
-        }
-        if (oldVersion >= 403 && BuildConfig.VERSION_CODE >= 403) {
-            Settings.set(Settings.NEED_TOKEN_CLAIM, false)
-        }
         Timber.plant(FileTree.get())
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -196,9 +185,6 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         hsReplay = HsReplay(HsReplayPreferences(this), console, analytics, userAgent)
 
         MainService.start()
-
-        FirebaseAnalytics.getInstance(this).setUserProperty(FirebaseConstants.IS_LEGACY.name.toLowerCase(),
-                Settings.get(Settings.IS_PRE_HEARTHSIM_USER, true).toString())
 
         val account = hsReplay.account()
         if (account != null) {
