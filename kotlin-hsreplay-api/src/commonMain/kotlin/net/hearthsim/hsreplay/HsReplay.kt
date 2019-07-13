@@ -2,6 +2,7 @@ package net.hearthsim.hsreplay
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.io.readRemaining
 import net.hearthsim.analytics.Analytics
 import net.hearthsim.console.Console
 import net.hearthsim.hsreplay.Preferences.Companion.KEY_HSREPLAY_BATTLETAG
@@ -148,14 +149,14 @@ class HsReplay(val preferences: Preferences, val console: Console, val analytics
         console.debug("put_url is ${upload.put_url}")
 
         val response = try {
-            s3Api.put(putUrl = upload.put_url, gameString = gameStr, userAgent = userAgent)
+            s3Api.put(putUrl = upload.put_url, gameString = gameStr)
         } catch (e: Exception) {
             console.error(Exception(e))
             return Result.failure(e)
         }
 
         if (response.status.value/100 != 2) {
-            return Result.failure(Exception("Bad status: ${response.status.value}"))
+            return Result.failure(Exception("Bad status: ${response.status.value}: ${response.content.readRemaining().readText()}"))
         }
 
         return Result.success(upload.url)

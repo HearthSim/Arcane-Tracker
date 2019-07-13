@@ -13,12 +13,10 @@ import net.hearthsim.hsreplay.model.Token
 
 class HsReplayS3Api(val userAgent: String) {
     private val client = HttpClient {
-        install(ContentEncoding) {
-            gzip()
-        }
+        install(GzipCompressFeature)
     }
 
-    suspend fun put(putUrl: String, gameString: String, userAgent: String): HttpResponse = client.put(putUrl) {
+    suspend fun put(putUrl: String, gameString: String): HttpResponse = client.put(putUrl) {
         body = TextContent(gameString, contentType = ContentType.Text.Plain)
 
         header("User-Agent", userAgent)

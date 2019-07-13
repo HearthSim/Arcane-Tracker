@@ -1,11 +1,17 @@
 package net.hearthsim.hsreplay
 
-import kotlinx.coroutines.GlobalScope
-import net.hearthsim.console.Console
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.request.put
+import io.ktor.http.ContentType
+import io.ktor.http.content.TextContent
+import io.ktor.util.InternalAPI
 import net.hearthsim.hsreplay.model.legacy.HSPlayer
 import net.hearthsim.hsreplay.model.legacy.UploadRequest
 import kotlinx.coroutines.*
+import net.hearthsim.analytics.DefaultAnalytics
 import net.hearthsim.console.DefaultConsole
+import okhttp3.logging.HttpLoggingInterceptor
 import org.junit.Test
 import java.io.File
 
@@ -35,10 +41,11 @@ class HsReplayTest {
     fun testUpload() {
         val hsReplay = HsReplay(userAgent = "net.mbonnin.arcanetracker/4.13; Android 9;",
                 console = DefaultConsole(),
-                preferences = preferences)
+                preferences = preferences,
+                analytics = DefaultAnalytics())
 
         val uploadRequest = UploadRequest(
-                match_start = "2019-06-30T23:05:44+0200",
+                match_start = "2019-07-13T13:05:44+0200",
                 spectator_mode = false,
                 game_type = 2, // ranked_standard
                 format = 2, // standard
@@ -60,6 +67,26 @@ class HsReplayTest {
             if (result.isFailure) {
                 result.exceptionOrNull()!!.printStackTrace()
             }
+        }
+    }
+
+    @InternalAPI
+    @Test
+    fun testGzip() {
+        val client = HttpClient(OkHttp) {
+           // install(GzipCompressFeature)
+            engine {
+                addInterceptor(HttpLoggingInterceptor().apply {
+                    setLevel(HttpLoggingInterceptor.Level.BODY)
+                })
+            }
+        }
+
+        runBlocking {
+            client.put<Unit>("http://127.0.0.1/test") {
+                body = TextContent("Hello Martin", contentType = ContentType.Text.Plain)
+            }
+            Unit
         }
     }
 }
