@@ -37,10 +37,23 @@ class HsReplay(val preferences: Preferences, val console: Console, val userAgent
         }
     }
 
+    fun hasValidAccessToken(): Boolean {
+        return accessTokenProvider.isLoggedIn()
+    }
+
     fun account(): Account? {
-        if (!accessTokenProvider.isLoggedIn()) {
-            return null
-        }
+        /*
+         * It might happen that we don't have a valid access token. One possible reason is that the backend had refresh_token rotation activated before mid-may 2019
+         * This was removed in https://github.com/HearthSim/HSReplay.net/commit/e1ccc5bf35c73cbc60fa525f737a1aa238cab977#diff-b21dfdea9195d8cf6d85ec5b850218b8
+         *
+         * But we still have a few users in the wild with an invalid accessToken. If everything goes well, this number should decrease as users reinstall the app
+         * and new users come.
+         *
+         * As of 2019-07-13, it's 2.6k users every 28 days out of 29k.
+         */
+//        if (!hasValidAccessToken()) {
+//            return null
+//        }
         if (uploadTokenKey == null) {
             return null
         }

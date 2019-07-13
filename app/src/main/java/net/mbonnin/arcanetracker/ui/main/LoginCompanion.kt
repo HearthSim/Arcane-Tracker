@@ -6,7 +6,6 @@ import kotlinx.android.synthetic.main.login_view.*
 import net.hearthsim.hsreplay.HsReplayOauthApi
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.helper.RandomHelper
-import net.mbonnin.arcanetracker.hsreplay.HsReplayInterceptor
 import okhttp3.HttpUrl
 
 class LoginCompanion(override val containerView: View) : LayoutContainer {

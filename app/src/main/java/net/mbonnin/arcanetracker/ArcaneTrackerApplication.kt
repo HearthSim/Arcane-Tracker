@@ -199,11 +199,15 @@ class ArcaneTrackerApplication : MultiDexApplication() {
 
         val account = hsReplay.account()
         if (account != null) {
+
             FirebaseAnalytics.getInstance(this).setUserProperty(FirebaseConstants.IS_PREMIUM.name.toLowerCase(),
                     account.is_premium.toString())
-            GlobalScope.launch {
-                // Update the name in the background. It's not the end of the world if the status is wrong during a few seconds
-                hsReplay.refreshAccountInformation()
+
+            if (hsReplay.hasValidAccessToken()) {
+                GlobalScope.launch {
+                    // Update the name in the background. It's not the end of the world if the status is wrong during a few seconds
+                    hsReplay.refreshAccountInformation()
+                }
             }
         }
         FirebaseAnalytics.getInstance(this).setUserProperty(FirebaseConstants.SCREEN_CAPTURE_ENABLED.name.toLowerCase(),
