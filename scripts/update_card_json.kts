@@ -95,7 +95,7 @@ fun updateEnums(cardsJsonFile: File) {
     }
 
 
-    val outputDir = File(rootDir, "hsmodel/src/main/java/")
+    val outputDir = File(rootDir, "kotlin-hsmodel/src/commonMain/kotlin")
     generateFile("CardId", cardIds, outputDir)
 
     generateEnumFile("PlayerClass", playerClassSet, outputDir)
