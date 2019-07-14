@@ -12,7 +12,7 @@ import net.hearthsim.hsmodel.enum.CardId
 import net.hearthsim.hsmodel.enum.Type
 
 
-typealias TurnListener = ((game: Game, turn: Int, isPlayer: Boolean, timeout: Int?) -> Unit)
+typealias TurnListener = ((game: Game, turn: Int, isPlayer: Boolean) -> Unit)
 
 class GameLogic(private val console: Console, private val cardJson: CardJson) {
 
@@ -306,12 +306,10 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
 
         val isOpponent = game.opponent?.entity?.tags?.get(Entity.KEY_CURRENT_PLAYER)?.toIntOrNull() == 1
         val who = if (isOpponent) "opponent" else "player"
-        val currentPlayer = if (isOpponent) game.opponent else game.player
-        val timeout = currentPlayer?.entity?.tags?.get(Entity.KEY_TIMEOUT)?.toIntOrNull()
 
-        console.debug("turn=$mCurrentTurn ($who) timeout=$timeout")
+        console.debug("turn=$mCurrentTurn ($who)")
         turnListenerList.forEach {
-            it(game, mCurrentTurn, !isOpponent, timeout)
+            it(game, mCurrentTurn, !isOpponent)
         }
     }
 

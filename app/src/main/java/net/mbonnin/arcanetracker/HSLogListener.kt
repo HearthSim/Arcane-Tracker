@@ -68,8 +68,8 @@ class HSLogListener(val currentOrFinishedGame: () -> Game?): HSLog.Listener {
         MainViewCompanion.opponentCompanion.deck = deck
     }
 
-    override fun onTurn(game: Game, turn: Int, player: Boolean, timeout: Int?) {
-        TurnTimer.onTurn(game, turn, player, timeout)
+    override fun onTurn(game: Game, turn: Int, player: Boolean) {
+        TurnTimer.onTurn(game, turn, player)
     }
     private val cardList = mutableListOf<AchievementsParser.CardGained>()
     private var disposable: Disposable? = null

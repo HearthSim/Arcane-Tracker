@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import kotlinx.coroutines.*
+import net.hearthsim.hslog.parser.power.Entity
 import net.hearthsim.hslog.parser.power.Game
 import java.util.*
 
@@ -20,7 +21,7 @@ object TurnTimer {
     var playerStartMillis = 0L
     var opponentStartMillis = 0L
 
-    var timeout: Long? = null
+    var game: Game? = null
     var isPlayer = false
     var turnStartMillis = 0L
 
@@ -42,7 +43,7 @@ object TurnTimer {
         job = null
     }
 
-    fun onTurn(game: Game, turn: Int, isPlayer: Boolean, timeout: Int?) {
+    fun onTurn(game: Game, turn: Int, isPlayer: Boolean) {
         if (!viewManager.contains(view)) {
             val params = ViewManager.Params()
 
@@ -64,8 +65,8 @@ object TurnTimer {
             playerSum += now - turnStartMillis
         }
         turnStartMillis = now
-        this.timeout = timeout?.toLong()
         this.isPlayer = isPlayer
+        this.game = game
 
         if (job == null) {
             GlobalScope.launch(Dispatchers.Main) {
@@ -77,8 +78,14 @@ object TurnTimer {
     suspend fun update() {
         while (true) {
             val ellapsed = (System.currentTimeMillis() - turnStartMillis)
+
+            val player = if (isPlayer) game?.player else game?.opponent
+            val timeout = player?.entity?.tags?.get(Entity.KEY_TIMEOUT)?.toIntOrNull()
             if (timeout != null) {
-                val remaining = timeout!! * 1000 - ellapsed
+                var remaining = timeout * 1000 - ellapsed
+                if (remaining < 0) {
+                    remaining = 0
+                }
                 view.findViewById<TextView>(R.id.turn).text = friendlyDuration(remaining)
             }
 

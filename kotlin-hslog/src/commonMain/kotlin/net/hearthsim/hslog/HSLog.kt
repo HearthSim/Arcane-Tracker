@@ -65,9 +65,11 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
         fun onOpponentDeckChanged(deck: Deck)
 
         /**
-         * Use this for the turn timer
+         * Use this for the turn timer.
+         *
+         * The timeout may change during a turn so it's not part of this api
          */
-        fun onTurn(game: Game, turn: Int, player: Boolean, timeout: Int?)
+        fun onTurn(game: Game, turn: Int, player: Boolean)
     }
 
     private var listener: Listener? = null
@@ -111,8 +113,8 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
         gameLogic.onGameEnd {game ->
             listener?.onGameEnd(game)
         }
-        gameLogic.onTurn { game, turn, isPlayer, timeout ->
-            listener?.onTurn(game, turn, isPlayer, timeout)
+        gameLogic.onTurn { game, turn, isPlayer ->
+            listener?.onTurn(game, turn, isPlayer)
         }
     }
 
