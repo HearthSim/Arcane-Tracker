@@ -18,8 +18,6 @@ object TurnTimer {
 
     var playerSum = 0L
     var opponentSum = 0L
-    var playerStartMillis = 0L
-    var opponentStartMillis = 0L
 
     var game: Game? = null
     var isPlayer = false
@@ -35,6 +33,7 @@ object TurnTimer {
     fun gameEnd(game: Game) {
         playerSum = 0L
         opponentSum = 0L
+        turnStartMillis = 0L
 
         if (viewManager.contains(view)) {
             viewManager.removeView(view)
