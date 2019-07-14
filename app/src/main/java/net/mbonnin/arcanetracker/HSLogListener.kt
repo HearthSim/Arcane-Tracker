@@ -31,6 +31,7 @@ class HSLogListener(val currentOrFinishedGame: () -> Game?): HSLog.Listener {
 
     override fun onGameEnd(game: Game) {
         GameHelper.gameEnded(game)
+        TurnTimer.gameEnd(game)
     }
 
     override fun onRawGame(gameString: String, gameStartMillis: Long) {
@@ -67,9 +68,11 @@ class HSLogListener(val currentOrFinishedGame: () -> Game?): HSLog.Listener {
         MainViewCompanion.opponentCompanion.deck = deck
     }
 
+    override fun onTurn(game: Game, turn: Int, player: Boolean, timeout: Int?) {
+        TurnTimer.onTurn(game, turn, player, timeout)
+    }
     private val cardList = mutableListOf<AchievementsParser.CardGained>()
     private var disposable: Disposable? = null
-
 
     fun cardGained(cardGained: AchievementsParser.CardGained) {
         synchronized(this) {

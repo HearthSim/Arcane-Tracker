@@ -22,7 +22,7 @@ class LoadingScreenParser(val console: Console) {
 
         if (this.isOldData && !isOldData) {
             setModeInternal(mParsedMode)
-            this.isOldData = true
+            this.isOldData = false
         }
         val pattern = Regex(".*LoadingScreen.OnSceneLoaded\\(\\) - prevMode=(.*) currMode=(.*)")
         val matcher = pattern.matchEntire(rawLine)
@@ -31,7 +31,7 @@ class LoadingScreenParser(val console: Console) {
             val currMode = matcher.groupValues[2]
 
             mParsedMode = currMode
-            if (!isOldData) {
+            if (isOldData) {
                 /*
                  * do not trigger the mode changes for previous modes, it selects the arena deck at startup always
                  */

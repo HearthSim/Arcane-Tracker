@@ -12,11 +12,15 @@ import net.hearthsim.hsmodel.enum.CardId
 import net.hearthsim.hsmodel.enum.Type
 
 
+typealias TurnListener = ((game: Game, turn: Int, isPlayer: Boolean, timeout: Int?) -> Unit)
+
 class GameLogic(private val console: Console, private val cardJson: CardJson) {
 
     private val gameStartListenerList = mutableListOf<(Game) -> Unit>()
     private val gameEndListenerList = mutableListOf<(Game) -> Unit>()
     private val somethingChangedListenerList = mutableListOf<(Game) -> Unit>()
+    private val turnListenerList = mutableListOf<TurnListener>()
+
     private var mGame: Game? = null
     private var mCurrentTurn: Int = 0
     private var mLastTag: Boolean = false
@@ -101,7 +105,7 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
 
         if (BlockTag.TYPE_PLAY == tag.BlockType) {
             val playedEntity = mGame!!.findEntitySafe(tag.Entity!!)
-            if (playedEntity!!.CardID == null) {
+            if (playedEntity.CardID == null) {
                 console.error("no CardID for play")
                 return
             }
@@ -154,14 +158,13 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
             player.entity!!.tags.putAll(battleTagEntity.tags)
         }
 
-        console.debug("${tag.playerName} now points to entity ${player.entity!!.EntityID}")
-
         player.battleTag = tag.playerName
 
         /*
          * make the battleTag point to the same entity..
          */
         mGame!!.entityMap.put(tag.playerName, player!!.entity!!)
+        console.debug("${tag.playerName} now points to entity ${player.entity!!.EntityID}")
     }
 
     private fun handleTagRecursive2(tag: Tag) {
@@ -188,7 +191,7 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
     private fun handleShowEntityTag(tag: ShowEntityTag) {
         val entity = mGame!!.findEntitySafe(tag.Entity!!)
 
-        if (!entity!!.CardID.isNullOrBlank() && entity.CardID != tag.CardID) {
+        if (!entity.CardID.isNullOrBlank() && entity.CardID != tag.CardID) {
             console.error("[Inconsistent] entity $entity changed cardId ${entity.CardID}  -> ${tag.CardID}")
         }
         entity.setCardId(tag.CardID!!, cardJson.getCard(tag.CardID!!))
@@ -203,7 +206,7 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
         val entity = mGame!!.findEntitySafe(tag.Entity!!)
 
         for (key in tag.tags.keys) {
-            tagChanged2(entity!!, key, tag.tags[key])
+            tagChanged2(entity, key, tag.tags[key])
         }
     }
 
@@ -217,27 +220,27 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
         entity.tags.put(key, newValue!!)
 
         if (Entity.ENTITY_ID_GAME == entity.EntityID) {
-            if (Entity.KEY_TURN == key) {
-                try {
-                    mCurrentTurn = newValue.toInt()
-                    console.debug("turn: $mCurrentTurn")
-                } catch (e: Exception) {
-                    console.error(e)
-                }
+            when (key) {
+                Entity.KEY_TURN -> {
+                    mCurrentTurn = newValue.toIntOrNull() ?: 0
+                    secretLogic.newTurn(mGame!!)
 
-            } else if (Entity.KEY_STEP == key) {
-                if (Entity.STEP_BEGIN_MULLIGAN == newValue) {
-                    gameStepBeginMulligan()
-                    if (mGame!!.isStarted) {
-                        for (listener in gameStartListenerList) {
-                            listener.invoke(mGame!!)
+                    callTurnListenersIfNeeded()
+                }
+                Entity.KEY_STEP -> {
+                    if (Entity.STEP_BEGIN_MULLIGAN == newValue) {
+                        gameStepBeginMulligan()
+                        if (mGame!!.isStarted) {
+                            for (listener in gameStartListenerList) {
+                                listener.invoke(mGame!!)
+                            }
+                            currentOrFinishedGame = mGame!!
                         }
-                        currentOrFinishedGame = mGame!!
+                    } else if (Entity.STEP_FINAL_GAMEOVER == newValue) {
+                        // do not set mGame = null here, we might be part of a block where other tag handlers
+                        // require access to mGame
+                        mLastTag = true
                     }
-                } else if (Entity.STEP_FINAL_GAMEOVER == newValue) {
-                    // do not set mGame = null here, we might be part of a block where other tag handlers
-                    // require access to mGame
-                    mLastTag = true
                 }
             }
         }
@@ -282,8 +285,33 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
             }
         }
 
-        if (Entity.KEY_TURN == key) {
-            secretLogic.newTurn(mGame!!)
+        if (key == Entity.KEY_MULLIGAN_STATE && newValue == "DONE") {
+            callTurnListenersIfNeeded()
+        }
+    }
+
+    private fun callTurnListenersIfNeeded() {
+        val game = mGame
+        if (game == null) {
+            return
+        }
+
+        if (game.player?.entity?.tags?.get(Entity.KEY_MULLIGAN_STATE) != "DONE") {
+            return
+        }
+
+        if (game.opponent?.entity?.tags?.get(Entity.KEY_MULLIGAN_STATE) != "DONE") {
+            return
+        }
+
+        val isOpponent = game.opponent?.entity?.tags?.get(Entity.KEY_CURRENT_PLAYER)?.toIntOrNull() == 1
+        val who = if (isOpponent) "opponent" else "player"
+        val currentPlayer = if (isOpponent) game.opponent else game.player
+        val timeout = currentPlayer?.entity?.tags?.get(Entity.KEY_TIMEOUT)?.toIntOrNull()
+
+        console.debug("turn=$mCurrentTurn ($who) timeout=$timeout")
+        turnListenerList.forEach {
+            it(game, mCurrentTurn, !isOpponent, timeout)
         }
     }
 
@@ -341,15 +369,17 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
         var knownCardsInHand = 0
         var totalCardsInHand = 0
 
-        val player1 = mGame!!.playerMap["1"]
-        val player2 = mGame!!.playerMap["2"]
+        val game = mGame!!
+
+        val player1 = game.playerMap["1"]
+        val player2 = game.playerMap["2"]
 
         if (player1 == null || player2 == null) {
             console.error("cannot find players")
             return
         }
 
-        val entities = mGame!!.getEntityList { entity -> "1" == entity.tags[Entity.KEY_CONTROLLER] && Entity.ZONE_HAND == entity.tags[Entity.KEY_ZONE] }
+        val entities = game.getEntityList { entity -> "1" == entity.tags[Entity.KEY_CONTROLLER] && Entity.ZONE_HAND == entity.tags[Entity.KEY_ZONE] }
 
         for (entity in entities) {
             if (!entity.CardID.isNullOrBlank()) {
@@ -364,8 +394,11 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
         player2.isOpponent = !player1.isOpponent
         player2.hasCoin = !player1.hasCoin
 
-        mGame!!.player = if (player1.isOpponent) player2 else player1
-        mGame!!.opponent = if (player1.isOpponent) player1 else player2
+        game.player = if (player1.isOpponent) player2 else player1
+        game.opponent = if (player1.isOpponent) player1 else player2
+
+        val firstPlayer = if (game.player!!.hasCoin == false) "player" else "opponent"
+        console.debug("firstPlayer=$firstPlayer")
     }
 
 
@@ -378,11 +411,11 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
     }
 
     private fun handleTagChange(tag: TagChangeTag) {
-        tagChanged(mGame!!.findEntitySafe(tag.ID!!)!!, tag.tag!!, tag.value)
+        tagChanged(mGame!!.findEntitySafe(tag.ID!!), tag.tag!!, tag.value)
     }
 
     private fun handleTagChange2(tag: TagChangeTag) {
-        tagChanged2(mGame!!.findEntitySafe(tag.ID!!)!!, tag.tag!!, tag.value)
+        tagChanged2(mGame!!.findEntitySafe(tag.ID!!), tag.tag!!, tag.value)
     }
 
     private fun tryToGuessCardIdFromBlock(stack: ArrayList<BlockTag>, fullEntityTag: FullEntityTag) {
@@ -395,7 +428,7 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
         val blockEntity = mGame!!.findEntitySafe(blockTag.Entity!!)
         val entity = mGame!!.findEntitySafe(fullEntityTag.ID!!)
 
-        if (blockEntity!!.CardID.isNullOrBlank()) {
+        if (blockEntity.CardID.isNullOrBlank()) {
             return
         }
 
@@ -490,11 +523,11 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
         }
 
         if (!guessedId.isNullOrBlank()) {
-            entity!!.setCardId(guessedId!!, cardJson.getCard(guessedId!!))
+            entity.setCardId(guessedId, cardJson.getCard(guessedId))
         }
 
         // even if we don't know the guessedId, record that this was createdBy this entity
-        entity!!.extra.createdBy = blockEntity.CardID
+        entity.extra.createdBy = blockEntity.CardID
     }
 
     @Suppress("UNUSED_PARAMETER")
@@ -556,6 +589,10 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
 
     fun onGameEnd(block: (Game) -> Unit) {
         gameEndListenerList.add(block)
+    }
+
+    fun onTurn(block: TurnListener) {
+        turnListenerList.add(block)
     }
 
     companion object {

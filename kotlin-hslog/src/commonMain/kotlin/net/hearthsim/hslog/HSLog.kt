@@ -63,6 +63,11 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
          * @param deck: the new deck
          */
         fun onOpponentDeckChanged(deck: Deck)
+
+        /**
+         * Use this for the turn timer
+         */
+        fun onTurn(game: Game, turn: Int, player: Boolean, timeout: Int?)
     }
 
     private var listener: Listener? = null
@@ -105,6 +110,9 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
         }
         gameLogic.onGameEnd {game ->
             listener?.onGameEnd(game)
+        }
+        gameLogic.onTurn { game, turn, isPlayer, timeout ->
+            listener?.onTurn(game, turn, isPlayer, timeout)
         }
     }
 

@@ -203,6 +203,10 @@ class ViewManager(context: Context) {
 
     }
 
+    fun contains(view: View): Boolean {
+        return mViews.contains(view)
+    }
+
     companion object {
         var sViewManager: ViewManager? = null
 

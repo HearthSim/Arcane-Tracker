@@ -6,7 +6,7 @@ import net.hearthsim.console.Console
 class Game(private val console: Console) {
 
     var entityMap = HashMap<String, Entity>()
-    var battleTags = ArrayList<String>()
+    var opponentBattleTag: String? = null
 
     internal var playerMap = HashMap<String, Player>()
     var gameEntity: Entity? = null
@@ -52,16 +52,14 @@ class Game(private val console: Console) {
         entityMap[entity.EntityID!!] = entity
     }
 
-    fun findEntitySafe(IdOrBattleTag: String): Entity? {
-        var entity: Entity?
-
-        entity = entityMap[IdOrBattleTag]
+    fun findEntitySafe(IdOrBattleTag: String): Entity {
+        var entity = entityMap[IdOrBattleTag]
         if (entity != null) {
             return entity
         }
 
         if ("GameEntity" == IdOrBattleTag) {
-            return gameEntity
+            return gameEntity ?: unknownEntity("game")
         }
 
         if (IdOrBattleTag.isEmpty()) {
@@ -71,15 +69,23 @@ class Game(private val console: Console) {
         // this must be a battleTag
         entity = entityMap[IdOrBattleTag]
         if (entity == null) {
-            console.debug("Adding battleTag $IdOrBattleTag")
-            if (battleTags.size >= 2) {
-                console.error("[Inconsistent] too many battleTags")
-            }
-            battleTags.add(IdOrBattleTag)
+            if (opponentBattleTag != null) {
+                console.error("Already added opponent battleTag")
+                entity = unknownEntity("empty")
+            } else {
+                entity = entityMap.get("UNKNOWN HUMAN PLAYER")
 
-            entity = Entity()
-            entity.EntityID = IdOrBattleTag
-            entityMap[IdOrBattleTag] = entity
+                if (entity == null) {
+                    console.error("UNKNOWN HUMAN PLAYER not set ?")
+                    entity = unknownEntity("empty")
+                }
+
+                console.debug("Found opponent battleTag=$IdOrBattleTag, make it point to ${entity.EntityID}")
+
+                entityMap[IdOrBattleTag] = entity
+
+                opponentBattleTag = IdOrBattleTag
+            }
         }
         return entity
     }

@@ -33,15 +33,15 @@ object HSLogFactory {
          */
         val loadingScreenLogReader = LogReader("LoadingScreen.log", false)
         loadingScreenLogReader.start(object : LogReader.LineConsumer {
-            var previousDataRead = false
+            var isOldData = true
             override fun onLine(rawLine: String) {
                 handler.post {
-                    hsLog.processLoadingScreen(rawLine, previousDataRead)
+                    hsLog.processLoadingScreen(rawLine, isOldData)
                 }
             }
 
             override fun onPreviousDataRead() {
-                previousDataRead = true
+                isOldData = false
             }
         })
 
@@ -50,44 +50,44 @@ object HSLogFactory {
          */
         val powerLogReader = LogReader("Power.log", true)
         powerLogReader.start(object : LogReader.LineConsumer {
-            var previousDataRead = false
+            var isOldData = true
             override fun onLine(rawLine: String) {
                 handler.post {
-                    hsLog.processPower(rawLine, previousDataRead)
+                    hsLog.processPower(rawLine, isOldData)
                 }
             }
 
             override fun onPreviousDataRead() {
-                previousDataRead = true
+                isOldData = false
             }
         })
 
 
         val achievementLogReader = LogReader("Achievements.log", true)
         achievementLogReader.start(object : LogReader.LineConsumer {
-            var previousDataRead = false
+            var isOldData = true
             override fun onLine(rawLine: String) {
                 handler.post {
-                    hsLog.processAchievement(rawLine, previousDataRead)
+                    hsLog.processAchievement(rawLine, isOldData)
                 }
             }
 
             override fun onPreviousDataRead() {
-                previousDataRead = true
+                isOldData = false
             }
         })
 
         val decksLogReader = LogReader("Decks.log", false)
         decksLogReader.start(object : LogReader.LineConsumer {
-            var previousDataRead = false
+            var isOldData = true
             override fun onLine(rawLine: String) {
                 handler.post {
-                    hsLog.processDecks(rawLine, previousDataRead)
+                    hsLog.processDecks(rawLine, isOldData)
                 }
             }
 
             override fun onPreviousDataRead() {
-                previousDataRead = true
+                isOldData = false
             }
         })
 
