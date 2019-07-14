@@ -7,6 +7,7 @@ data class GameTypeTag(val gameType: String) : Tag()
 data class FormatTypeTag(val formatType: String) : Tag()
 data class ScenarioIdTag(val scenarioId: String) : Tag()
 data class PlayerMappingTag(val playerId: String, val playerName: String) : Tag()
+
 class BlockTag(
         var BlockType: String,
         var Entity: String?,

@@ -2,14 +2,15 @@ package net.hearthsim.hslog.parser.power
 
 import com.soywiz.klock.DateTime
 import net.hearthsim.hslog.parser.LogLine
+import net.hearthsim.hslog.parser.parseLineWithMethod
 
 /**
  * Created by martin on 10/27/16.
  */
 
 class PowerParser(
-        private val mTagConsumer: (Tag) -> Unit,
-        private val mRawGameConsumer: ((rawGame: String, unixMillis: Long) -> Unit)?,
+        private val tagConsumer: (Tag) -> Unit,
+        private val rawGameConsumer: ((rawGame: String, unixMillis: Long) -> Unit)?,
         private val logger: ((String, Array<out String>) -> Unit)?
 ) {
 
@@ -20,7 +21,7 @@ class PowerParser(
     private val GameEntityPattern = Regex("GameEntity EntityID=(.*)")
     private val PlayerEntityPattern = Regex("Player EntityID=(.*) PlayerID=(.*) GameAccountId=(.*)")
 
-    private val FULL_ENTITY = Regex("FULL_ENTITY - Creating ID=(.*) CardID=(.*)")
+    private val FULL_ENTITY = Regex("FULL_ENTITY - Updating (.*) CardID=(.*)")
     private val TAG_CHANGE = Regex("TAG_CHANGE Entity=(.*) tag=(.*) value=(.*)")
     private val SHOW_ENTITY = Regex("SHOW_ENTITY - Updating Entity=(.*) CardID=(.*)")
 
@@ -35,9 +36,7 @@ class PowerParser(
     private val SCENARIO_ID = Regex("ScenarioID=(.*)")
     private val PLAYER_MAPPING = Regex("PlayerID=(.*), PlayerName=(.*)")
 
-    private var rawBuilder: StringBuilder? = null
-    private var rawMatchStart: Long? = null
-    private var rawGoldRewardStateCount: Int = 0
+    private val rawGameHandler = RawGameHandler(rawGameConsumer)
     private val mBlockTagStack = ArrayList<BlockTag>()
     private var mCurrentTag: Tag? = null
 
@@ -45,49 +44,29 @@ class PowerParser(
         logger?.invoke(format, args)
     }
 
-    fun process(rawLine: String, processGameTags: Boolean) {
+    fun process(rawLine: String, isOldData: Boolean) {
+        if (isOldData) {
+            return
+        }
+
+        rawGameHandler.process(rawLine)
+
         if (rawLine.startsWith("================== Begin Spectating")) {
-            mTagConsumer(SpectatorTag(true))
+            tagConsumer(SpectatorTag(true))
             return
         } else if (rawLine.startsWith("================== End Spectator Mode")) {
-            mTagConsumer(SpectatorTag(false))
+            tagConsumer(SpectatorTag(false))
             return
         }
 
-        val logLine = LogLine.parseLineWithMethod(rawLine, logger) ?: return
+        val logLine = parseLineWithMethod(rawLine, logger) ?: return
 
         val line = logLine.line.trim()
-        if (!processGameTags) {
-            return
-        }
-
-        if (!logLine.method!!.startsWith("GameState")) {
-            return
-        }
-
-        log(rawLine)
 
         if (logLine.method.startsWith("GameState.DebugPrintGame()")) {
             handleDebugPrintGame(line)
-        } else if (logLine.method.startsWith("GameState.DebugPrintPower()")) {
+        } else if (logLine.method.startsWith("PowerTaskList.DebugPrintPower()")) {
             handleDebugPrintPower(line)
-        }
-
-        if (rawBuilder != null) {
-            rawBuilder!!.append(rawLine)
-            rawBuilder!!.append('\n')
-
-            if (rawLine.contains("GOLD_REWARD_STATE")) {
-                rawGoldRewardStateCount++
-                if (rawGoldRewardStateCount == 2) {
-                    val gameStr = rawBuilder!!.toString()
-                    log("GOLD_REWARD_STATE finished")
-
-                    mRawGameConsumer?.invoke(gameStr, rawMatchStart!!)
-
-                    rawBuilder = null
-                }
-            }
         }
     }
 
@@ -104,7 +83,7 @@ class PowerParser(
                 if (mCurrentTag != null) {
                     mBlockTagStack[mBlockTagStack.size - 1].children.add(mCurrentTag!!)
                 }
-                mTagConsumer(mBlockTagStack[0])
+                tagConsumer(mBlockTagStack[0])
                 mBlockTagStack.clear()
                 mCurrentTag = null
             }
@@ -117,12 +96,6 @@ class PowerParser(
                  */
                 mCurrentTag = null
                 mBlockTagStack.clear()
-
-                rawBuilder = StringBuilder()
-                rawMatchStart = DateTime.now().unixMillisLong
-
-                rawGoldRewardStateCount = 0
-
 
                 newTag = CreateGameTag()
                 break@tagLoop
@@ -227,7 +200,7 @@ class PowerParser(
             if (mBlockTagStack.size > 0) {
                 val blockTag = mBlockTagStack.removeAt(mBlockTagStack.size - 1)
                 if (mBlockTagStack.size == 0) {
-                    mTagConsumer(blockTag)
+                    tagConsumer(blockTag)
                 }
             } else {
                 log("BLOCK_END without BLOCK_START")
@@ -298,31 +271,31 @@ class PowerParser(
 
         m = BUILD_NUMBER.matchEntire(line)
         if (m != null) {
-            mTagConsumer(BuildNumberTag(m.groupValues[1]))
+            tagConsumer(BuildNumberTag(m.groupValues[1]))
             return
         }
 
         m = GAME_TYPE.matchEntire(line)
         if (m != null) {
-            mTagConsumer(GameTypeTag(m.groupValues[1]))
+            tagConsumer(GameTypeTag(m.groupValues[1]))
             return
         }
 
         m = FORMAT_TYPE.matchEntire(line)
         if (m != null) {
-            mTagConsumer(FormatTypeTag(m.groupValues[1]))
+            tagConsumer(FormatTypeTag(m.groupValues[1]))
             return
         }
 
         m = SCENARIO_ID.matchEntire(line)
         if (m != null) {
-            mTagConsumer(ScenarioIdTag(m.groupValues[1]))
+            tagConsumer(ScenarioIdTag(m.groupValues[1]))
             return
         }
 
         m = PLAYER_MAPPING.matchEntire(line)
         if (m != null) {
-            mTagConsumer(PlayerMappingTag(m.groupValues[1], m.groupValues[2]))
+            tagConsumer(PlayerMappingTag(m.groupValues[1], m.groupValues[2]))
             return
         }
     }
@@ -333,7 +306,7 @@ class PowerParser(
             if (mBlockTagStack.size > 0) {
                 mBlockTagStack[mBlockTagStack.size - 1].children.add(mCurrentTag!!)
             } else {
-                mTagConsumer(mCurrentTag!!)
+                tagConsumer(mCurrentTag!!)
             }
         }
         mCurrentTag = newTag

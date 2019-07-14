@@ -20,9 +20,11 @@ kotlin {
                 api project(":kotlin-console")
             }
         }
-        jvmMain {
+        jvmTest {
             dependencies {
-                implementation Libs.stdlibJdk8
+                implementation Libs.kotlinTestJvm
+                implementation Libs.kotlinTestAnnotationJvm
+                implementation Libs.serializationRuntime
             }
         }
     }

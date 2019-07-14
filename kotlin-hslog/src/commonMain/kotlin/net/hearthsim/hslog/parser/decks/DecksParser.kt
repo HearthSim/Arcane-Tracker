@@ -3,6 +3,7 @@ package net.hearthsim.hslog.parser.decks
 import net.hearthsim.console.Console
 import net.hearthsim.hslog.parser.LogLine
 import net.hearthsim.hslog.Deck
+import net.hearthsim.hslog.parser.parseLine
 import net.hearthsim.hsmodel.CardJson
 
 class DecksParser(private val console: Console,
@@ -30,7 +31,7 @@ class DecksParser(private val console: Console,
         } else if (rawLine.contains("Starting Arena Game With Deck")) {
             state = State.ARENA
         } else {
-            val logLine = LogLine.parseLine(rawLine)
+            val logLine = parseLine(rawLine)
             if (logLine != null) {
                 val result = deckStringHelper.parseLine(logLine.line)
 

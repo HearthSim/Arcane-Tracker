@@ -85,10 +85,10 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
             }
     )
     private val powerParser = PowerParser(
-            mTagConsumer = { tag ->
+            tagConsumer = { tag ->
                 gameLogic.handleRootTag(tag)
             },
-            mRawGameConsumer = { gameStr, gameStart ->
+            rawGameConsumer = { gameStr, gameStart ->
                 listener?.onRawGame(gameStr, gameStart)
             },
             //console = console

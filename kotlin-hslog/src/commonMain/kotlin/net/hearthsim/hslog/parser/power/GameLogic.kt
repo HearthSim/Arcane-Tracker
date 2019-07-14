@@ -23,6 +23,8 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
     private var spectator = false
     private val secretLogic = SecretLogic(console)
 
+    private val queuedTagList = mutableListOf<Tag>()
+
     /**
      * This is the exposed game. As long as one game has started, this will always be non-null
      */
@@ -30,18 +32,12 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
 
     fun handleRootTag(tag: Tag) {
         //Timber.d("handle tag: " + tag);
-        when (tag) {
-            is CreateGameTag -> handleCreateGameTag(tag)
-            is SpectatorTag -> spectator = tag.spectator
-        }
-
         if (mGame != null) {
             handleTagRecursive(tag)
+
             if (mGame!!.isStarted) {
                 handleTagRecursive2(tag)
-
                 guessIds(tag)
-
                 notifyListeners()
             }
 
@@ -55,6 +51,26 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
 
                 mGame = null
                 mLastTag = false
+            }
+        } else {
+            when(tag) {
+                is CreateGameTag -> {
+                    handleCreateGameTag(tag)
+                    queuedTagList.forEach {
+                        // These tags should not require handleTagRecursive2 to be called
+                        handleTagRecursive(it)
+                    }
+                    queuedTagList.clear()
+                }
+                is SpectatorTag -> spectator = tag.spectator
+                is BuildNumberTag,
+                is GameTypeTag,
+                is FormatTypeTag,
+                is ScenarioIdTag,
+                is PlayerMappingTag -> {
+                    // The GameState tags will come before the PowerTaskList tags so we need to remember them and replay them later
+                    queuedTagList.add(tag)
+                }
             }
         }
     }
@@ -277,7 +293,7 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
         if (mGame != null && tag.gameEntity.tags[Entity.KEY_TURN] != null) {
             console.debug("CREATE_GAME during an existing one, resuming")
         } else {
-            mGame = Game(console)
+            val game = Game(console)
 
             var player: Player
             var entity: Entity
@@ -285,20 +301,22 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
             entity = Entity()
             entity.EntityID = tag.gameEntity.EntityID
             entity.tags.putAll(tag.gameEntity.tags)
-            mGame!!.addEntity(entity)
-            mGame!!.gameEntity = entity
-            mGame!!.spectator = spectator
+            game.addEntity(entity)
+            game.gameEntity = entity
+            game.spectator = spectator
 
             for (playerTag in tag.playerList) {
                 entity = Entity()
                 entity.EntityID = playerTag.EntityID
                 entity.PlayerID = playerTag.PlayerID
                 entity.tags.putAll(playerTag.tags)
-                mGame!!.addEntity(entity)
+                game.addEntity(entity)
                 player = Player()
                 player.entity = entity
-                mGame!!.playerMap[entity.PlayerID!!] = player
+                game.playerMap[entity.PlayerID!!] = player
             }
+
+            mGame = game
         }
     }
 

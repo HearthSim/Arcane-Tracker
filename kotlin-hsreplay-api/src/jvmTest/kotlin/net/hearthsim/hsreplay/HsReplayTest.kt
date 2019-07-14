@@ -60,7 +60,6 @@ class HsReplayTest {
         )
 
         val dir = System.getProperty("user.dir")
-
         val text = File(dir, "src/jvmTest/files/power.log").readText()
         runBlocking {
             val result = hsReplay.uploadGame(uploadRequest, text)

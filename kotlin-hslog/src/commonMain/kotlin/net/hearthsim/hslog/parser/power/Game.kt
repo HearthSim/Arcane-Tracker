@@ -64,7 +64,7 @@ class Game(private val console: Console) {
             return gameEntity
         }
 
-        if (IdOrBattleTag.isNullOrEmpty()) {
+        if (IdOrBattleTag.isEmpty()) {
             return unknownEntity("empty")
         }
 
