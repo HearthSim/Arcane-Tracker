@@ -68,7 +68,7 @@ object TurnTimer {
         this.game = game
 
         if (job == null) {
-            GlobalScope.launch(Dispatchers.Main) {
+            job = GlobalScope.launch(Dispatchers.Main) {
                 update()
             }
         }
