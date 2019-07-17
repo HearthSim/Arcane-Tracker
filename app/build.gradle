@@ -151,7 +151,6 @@ dependencies {
     implementation Libs.flexbox
     implementation Libs.archPaging
     implementation Libs.coroutines
-    implementation Libs.coroutinesRx2
     implementation Libs.coroutinesAndroid
 
     kapt Libs.roomProcessor
