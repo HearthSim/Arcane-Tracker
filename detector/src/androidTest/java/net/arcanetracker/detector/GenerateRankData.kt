@@ -1,10 +1,10 @@
 package net.arcanetracker.detector
 
-import androidx.test.rule.GrantPermissionRule
-import com.squareup.moshi.Moshi
+import kotlinx.serialization.json.Json
 import net.mbonnin.arcanetracker.detector.Detector
 import net.mbonnin.arcanetracker.detector.RankData
-import okio.Okio
+import net.mbonnin.arcanetracker.detector.SerializableRankData
+import net.mbonnin.arcanetracker.detector.serializable
 import org.junit.Test
 import java.io.File
 
@@ -17,12 +17,8 @@ class GenerateRankData : BaseTest() {
                 RANKS = Trainer.trainRanks(Detector.Companion::extractHaar)
         )
 
-        val adapter = Moshi.Builder().build().adapter(RankData::class.java)
-
-        val sink = Okio.buffer(Okio.sink(File("/sdcard/rank_data.json")))
-
-        sink.use {
-            adapter.toJson(it, data)
+        File("/sdcard/rank_data.json").bufferedWriter().use {
+            it.write(Json.nonstrict.stringify(SerializableRankData.serializer(), data.serializable()))
         }
     }
 }

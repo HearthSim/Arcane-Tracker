@@ -23,8 +23,6 @@ object Libs {
     const val play_firebase_messaging = "com.google.firebase:firebase-messaging:19.0.1"
 
     const val crashlytics = "com.crashlytics.sdk.android:crashlytics:2.10.1"
-    const val moshi = "com.squareup.moshi:moshi:1.8.0"
-    const val moshi_codegen = "com.squareup.moshi:moshi-kotlin-codegen:1.8.0"
     const val timber = "com.jakewharton.timber:timber:4.7.1"
     const val rxjava2 = "io.reactivex.rxjava2:rxjava:2.2.10"
     const val junit = "junit:junit:4.12"
