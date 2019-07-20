@@ -21,7 +21,9 @@ class GameViewHolder(override val containerView: View) : RecyclerView.ViewHolder
                 return@setOnClickListener
 
             }
-            Utils.openLink(summary.hsreplayUrl)
+            summary.hsreplayUrl?.let {
+                Utils.openLink(it)
+            }
         }
     }
 

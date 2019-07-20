@@ -16,7 +16,7 @@ class YourGamesActivity : Activity() {
 
         setContentView(R.layout.history_activity)
 
-        val adapter = GameAdapter(GameSummary.getGameSummary())
+        val adapter = GameAdapter(GameSummary.gameSummaryList ?: emptyList())
 
         recyclerView.layoutManager = LinearLayoutManager(ArcaneTrackerApplication.context)
         recyclerView.adapter = adapter
