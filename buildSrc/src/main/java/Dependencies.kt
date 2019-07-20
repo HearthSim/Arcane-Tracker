@@ -40,7 +40,6 @@ object Libs {
     const val retrofitCoroutines = "ru.gildor.coroutines:kotlin-coroutines-retrofit:1.1.0"
     const val retrofitRx2 = "com.squareup.retrofit2:adapter-rxjava2:2.6.0"
     const val pngj = "ar.com.hjg:pngj:2.1.0"
-    const val kotlinPoet = "com.squareup:kotlinpoet:0.5.0"
     const val okhttp = "com.squareup.okhttp3:okhttp:3.11.0"
     const val okhttpLogging = "com.squareup.okhttp3:logging-interceptor:3.11.0"
     const val multidex = "com.android.support:multidex:1.0.3"
