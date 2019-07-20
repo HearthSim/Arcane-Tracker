@@ -2,8 +2,6 @@ plugins {
     id 'org.jetbrains.kotlin.multiplatform'
 }
 
-apply plugin: 'kotlinx-serialization'
-
 sourceCompatibility = 1.7
 
 kotlin {
@@ -15,35 +13,8 @@ kotlin {
         commonMain {
             dependencies {
                 implementation Libs.stdlibCommon
-                implementation Libs.corountinesCommon
-                implementation Libs.serializationRuntimeCommon
-
-                api Libs.ktorClientCore
-                implementation Libs.ktorClientJson
-                implementation Libs.ktorClientSerialization
-            }
-        }
-        jvmMain {
-            dependencies {
-                implementation Libs.stdlibJdk8
-
-                implementation Libs.coroutines
-                implementation Libs.serializationRuntime
-                implementation Libs.ktorClientSerializationJvm
-
-                api Libs.ktorClientCoreJvm
-                implementation Libs.ktorClientJsonJvm
-                implementation Libs.ktorClientOkhttp
             }
         }
     }
 }
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-
-    kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
-    }
-}
