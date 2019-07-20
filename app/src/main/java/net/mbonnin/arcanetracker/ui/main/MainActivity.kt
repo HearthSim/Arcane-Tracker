@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
@@ -65,6 +66,15 @@ class MainActivity : AppCompatActivity() {
         state = state.copy(showNextTime = Settings.get(Settings.SHOW_NEXT_TIME, true),
                 needLogin = needLogin)
         handleIntent(intent)
+
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener { instanceIdResult ->
+            if (instanceIdResult != null) {
+                val token = instanceIdResult.getToken()
+                if (!TextUtils.isEmpty(token)) {
+                    Timber.d("Firebase token=$token");
+                }
+            }
+        }
     }
 
     fun handleIntent(intent: Intent?) {

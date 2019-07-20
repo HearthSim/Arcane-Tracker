@@ -33,8 +33,6 @@ class CardJson(lang: String, injectedCards: List<Card>? = null, input: Input) {
         )
     }
 
-
-
     init {
         val str = input.readText()
         val cardList = Json.nonstrict.parse(HSCard.serializer().list, str).map { mapToCard(it, lang) }

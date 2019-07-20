@@ -1,7 +1,7 @@
 import net.arcanetracker.app.ATAppPlugin
 
 plugins {
-    id 'com.github.ben-manes.versions' version '0.20.0'
+    id 'com.github.ben-manes.versions' version '0.21.0'
 }
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -146,7 +146,6 @@ dependencies {
     implementation Libs.multidex
     implementation Libs.picassoDownloader
     implementation Libs.picasso
-    implementation Libs.retrofitGson
     implementation Libs.ktx
     implementation Libs.crashlytics
     implementation Libs.room
