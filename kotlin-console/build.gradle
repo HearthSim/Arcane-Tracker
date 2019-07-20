@@ -15,6 +15,11 @@ kotlin {
                 implementation Libs.stdlibCommon
             }
         }
+        jvmMain {
+            dependencies {
+                implementation Libs.stdlibJdk8
+            }
+        }
     }
 }
 
