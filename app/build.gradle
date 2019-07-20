@@ -2,13 +2,17 @@ import net.arcanetracker.app.ATAppPlugin
 
 plugins {
     id 'com.github.ben-manes.versions' version '0.21.0'
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.multiplatform'
 }
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
 apply plugin: ATAppPlugin
+
+kotlin {
+    targets.fromPreset(presets.android, 'android')
+}
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -124,7 +128,6 @@ dependencies {
 
     implementation Libs.constraintLayout
 
-    implementation Libs.gson
     implementation Libs.paperDb
     implementation Libs.okhttp
     implementation Libs.kotlin_stdlib
@@ -136,7 +139,6 @@ dependencies {
     implementation Libs.retrofit
     implementation Libs.retrofitRx2
     implementation Libs.retrofitCoroutines
-    implementation Libs.gson
     implementation Libs.moshi
 
     implementation Libs.play_auth
@@ -151,7 +153,6 @@ dependencies {
     implementation Libs.room
     implementation Libs.rxRoom
     implementation Libs.flexbox
-    implementation Libs.archPaging
     implementation Libs.coroutines
     implementation Libs.coroutinesAndroid
 
