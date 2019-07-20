@@ -1,5 +1,7 @@
 package net.mbonnin.arcanetracker
 
+import io.ktor.client.HttpClient
+import io.ktor.client.request.post
 import io.reactivex.Completable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -35,6 +37,14 @@ class HSLogListener(val currentOrFinishedGame: () -> Game?): HSLog.Listener {
     }
 
     override fun onRawGame(gameString: String, gameStartMillis: Long) {
+        val url = BuildConfig.DEBUG_URL
+        if (!url.isBlank()) {
+            GlobalScope.launch {
+                HttpClient().post<Unit>(url) {
+                    body = gameString
+                }
+            }
+        }
         GameHelper.insertAndUploadGame(gameString, Date(gameStartMillis), currentOrFinishedGame)
     }
 

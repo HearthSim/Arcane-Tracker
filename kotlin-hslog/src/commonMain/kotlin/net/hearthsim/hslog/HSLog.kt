@@ -69,7 +69,7 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
          *
          * The timeout may change during a turn so it's not part of this api
          */
-        fun onTurn(game: Game, turn: Int, player: Boolean)
+        fun onTurn(game: Game, turn: Int, isPlayer: Boolean)
     }
 
     private var listener: Listener? = null
