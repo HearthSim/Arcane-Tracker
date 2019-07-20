@@ -1,1 +1,0 @@
-include ':app', ':detector', ':kotlin-hsmodel', ':kotlin-hslog', ':kotlin-deckstring', ":kotlin-hsreplay-api", "kotlin-console", "kotlin-analytics"
