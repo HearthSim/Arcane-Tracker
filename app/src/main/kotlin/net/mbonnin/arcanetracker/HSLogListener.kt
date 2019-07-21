@@ -40,8 +40,12 @@ class HSLogListener(val currentOrFinishedGame: () -> Game?): HSLog.Listener {
         val url = BuildConfig.DEBUG_URL
         if (!url.isBlank()) {
             GlobalScope.launch {
-                HttpClient().post<Unit>(url) {
-                    body = gameString
+                try {
+                    HttpClient().post<Unit>(url) {
+                        body = gameString
+                    }
+                } catch(e: Exception) {
+                    Timber.e("could not upload debug data: ${e.message}")
                 }
             }
         }
