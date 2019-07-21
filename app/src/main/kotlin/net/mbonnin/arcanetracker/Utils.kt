@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Environment
+import android.os.Handler
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.WindowManager
@@ -159,7 +160,14 @@ object Utils {
         Overlay.hide()
         FileTree.get().sync()
         MainService.stop()
-        System.exit(0)
+
+        /**
+         * Leave some time to the OS to acknowledge the fact that the service is stopped and to prevent it
+         * from restarting it
+         */
+        Handler().postDelayed( {
+            System.exit(0)
+        }, 1000)
     }
 
     fun openLink(url: String) {
