@@ -1,6 +1,7 @@
 package net.hearthsim.hslog
 
 import net.hearthsim.hslog.parser.achievements.AchievementsParser
+import net.hearthsim.hslog.parser.decks.Deck
 import net.hearthsim.hslog.parser.power.Game
 
 open class DefaultHSLogListener : HSLog.Listener {

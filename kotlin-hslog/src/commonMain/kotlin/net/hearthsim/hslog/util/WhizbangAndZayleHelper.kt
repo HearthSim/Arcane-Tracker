@@ -1,6 +1,6 @@
 package net.hearthsim.hslog.util
 
-import net.hearthsim.hslog.Deck
+import net.hearthsim.hslog.parser.decks.Deck
 import net.hearthsim.hslog.parser.decks.DeckStringHelper
 import net.hearthsim.hslog.parser.power.Game
 import net.hearthsim.hsmodel.CardJson

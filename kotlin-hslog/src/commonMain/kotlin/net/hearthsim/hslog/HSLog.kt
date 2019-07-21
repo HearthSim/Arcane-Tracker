@@ -2,6 +2,7 @@ package net.hearthsim.hslog
 
 import net.hearthsim.console.Console
 import net.hearthsim.hslog.parser.achievements.AchievementsParser
+import net.hearthsim.hslog.parser.decks.Deck
 import net.hearthsim.hslog.parser.decks.DecksParser
 import net.hearthsim.hslog.parser.loadingscreen.LoadingScreenParser
 import net.hearthsim.hslog.parser.power.Game

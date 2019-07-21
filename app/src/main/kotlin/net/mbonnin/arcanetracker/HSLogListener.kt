@@ -8,7 +8,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import net.hearthsim.hslog.Deck
+import net.hearthsim.hslog.parser.decks.Deck
 import net.hearthsim.hslog.HSLog
 import net.hearthsim.hslog.parser.achievements.AchievementsParser
 import net.hearthsim.hslog.parser.power.Game

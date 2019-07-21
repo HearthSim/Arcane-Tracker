@@ -1,4 +1,4 @@
-package net.mbonnin.arcanetracker.ui.overlay.adapter
+package net.hearthsim.hslog
 
 import net.hearthsim.hslog.parser.power.Entity
 import net.hearthsim.hsmodel.Card

@@ -14,6 +14,7 @@ import androidx.core.view.children
 import com.google.android.flexbox.FlexboxLayout
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
+import net.hearthsim.hslog.DeckEntryItem
 import net.hearthsim.hslog.parser.power.Entity
 import net.hearthsim.hslog.parser.power.FormatType
 import net.hearthsim.hslog.parser.power.GameLogic

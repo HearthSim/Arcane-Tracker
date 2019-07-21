@@ -1,7 +1,6 @@
 package net.hearthsim.hslog.parser.decks
 
 import net.hearthsim.deckstring.Deckstring
-import net.hearthsim.hslog.Deck
 import net.hearthsim.hslog.util.getClassIndex
 import net.hearthsim.hsmodel.CardJson
 

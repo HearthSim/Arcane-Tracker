@@ -1,6 +1,5 @@
 package net.mbonnin.arcanetracker.ui.overlay.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +9,7 @@ import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
 
+import net.hearthsim.hslog.DeckEntryItem
 import java.util.ArrayList
 
 import androidx.core.content.res.ResourcesCompat

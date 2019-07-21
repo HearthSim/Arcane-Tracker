@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.util.DisplayMetrics
-import net.hearthsim.hslog.Deck
+import net.hearthsim.hslog.parser.decks.Deck
 import net.mbonnin.arcanetracker.SpacesItemDecoration
 
 

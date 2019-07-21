@@ -1,6 +1,6 @@
 package net.mbonnin.arcanetracker
 
-import net.hearthsim.hslog.Deck
+import net.hearthsim.hslog.parser.decks.Deck
 import net.hearthsim.hslog.parser.decks.DeckStringHelper
 import net.mbonnin.arcanetracker.room.RDeck
 

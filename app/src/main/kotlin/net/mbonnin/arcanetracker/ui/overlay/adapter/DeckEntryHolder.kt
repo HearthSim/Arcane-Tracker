@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import net.hearthsim.hslog.DeckEntryItem
 import net.hearthsim.hslog.parser.power.Entity
 import net.hearthsim.hsmodel.Card
 import net.hearthsim.hsmodel.enum.Rarity

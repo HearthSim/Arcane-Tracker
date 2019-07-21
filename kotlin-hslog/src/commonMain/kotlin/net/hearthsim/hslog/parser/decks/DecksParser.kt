@@ -1,8 +1,6 @@
 package net.hearthsim.hslog.parser.decks
 
 import net.hearthsim.console.Console
-import net.hearthsim.hslog.parser.LogLine
-import net.hearthsim.hslog.Deck
 import net.hearthsim.hslog.parser.parseLine
 import net.hearthsim.hsmodel.CardJson
 
