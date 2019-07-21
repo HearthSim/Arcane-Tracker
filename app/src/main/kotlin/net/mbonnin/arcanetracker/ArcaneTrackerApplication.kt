@@ -31,11 +31,6 @@ import okhttp3.OkHttpClient
 import timber.log.Timber
 import java.io.File
 import java.util.*
-import com.crashlytics.android.Crashlytics
-import com.google.firebase.FirebaseApp
-import io.fabric.sdk.android.Fabric
-
-
 
 class ArcaneTrackerApplication : MultiDexApplication() {
     lateinit var hsReplay: HsReplay
