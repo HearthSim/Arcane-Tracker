@@ -150,7 +150,7 @@ object Utils {
     }
 
     fun getCardUrl(id: String): String {
-        return "https://art.hearthstonejson.com/v1/render/latest/${Language.currentLanguage.jsonName}/512x/${id}.png"
+        return "https://art.hearthstonejson.com/v1/render/latest/${Language.currentLanguage.jsonName}/256x/${id}.png"
     }
 
     fun getTileUrl(id: String): String {
