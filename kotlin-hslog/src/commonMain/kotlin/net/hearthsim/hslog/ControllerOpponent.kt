@@ -153,7 +153,6 @@ class ControllerOpponent(private val console: Console, private val cardJson: Car
         // trying a definition that's a bit different from the player definition here
         val allEntities = game.getEntityList { e ->
             (opponentId == e.tags[Entity.KEY_CONTROLLER]
-                    && Entity.ZONE_SETASIDE != e.tags[Entity.KEY_ZONE]
                     && Type.ENCHANTMENT != e.tags[Entity.KEY_CARDTYPE]
                     && Type.HERO != e.tags[Entity.KEY_CARDTYPE]
                     && Type.HERO_POWER != e.tags[Entity.KEY_CARDTYPE]

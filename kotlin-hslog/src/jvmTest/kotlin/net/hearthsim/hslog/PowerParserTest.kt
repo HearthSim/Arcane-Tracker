@@ -3,7 +3,9 @@ package net.hearthsim.hslog
 import kotlinx.io.streams.asInput
 import net.hearthsim.console.Console
 import net.hearthsim.console.DefaultConsole
+import net.hearthsim.hslog.parser.power.Game
 import net.hearthsim.hsmodel.CardJson
+import net.hearthsim.hsmodel.enum.CardId
 import org.junit.Test
 import java.io.File
 
@@ -37,13 +39,24 @@ class PowerParserTest {
         val dir = System.getProperty("user.dir")
         val powerLines = File(dir, "src/jvmTest/files/power.log").readLines()
 
-        hsLog.setListener(object : DefaultHSLogListener() {
+        var opponentDeckEntries = emptyList<DeckEntry>()
 
+        hsLog.setListener(object : DefaultHSLogListener() {
+            override fun onDeckEntries(game: Game, isPlayer: Boolean, deckEntries: List<DeckEntry>) {
+                if (!isPlayer) {
+                    opponentDeckEntries = deckEntries
+                }
+            }
         })
         powerLines.forEach {
             hsLog.processPower(it, false)
         }
 
-        console.debug("victory=${hsLog.currentOrFinishedGame()!!.victory}")
+        val zilliax = opponentDeckEntries.firstOrNull {
+            it is DeckEntry.Item
+                    && it.card.id == CardId.ZILLIAX
+        }
+
+        assert(zilliax != null)
     }
 }
