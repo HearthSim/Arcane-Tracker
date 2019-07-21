@@ -19,7 +19,7 @@ class Controller  {
 
     }
 
-    fun onDeckEntries(game: Game, isPlayer: Boolean, deckEntries: List<DeckEntry>) {
+    fun onDeckEntries(game: Game?, isPlayer: Boolean, deckEntries: List<DeckEntry>) {
         if (isPlayer) {
             playerAdapter.setList(deckEntries)
         } else {

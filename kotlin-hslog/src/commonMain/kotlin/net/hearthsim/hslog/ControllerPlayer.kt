@@ -7,6 +7,10 @@ import net.hearthsim.hsmodel.CardJson
 
 class ControllerPlayer(private val console: Console, private val cardJson: CardJson) {
     var playerCardMap: Map<String, Int>? = null
+        set(value) {
+            console.debug("set Deck ${value?.size}")
+            field = value
+        }
 
     fun getDeckEntries(game: Game): List<DeckEntry> {
         return getDeckEntries(game, playerCardMap ?: emptyMap())

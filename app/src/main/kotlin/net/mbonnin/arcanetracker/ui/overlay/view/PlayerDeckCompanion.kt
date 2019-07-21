@@ -28,7 +28,7 @@ class PlayerDeckCompanion(override val containerView: View) : DeckCompanion(cont
         val viewManager = ViewManager.get()
 
 
-        settings.setOnClickListener({ v2 ->
+        settings.setOnClickListener { v2 ->
             ArcaneTrackerApplication.get().analytics.logEvent("edit_swap")
 
             val a = IntArray(2)
@@ -41,7 +41,7 @@ class PlayerDeckCompanion(override val containerView: View) : DeckCompanion(cont
             val adapter = PlayerDeckListAdapter.get()
             adapter.setOnDeckSelectedListener { deck ->
                 viewManager.removeView(deckListView)
-                MainViewCompanion.playerCompanion.deck = deck
+                ArcaneTrackerApplication.get().hsLog.setDeck(deck)
             }
             recyclerView.adapter = adapter
 
@@ -52,18 +52,9 @@ class PlayerDeckCompanion(override val containerView: View) : DeckCompanion(cont
             params.h = a[1] + settings.height / 2
 
             viewManager.addModalView(deckListView, params)
-        })
+        }
 
         text.setText(containerView.context.getString(R.string.your_deck_will_appear))
-
-        RDatabaseSingleton.instance.deckDao().getLatestDeck()
-                .firstElement()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    it.firstOrNull()?.let {
-                        this.deck = DeckMapper.fromRDeck(it)
-                    }
-                }
     }
 
     var disposable: Disposable? = null

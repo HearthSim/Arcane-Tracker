@@ -69,11 +69,35 @@ class ATHSLogListener(val currentOrFinishedGame: () -> Game?): HSLogListener {
         }
     }
 
+    private fun getDeckEntriesFromCardMap(cardMap: Map<String, Int>): List<DeckEntry> {
+        val deckEntryList = mutableListOf<DeckEntry.Item>()
+        val list = mutableListOf<DeckEntry>()
+        var unknown = Deck.MAX_CARDS
+
+        for ((key, value) in cardMap) {
+            val deckEntry = DeckEntry.Item(
+                    card = CardUtil.getCard(key),
+                    count = value,
+                    entityList = emptyList())
+
+            deckEntryList.add(deckEntry)
+            unknown -= deckEntry.count
+        }
+
+        list.addAll(deckEntryList.sortedWith(ControllerCommon.deckEntryComparator))
+
+        if (unknown > 0) {
+            list.add(DeckEntry.Unknown(unknown))
+        }
+        return list
+    }
+
     override fun onPlayerDeckChanged(deck: Deck) {
         if (deck.name.isNullOrBlank()) {
             deck.name = Utils.getString(R.string.deck)
         }
         MainViewCompanion.playerCompanion.deck = deck
+        Controller.get().onDeckEntries(null, true, getDeckEntriesFromCardMap(deck.cards))
     }
 
     override fun onOpponentDeckChanged(deck: Deck) {

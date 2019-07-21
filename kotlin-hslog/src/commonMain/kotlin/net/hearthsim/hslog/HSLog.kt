@@ -127,6 +127,15 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
                         name = "",
                         id = "rototo",
                         cardJson = cardJson)
+                /**
+                 * This also resets the deck for Innkeeper modes but there's no easy way to distinguish
+                 * Solo vs Innkeeper:
+                 *  - Decks.log: "Finding Game With Deck:"
+                 *  - GameType=GT_VS_AI ScenarioID=261/256/259
+                 * Dalaran Heist:
+                 *  - Decks.log: "Finding Game With Hero: 54553"
+                 *  - GameType=GT_VS_AI ScenarioID=3005
+                 */
                 playerDeck = emptyDeck
             }
         }
@@ -160,5 +169,12 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
 
     fun setListener(listener: HSLogListener) {
         this.listener = listener
+    }
+
+    /**
+     * Called when the user switches decks manuall
+     */
+    fun setDeck(deck: Deck) {
+        playerDeckChanged(deck)
     }
 }
