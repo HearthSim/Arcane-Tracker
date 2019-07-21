@@ -14,7 +14,7 @@ import androidx.core.view.children
 import com.google.android.flexbox.FlexboxLayout
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
-import net.hearthsim.hslog.DeckEntryItem
+import net.hearthsim.hslog.*
 import net.hearthsim.hslog.parser.power.Entity
 import net.hearthsim.hslog.parser.power.FormatType
 import net.hearthsim.hslog.parser.power.GameLogic
@@ -216,7 +216,7 @@ class DetailsView(context: Context) : ViewGroup(context) {
         }
 
         val list = possibleSecrets.map {
-            DeckEntryItem(card = CardUtil.getCard(it),
+            DeckEntry.Item(card = CardUtil.getCard(it),
                     count = if (entity.extra.excludedSecretList.contains(it)) 0 else 1,
                     entityList = emptyList(),
                     gift = false)

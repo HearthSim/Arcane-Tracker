@@ -1,5 +1,6 @@
 package net.hearthsim.hslog
 
+import com.soywiz.klock.DateTime
 import net.hearthsim.console.Console
 import net.hearthsim.hslog.parser.achievements.AchievementsParser
 import net.hearthsim.hslog.parser.decks.Deck
@@ -16,65 +17,12 @@ import net.hearthsim.hsmodel.enum.CardId
 
 
 class HSLog(private val console: Console, private val cardJson: CardJson) {
-    interface Listener {
-        /**
-         * called when a game starts, just after the mulligan
-         * @param game: the game
-         */
-        fun onGameStart(game: Game)
 
-        /**
-         * called when a new entity has been revealed, a play has been done or something else changed
-         * @param game: the game
-         */
-        fun onGameChanged(game: Game)
-
-        /**
-         * called when the game ends
-         * @param game: the game
-         */
-        fun onGameEnd(game: Game)
-
-        /**
-         *
-         */
-        fun onRawGame(gameString: String, gameStartMillis: Long)
-
-        /**
-         *
-         */
-        fun onCardGained(cardGained: AchievementsParser.CardGained)
-
-        /**
-         *
-         */
-        fun onDeckFound(deck: Deck, deckString: String, isArena: Boolean)
-
-        /**
-         * called when the player deck is detected
-         *      - from Decks.log in ranked/casual/arena/practice
-         *      - guessed from the initial mulligan cards in the Zayle/Whizbang cases
-         *      - empty for adventures/dungeons and other solo modes
-         * @param deck: the new deck
-         */
-        fun onPlayerDeckChanged(deck: Deck)
-
-        /**
-         * called to reset the opponent deck to an empty deck at the start of a game
-         * @param deck: the new deck
-         */
-        fun onOpponentDeckChanged(deck: Deck)
-
-        /**
-         * Use this for the turn timer.
-         *
-         * The timeout may change during a turn so it's not part of this api
-         */
-        fun onTurn(game: Game, turn: Int, isPlayer: Boolean)
-    }
-
-    private var listener: Listener? = null
+    private var listener: HSLogListener? = null
     private val gameLogic = GameLogic(console, cardJson)
+
+    private val controllerPlayer = ControllerPlayer(console, cardJson)
+    private val controllerOpponent = ControllerOpponent(console, cardJson)
 
     private val loadingScreenParser = LoadingScreenParser(console)
     private val achievementsParser = AchievementsParser(console,
@@ -89,9 +37,10 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
                 listener?.onDeckFound(deck, deckstring, isArena)
             },
             onPlayerDeckChanged = { deck ->
-                listener?.onPlayerDeckChanged(deck)
+                playerDeckChanged(deck)
             }
     )
+
     private val powerParser = PowerParser(
             tagConsumer = { tag ->
                 gameLogic.handleRootTag(tag)
@@ -103,6 +52,8 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
             logger = { format, args -> console.debug(message = format) }
     )
 
+    var lastTime = DateTime.now().unixMillisLong
+
     init {
         gameLogic.onGameStart {game ->
             selectDecks(game)
@@ -110,6 +61,15 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
         }
         gameLogic.whenSomethingChanges {game ->
             listener?.onGameChanged(game)
+
+            /**
+             * This is not perfect as we might lose the last events.
+             */
+            if (DateTime.now().unixMillisLong - lastTime > 200) {
+                listener?.onDeckEntries(game, true, controllerPlayer.getDeckEntries(game))
+                listener?.onDeckEntries(game, false, controllerOpponent.getDeckEntries(game))
+                lastTime = DateTime.now().unixMillisLong
+            }
         }
         gameLogic.onGameEnd {game ->
             listener?.onGameEnd(game)
@@ -138,6 +98,17 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
 
     fun currentOrFinishedGame(): Game? {
         return gameLogic.currentOrFinishedGame
+    }
+
+    /**
+     * This is called when either:
+     *  * a deck was read from Decks.log
+     *  * a Zayle or Whizbang deck is detected at the start of a game
+     *  * a solo game has started an we set an empty game for those
+     */
+    private fun playerDeckChanged(deck: Deck) {
+        listener?.onPlayerDeckChanged(deck)
+        controllerPlayer.playerCardMap = deck.cards
     }
 
     private fun selectDecks(game: Game) {
@@ -183,11 +154,11 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
         }
 
         if (playerDeck != null) {
-            listener?.onPlayerDeckChanged(playerDeck)
+            playerDeckChanged(playerDeck)
         }
     }
 
-    fun setListener(listener: Listener) {
+    fun setListener(listener: HSLogListener) {
         this.listener = listener
     }
 }

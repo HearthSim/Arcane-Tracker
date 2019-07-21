@@ -24,7 +24,7 @@ object HSLogFactory {
     fun createHSLog(console: Console, cardJson: CardJson): HSLog {
         val hsLog = HSLog(console, cardJson)
 
-        hsLog.setListener(HSLogListener {hsLog.currentOrFinishedGame()})
+        hsLog.setListener(ATHSLogListener {hsLog.currentOrFinishedGame()})
 
         val handler = Handler()
         /*

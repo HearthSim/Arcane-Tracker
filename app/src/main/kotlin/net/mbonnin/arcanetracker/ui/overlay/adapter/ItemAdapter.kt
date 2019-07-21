@@ -9,7 +9,7 @@ import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
 
-import net.hearthsim.hslog.DeckEntryItem
+import net.hearthsim.hslog.*
 import java.util.ArrayList
 
 import androidx.core.content.res.ResourcesCompat
@@ -22,25 +22,20 @@ import timber.log.Timber
 
 class ItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    internal var list: List<Any> = ArrayList()
+    internal var list: List<DeckEntry> = emptyList()
 
-    fun setList(list: List<Any>) {
+    fun setList(list: List<DeckEntry>) {
         this.list = list
         notifyDataSetChanged()
     }
 
     override fun getItemViewType(position: Int): Int {
         val o = list[position]
-        if (o is DeckEntryItem) {
-            return TYPE_DECK_ENTRY
-        } else if (o is String) {
-            return TYPE_STRING
-        } else if (o is HeaderItem) {
-            return TYPE_HEADER
+        return when (o) {
+            is DeckEntry.Item -> TYPE_DECK_ENTRY
+            is DeckEntry.Unknown -> TYPE_STRING
+            else -> TYPE_HEADER
         }
-
-        Timber.e("unsupported type at position %d: %s", position, o.toString())
-        return -1
     }
 
 
@@ -75,18 +70,24 @@ class ItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val o = list[position]
-        if (o is DeckEntryItem) {
-            (holder as DeckEntryHolder).bind(o)
-        } else if (o is String) {
-            val barTemplate = holder.itemView as ViewGroup
-            (barTemplate.getChildAt(0) as TextView).text = o
-        } else if (o is HeaderItem) {
-            val textView = holder.itemView.findViewById<TextView>(R.id.textView)
-            textView.typeface = ResourcesCompat.getFont(ArcaneTrackerApplication.context, R.font.chunkfive)
-            val text = ""//headerItem.expanded ?"▼":"▶";
-            textView.text = text + o.title
-            if (o.onClicked != null) {
-                textView.setOnClickListener { v -> o.onClicked?.run() }
+        when (o) {
+            is DeckEntry.Item -> {
+                (holder as DeckEntryHolder).bind(o)
+            }
+            is DeckEntry.Unknown -> {
+                val barTemplate = holder.itemView as ViewGroup
+                (barTemplate.getChildAt(0) as TextView).text = ArcaneTrackerApplication.context.getString(R.string.unknown_cards, o.count)
+            }
+            else -> {
+                val textView = holder.itemView.findViewById<TextView>(R.id.textView)
+                textView.typeface = ResourcesCompat.getFont(ArcaneTrackerApplication.context, R.font.chunkfive)
+                textView.text = when (o) {
+                    is DeckEntry.PlayerDeck -> Utils.getString(R.string.deck)
+                    is DeckEntry.Secrets -> Utils.getString(R.string.secrets)
+                    is DeckEntry.OpponentDeck -> Utils.getString(R.string.allCards)
+                    is DeckEntry.Hand -> "${Utils.getString(R.string.hand)} (${o.count})"
+                    else -> ""
+                }
             }
         }
         val params2 = RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(30))

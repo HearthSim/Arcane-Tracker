@@ -10,7 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
-import net.hearthsim.hslog.DeckEntryItem
+import net.hearthsim.hslog.*
 import net.hearthsim.hslog.parser.power.Entity
 import net.hearthsim.hsmodel.Card
 import net.hearthsim.hsmodel.enum.Rarity
@@ -32,7 +32,7 @@ internal class DeckEntryHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
 
     private var downY: Float = 0.toFloat()
     private var downX: Float = 0.toFloat()
-    private var deckEntry: DeckEntryItem? = null
+    private var deckEntry: DeckEntry.Item? = null
 
     init {
         val params = RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(30))
@@ -49,7 +49,7 @@ internal class DeckEntryHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
     }
 
 
-    fun bind(entry: DeckEntryItem) {
+    fun bind(entry: DeckEntry.Item) {
         this.card = entry.card
         val c = entry.count
 

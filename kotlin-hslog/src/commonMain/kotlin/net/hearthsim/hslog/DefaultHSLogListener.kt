@@ -4,7 +4,11 @@ import net.hearthsim.hslog.parser.achievements.AchievementsParser
 import net.hearthsim.hslog.parser.decks.Deck
 import net.hearthsim.hslog.parser.power.Game
 
-open class DefaultHSLogListener : HSLog.Listener {
+open class DefaultHSLogListener : HSLogListener {
+    override fun onDeckEntries(game: Game, isPlayer: Boolean, deckEntries: List<DeckEntry>) {
+
+    }
+
     override fun onGameStart(game: Game) {
 
     }

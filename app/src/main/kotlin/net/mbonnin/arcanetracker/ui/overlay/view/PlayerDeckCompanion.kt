@@ -110,7 +110,5 @@ class PlayerDeckCompanion(override val containerView: View) : DeckCompanion(cont
 
                 mViewManager.addCenteredView(view2)
             }
-
-            Controller.get().setPlayerCardMap(value.cards!!)
         }
 }

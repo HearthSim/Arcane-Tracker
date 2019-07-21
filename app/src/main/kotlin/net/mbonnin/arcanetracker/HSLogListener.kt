@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.hearthsim.hslog.parser.decks.Deck
-import net.hearthsim.hslog.HSLog
+import net.hearthsim.hslog.*
 import net.hearthsim.hslog.parser.achievements.AchievementsParser
 import net.hearthsim.hslog.parser.power.Game
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
@@ -21,14 +21,12 @@ import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class HSLogListener(val currentOrFinishedGame: () -> Game?): HSLog.Listener {
+class ATHSLogListener(val currentOrFinishedGame: () -> Game?): HSLogListener {
 
     override fun onGameStart(game: Game) {
-        Controller.get().gameStarted(game)
     }
 
     override fun onGameChanged(game: Game) {
-        Controller.get().somethingChanged()
     }
 
     override fun onGameEnd(game: Game) {
@@ -112,6 +110,10 @@ class HSLogListener(val currentOrFinishedGame: () -> Game?): HSLog.Listener {
                         cardList.clear()
                     }
                 }
+    }
+
+    override fun onDeckEntries(game: Game, isPlayer: Boolean, deckEntries: List<DeckEntry>) {
+        Controller.get().onDeckEntries(game, isPlayer, deckEntries)
     }
 
 }
