@@ -21,7 +21,6 @@ kotlin {
         jvm().compilations["test"].defaultSourceSet {
             dependencies {
                 implementation(Libs.kotlinTestJvm)
-                implementation(Libs.kotlinTestAnnotationJvm)
                 implementation(Libs.serializationRuntime)
             }
         }

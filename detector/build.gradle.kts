@@ -37,7 +37,7 @@ android {
 }
 
 dependencies {
-    implementation(Libs.kotlin_stdlib)
+    implementation(kotlin("stdlib"))
     implementation(Libs.timber)
     implementation(Libs.serializationRuntime)
 

@@ -43,7 +43,6 @@ kotlin {
                 implementation(Libs.okhttpLogging)
                 implementation(Libs.coroutines)
                 implementation(Libs.kotlinTestJvm)
-                implementation(Libs.kotlinTestAnnotationJvm)
             }
         }
     }

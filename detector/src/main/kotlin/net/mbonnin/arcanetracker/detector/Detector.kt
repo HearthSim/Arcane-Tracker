@@ -21,7 +21,7 @@ const val RANK_UNKNOWN = INDEX_UNKNOWN
 class Detector(var context: Context, val isTablet: Boolean) {
     val generatedData by lazy {
 
-        val text =  this::class.java.getResourceAsStream("/rank_data.json").reader().readText()
+        val text =  this::class.java.getResourceAsStream("/rank_data.json")!!.reader().readText()
         Json.nonstrict.parse(SerializableRankData.serializer(), text).toRankData()
     }
     val rectFactory = RRectFactory(isTablet)
