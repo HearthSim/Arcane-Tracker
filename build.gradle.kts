@@ -5,6 +5,9 @@ buildscript {
         maven {
             url = uri("https://maven.fabric.io/public")
         }
+        maven {
+            url = uri("https://dl.bintray.com/kotlin/kotlin-eap")
+        }
     }
 
     dependencies {
@@ -27,6 +30,9 @@ allprojects {
         maven {
             // For kotlinx.serialization
             url = uri("https://kotlin.bintray.com/kotlinx")
+        }
+        maven {
+            url = uri("https://dl.bintray.com/kotlin/kotlin-eap")
         }
         jcenter()
     }
