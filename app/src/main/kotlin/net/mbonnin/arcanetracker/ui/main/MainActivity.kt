@@ -121,6 +121,7 @@ class MainActivity : AppCompatActivity() {
             val loginCompanion = LoginCompanion(view)
             loginCompanion.loading(newState.loginLoading)
             loginCompanion.hasAllPermissions(hasAllPermissions())
+            ArcaneTrackerApplication.get().analytics.logEvent("login_view")
             container.addView(view)
         } else if (hasAllPermissions()) {
             doLaunchGame()
@@ -130,6 +131,7 @@ class MainActivity : AppCompatActivity() {
 
             button.setOnClickListener { _ -> tryToLaunchGame() }
 
+            ArcaneTrackerApplication.get().analytics.logEvent("permission_view")
             container.addView(view)
 
             if (!newState.showNextTime) {
@@ -274,6 +276,7 @@ class MainActivity : AppCompatActivity() {
 
             Overlay.show()
 
+            ArcaneTrackerApplication.get().analytics.logEvent("start_hearthstone")
             Settings.set(Settings.CHECK_IF_RUNNING, false)
         } else {
             Snackbar.make(container, getString(R.string.cannot_launch), Snackbar.LENGTH_LONG).show()
