@@ -1,11 +1,13 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
+    id("com.android.library")
     kotlin("multiplatform")
 }
 
 kotlin {
     jvm()
+    android {
+        publishAllLibraryVariants()
+    }
 
     sourceSets {
         val commonMain by getting {
@@ -24,5 +26,18 @@ kotlin {
                 implementation(Libs.serializationRuntime)
             }
         }
+        named("androidMain") {
+            dependencies {
+                implementation(kotlin("stdlib"))
+            }
+        }
+    }
+}
+
+android {
+    compileSdkVersion(Versions.compileSdkVersion)
+    defaultConfig {
+        minSdkVersion(Versions.minSdkVersion)
+        targetSdkVersion(Versions.targetSdkVersion)
     }
 }

@@ -1,17 +1,24 @@
+import Versions.compileSdkVersion
+import Versions.minSdkVersion
+import Versions.targetSdkVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    id("com.android.library")
     kotlin("multiplatform")
     id("kotlinx-serialization")
 }
 
 kotlin {
     jvm()
+    android {
+        publishAllLibraryVariants()
+    }
 
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(Libs.stdlibCommon)
+                implementation(kotlin("stdlib"))
                 implementation(Libs.corountinesCommon)
                 implementation(Libs.serializationRuntimeCommon)
 
@@ -26,7 +33,7 @@ kotlin {
         }
         jvm().compilations["main"].defaultSourceSet {
             dependencies {
-                implementation(Libs.stdlibJdk8)
+                implementation(kotlin("stdlib"))
 
                 implementation(Libs.coroutines)
                 implementation(Libs.serializationRuntime)
@@ -45,9 +52,31 @@ kotlin {
                 implementation(Libs.kotlinTestJvm)
             }
         }
+        named("androidMain") {
+            dependencies {
+                implementation(kotlin("stdlib"))
+
+                implementation(Libs.coroutines)
+                implementation(Libs.serializationRuntime)
+                implementation(Libs.ktorClientSerializationJvm)
+
+                api(Libs.ktorClientCoreJvm)
+                implementation(Libs.ktorClientJsonJvm)
+                implementation(Libs.ktorClientOkhttp)
+                implementation(Libs.ktorClientEncodingJvm)
+            }
+        }
     }
 }
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.freeCompilerArgs += "-Xallow-result-return-type"
+}
+
+android {
+    compileSdkVersion(Versions.compileSdkVersion)
+    defaultConfig {
+        minSdkVersion(Versions.minSdkVersion)
+        targetSdkVersion(Versions.targetSdkVersion)
+    }
 }
