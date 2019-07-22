@@ -152,7 +152,7 @@ object Utils {
     fun getCardUrl(id: String): String {
         // On my Pixel 3XL, a card is ~500px wide. Putting 256x down there will result in significant blur
         // It would be nice to have webp or jpg on the server but they're not present as of today
-        return "https://art.hearthstonejson.com/v1/render/latest/${Language.currentLanguage.jsonName}/512x/${id}.webp"
+        return "https://art.hearthstonejson.com/v1/render/latest/${Language.currentLanguage.jsonName}/512x/${id}.png"
     }
 
     fun getTileUrl(id: String): String {
