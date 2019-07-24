@@ -8,6 +8,7 @@ import android.preference.PreferenceManager
  */
 
 object Settings {
+    val TURN_TIMER_ENABLED = "TURN_TIMER_ENABLED"
     val SHOW_NEXT_TIME = "SHOW_NEXT_TIME"
     val ALPHA = "alpha"
     val CHECK_IF_RUNNING = "CHECK_IF_RUNNING"

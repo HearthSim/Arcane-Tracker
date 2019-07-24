@@ -250,6 +250,12 @@ class SettingsCompanion(internal var settingsView: View) {
             Settings.set(Settings.SCREEN_CAPTURE_ENABLED, isChecked)
         }
 
+        val turnTimer = view.findViewById<View>(R.id.turnTimerCheckBox) as CheckBox
+        turnTimer.isChecked = Settings.get(Settings.TURN_TIMER_ENABLED, true)
+        turnTimer.setOnCheckedChangeListener { buttonView, isChecked ->
+            Settings.set(Settings.TURN_TIMER_ENABLED, isChecked)
+        }
+
         val autoHide = view.findViewById<View>(R.id.autoHideCheckBox) as CheckBox
         autoHide.isChecked = Settings.get(Settings.AUTO_HIDE, false)
         autoHide.setOnCheckedChangeListener { _, isChecked ->

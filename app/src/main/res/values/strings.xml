@@ -243,4 +243,5 @@
     <string name="enabled">enabled</string>
     <string name="disabled">disabled</string>
     <string name="hsreplayDescription">Replays upload: %1$s\nReplays claimed by: %2$s</string>
+    <string name="turnTimerTitle">Turn Timer</string>
 </resources>

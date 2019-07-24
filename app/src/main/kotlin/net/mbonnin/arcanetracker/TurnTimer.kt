@@ -7,12 +7,13 @@ import android.widget.TextView
 import kotlinx.coroutines.*
 import net.hearthsim.hslog.parser.power.Entity
 import net.hearthsim.hslog.parser.power.Game
+import timber.log.Timber
 import java.util.*
 
 @SuppressLint("StaticFieldLeak")
 object TurnTimer {
 
-    val view = LayoutInflater.from(ArcaneTrackerApplication.context).inflate(R.layout.turn_timer, null, false)
+    val view = TurnTimerView(ArcaneTrackerApplication.context)
     val viewManager = ViewManager.get()
     var job: Job? = null
 
@@ -42,21 +43,22 @@ object TurnTimer {
         job = null
     }
 
+    fun displayView() {
+        val params = ViewManager.Params()
+
+        var boardWidth = viewManager.height * 1.568f
+        val wMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        val hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        view.measure(wMeasureSpec, hMeasureSpec)
+
+        params.x = (viewManager.width - (viewManager.width - boardWidth) / 2 - 0.16 * boardWidth - view.measuredWidth - Utils.dpToPx(8)).toInt()
+        params.y = (((viewManager.height - view.measuredHeight) / 2) * 0.98).toInt()
+        params.w = view.measuredWidth
+        params.h = view.measuredHeight
+        viewManager.addView(view, params)
+    }
+
     fun onTurn(game: Game, turn: Int, isPlayer: Boolean) {
-        if (!viewManager.contains(view)) {
-            val params = ViewManager.Params()
-
-            val wMeasureSpec = View.MeasureSpec.makeMeasureSpec(Utils.dpToPx(70), View.MeasureSpec.EXACTLY)
-            val hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-            view.measure(wMeasureSpec, hMeasureSpec)
-
-            params.x = viewManager.width - view.measuredWidth - Utils.dpToPx(8)
-            params.y = (viewManager.height - view.measuredHeight) / 2
-            params.w = view.measuredWidth
-            params.h = view.measuredHeight
-            viewManager.addView(view, params)
-        }
-
         val now = System.currentTimeMillis()
         if (isPlayer && turnStartMillis > 0) {
             opponentSum += now - turnStartMillis
@@ -80,12 +82,14 @@ object TurnTimer {
 
             val player = if (isPlayer) game?.player else game?.opponent
             val timeout = player?.entity?.tags?.get(Entity.KEY_TIMEOUT)?.toIntOrNull()
+
+            var turnTime = ""
             if (timeout != null) {
                 var remaining = timeout * 1000 - ellapsed
                 if (remaining < 0) {
                     remaining = 0
                 }
-                view.findViewById<TextView>(R.id.turn).text = friendlyDuration(remaining)
+                turnTime = friendlyDuration(remaining)
             }
 
             val totalEllapsedPlayer = if (isPlayer) {
@@ -93,15 +97,28 @@ object TurnTimer {
             } else {
                 playerSum
             }
-            view.findViewById<TextView>(R.id.player).text = friendlyDuration(totalEllapsedPlayer)
+            val playerTime = friendlyDuration(totalEllapsedPlayer)
 
             val totalEllapsedOpponent = if (!isPlayer) {
                 opponentSum + ellapsed
             } else {
                 opponentSum
             }
-            view.findViewById<TextView>(R.id.opponent).text = friendlyDuration(totalEllapsedOpponent)
+            val opponentTime = friendlyDuration(totalEllapsedOpponent)
 
+            view.setValues(opponentTime, turnTime, playerTime)
+
+            Timber.d("opponent=$opponentTime turn=$turnTime player=$playerTime")
+
+            if (Settings.get(Settings.TURN_TIMER_ENABLED, true) != true) {
+                if (viewManager.contains(view)) {
+                    viewManager.removeView(view)
+                }
+            } else {
+                if (!viewManager.contains(view)) {
+                    displayView()
+                }
+            }
 
             delay(1000)
         }
