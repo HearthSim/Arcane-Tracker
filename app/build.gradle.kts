@@ -1,3 +1,8 @@
+import Versions.compileSdkVersion
+import Versions.minSdkVersion
+import Versions.targetSdkVersion
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
+import com.sun.javafx.scene.CameraHelper.project
 import net.arcanetracker.app.ATAppPlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Properties
@@ -44,34 +49,25 @@ android {
         }
     }
 
-    val f = project.file("keystore.properties")
 
+    val f = project.file("keystore.properties")
     signingConfigs {
         val props = Properties()
-        props.load(f.reader())
+        if( f.exists()) {
+            props.load(f.reader())
+        }
         create("mbonnin") {
-            keyAlias = props.getProperty("keyAlias")
-            if (keyAlias == null) {
-                keyAlias = "mbonnin"
-            }
-            keyPassword = props.getProperty("keyAliasPassword")
-            if (keyPassword == null) {
-                keyPassword = "password"
-            }
-            storeFile = project.file(props.getProperty("keyStore"))
-            if (storeFile == null) {
-                storeFile = project.file("keystore.jks")
-            }
-            storePassword = props.getProperty("keyAliasPassword")
-            if (storePassword == null) {
-                storePassword = "password"
-            }
+            keyAlias = props.getProperty("keyAlias")?: "mbonnin"
+            keyPassword = props.getProperty("keyAliasPassword")?:"password"
+            storeFile = project.file(props.getProperty("keyStore") ?: "keystore.jks")
+            storePassword = props.getProperty("keyAliasPassword")?:"password"
         }
     }
     dataBinding {
         isEnabled = true
     }
 
+    
     buildTypes {
         getByName("debug") {
             isMinifyEnabled = false
@@ -109,7 +105,10 @@ androidExtensions {
 
 dependencies {
 
-    implementation(Libs.support_v4)
+    implementation(Libs.support_v4) {
+        isTransitive = true
+        exclude(module = "answers-shim")
+    }
     implementation(Libs.appcompat_v7)
     implementation(Libs.design)
     implementation(Libs.recyclerview_v7)
@@ -161,18 +160,21 @@ dependencies {
     androidTestImplementation(Libs.espressoIntents)
     androidTestImplementation(Libs.espresso)
 }
-//
-//dependencyUpdates.resolutionStrategy = {
-//    componentSelection { rules ->
-//        rules.all { ComponentSelection selection ->
-//            boolean rejected = ["alpha", "beta", "rc", "cr", "m"].any { qualifier ->
-//                selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/
-//            }
-//            if (rejected) {
-//                selection.reject("Release candidate")
-//            }
-//        }
-//    }
-//}
-//
+
+tasks.named<DependencyUpdatesTask>("dependencyUpdates") {
+    resolutionStrategy {
+        componentSelection {
+            all {
+                val rejected = listOf("alpha", "beta", "rc", "cr", "m", "preview", "b", "ea").any { qualifier ->
+                    candidate.version.matches(Regex("(?i).*[.-]$qualifier[.\\d-+]*"))
+                }
+                if (rejected) {
+                    reject("Release candidate")
+                }
+            }
+        }
+    }
+}
+
+
 apply(plugin = "com.google.gms.google-services")
