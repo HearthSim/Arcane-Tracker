@@ -2,7 +2,6 @@ import Versions.compileSdkVersion
 import Versions.minSdkVersion
 import Versions.targetSdkVersion
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
-import com.sun.javafx.scene.CameraHelper.project
 import net.arcanetracker.app.ATAppPlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Properties
@@ -39,6 +38,7 @@ android {
         targetSdkVersion(Versions.targetSdkVersion)
         versionCode = 417
         versionName = "4.17"
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
 

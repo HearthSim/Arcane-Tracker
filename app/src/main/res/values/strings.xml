@@ -196,6 +196,7 @@
     <string name="usernameHint">username</string>
     <string name="notifQuit">QUIT</string>
     <string name="supportAT">Support Arcane Tracker</string>
+    <string name="please_restart_hearthstone">No Hearthstone logs found. You usually need to restart Hearthstone.</string>
     <string name="your_deck_will_appear">Your deck will appear here once you start a game</string>
     <string name="opponent_deck_will_appear">Your opponent deck will appear here once you start a game</string>
     <string name="onoboarding_player">Click the blue button to view your deck.\nYour deck is automatically detected from the Hearthstone logs.</string>

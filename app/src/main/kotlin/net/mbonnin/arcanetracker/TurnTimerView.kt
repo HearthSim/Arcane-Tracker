@@ -5,7 +5,6 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
-import kotlinx.android.synthetic.main.turn_timer.view.*
 import timber.log.Timber
 
 class TurnTimerView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {

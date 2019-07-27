@@ -18,6 +18,7 @@ import net.mbonnin.arcanetracker.room.WLCounter
 import net.mbonnin.arcanetracker.ui.overlay.adapter.Controller
 import net.mbonnin.arcanetracker.ui.overlay.adapter.PlayerDeckListAdapter
 import timber.log.Timber
+import java.io.File
 
 
 class PlayerDeckCompanion(override val containerView: View) : DeckCompanion(containerView), LayoutContainer {
@@ -54,7 +55,13 @@ class PlayerDeckCompanion(override val containerView: View) : DeckCompanion(cont
             viewManager.addModalView(deckListView, params)
         }
 
-        text.setText(containerView.context.getString(R.string.your_deck_will_appear))
+        val file = File("${Utils.hsExternalDir}/Logs/Achievements.log")
+        val resId = if (!file.exists() && !Settings.get(Settings.HAS_SEEN_POWER_LOG, false)) {
+            R.string.please_restart_hearthstone
+        } else {
+            R.string.your_deck_will_appear
+        }
+        text.setText(containerView.context.getString(resId))
     }
 
     var disposable: Disposable? = null
