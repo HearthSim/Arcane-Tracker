@@ -82,8 +82,8 @@ class TurnTimerView @JvmOverloads constructor(context: Context, attrs: Attribute
         whitePaint.getTextBounds(turn, 0, turn.length, bounds)
         var w = whitePaint.measureText(turn)
 
-        canvas.drawText(turn, width - eightDps - w, (height/2 + bounds.height()/2).toFloat(), blackPaint)
-        canvas.drawText(turn, width - eightDps - w, (height/2+ bounds.height()/2).toFloat(), whitePaint)
+        canvas.drawText(turn, width - eightDps - w, (height / 2 + bounds.height() / 2).toFloat(), blackPaint)
+        canvas.drawText(turn, width - eightDps - w, (height / 2 + bounds.height() / 2).toFloat(), whitePaint)
 
         blackPaint.textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12f, displayMetrics)
         whitePaint.textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12f, displayMetrics)
@@ -91,13 +91,13 @@ class TurnTimerView @JvmOverloads constructor(context: Context, attrs: Attribute
         whitePaint.getTextBounds(opponent, 0, opponent.length, bounds)
         w = whitePaint.measureText(opponent)
 
-        canvas.drawText(opponent, width - w, (height/4 + bounds.height()/2).toFloat(), blackPaint)
-        canvas.drawText(opponent, width - w, (height/4+ bounds.height()/2).toFloat(), whitePaint)
+        canvas.drawText(opponent, width - eightDps - w, (height / 4 + bounds.height() / 2).toFloat(), blackPaint)
+        canvas.drawText(opponent, width - eightDps - w, (height / 4 + bounds.height() / 2).toFloat(), whitePaint)
 
         whitePaint.getTextBounds(player, 0, player.length, bounds)
         w = whitePaint.measureText(player)
 
-        canvas.drawText(player, width  - w, (3*height/4+ bounds.height()/2).toFloat(), blackPaint)
-        canvas.drawText(player, width  - w, (3*height/4+ bounds.height()/2).toFloat(), whitePaint)
+        canvas.drawText(player, width - eightDps - w, (3 * height / 4 + bounds.height() / 2).toFloat(), blackPaint)
+        canvas.drawText(player, width - eightDps - w, (3 * height / 4 + bounds.height() / 2).toFloat(), whitePaint)
     }
 }

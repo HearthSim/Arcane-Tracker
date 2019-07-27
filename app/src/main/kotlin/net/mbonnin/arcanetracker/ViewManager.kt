@@ -7,6 +7,7 @@ import android.graphics.Point
 import android.os.Build
 import android.view.*
 import com.crashlytics.android.Crashlytics
+import timber.log.Timber
 import java.util.*
 
 /**
@@ -70,22 +71,16 @@ class ViewManager(context: Context) {
             usableWidth = screenSize.y
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            mWindowManager.defaultDisplay.getRealSize(screenSize)
-            if (screenSize.x > screenSize.y) {
-                width = screenSize.x
-                height = screenSize.y
-            } else {
-                height = screenSize.x
-                width = screenSize.y
-            }
+        mWindowManager.defaultDisplay.getRealSize(screenSize)
+        if (screenSize.x > screenSize.y) {
+            width = screenSize.x
+            height = screenSize.y
         } else {
-            /**
-             * best effort
-             */
-            width = usableWidth
-            height = usableHeight
+            height = screenSize.x
+            width = screenSize.y
         }
+
+        Timber.d("usable=${usableWidth}x$usableHeight real=${width}x$height")
     }
 
     fun addModalAndFocusableView(view: View, params: Params) {

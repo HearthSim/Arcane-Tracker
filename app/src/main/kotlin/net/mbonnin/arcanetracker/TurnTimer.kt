@@ -46,12 +46,21 @@ object TurnTimer {
     fun displayView() {
         val params = ViewManager.Params()
 
-        var boardWidth = viewManager.height * 1.568f
         val wMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         val hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         view.measure(wMeasureSpec, hMeasureSpec)
 
-        params.x = (viewManager.width - (viewManager.width - boardWidth) / 2 - 0.16 * boardWidth - view.measuredWidth - Utils.dpToPx(8)).toInt()
+        /**
+         * This was an attempt to position the Turn Counter to the left of the "turn" button but it's too much hassle making it work
+         * for all configurations (tablets, phones, notch, etc...). Sometimes black bars are added too which makes thing even more
+         * complicated.
+         * Maybe the easiest solution is to run pattern matching on the turn button...
+         *
+         * Until then, I just position the View on the right of the button
+         */
+        /*var boardWidth = viewManager.height * 1.568f
+        params.x = (viewManager.width - (viewManager.width - boardWidth) / 2 - 0.16 * boardWidth - Utils.dpToPx(8) - view.measuredWidth).toInt()*/
+        params.x = viewManager.width - view.measuredWidth
         params.y = (((viewManager.height - view.measuredHeight) / 2) * 0.98).toInt()
         params.w = view.measuredWidth
         params.h = view.measuredHeight
@@ -108,7 +117,7 @@ object TurnTimer {
 
             view.setValues(opponentTime, turnTime, playerTime)
 
-            Timber.d("opponent=$opponentTime turn=$turnTime player=$playerTime")
+            //Timber.d("opponent=$opponentTime turn=$turnTime player=$playerTime")
 
             if (Settings.get(Settings.TURN_TIMER_ENABLED, true) != true) {
                 if (viewManager.contains(view)) {
