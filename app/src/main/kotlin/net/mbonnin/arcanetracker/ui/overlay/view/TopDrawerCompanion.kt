@@ -3,6 +3,7 @@ package net.mbonnin.arcanetracker.ui.overlay.view
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.MeasureSpec.makeMeasureSpec
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -15,6 +16,7 @@ import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.ui.overlay.adapter.DeckEntryHolder
 import net.hearthsim.hslog.DeckEntry
 import net.mbonnin.arcanetracker.CardUtil
+import net.hearthsim.hsmodel.enum.PlayerClass
 
 class TopDrawerCompanion {
     val context = ArcaneTrackerApplication.get()
@@ -32,8 +34,6 @@ class TopDrawerCompanion {
     val infoHandle: HandleView
 
     init {
-        drawerHelper.setViewHeight(Utils.dpToPx(4 * BAR_HEIGHT))
-        drawerHelper.setViewWidth(Utils.dpToPx(3 * BAR_WIDTH))
 
         infoText.visibility = View.GONE
 
@@ -71,6 +71,8 @@ class TopDrawerCompanion {
         params.leftMargin = Utils.dpToPx(10)
         handles.addView(infoHandle, params)
 
+        drawerHelper.close()
+
     }
 
     companion object {
@@ -85,22 +87,51 @@ class TopDrawerCompanion {
 
         secretFlexbox.removeAllViews()
 
+        var color: Int?=null
+
         possibleSecrets.forEach { secret ->
             val view = LayoutInflater.from(context).inflate(R.layout.bar_card, null)
             val barTemplate = LayoutInflater.from(context).inflate(R.layout.bar_template, null) as ViewGroup
             val params = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
             barTemplate.addView(view, 0, params)
 
+            val card = CardUtil.getCard(secret.cardId)
             val deckEntry = DeckEntry.Item(
-                    card = CardUtil.getCard(secret.cardId),
-                    count = Math.max(secret.count, 1),
+                    card = card,
+                    count = Math.min(secret.count, 1),
                     entityList = emptyList()
             )
             val holder = DeckEntryHolder(barTemplate)
             holder.bind(deckEntry)
 
-            secretFlexbox.addView(barTemplate, ViewGroup.LayoutParams(Utils.dpToPx(BAR_WIDTH), Utils.dpToPx(BAR_HEIGHT)))
+            secretFlexbox.addView(barTemplate)
+            barTemplate.layoutParams = FlexboxLayout.LayoutParams(Utils.dpToPx(BAR_WIDTH), Utils.dpToPx(BAR_HEIGHT))
+
+//            if (color == null) {
+//                color = when(card.playerClass) {
+//                    PlayerClass.MAGE -> Color.parseColor("#384cb0")
+//                    PlayerClass.PALADIN -> Color.parseColor("#d9d447")
+//                    PlayerClass.HUNTER -> Color.parseColor("#1d8a32")
+//                    PlayerClass.ROGUE -> Color.parseColor("#916225")
+//                    else -> null
+//                }
+//                if (color != null) {
+//                    secretHandle.setColor(color!!)
+//                }
+//            }
         }
+
+        if (possibleSecrets.isEmpty()) {
+            drawerHelper.close()
+        }
+
+        secretFlexbox.measure(
+                makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                makeMeasureSpec(Utils.dpToPx(4 * BAR_HEIGHT), View.MeasureSpec.EXACTLY)
+        )
+        drawerHelper.setViewHeight(Utils.dpToPx(4 * BAR_HEIGHT + 6)) // 6 for the shadow
+        drawerHelper.setViewWidth(secretFlexbox.measuredWidth)
+
         update()
     }
 
@@ -117,5 +148,13 @@ class TopDrawerCompanion {
         infoHandle.visibility = if (text.isEmpty()) View.GONE else View.VISIBLE
 
         drawerHelper.notifyHandlesChanged()
+    }
+
+    fun show(show: Boolean) {
+        drawerHelper.show(show)
+    }
+
+    fun setButtonWidth(buttonWidth: Int) {
+        drawerHelper.setButtonWidth(buttonWidth)
     }
 }

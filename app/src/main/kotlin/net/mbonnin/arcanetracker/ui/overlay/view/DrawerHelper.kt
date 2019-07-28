@@ -13,17 +13,18 @@ import net.mbonnin.arcanetracker.ViewManager
 import net.mbonnin.arcanetracker.ui.overlay.Onboarding
 import timber.log.Timber
 
-class DrawerHelper(private val view: View, private val handles: HandlesView, private val edge: Edge): ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener  {
-    private var mX: Int = 0
+class DrawerHelper(private val view: View, private val handles: HandlesView, private val edge: Edge) : ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener {
+    private var mOffset: Int = 0
+    private var maxOffset = 0
 
     private var mHandlesMovement: Int = 0
 
     private var direction = 1
-    private var velocityRefX: Float = 0f
-    private var velocityLastX: Float = 0f
+    private var velocityRef: Float = 0f
+    private var velocityLast: Float = 0f
     private var velocityRefTime: Long = 0
 
-    private val mAnimator: ValueAnimator= ValueAnimator()
+    private val mAnimator: ValueAnimator = ValueAnimator()
     private val mHandler = Handler()
     private var mRefY: Float = 0f
     private var mRefX: Float = 0f
@@ -31,6 +32,7 @@ class DrawerHelper(private val view: View, private val handles: HandlesView, pri
     private var mDownY: Float = 0f
     private var mDownX: Float = 0f
     private var viewWidth = 0
+    private var viewHeight = 0
     private val mPadding = Utils.dpToPx(5)
     private var buttonWidth = 0
 
@@ -39,11 +41,44 @@ class DrawerHelper(private val view: View, private val handles: HandlesView, pri
     private val handlesParams = ViewManager.Params()
 
     private val mHideViewRunnable = {
-        viewParams.w = 0
+        Timber.d("$edge: hideView")
+        when (edge) {
+            Edge.LEFT -> viewParams.w = 0
+            Edge.TOP -> viewParams.h = 0
+        }
         mViewManager.updateView(view, viewParams)
     }
 
     private val mHandlesViewTouchListener = View.OnTouchListener { _, ev ->
+        val raw: Float
+        val down: Float
+        val ref: Float
+        val rawOther: Float
+        val downOther: Float
+        val refOther: Float
+        val movement: Int
+
+        when (edge) {
+            Edge.LEFT -> {
+                raw = ev.rawX
+                ref = mRefX
+                down = mDownX
+                rawOther = ev.rawY
+                refOther = mRefY
+                downOther = mDownY
+                movement = HANDLES_MOVEMENT_X
+            }
+            else -> {
+                raw = ev.rawY
+                ref = mRefY
+                down = mDownY
+                rawOther = ev.rawX
+                refOther = mRefX
+                downOther = mDownX
+                movement = HANDLES_MOVEMENT_Y
+            }
+        }
+
         if (ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
             mDownX = ev.getRawX()
             mDownY = ev.getRawY()
@@ -54,51 +89,57 @@ class DrawerHelper(private val view: View, private val handles: HandlesView, pri
         } else if (ev.getActionMasked() == MotionEvent.ACTION_MOVE) {
             if (mHandlesMovement == 0) {
                 if (Math.abs(ev.getRawX() - mDownX) > mTouchSlop) {
-                    prepareAnimation()
-
-                    velocityRefX = ev.getRawX()
-                    velocityLastX = ev.getRawX()
-                    velocityRefTime = System.nanoTime()
-
                     mHandlesMovement = HANDLES_MOVEMENT_X
                 } else if (Math.abs(ev.getRawY() - mDownY) > mTouchSlop) {
                     mHandlesMovement = HANDLES_MOVEMENT_Y
                 }
-            }
 
-            if (mHandlesMovement == HANDLES_MOVEMENT_X) {
-                if ((ev.getRawX() - velocityLastX) * direction > 0) {
-                    velocityLastX = ev.getRawX()
-                } else {
-                    direction = -direction
-                    velocityRefX = ev.getRawX()
-                    velocityLastX = ev.getRawX()
+                if (mHandlesMovement == movement) {
+                    prepareAnimation()
+
+                    velocityRef = raw
+                    velocityLast = raw
                     velocityRefTime = System.nanoTime()
                 }
-                var newX = (mRefX + ev.getRawX() - mDownX).toInt()
-                if (newX > viewWidth) {
-                    newX = viewWidth
-                } else if (newX < 0) {
-                    newX = 0
+            }
+
+            if (mHandlesMovement == movement) {
+                if ((raw - velocityLast) * direction > 0) {
+                    velocityLast = raw
+                } else {
+                    direction = -direction
+                    velocityRef = raw
+                    velocityLast = raw
+                    velocityRefTime = System.nanoTime()
                 }
-                setX(newX)
-            } else if (mHandlesMovement == HANDLES_MOVEMENT_Y) {
-                handlesParams.y = (mRefY + ev.getRawY() - mDownY).toInt()
+                var o = (ref + raw - down).toInt()
+                if (o > maxOffset) {
+                    o = maxOffset
+                } else if (o < 0) {
+                    o = 0
+                }
+                setOffset(o)
+            } else if (mHandlesMovement != 0) {
+                val o = (refOther + rawOther - downOther).toInt()
+                when (edge) {
+                    Edge.LEFT -> handlesParams.y = o
+                    Edge.TOP -> handlesParams.x = o
+                }
                 mViewManager.updateView(handles, handlesParams)
             }
         } else if (ev.getActionMasked() == MotionEvent.ACTION_CANCEL || ev.getActionMasked() == MotionEvent.ACTION_UP) {
-            if (mHandlesMovement == HANDLES_MOVEMENT_X) {
+            if (mHandlesMovement == movement) {
                 var velocity = 0f
                 val timeDiff = System.nanoTime() - velocityRefTime
                 if (timeDiff > 0) {
-                    velocity = 1000f * 1000f * (ev.getRawX() - velocityRefX) / timeDiff
+                    velocity = 1000f * 1000f * (raw - velocityRef) / timeDiff
                 }
                 Timber.w("velocity: %f", velocity)
-                if (mX < viewWidth) {
+                if (mOffset < maxOffset) {
                     if (velocity <= 0) {
-                        animateXTo(0, velocity)
+                        animateOffsetTo(0, velocity)
                     } else if (velocity > 0) {
-                        animateXTo(viewWidth, velocity)
+                        animateOffsetTo(maxOffset, velocity)
                     }
                 }
             }
@@ -112,10 +153,6 @@ class DrawerHelper(private val view: View, private val handles: HandlesView, pri
 
         mAnimator.addUpdateListener(this)
         mAnimator.addListener(this)
-
-        handlesParams.x = mPadding
-        handlesParams.y = ViewManager.get().height - handlesParams.h - Utils.dpToPx(50)
-
     }
 
     fun setButtonWidth(buttonWidth: Int) {
@@ -140,10 +177,11 @@ class DrawerHelper(private val view: View, private val handles: HandlesView, pri
     private fun prepareAnimation() {
         mHandler.removeCallbacks(mHideViewRunnable)
         viewParams.w = viewWidth
+        viewParams.h = viewHeight
         mViewManager.updateView(view, viewParams)
     }
 
-    private fun animateXTo(targetX: Int, pixelPerMillisecond: Float) {
+    private fun animateOffsetTo(targetOffset: Int, pixelPerMillisecond: Float) {
         var pxPerMs = pixelPerMillisecond
         pxPerMs = Math.abs(pxPerMs)
         if (pxPerMs < 0.6) {
@@ -153,36 +191,46 @@ class DrawerHelper(private val view: View, private val handles: HandlesView, pri
 
         mAnimator.interpolator = LinearInterpolator()
         if (pxPerMs > 0) {
-            mAnimator.duration = (Math.abs(mX - targetX) / pxPerMs).toLong()
+            mAnimator.duration = (Math.abs(mOffset - targetOffset) / pxPerMs).toLong()
         } else {
             mAnimator.duration = 300
         }
 
         prepareAnimation()
-        mAnimator.setIntValues(mX, targetX)
+        mAnimator.setIntValues(mOffset, targetOffset)
         mAnimator.start()
     }
 
-    private fun animateXTo(targetX: Int) {
+    private fun animateOffsetTo(targetOffset: Int) {
         mAnimator.cancel()
         mAnimator.interpolator = AccelerateDecelerateInterpolator()
         mAnimator.duration = 300
 
         prepareAnimation()
-        mAnimator.setIntValues(mX, targetX)
+        mAnimator.setIntValues(mOffset, targetOffset)
         mAnimator.start()
     }
 
     override fun onAnimationUpdate(animation: ValueAnimator) {
-        setX(animation.animatedValue as Int)
+        setOffset(animation.animatedValue as Int)
     }
 
-    private fun setX(x: Int) {
-        Timber.w("setX: %d", mX);
-        mX = x
-        view.translationX = (-viewWidth + mX).toFloat()
-        handlesParams.x = mX + mPadding
+    private fun setOffset(offset: Int) {
+        Timber.w("${edge}: setOffset: %d", mOffset);
+        mOffset = offset
+        when (edge) {
+            Edge.LEFT -> {
+                view.translationX = (-viewWidth + mOffset).toFloat()
+                handlesParams.x = mOffset + mPadding
+            }
+            Edge.TOP -> {
+                view.translationY = (-viewParams.h + mOffset).toFloat()
+                handlesParams.y = mOffset + mPadding
+            }
+        }
+
         mViewManager.updateView(handles, handlesParams)
+
         Onboarding.updateTranslation()
     }
 
@@ -191,8 +239,8 @@ class DrawerHelper(private val view: View, private val handles: HandlesView, pri
     }
 
     override fun onAnimationEnd(animation: Animator) {
-        //Timber.w("onAnimationEnd: %d", mX);
-        if (mX == 0) {
+        //Timber.w("onAnimationEnd: %d", mOffset);
+        if (mOffset == 0) {
             /**
              * XXX: somehow if I do this too early, there a small glitch on screen...
              */
@@ -219,33 +267,68 @@ class DrawerHelper(private val view: View, private val handles: HandlesView, pri
     }
 
     fun setViewWidth(width: Int) {
-        mAnimator.cancel()
+        Timber.d("setViewWidth($width)")
+
         viewWidth = width
-        viewParams.w = width
+
+        when (edge) {
+            Edge.LEFT -> {
+                mAnimator.cancel()
+                maxOffset = width
+                // update the handles
+                if (mOffset != 0) {
+                    viewParams.w = width
+                    setOffset(maxOffset)
+                }
+            }
+            Edge.TOP -> {
+                viewParams.x = (mViewManager.width - viewWidth) / 2
+                handlesParams.x = (mViewManager.width - handlesParams.w) / 2
+                mViewManager.updateView(handles, handlesParams)
+            }
+        }
+
         mViewManager.updateView(view, viewParams)
-        setX(viewWidth)
     }
 
     fun setViewHeight(height: Int) {
-        viewParams.h = height
+        Timber.d("setViewHeight($height)")
+        viewHeight = height
+
+        when (edge) {
+            Edge.LEFT -> {
+                handlesParams.y = ViewManager.get().height - handlesParams.h - Utils.dpToPx(50)
+                mViewManager.updateView(handles, handlesParams)
+            }
+            Edge.TOP -> {
+                mAnimator.cancel()
+                maxOffset = height
+                // update the handles
+                if (mOffset != 0) {
+                    viewParams.h = height
+                    setOffset(maxOffset)
+                }
+            }
+        }
         mViewManager.updateView(view, viewParams)
     }
 
     fun isOpen(): Boolean {
-        return mX == viewWidth
+        return mOffset == maxOffset
     }
 
     fun open() {
-        animateXTo(viewWidth)
+        Timber.d("$edge: open")
+        animateOffsetTo(maxOffset)
     }
 
     fun close() {
-        animateXTo(0)
+        Timber.d("$edge: close")
+        animateOffsetTo(0)
     }
 
     fun notifyHandlesChanged() {
         setButtonWidth(buttonWidth)
-
     }
 
     enum class Edge {
@@ -254,11 +337,10 @@ class DrawerHelper(private val view: View, private val handles: HandlesView, pri
         RIGHT,
         BOTTOM
     }
+
     companion object {
         private val HANDLES_MOVEMENT_X = 1
         private val HANDLES_MOVEMENT_Y = 2
-
-
     }
 
 }

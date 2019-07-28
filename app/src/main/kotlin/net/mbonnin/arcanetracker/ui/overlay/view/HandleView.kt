@@ -186,4 +186,8 @@ class HandleView : View {
         this.glow = glow
         invalidate()
     }
+
+    fun setColor(color: Int) {
+        mColorPaint.color = color
+    }
 }

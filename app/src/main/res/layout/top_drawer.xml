@@ -3,19 +3,20 @@
               android:layout_width="wrap_content"
               android:layout_height="match_parent"
               xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:background="#000"
               android:orientation="vertical">
 
     <FrameLayout
             android:id="@+id/frameLayout"
             android:layout_weight="1"
+            android:background="#000"
             android:layout_width="match_parent"
             android:layout_height="0dp">
 
         <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/secretFlexbox"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 app:flexDirection="column"
                 app:flexWrap="wrap"/>
 
@@ -30,8 +31,8 @@
 
     <View
             android:id="@+id/shadow"
-            android:layout_width="5dp"
-            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
             android:background="@drawable/shadow_top"/>
 
 </LinearLayout>
