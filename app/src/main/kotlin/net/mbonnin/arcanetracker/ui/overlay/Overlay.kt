@@ -69,6 +69,7 @@ object Overlay {
     fun setAlphaProgress(progress: Int) {
         Settings.set(Settings.ALPHA, progress)
         MainViewCompanion.get().setAlpha(progress)
+        topDrawerCompanion.setAlphaProgress(progress)
     }
 
     fun getAlphaProgress(): Int {

@@ -157,4 +157,8 @@ class TopDrawerCompanion {
     fun setButtonWidth(buttonWidth: Int) {
         drawerHelper.setButtonWidth(buttonWidth)
     }
+
+    fun setAlphaProgress(progress: Int) {
+        drawerHelper.setAlpha(progress)
+    }
 }
