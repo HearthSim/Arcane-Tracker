@@ -1,15 +1,22 @@
 package net.mbonnin.arcanetracker.ui.overlay.view
 
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import net.hearthsim.hslog.DeckEntry
+import net.hearthsim.hslog.PossibleSecret
 import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.ui.my_games.YourGamesActivity
 import net.mbonnin.arcanetracker.ui.my_packs.YourPacksActivity
 import net.mbonnin.arcanetracker.ui.overlay.Onboarding
 import net.mbonnin.arcanetracker.ui.overlay.Onboarding.hsReplayHandleClicked
+import net.mbonnin.arcanetracker.ui.overlay.adapter.Controller
+import net.mbonnin.arcanetracker.ui.overlay.adapter.ItemAdapter
 import net.mbonnin.arcanetracker.ui.settings.SettingsCompanion
 import net.mbonnin.arcanetracker.ui.stats.YourDecksActivity
 
@@ -19,6 +26,7 @@ class MainViewCompanion(val mainView: View) {
 
     private val playerView: View
     private val opponentView: View
+    private val secretView: View
     private val mViewManager = ViewManager.get()
 
     val handlesView = LayoutInflater.from(mainView.context).inflate(R.layout.handles_view, null) as HandlesView
@@ -27,6 +35,7 @@ class MainViewCompanion(val mainView: View) {
     private var state: Int = 0
 
     private var mWidth = 0
+    val secretsAdapter = ItemAdapter()
 
     private val drawerHelper = DrawerHelper(mainView, handlesView, DrawerHelper.Edge.LEFT)
     fun setAlpha(progress: Int) {
@@ -38,6 +47,7 @@ class MainViewCompanion(val mainView: View) {
 
         frameLayout = mainView.findViewById(R.id.frameLayout)
         opponentView = mainView.findViewById(R.id.opponentView)
+        secretView = mainView.findViewById(R.id.secretRecyclerView)
         playerView = mainView.findViewById(R.id.playerView)
 
         mWidth = Settings.get(Settings.DRAWER_WIDTH, 0)
@@ -48,6 +58,9 @@ class MainViewCompanion(val mainView: View) {
 
         sOpponentCompanion = OpponentDeckCompanion(opponentView)
         sPlayerCompanion = PlayerDeckCompanion(playerView)
+        val recyclerView = mainView.findViewById<RecyclerView>(R.id.secretRecyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(mainView.context)
+        recyclerView.adapter = secretsAdapter
 
         drawerHelper.setViewHeight(mViewManager.height)
 
@@ -56,6 +69,26 @@ class MainViewCompanion(val mainView: View) {
         setState(STATE_PLAYER, false)
     }
 
+    fun onSecrets(possibleSecrets: List<PossibleSecret>) {
+        val list = mutableListOf<DeckEntry>()
+
+        list.add(DeckEntry.Secrets)
+
+        list.addAll(possibleSecrets.map { secret ->
+            val card = CardUtil.getCard(secret.cardId)
+            DeckEntry.Item(
+                    card = card,
+                    count = Math.min(secret.count, 1),
+                    entityList = emptyList()
+            )
+        })
+
+        secretsAdapter.setList(list)
+
+        handlesView.findViewById<View>(R.id.secretHandle).visibility = if (possibleSecrets.isEmpty()) View.GONE else View.VISIBLE
+
+        drawerHelper.notifyHandlesChanged()
+    }
     val minDrawerWidth: Int
         get() = Utils.dpToPx(50)
 
@@ -92,6 +125,8 @@ class MainViewCompanion(val mainView: View) {
         if (drawerOpen) {
             opponentView.visibility = View.GONE
             playerView.visibility = View.GONE
+            secretView.visibility = View.GONE
+
             when (targetState) {
                 STATE_PLAYER -> {
                     playerView.visibility = View.VISIBLE
@@ -104,6 +139,10 @@ class MainViewCompanion(val mainView: View) {
                     ArcaneTrackerApplication.get().analytics.logEvent("state_opponent")
 
                     Onboarding.opponentHandleClicked()
+                }
+                STATE_SECRET -> {
+                    secretView.visibility = View.VISIBLE
+                    ArcaneTrackerApplication.get().analytics.logEvent("state_secret")
                 }
             }
             drawerHelper.open()
@@ -191,6 +230,11 @@ class MainViewCompanion(val mainView: View) {
             mViewManager.addMenu(view, v2)
         }
 
+        handleView = v.findViewById(R.id.secretHandle)
+        drawable = v.context.resources.getDrawable(R.drawable.ic_question)
+        handleView.init(drawable, Color.BLACK)
+        handleView.setOnClickListener(ClickListener(STATE_SECRET))
+
         handleView = v.findViewById(R.id.opponentHandle)
         drawable = v.context.resources.getDrawable(R.drawable.icon_white)
         handleView.init(drawable, v.context.resources.getColor(R.color.opponentColor))
@@ -209,6 +253,7 @@ class MainViewCompanion(val mainView: View) {
 
         val STATE_PLAYER = 0
         val STATE_OPPONENT = 1
+        val STATE_SECRET = 2
 
         val opponentCompanion: DeckCompanion
             get() {

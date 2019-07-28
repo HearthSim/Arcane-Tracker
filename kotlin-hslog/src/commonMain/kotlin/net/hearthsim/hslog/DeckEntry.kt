@@ -9,6 +9,6 @@ sealed class DeckEntry {
     class PlayerDeck: DeckEntry()
     class Unknown(val count: Int) : DeckEntry()
     class Hand(val count: Int) : DeckEntry()
-    class OpponentDeck : DeckEntry()
-    class Secrets: DeckEntry()
+    object OpponentDeck : DeckEntry()
+    object Secrets: DeckEntry()
 }

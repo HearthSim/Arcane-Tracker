@@ -17,6 +17,13 @@
         android:layout_marginBottom="10dp" />
 
     <net.mbonnin.arcanetracker.ui.overlay.view.HandleView
+            android:id="@+id/secretHandle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginBottom="10dp" />
+
+    <net.mbonnin.arcanetracker.ui.overlay.view.HandleView
         android:id="@+id/opponentHandle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

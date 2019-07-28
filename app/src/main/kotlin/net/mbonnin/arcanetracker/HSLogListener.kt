@@ -35,7 +35,7 @@ class ATHSLogListener(val currentOrFinishedGame: () -> Game?): HSLogListener {
     }
 
     override fun onSecrets(possibleSecrets: List<PossibleSecret>) {
-
+        MainViewCompanion.get().onSecrets(possibleSecrets)
     }
 
     override fun onRawGame(gameString: String, gameStartMillis: Long) {

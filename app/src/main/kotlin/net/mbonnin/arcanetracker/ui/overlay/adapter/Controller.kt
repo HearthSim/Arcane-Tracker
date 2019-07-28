@@ -7,17 +7,11 @@ import net.mbonnin.arcanetracker.*
 import net.hearthsim.hslog.parser.power.Game
 import net.hearthsim.hslog.*
 
-class Controller  {
+class Controller {
 
-    val playerAdapter: ItemAdapter
-    val opponentAdapter: ItemAdapter
+    val playerAdapter = ItemAdapter()
+    val opponentAdapter = ItemAdapter()
 
-
-    init {
-        opponentAdapter = ItemAdapter()
-        playerAdapter = ItemAdapter()
-
-    }
 
     fun onDeckEntries(game: Game?, isPlayer: Boolean, deckEntries: List<DeckEntry>) {
         if (isPlayer) {

@@ -54,28 +54,6 @@ object CardUtil {
         return ArcaneTrackerApplication.get().cardJson.getCard(key)
     }
 
-    fun possibleSecretList(playerClass: String?, gameType: String?, formatType: String?): Collection<String> {
-
-        var secrets = ArcaneTrackerApplication.get().cardJson.allCards().filter {
-            it.mechanics.contains(Mechanic.SECRET)
-                    && it.playerClass == playerClass
-                    && (formatType != FormatType.FT_STANDARD.name || it.isStandard())
-                    && it.id != CardId.FLAME_WREATH  // these are bosses secrets
-                    && it.id != CardId.FLAME_WREATH1
-        }
-
-        if (gameType == GameType.GT_ARENA.name) {
-            secrets = secrets.filter {
-                it.isStandard()
-            }
-        } else if (formatType == FormatType.FT_STANDARD.name) {
-            secrets = secrets.filter {
-                it.isStandard()
-            }
-        }
-
-        return secrets.map { it.id }
-    }
 
     fun getDust(rarity: String?, golden: Boolean): Int {
         if (rarity == null) {

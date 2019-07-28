@@ -141,7 +141,7 @@ class ControllerOpponent(private val console: Console, private val cardJson: Car
 
         val secrets = getSecrets(game, opponentId)
         if (secrets.isNotEmpty()) {
-            list.add(DeckEntry.Secrets())
+            list.add(DeckEntry.Secrets)
             list.addAll(secrets)
         }
 
@@ -149,7 +149,7 @@ class ControllerOpponent(private val console: Console, private val cardJson: Car
         list.add(DeckEntry.Hand(handDeckEntryItemList.size))
         list.addAll(handDeckEntryItemList)
 
-        list.add(DeckEntry.OpponentDeck())
+        list.add(DeckEntry.OpponentDeck)
         // trying a definition that's a bit different from the player definition here
         val allEntities = game.getEntityList { e ->
             (opponentId == e.tags[Entity.KEY_CONTROLLER]

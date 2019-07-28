@@ -13,8 +13,6 @@ import net.mbonnin.arcanetracker.ui.overlay.view.TopDrawerCompanion
 import net.mbonnin.arcanetracker.ui.overlay.view.WhatsNewCompanion
 
 object Overlay {
-    val topDrawerCompanion = TopDrawerCompanion()
-
     fun show() {
         MainViewCompanion.get().setState(MainViewCompanion.STATE_PLAYER, false)
         MainViewCompanion.get().show(true)
@@ -36,8 +34,7 @@ object Overlay {
         setAlphaProgress(getAlphaProgress())
         setButtonWidth(getButtonWidth())
 
-        topDrawerCompanion.show(true)
-        /*val possibleSecrets =                 listOf(
+        /*val possibleSecrets = listOf(
                 PossibleSecret(CardId.COUNTERSPELL, 1),
                 PossibleSecret(CardId.SPELLBENDER, 1),
                 PossibleSecret(CardId.ICE_BARRIER, 0),
@@ -49,14 +46,14 @@ object Overlay {
         GlobalScope.launch(Dispatchers.Main) {
             delay(4000)
             var i = 3
-            while(true) {
-                if (i%5 == 0) {
-                    topDrawerCompanion.setPossibleSecrets(
+            while (true) {
+                if (i % 5 == 0) {
+                    MainViewCompanion.get().onSecrets(
                             emptyList()
                     )
 
                 } else {
-                    topDrawerCompanion.setPossibleSecrets(
+                    MainViewCompanion.get().onSecrets(
                             possibleSecrets.shuffled()
                     )
                 }
@@ -69,7 +66,6 @@ object Overlay {
     fun setAlphaProgress(progress: Int) {
         Settings.set(Settings.ALPHA, progress)
         MainViewCompanion.get().setAlpha(progress)
-        topDrawerCompanion.setAlphaProgress(progress)
     }
 
     fun getAlphaProgress(): Int {
@@ -79,7 +75,6 @@ object Overlay {
     fun setButtonWidth(buttonWidth: Int) {
         Settings.set(Settings.BUTTON_WIDTH, buttonWidth - Utils.dpToPx(8))
         MainViewCompanion.get().setButtonWidth(buttonWidth)
-        topDrawerCompanion.setButtonWidth(buttonWidth)
     }
 
     fun getButtonWidth(): Int {
