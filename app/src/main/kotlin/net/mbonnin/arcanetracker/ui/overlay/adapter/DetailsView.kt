@@ -170,23 +170,8 @@ class DetailsView(context: Context) : ViewGroup(context) {
 
             val textView: TextView
             val entityView: View
-            if (Entity.ZONE_SECRET == entity.tags[Entity.KEY_ZONE] && entity.CardID.isNullOrEmpty()) {
-                val binding = EntityViewWithSecretsBinding.inflate(LayoutInflater.from(context))
-                entityView = binding.root
-                textView = binding.textView
-
-                if (!builder.isEmpty()) {
-                    builder.append("\n")
-                }
-                builder.append(Utils.getString(R.string.possibleSecrets))
-                builder.append("\n")
-
-                appendPossibleSecrets(binding.secrets, entity)
-            } else {
-                textView = LayoutInflater.from(context).inflate(R.layout.entity_view, this, false) as TextView
-                entityView = textView
-            }
-
+            textView = LayoutInflater.from(context).inflate(R.layout.entity_view, this, false) as TextView
+            entityView = textView
 
             if (builder.isEmpty()) {
                 builder.append(Utils.getString(R.string.inDeck))
@@ -197,41 +182,6 @@ class DetailsView(context: Context) : ViewGroup(context) {
             textView.text = s
 
             addView(entityView)
-        }
-    }
-
-    @Suppress("ConstantConditionIf")
-    private fun appendPossibleSecrets(flexboxLayout: FlexboxLayout, entity: Entity) {
-        val game = ArcaneTrackerApplication.get().hsLog.currentOrFinishedGame()
-
-        val possibleSecrets: Collection<String>
-
-        possibleSecrets = if (TestSwitch.SECRET_LAYOUT) {
-            CardUtil.possibleSecretList(entity.tags[Entity.KEY_CLASS], GameType.GT_RANKED.name, FormatType.FT_WILD.name)
-        } else {
-            if (game == null) {
-                return
-            }
-            CardUtil.possibleSecretList(entity.tags[Entity.KEY_CLASS], game.gameType, game.formatType)
-        }
-
-        val list = possibleSecrets.map {
-            DeckEntry.Item(card = CardUtil.getCard(it),
-                    count = if (entity.extra.excludedSecretList.contains(it)) 0 else 1,
-                    entityList = emptyList(),
-                    gift = false)
-        }
-
-        for (deckEntryItem in list) {
-            val view = LayoutInflater.from(context).inflate(R.layout.bar_card, null)
-            val barTemplate = LayoutInflater.from(context).inflate(R.layout.bar_template, null) as ViewGroup
-            val params = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-            barTemplate.addView(view, 0, params)
-
-            val holder = DeckEntryHolder(barTemplate)
-            holder.bind(deckEntryItem)
-
-            flexboxLayout.addView(barTemplate, ViewGroup.LayoutParams(imageWidth - Utils.dpToPx(40), Utils.dpToPx(30)))
         }
     }
 }

@@ -57,7 +57,7 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
                 mLastTag = false
             }
         } else {
-            when(tag) {
+            when (tag) {
                 is CreateGameTag -> {
                     handleCreateGameTag(tag)
                     queuedTagList.forEach {
@@ -136,8 +136,16 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
             }
             is ShowEntityTag -> handleShowEntityTag(tag)
             is BuildNumberTag -> mGame!!.buildNumber = tag.buildNumber
-            is GameTypeTag -> mGame!!.gameType = tag.gameType
-            is FormatTypeTag -> mGame!!.formatType = tag.formatType
+            is GameTypeTag -> mGame!!.gameType = try {
+                GameType.valueOf(tag.gameType)
+            } catch (e: IllegalArgumentException) {
+                GameType.GT_RANKED
+            }
+            is FormatTypeTag -> mGame!!.formatType = try {
+                FormatType.valueOf(tag.formatType)
+            } catch (e: IllegalArgumentException) {
+                FormatType.FT_UNKNOWN
+            }
             is ScenarioIdTag -> mGame!!.scenarioId = tag.scenarioId
             is PlayerMappingTag -> handlePlayerMapping(tag)
         }

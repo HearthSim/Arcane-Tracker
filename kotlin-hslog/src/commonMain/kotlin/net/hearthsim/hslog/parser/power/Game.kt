@@ -13,17 +13,17 @@ class Game(private val console: Console) {
 
     var player: Player? = null
     var opponent: Player? = null
+    var playerRank: Int = 0
+    var opponentRank: Int = 0
 
     var victory: Boolean = false
 
     var lastPlayedCardId: String? = null
     var spectator: Boolean = false
     var buildNumber: String? = null
-    var gameType: String? = null
-    var formatType: String? = null
+    var gameType: GameType = GameType.GT_RANKED
+    var formatType: FormatType = FormatType.FT_UNKNOWN
     var scenarioId: String? = null
-    var opponentRank: Int = 0
-    var playerRank: Int = 0
 
     val isStarted: Boolean
         get() = player != null && opponent != null
@@ -100,4 +100,7 @@ class Game(private val console: Console) {
     fun findEntityUnsafe(entityId: String): Entity? {
         return entityMap[entityId]
     }
+
+    fun playerId() = player!!.entity!!.PlayerID
+    fun opponentId() = opponent!!.entity!!.PlayerID
 }

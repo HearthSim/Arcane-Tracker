@@ -65,4 +65,10 @@ interface HSLogListener {
      *
      */
     fun onDeckEntries(game: Game, isPlayer: Boolean, deckEntries: List<DeckEntry>)
+
+    /**
+     *
+     *
+     */
+    fun onSecrets(possibleSecrets: Set<String>)
 }

@@ -130,10 +130,6 @@ class SecretLogic(val console: Console) {
             return
         }
         val attackingEntity = game.findEntitySafe(entity)
-        if (attackingEntity == null) {
-            return // not sure how this can happen...
-        }
-
         if (attackingEntity.tags[Entity.KEY_CONTROLLER] != game.player?.entity?.PlayerID) {
             // not our play
             return

@@ -15,7 +15,10 @@ class PowerParserTest {
 
     val console = object : Console {
         override fun debug(message: String) {
-            val regex = Regex("[A-Z0-9]{3}_[0-9]{3}")
+            /**
+             * A small hack to resolve the card ids on the fly
+             */
+            val regex = Regex("[a-zA-Z0-9]{2,3}_[0-9]{3}")
             val m = message.replace(regex) {
                 val cardId = it.groupValues[0]
                 "$cardId (${cardJson.getCard(cardId).name})"
@@ -32,10 +35,10 @@ class PowerParserTest {
         }
 
     }
-    val hsLog = HSLog(console = console, cardJson = cardJson)
+    val hsLog = HSLog(console = console, cardJson = cardJson, debounceDelay = 0)
 
     @Test
-    fun `magnetized test`() {
+    fun `magnetized minions appear in the opponent deck`() {
         val dir = System.getProperty("user.dir")
         val powerLines = File(dir, "src/jvmTest/files/power.log").readLines()
 
@@ -58,5 +61,39 @@ class PowerParserTest {
         }
 
         assert(zilliax != null)
+    }
+
+    @Test
+    fun `secret listener is called`() {
+        val dir = System.getProperty("user.dir")
+        val powerLines = File("/home/martin/dev/hsdata/2019_07_21_Spex").readLines()
+
+
+        var possibleSecrets = emptySet<String>()
+        var g: Game? = null
+        hsLog.setListener(object : DefaultHSLogListener() {
+
+            var secrets = emptySet<String>()
+            override fun onTurn(game: Game, turn: Int, isPlayer: Boolean) {
+                super.onTurn(game, turn, isPlayer)
+                if (turn == 13) {
+                    g = game
+                    possibleSecrets = secrets
+                }
+            }
+
+            override fun onSecrets(possibleSecrets: Set<String>) {
+                secrets = possibleSecrets
+            }
+        })
+        powerLines.forEach {
+            hsLog.processPower(it, false)
+        }
+
+        console.debug("Possible secrets: (gameType=${g?.gameType} formatType=${g?.formatType})")
+        possibleSecrets.forEach {
+            console.debug("*: $it")
+        }
+        assert(possibleSecrets.isNotEmpty())
     }
 }

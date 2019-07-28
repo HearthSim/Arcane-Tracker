@@ -16,13 +16,14 @@ import net.hearthsim.hsmodel.CardJson
 import net.hearthsim.hsmodel.enum.CardId
 
 
-class HSLog(private val console: Console, private val cardJson: CardJson) {
+class HSLog(private val console: Console, private val cardJson: CardJson, private val debounceDelay: Long = 200) {
 
     private var listener: HSLogListener? = null
     private val gameLogic = GameLogic(console, cardJson)
 
     private val controllerPlayer = ControllerPlayer(console, cardJson)
     private val controllerOpponent = ControllerOpponent(console, cardJson)
+    private val possibleSecrets = PossibleSecrets(cardJson)
 
     private val loadingScreenParser = LoadingScreenParser(console)
     private val achievementsParser = AchievementsParser(console,
@@ -53,6 +54,7 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
     )
 
     var lastTime = DateTime.now().unixMillisLong
+    var lastSecrets = emptySet<String>()
 
     init {
         gameLogic.onGameStart {game ->
@@ -63,11 +65,17 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
             listener?.onGameChanged(game)
 
             /**
-             * This is not perfect as we might lose the last events.
+             * This is not perfect as we might lose the very last last events in a game but it help debouncing the callbacks
              */
-            if (DateTime.now().unixMillisLong - lastTime > 200) {
+            if (DateTime.now().unixMillisLong - lastTime >= debounceDelay) {
                 listener?.onDeckEntries(game, true, controllerPlayer.getDeckEntries(game))
                 listener?.onDeckEntries(game, false, controllerOpponent.getDeckEntries(game))
+
+                val secrets = possibleSecrets.getAll(game)
+                if (secrets != lastSecrets) {
+                    listener?.onSecrets(secrets)
+                    lastSecrets = secrets
+                }
                 lastTime = DateTime.now().unixMillisLong
             }
         }
@@ -119,8 +127,8 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
         var playerDeck: Deck? = null
 
         when (game.gameType) {
-            GameType.GT_TAVERNBRAWL.name,
-            GameType.GT_VS_AI.name -> {
+            GameType.GT_TAVERNBRAWL,
+            GameType.GT_VS_AI -> {
                 val emptyDeck = Deck.create(
                         cards = emptyMap(),
                         classIndex = getClassIndex(game.player!!.playerClass!!),
@@ -172,7 +180,7 @@ class HSLog(private val console: Console, private val cardJson: CardJson) {
     }
 
     /**
-     * Called when the user switches decks manuall
+     * Called when the user switches decks manually
      */
     fun setDeck(deck: Deck) {
         playerDeckChanged(deck)

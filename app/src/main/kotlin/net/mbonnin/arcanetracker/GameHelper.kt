@@ -5,7 +5,6 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.*
 import net.mbonnin.arcanetracker.detector.RANK_UNKNOWN
 import net.hearthsim.hslog.parser.power.Game
-import net.hearthsim.hslog.parser.power.fromFormatTypeString
 import net.hearthsim.hsreplay.model.legacy.HSPlayer
 import net.hearthsim.hsreplay.model.legacy.UploadRequest
 import net.mbonnin.arcanetracker.RankHolder.opponentRank
@@ -34,8 +33,8 @@ object GameHelper {
                 player_class = game.player!!.playerClass!!,
                 opponent_class = game.opponent!!.playerClass!!,
                 date = System.currentTimeMillis(),
-                format_type = game.formatType!!,
-                game_type = game.gameType!!,
+                format_type = game.formatType.name,
+                game_type = game.gameType.name,
                 rank = game.playerRank,
                 deck_name = deck.name!!
         )
@@ -101,8 +100,8 @@ object GameHelper {
                 build = ArcaneTrackerApplication.get().hearthstoneBuild,
                 spectator_mode = game.spectator,
                 friendly_player = friendlyPlayer,
-                format = fromFormatTypeString(game.formatType).intValue,
-                game_type = fromGameAndFormat(game.gameType, game.formatType!!).intValue,
+                format = game.formatType.intValue,
+                game_type = fromGameAndFormat(game.gameType, game.formatType).intValue,
                 player1 = player1,
                 player2 = player2
                 )
@@ -154,8 +153,8 @@ object GameHelper {
         ArcaneTrackerApplication.get().analytics.logEvent(
                 "game_ended",
                 mapOf(
-                        EventParams.GAME_TYPE.value to game.gameType,
-                        EventParams.FORMAT_TYPE.value to game.formatType,
+                        EventParams.GAME_TYPE.value to game.gameType.name,
+                        EventParams.FORMAT_TYPE.value to game.formatType.name,
                         EventParams.HSREPLAY.value to (ArcaneTrackerApplication.get().hsReplay.account() != null).toString()
                 )
         )

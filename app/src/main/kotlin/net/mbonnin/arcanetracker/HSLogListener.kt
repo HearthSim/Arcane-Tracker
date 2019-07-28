@@ -34,6 +34,10 @@ class ATHSLogListener(val currentOrFinishedGame: () -> Game?): HSLogListener {
         TurnTimer.gameEnd(game)
     }
 
+    override fun onSecrets(possibleSecrets: Set<String>) {
+
+    }
+
     override fun onRawGame(gameString: String, gameStartMillis: Long) {
         val url = BuildConfig.DEBUG_URL
         if (!url.isBlank()) {

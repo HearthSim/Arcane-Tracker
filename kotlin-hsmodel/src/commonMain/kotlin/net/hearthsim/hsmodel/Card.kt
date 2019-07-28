@@ -31,26 +31,36 @@ data class Card(
                 && !HALL_OF_FAME_CARDS.contains(id)
     }
 
-
     // https://us.battle.net/forums/en/hearthstone/topic/20758787441
     fun isDraftable(): Boolean {
-        return isStandard()
+        return ARENA_SETS.contains(set)
                 && type != Type.HERO // DK heroes are not available
                 && !(UNDRAFTABLE_CARDS.contains(id))
     }
+
+
 
     companion object {
 
         val UNKNOWN_COST = null
         const val UNKNOWN_TYPE = "UNKNOWN_TYPE"
 
-        const val CLASS_INDEX_WARRIOR = 0
         const val CLASS_INDEX_NEUTRAL = 9
 
-        val STANDARD_SETS = setOf(HSSet.CORE,
-                HSSet.EXPERT1,
-                HSSet.GILNEAS, // WitchWood
+        val ARENA_SETS = setOf(
+                HSSet.CORE, // Classic
+                HSSet.EXPERT1, // Basic
+                HSSet.GVG, // Goblin vs Gnomes
+                HSSet.TGT, // The Grand Tournament
+                HSSet.KARA, // One Night in Karazhan
                 HSSet.BOOMSDAY,
+                HSSet.DALARAN
+        )
+        val STANDARD_SETS = setOf(
+                HSSet.CORE, // Classic
+                HSSet.EXPERT1, // Basic
+                HSSet.GILNEAS, // WitchWood
+                HSSet.BOOMSDAY, // Boomsday Project
                 HSSet.TROLL, // Rastakhan's Rumble
                 HSSet.DALARAN  // Rise of Shadows
         )

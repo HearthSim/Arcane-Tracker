@@ -7,12 +7,3 @@ enum class FormatType(val intValue: Int) {
 }
 
 
-fun fromFormatTypeString(format: String?): FormatType {
-    FormatType.values().forEach {
-        if (it.name == format) {
-            return it
-        }
-    }
-
-    return FormatType.FT_UNKNOWN
-}

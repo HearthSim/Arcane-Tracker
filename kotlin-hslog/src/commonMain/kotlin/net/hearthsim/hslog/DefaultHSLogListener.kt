@@ -5,6 +5,10 @@ import net.hearthsim.hslog.parser.decks.Deck
 import net.hearthsim.hslog.parser.power.Game
 
 open class DefaultHSLogListener : HSLogListener {
+    override fun onSecrets(possibleSecrets: Set<String>) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun onDeckEntries(game: Game, isPlayer: Boolean, deckEntries: List<DeckEntry>) {
 
     }
