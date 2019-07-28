@@ -24,7 +24,38 @@ object Overlay {
         }
 
         Onboarding.start()
+
+        setAlphaProgress(getAlphaProgress())
+        setButtonWidth(getButtonWidth())
     }
+
+    fun setAlphaProgress(progress: Int) {
+        Settings.set(Settings.ALPHA, progress)
+        MainViewCompanion.get().setAlpha(progress)
+    }
+
+    fun getAlphaProgress(): Int {
+        return Settings.get(Settings.ALPHA, 100)
+    }
+
+    fun setButtonWidth(buttonWidth: Int) {
+        Settings.set(Settings.BUTTON_WIDTH, buttonWidth - Utils.dpToPx(8))
+        MainViewCompanion.get().setButtonWidth(buttonWidth)
+    }
+
+    fun getButtonWidth(): Int {
+        var w = Settings.get(Settings.BUTTON_WIDTH, 0) + Utils.dpToPx(8) // when adding the tutorial, I made the button slightly smaller than what they used to be
+        if (w < minButtonWidth || w >= maxButtonWidth) {
+            val dp = if (Utils.is7InchesOrHigher) 50 else 38
+            w = Utils.dpToPx(dp)
+        }
+
+        return w
+    }
+
+    val maxButtonWidth = Utils.dpToPx(75)
+
+    val minButtonWidth = Utils.dpToPx(20)
 
     fun hide() {
         ViewManager.get().removeAllViews()

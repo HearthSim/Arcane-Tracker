@@ -1,17 +1,10 @@
 package net.mbonnin.arcanetracker.ui.overlay.view
 
-import android.animation.Animator
-import android.animation.ValueAnimator
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
-import android.view.ViewConfiguration
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.LinearInterpolator
-import com.google.firebase.analytics.FirebaseAnalytics
 import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.ui.my_games.YourGamesActivity
 import net.mbonnin.arcanetracker.ui.my_packs.YourPacksActivity
@@ -19,182 +12,49 @@ import net.mbonnin.arcanetracker.ui.overlay.Onboarding
 import net.mbonnin.arcanetracker.ui.overlay.Onboarding.hsReplayHandleClicked
 import net.mbonnin.arcanetracker.ui.settings.SettingsCompanion
 import net.mbonnin.arcanetracker.ui.stats.YourDecksActivity
-import timber.log.Timber
 
-class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener {
+class MainViewCompanion(val mainView: View) {
     private val mHandler: Handler
-    private var mButtonWidth: Int = 0
-    private val mParams: ViewManager.Params
-    private val shadow: View
-    private var mWidth = 0
     private val frameLayout: View
-    private val mPadding: Int
-
-    private var mRefY: Float = 0f
-    private var mRefX: Float = 0f
-    private val mTouchSlop = ViewConfiguration.get(v.context).scaledTouchSlop
-    private var mDownY: Float = 0f
-    private var mDownX: Float = 0f
-
-    private val mViewManager: ViewManager
 
     private val playerView: View
     private val opponentView: View
+    private val mViewManager = ViewManager.get()
 
-    val handlesView = LayoutInflater.from(v.context).inflate(R.layout.handles_view, null) as HandlesView
+    val handlesView = LayoutInflater.from(mainView.context).inflate(R.layout.handles_view, null) as HandlesView
 
-    private val mAnimator: ValueAnimator
 
-    var mainView: View
-        internal set
     private var state: Int = 0
-    private var mX: Int = 0
 
-    private var mHandlesMovement: Int = 0
+    private var mWidth = 0
 
-    private var direction = 1
-    private var velocityRefX: Float = 0f
-    private var velocityLastX: Float = 0f
-    private var velocityRefTime: Long = 0
-
-    var alphaSetting: Int
-        get() = Settings.get(Settings.ALPHA, 100)
-        set(progress) {
-            val a = 0.5f + progress / 200f
-            mainView.alpha = a
-            handlesView.alpha = a
-            Settings.set(Settings.ALPHA, progress)
-        }
-
-    private val mHandlesViewTouchListener = View.OnTouchListener { _, ev ->
-        if (ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
-            mDownX = ev.getRawX()
-            mDownY = ev.getRawY()
-            mRefX = handlesView.params.x.toFloat()
-            mRefY = handlesView.params.y.toFloat()
-            mHandlesMovement = 0
-
-        } else if (ev.getActionMasked() == MotionEvent.ACTION_MOVE) {
-            if (mHandlesMovement == 0) {
-                if (Math.abs(ev.getRawX() - mDownX) > mTouchSlop) {
-                    prepareAnimation()
-
-                    velocityRefX = ev.getRawX()
-                    velocityLastX = ev.getRawX()
-                    velocityRefTime = System.nanoTime()
-
-                    mHandlesMovement = HANDLES_MOVEMENT_X
-                } else if (Math.abs(ev.getRawY() - mDownY) > mTouchSlop) {
-                    mHandlesMovement = HANDLES_MOVEMENT_Y
-                }
-            }
-
-            if (mHandlesMovement == HANDLES_MOVEMENT_X) {
-                if ((ev.getRawX() - velocityLastX) * direction > 0) {
-                    velocityLastX = ev.getRawX()
-                } else {
-                    direction = -direction
-                    velocityRefX = ev.getRawX()
-                    velocityLastX = ev.getRawX()
-                    velocityRefTime = System.nanoTime()
-                }
-                var newX = (mRefX + ev.getRawX() - mDownX).toInt()
-                if (newX > mWidth) {
-                    newX = mWidth
-                } else if (newX < 0) {
-                    newX = 0
-                }
-                setX(newX)
-            } else if (mHandlesMovement == HANDLES_MOVEMENT_Y) {
-                handlesView.params.y = (mRefY + ev.getRawY() - mDownY).toInt()
-                handlesView.update()
-            }
-        } else if (ev.getActionMasked() == MotionEvent.ACTION_CANCEL || ev.getActionMasked() == MotionEvent.ACTION_UP) {
-            if (mHandlesMovement == HANDLES_MOVEMENT_X) {
-                var velocity = 0f
-                val timeDiff = System.nanoTime() - velocityRefTime
-                if (timeDiff > 0) {
-                    velocity = 1000f * 1000f * (ev.getRawX() - velocityRefX) / timeDiff
-                }
-                Timber.w("velocity: %f", velocity)
-                if (mX < mWidth) {
-                    if (velocity <= 0) {
-                        animateXTo(0, velocity)
-                    } else if (velocity > 0) {
-                        animateXTo(mWidth, velocity)
-                    }
-                }
-            }
-        }
-
-        mHandlesMovement != 0
+    private val drawerHelper = DrawerHelper(mainView, handlesView, DrawerHelper.Edge.LEFT)
+    fun setAlpha(progress: Int) {
+        drawerHelper.setAlpha(progress)
     }
 
     init {
-        mainView = v
-        mViewManager = ViewManager.get()
-
         mHandler = Handler()
 
-        mAnimator = ValueAnimator()
-        mAnimator.addUpdateListener(this)
-        mAnimator.addListener(this)
-        frameLayout = v.findViewById(R.id.frameLayout)
-        opponentView = v.findViewById(R.id.opponentView)
-        playerView = v.findViewById(R.id.playerView)
-        shadow = v.findViewById(R.id.shadow)
+        frameLayout = mainView.findViewById(R.id.frameLayout)
+        opponentView = mainView.findViewById(R.id.opponentView)
+        playerView = mainView.findViewById(R.id.playerView)
 
         mWidth = Settings.get(Settings.DRAWER_WIDTH, 0)
         if (mWidth < minDrawerWidth || mWidth >= maxDrawerWidth) {
             mWidth = (0.33 * 0.5 * mViewManager.width.toDouble()).toInt()
         }
-        mX = 0
-        mPadding = Utils.dpToPx(5)
-
-        mParams = ViewManager.Params()
-        mParams.x = 0
-        mParams.y = 0
-        mParams.w = 0
-        mParams.h = mViewManager.height
+        setDrawerWidth(mWidth)
 
         sOpponentCompanion = OpponentDeckCompanion(opponentView)
         sPlayerCompanion = PlayerDeckCompanion(playerView)
 
-        handlesView.setListener(mHandlesViewTouchListener)
+        drawerHelper.setViewHeight(mViewManager.height)
 
-
-        val wMeasureSpec = View.MeasureSpec.makeMeasureSpec(buttonWidth, View.MeasureSpec.EXACTLY)
-        val hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        handlesView.measure(wMeasureSpec, hMeasureSpec)
-        handlesView.params.w = handlesView.measuredWidth
-        handlesView.params.h = handlesView.measuredHeight
-        handlesView.params.x = mPadding
-        handlesView.params.y = ViewManager.get().height - handlesView.params.h - Utils.dpToPx(50)
         configureHandles(handlesView)
 
         setState(STATE_PLAYER, false)
-
-        alphaSetting = alphaSetting
     }
-
-
-    private val mHideViewRunnable = {
-        mParams.w = 0
-        mViewManager.updateView(mainView, mParams)
-    }
-
-    var isOpen: Boolean
-        get() = mX != 0
-        set(open) {
-            setX(if (open) mWidth else 0)
-            if (!open) {
-                mParams.w = 1
-                mViewManager.updateView(mainView, mParams)
-            } else {
-                mParams.w = mWidth
-                mViewManager.updateView(mainView, mParams)
-            }
-        }
 
     val minDrawerWidth: Int
         get() = Utils.dpToPx(50)
@@ -202,134 +62,37 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
     val maxDrawerWidth: Int
         get() = (0.4 * mViewManager.width).toInt()
 
-    var drawerWidth: Int
-        get() = mWidth
-        set(width) {
-            mWidth = width
-            Settings.set(Settings.DRAWER_WIDTH, width)
+    fun setDrawerWidth(width: Int) {
+        mWidth = width
+        Settings.set(Settings.DRAWER_WIDTH, width)
 
-            mAnimator.cancel()
-            mParams.w = width
-            mViewManager.updateView(mainView, mParams)
-            setX(mWidth)
-        }
-
-    var buttonWidth: Int
-        get() {
-            var w = Settings.get(Settings.BUTTON_WIDTH, 0) + Utils.dpToPx(8) // when adding the tutorial, I made the button slightly smaller than what they used to be
-            if (w < minButtonWidth || w >= maxButtonWidth) {
-                val dp = if (Utils.is7InchesOrHigher) 50 else 38
-                w = Utils.dpToPx(dp)
-            }
-
-            return w
-        }
-        set(width) {
-            Settings.set(Settings.BUTTON_WIDTH, width - Utils.dpToPx(8))
-
-            val wMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
-            val hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-            handlesView.measure(wMeasureSpec, hMeasureSpec)
-
-            handlesView.params.w = handlesView.measuredWidth
-            handlesView.params.h = handlesView.measuredHeight
-            handlesView.update()
-        }
-
-    val maxButtonWidth: Int
-        get() = Utils.dpToPx(75)
-
-    val minButtonWidth: Int
-        get() = Utils.dpToPx(20)
-
-
-    private fun prepareAnimation() {
-        mHandler.removeCallbacks(mHideViewRunnable)
-        mParams.w = mWidth
-        mViewManager.updateView(mainView, mParams)
+        drawerHelper.setViewWidth(width)
     }
 
-    private fun animateXTo(targetX: Int, pixelPerMillisecond: Float) {
-        var pixelPerMillisecond = pixelPerMillisecond
-        pixelPerMillisecond = Math.abs(pixelPerMillisecond)
-        if (pixelPerMillisecond < 0.6) {
-            pixelPerMillisecond = 0.6f
-        }
-        mAnimator.cancel()
-
-        mAnimator.interpolator = LinearInterpolator()
-        if (pixelPerMillisecond > 0) {
-            mAnimator.duration = (Math.abs(mX - targetX) / pixelPerMillisecond).toLong()
-        } else {
-            mAnimator.duration = 300
-        }
-
-        prepareAnimation()
-        mAnimator.setIntValues(mX, targetX)
-        mAnimator.start()
+    fun getDrawerWidth(): Int {
+        return mWidth
     }
 
-    private fun animateXTo(targetX: Int) {
-        mAnimator.cancel()
-        mAnimator.interpolator = AccelerateDecelerateInterpolator()
-        mAnimator.duration = 300
-
-        prepareAnimation()
-        mAnimator.setIntValues(mX, targetX)
-        mAnimator.start()
+    fun setButtonWidth(buttonWidth: Int) {
+        drawerHelper.setButtonWidth(buttonWidth)
     }
 
-    override fun onAnimationUpdate(animation: ValueAnimator) {
-        setX(animation.animatedValue as Int)
-    }
-
-    private fun setX(x: Int) {
-        //Timber.w("setX: %d", mX);
-        mX = x
-        mainView.translationX = (-mWidth + mX).toFloat()
-        handlesView.params.x = mX + mPadding
-        handlesView.update()
-        Onboarding.updateTranslation()
-    }
-
-    override fun onAnimationStart(animation: Animator) {
-
-    }
-
-    override fun onAnimationEnd(animation: Animator) {
-        //Timber.w("onAnimationEnd: %d", mX);
-        if (mX == 0) {
-            /**
-             * XXX: somehow if I do this too early, there a small glitch on screen...
-             */
-            mHandler.postDelayed(mHideViewRunnable, 300)
-        }
-    }
-
-    override fun onAnimationCancel(animation: Animator) {
-
-    }
-
-    override fun onAnimationRepeat(animation: Animator) {
-
-    }
-
-    internal inner class ClickListener(private val newState: Int) : View.OnClickListener {
+    internal inner class ClickListener(private val targetState: Int) : View.OnClickListener {
 
         override fun onClick(v: View) {
-            if (state == newState && mX == mWidth) {
+            if (state == targetState && drawerHelper.isOpen()) {
                 setState(state, false)
             } else {
-                setState(newState, true)
+                setState(targetState, true)
             }
         }
     }
 
-    fun setState(newState: Int, newOpen: Boolean) {
-        if (newOpen) {
+    fun setState(targetState: Int, drawerOpen: Boolean) {
+        if (drawerOpen) {
             opponentView.visibility = View.GONE
             playerView.visibility = View.GONE
-            when (newState) {
+            when (targetState) {
                 STATE_PLAYER -> {
                     playerView.visibility = View.VISIBLE
                     ArcaneTrackerApplication.get().analytics.logEvent("state_player")
@@ -343,21 +106,17 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
                     Onboarding.opponentHandleClicked()
                 }
             }
+            drawerHelper.open()
+        } else {
+            drawerHelper.close()
         }
 
-        animateXTo(if (newOpen) mWidth else 0)
-
-        state = newState
+        state = targetState
     }
 
 
     fun show(show: Boolean) {
-        if (show) {
-            mViewManager.addView(mainView, mParams)
-        } else {
-            mViewManager.removeView(mainView)
-        }
-        handlesView.show(show)
+        drawerHelper.show(show)
     }
 
     private fun configureHandles(v: View) {
@@ -450,10 +209,6 @@ class MainViewCompanion(v: View) : ValueAnimator.AnimatorUpdateListener, Animato
 
         val STATE_PLAYER = 0
         val STATE_OPPONENT = 1
-        val STATE_LEGACY = 2
-
-        private val HANDLES_MOVEMENT_X = 1
-        private val HANDLES_MOVEMENT_Y = 2
 
         val opponentCompanion: DeckCompanion
             get() {

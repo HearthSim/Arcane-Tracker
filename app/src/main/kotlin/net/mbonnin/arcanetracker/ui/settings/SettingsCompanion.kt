@@ -19,6 +19,7 @@ import io.reactivex.schedulers.Schedulers
 import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.detector.ByteBufferImage
 import net.mbonnin.arcanetracker.ui.licenses.LicensesActivity
+import net.mbonnin.arcanetracker.ui.overlay.Overlay
 import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
 import timber.log.Timber
 import java.io.File
@@ -32,7 +33,7 @@ class SettingsCompanion(internal var settingsView: View) {
 
     private val mSeekBarChangeListener = object : SeekBar.OnSeekBarChangeListener {
         override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-            MainViewCompanion.get().alphaSetting = progress
+            Overlay.setAlphaProgress(progress)
         }
 
         override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -130,7 +131,7 @@ class SettingsCompanion(internal var settingsView: View) {
                     screenCapture.addImageConsumer(imageConsumer)
                 }
 
-                Timber.d("file2" )
+                Timber.d("file2")
                 /* 1s is hopefully enough for the settings view to disappear  */
                 completable = Completable.timer(1, TimeUnit.SECONDS, Schedulers.io())
                         .andThen(fileSingle)
@@ -169,16 +170,16 @@ class SettingsCompanion(internal var settingsView: View) {
 
         var seekBar = view.findViewById<SeekBar>(R.id.seekBar)
         seekBar.max = 100
-        seekBar.progress = MainViewCompanion.get().alphaSetting
+        seekBar.progress = Overlay.getAlphaProgress()
         seekBar.setOnSeekBarChangeListener(mSeekBarChangeListener)
 
         val c = MainViewCompanion.get()
         seekBar = view.findViewById<View>(R.id.drawerSizeBar) as SeekBar
         seekBar.max = MainViewCompanion.get().maxDrawerWidth - MainViewCompanion.get().minDrawerWidth
-        seekBar.progress = MainViewCompanion.get().drawerWidth - MainViewCompanion.get().minDrawerWidth
+        seekBar.progress = MainViewCompanion.get().getDrawerWidth() - MainViewCompanion.get().minDrawerWidth
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                MainViewCompanion.get().drawerWidth = progress + MainViewCompanion.get().minDrawerWidth
+                MainViewCompanion.get().setDrawerWidth(progress + MainViewCompanion.get().minDrawerWidth)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -228,11 +229,11 @@ class SettingsCompanion(internal var settingsView: View) {
         }
 
         seekBar = view.findViewById<View>(R.id.buttonSizeBar) as SeekBar
-        seekBar.max = c.maxButtonWidth - c.minButtonWidth
-        seekBar.progress = c.buttonWidth - c.minButtonWidth
+        seekBar.max = Overlay.maxButtonWidth - Overlay.minButtonWidth
+        seekBar.progress = Overlay.getButtonWidth() - Overlay.minButtonWidth
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                c.buttonWidth = progress + c.minButtonWidth
+                Overlay.setButtonWidth(progress + Overlay.minButtonWidth)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {

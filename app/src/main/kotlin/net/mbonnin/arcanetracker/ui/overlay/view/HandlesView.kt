@@ -8,8 +8,7 @@ import android.widget.LinearLayout
 import net.mbonnin.arcanetracker.ViewManager
 
 class HandlesView : LinearLayout {
-    val params: ViewManager.Params
-    private var mListener: View.OnTouchListener? = null
+    private var mListener: OnTouchListener? = null
 
     constructor(context: Context) : super(context) {
     }
@@ -18,16 +17,7 @@ class HandlesView : LinearLayout {
     }
 
     init {
-        params = ViewManager.Params()
         clipChildren = false
-    }
-
-    fun show(show: Boolean) {
-        if (show) {
-            ViewManager.get().addView(this, params)
-        } else {
-            ViewManager.get().removeView(this)
-        }
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
@@ -42,11 +32,7 @@ class HandlesView : LinearLayout {
         } else false
     }
 
-    fun setListener(listener: View.OnTouchListener) {
+    fun setListener(listener: OnTouchListener) {
         mListener = listener
-    }
-
-    fun update() {
-        ViewManager.get().updateView(this, params)
     }
 }
