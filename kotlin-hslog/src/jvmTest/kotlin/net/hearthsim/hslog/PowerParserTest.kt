@@ -65,35 +65,36 @@ class PowerParserTest {
 
     @Test
     fun `secret listener is called`() {
-        val dir = System.getProperty("user.dir")
+        // https://hsreplay.net/replay/i5RvfvjFGFBpFmeoQUxFT4
         val powerLines = File("/home/martin/dev/hsdata/2019_07_21_Spex").readLines()
 
-
-        var possibleSecrets = emptySet<String>()
-        var g: Game? = null
         hsLog.setListener(object : DefaultHSLogListener() {
 
-            var secrets = emptySet<String>()
+            var secrets = emptyList<PossibleSecret>()
             override fun onTurn(game: Game, turn: Int, isPlayer: Boolean) {
                 super.onTurn(game, turn, isPlayer)
-                if (turn == 13) {
-                    g = game
-                    possibleSecrets = secrets
+                when (turn) {
+                    // Spex played VAPORIZE on turn 12
+                    13 -> {
+                        assert(secrets.firstOrNull { it.cardId == CardId.MIRROR_ENTITY && it.count > 0 } != null)
+                    }
+                    // I played a minion on turn 13 so Mirror Entity should now excluded
+                    14 -> {
+                        assert(secrets.firstOrNull { it.cardId == CardId.MIRROR_ENTITY && it.count == 0 } != null)
+                    }
+                    // I attached during turn 15 so there shouldn't be secrets anymore
+                    16 -> {
+                        assert(secrets.isEmpty())
+                    }
                 }
             }
 
-            override fun onSecrets(possibleSecrets: Set<String>) {
+            override fun onSecrets(possibleSecrets: List<PossibleSecret>) {
                 secrets = possibleSecrets
             }
         })
         powerLines.forEach {
             hsLog.processPower(it, false)
         }
-
-        console.debug("Possible secrets: (gameType=${g?.gameType} formatType=${g?.formatType})")
-        possibleSecrets.forEach {
-            console.debug("*: $it")
-        }
-        assert(possibleSecrets.isNotEmpty())
     }
 }

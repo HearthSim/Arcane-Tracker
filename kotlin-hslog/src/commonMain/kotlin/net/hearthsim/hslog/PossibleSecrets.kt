@@ -14,22 +14,29 @@ class PossibleSecrets(val cardJson: CardJson) {
     data class AvailableSecretKey(val playerClass: String, val gameType: GameType, val formatType: FormatType)
     val cachedAvailableSecrets= mutableMapOf<AvailableSecretKey, List<String>>()
 
-    fun getAll(game: Game): Set<String> {
+    fun getAll(game: Game): List<PossibleSecret> {
         val entities = game.getEntityList {
             it.tags[Entity.KEY_CONTROLLER] == game.opponentId()
             && it.tags[Entity.KEY_ZONE] == Entity.ZONE_SECRET
                     && Rarity.LEGENDARY != it.tags[Entity.KEY_RARITY]
         }
 
-        return entities.flatMap {entity ->
+        val map = mutableMapOf<String, Int>()
+        entities.forEach {entity ->
             availableSecrets(
                     playerClass = entity.tags[Entity.KEY_CLASS] ?: "",
                     formatType = game.formatType,
                     gameType = game.gameType
-                    ).filter {
-                !entity.extra.excludedSecretList.contains(it)
+                    ).forEach {
+                val possibleCount = map.getOrElse(it, {0})
+
+                map.put(it, possibleCount + if (entity.extra.excludedSecretList.contains(it)) 0 else 1)
             }
-        }.toSet()
+        }
+
+        return map.map {
+            PossibleSecret(it.key, it.value)
+        }
     }
 
     fun availableSecrets(playerClass: String, gameType: GameType, formatType: FormatType): List<String> {

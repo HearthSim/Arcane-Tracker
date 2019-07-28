@@ -54,7 +54,7 @@ class HSLog(private val console: Console, private val cardJson: CardJson, privat
     )
 
     var lastTime = DateTime.now().unixMillisLong
-    var lastSecrets = emptySet<String>()
+    var lastSecrets = emptyList<PossibleSecret>()
 
     init {
         gameLogic.onGameStart {game ->

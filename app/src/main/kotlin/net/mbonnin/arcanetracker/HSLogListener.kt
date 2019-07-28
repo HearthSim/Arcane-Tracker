@@ -34,7 +34,7 @@ class ATHSLogListener(val currentOrFinishedGame: () -> Game?): HSLogListener {
         TurnTimer.gameEnd(game)
     }
 
-    override fun onSecrets(possibleSecrets: Set<String>) {
+    override fun onSecrets(possibleSecrets: List<PossibleSecret>) {
 
     }
 

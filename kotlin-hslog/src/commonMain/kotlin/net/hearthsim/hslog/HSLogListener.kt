@@ -70,5 +70,5 @@ interface HSLogListener {
      *
      *
      */
-    fun onSecrets(possibleSecrets: Set<String>)
+    fun onSecrets(possibleSecrets: List<PossibleSecret>)
 }
