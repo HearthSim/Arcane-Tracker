@@ -32,4 +32,5 @@
     <string name="changelog_413" translatable="false">Updated for buffs and SN1P-SN4P.</string>
     <string name="changelog_414" translatable="false">Updated for patch 14.6. Farewell Mind Blast...</string>
     <string name="changelog_415" translatable="false">Disable screen capture until Hearthstone stops disconnecting</string>
+    <string name="changelog_417" translatable="false">Added a turn timer\nTentative fix for the "Auto-restart issue" on Galaxy S10\nAdded a message when a Hearthstone restart is required\nFixed "Magnetized minions not showing in opponent\'s Deck"\nFixed "Text is white on white when changing the win/loss count"</string>
 </resources>
