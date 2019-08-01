@@ -199,6 +199,8 @@ class ArcaneTrackerApplication : MultiDexApplication() {
                 }
             }
         }
+        FirebaseAnalytics.getInstance(this).setUserProperty(FirebaseConstants.IS_LEGACY.name.toLowerCase(),
+                Settings.get(Settings.IS_PRE_HEARTHSIM_USER, false).toString())
         FirebaseAnalytics.getInstance(this).setUserProperty(FirebaseConstants.SCREEN_CAPTURE_ENABLED.name.toLowerCase(),
                 Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true).toString())
     }

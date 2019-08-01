@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import net.hearthsim.hslog.DeckEntry
@@ -108,6 +109,7 @@ class MainViewCompanion(val mainView: View) {
 
     fun setButtonWidth(buttonWidth: Int) {
         drawerHelper.setButtonWidth(buttonWidth)
+        drawerHelper.notifyHandlesChanged(resetY = true)
     }
 
     internal inner class ClickListener(private val targetState: Int) : View.OnClickListener {
@@ -158,7 +160,7 @@ class MainViewCompanion(val mainView: View) {
         drawerHelper.show(show)
     }
 
-    private fun configureHandles(v: View) {
+    private fun configureHandles(v: HandlesView) {
         var handleView: HandleView
         var drawable: Drawable
 
@@ -244,6 +246,10 @@ class MainViewCompanion(val mainView: View) {
         drawable = v.context.resources.getDrawable(R.drawable.icon_white)
         handleView.init(drawable, v.context.resources.getColor(R.color.colorPrimary))
         handleView.setOnClickListener(ClickListener(STATE_PLAYER))
+
+        v.orientation = LinearLayout.VERTICAL
+
+        drawerHelper.notifyHandlesChanged(resetY = true)
     }
 
 

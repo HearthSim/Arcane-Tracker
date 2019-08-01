@@ -297,6 +297,7 @@ class DrawerHelper(private val view: View, private val handles: HandlesView, pri
 
         when (edge) {
             Edge.LEFT -> {
+                viewParams.h = height
                 handlesParams.y = ViewManager.get().height - handlesParams.h - Utils.dpToPx(50)
                 mViewManager.updateView(handles, handlesParams)
             }
@@ -327,8 +328,12 @@ class DrawerHelper(private val view: View, private val handles: HandlesView, pri
         animateOffsetTo(0)
     }
 
-    fun notifyHandlesChanged() {
+    fun notifyHandlesChanged(resetY: Boolean = false) {
         setButtonWidth(buttonWidth)
+        if (resetY) {
+            handlesParams.y = ViewManager.get().height - handlesParams.h - Utils.dpToPx(50)
+            mViewManager.updateView(handles, handlesParams)
+        }
     }
 
     enum class Edge {
