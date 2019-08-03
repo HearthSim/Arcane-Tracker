@@ -62,8 +62,13 @@ class SecretLogic(val console: Console) {
                 }
                 Type.SPELL -> {
                     exclude(game, CardId.COUNTERSPELL)
-                    exclude(game, CardId.NEVER_SURRENDER)
 
+                    if (playerHasMinionOnBoard(game)) {
+                        exclude(game, CardId.PRESSURE_PLATE)
+                    }
+                    if (opponentHasMinionOnBoard(game)) {
+                        exclude(game, CardId.NEVER_SURRENDER)
+                    }
                     if (opponentHasRoomOnBoard(game)) {
                         exclude(game, CardId.CAT_TRICK)
                     }
@@ -82,6 +87,10 @@ class SecretLogic(val console: Console) {
                 }
             }
         }
+    }
+
+    private fun playerHasMinionOnBoard(game: Game): Boolean {
+        return playerMinionsOnBoard(game) > 0
     }
 
     private fun playerMinionsOnBoard(game: Game): Int {
@@ -147,9 +156,6 @@ class SecretLogic(val console: Console) {
             return
         }
         val targetEntity = game.findEntitySafe(target)
-        if (targetEntity == null) {
-            return // not sure how this can happen...
-        }
 
         if (targetEntity.tags[Entity.KEY_CONTROLLER] == game.opponent?.entity?.PlayerID) {
             when (targetEntity.tags[Entity.KEY_CARDTYPE]) {
@@ -177,6 +183,7 @@ class SecretLogic(val console: Console) {
 
                     if (attackingEntity.tags[Entity.KEY_CARDTYPE] == Type.MINION) {
                         exclude(game, CardId.VAPORIZE)
+                        exclude(game, CardId.FLAME_WARD)
                     }
                 }
             }
