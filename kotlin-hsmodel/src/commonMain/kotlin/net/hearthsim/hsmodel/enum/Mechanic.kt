@@ -64,6 +64,8 @@ object Mechanic {
 
   const val FREEZE: String = "FREEZE"
 
+  const val GEARS: String = "GEARS"
+
   const val GHOSTLY: String = "GHOSTLY"
 
   const val GRIMY_GOONS: String = "GRIMY_GOONS"
@@ -103,6 +105,8 @@ object Mechanic {
   const val PUZZLE: String = "PUZZLE"
 
   const val QUEST: String = "QUEST"
+
+  const val REBORN: String = "REBORN"
 
   const val RECEIVES_DOUBLE_SPELLDAMAGE_BONUS: String = "RECEIVES_DOUBLE_SPELLDAMAGE_BONUS"
 

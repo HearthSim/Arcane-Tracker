@@ -48,5 +48,7 @@ object HSSet {
 
   const val TROLL: String = "TROLL"
 
+  const val ULDUM: String = "ULDUM"
+
   const val UNGORO: String = "UNGORO"
 }

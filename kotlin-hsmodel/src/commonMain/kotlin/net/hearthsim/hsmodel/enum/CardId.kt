@@ -38,6 +38,8 @@ object CardId {
 
   const val GETTING_HUNGRY2: String = "LOEA09_3c"
 
+  const val PLAGUE_OF_WRATH: String = "ULD_707"
+
   const val TASTY: String = "OG_300e"
 
   const val ROARING_EDIFICE_PLAYER_ENCHANT: String = "TRLA_808e"
@@ -70,6 +72,8 @@ object CardId {
 
   const val ARSENAL2: String = "TB_EVILBRM_Warrior_09"
 
+  const val BEE: String = "ULD_134t"
+
   const val ARSENAL1: String = "GILA_597"
 
   const val ALEXSTRASZAS_FIRE: String = "EX1_561e"
@@ -80,11 +84,15 @@ object CardId {
 
   const val WRONG_SIDE_OF_DA_BED: String = "TRL_406e"
 
+  const val EMPEROR_WRAPS: String = "ULD_431p"
+
   const val ELITE_TAUREN_CHIEFTAIN: String = "PRO_001"
 
   const val DALARAN_CRUSADER: String = "DAL_085"
 
   const val JAINA_PROUDMOORE1: String = "TU4a_006"
+
+  const val SECOND_WISH: String = "TB_3Wishes_Spell_2"
 
   const val FROZEN_CHAMPION: String = "ICC_838t"
 
@@ -127,6 +135,8 @@ object CardId {
   const val ICHOR_OF_UNDEATH2: String = "CFM_621t39"
 
   const val BANANAS_ON_DEATH: String = "TB_100th_BananaPlayerEnchant"
+
+  const val NAGA_SAND_WITCH: String = "ULD_435"
 
   const val GNOMISH_ARMY_KNIFE: String = "DALA_702"
 
@@ -179,6 +189,8 @@ object CardId {
   const val TRIBAL_SHRINE1: String = "TRLA_107t"
 
   const val BOOMNICIAN_BREENA: String = "BOTA_BOSS_15h"
+
+  const val ORIGINATION: String = "ULD_140e"
 
   const val THANE_KORTHAZZ1: String = "NAX9_03H"
 
@@ -330,6 +342,8 @@ object CardId {
 
   const val ANCIENT_BLESSINGS: String = "DAL_351e"
 
+  const val CLOUD_PRINCE: String = "ULD_293"
+
   const val YOUTHFUL_BREWMASTER: String = "EX1_049"
 
   const val EYE_OF_ORSIS: String = "LOEA16_13"
@@ -374,6 +388,8 @@ object CardId {
 
   const val MATT_WYBLE: String = "CRED_57"
 
+  const val SUBDUE: String = "ULD_728"
+
   const val WARRIOR_HERO_POWER_WATCHER: String = "DALA_Warrior_HPe"
 
   const val CARVINGS: String = "DALA_Shaman_09"
@@ -389,6 +405,8 @@ object CardId {
   const val QUARTERMASTER: String = "GVG_060"
 
   const val SACRED_RITUAL: String = "TRLA_801"
+
+  const val MICRO_MUMMY: String = "ULD_217"
 
   const val URSATRON: String = "DAL_604"
 
@@ -484,6 +502,8 @@ object CardId {
 
   const val TWO_TURNS: String = "TB_TwoTurnsEnchant"
 
+  const val ALL_BARK1: String = "TB_LEAGUE_REVIVAL_Druid_04"
+
   const val GUARDIAN_OF_KINGS: String = "CS2_088"
 
   const val NIGHTMARE_AMALGAM: String = "GIL_681"
@@ -524,6 +544,8 @@ object CardId {
 
   const val JANALAIS_FLAME: String = "TRLA_128"
 
+  const val MICROWRAPPED: String = "ULD_217e"
+
   const val AZALINA_SOULTHIEF: String = "GILA_BOSS_55h"
 
   const val FROST_BREATH3: String = "NAX14_02"
@@ -539,6 +561,8 @@ object CardId {
   const val KHADGAR: String = "DAL_575"
 
   const val RAMPAGE: String = "CS2_104"
+
+  const val VULPERA_SCOUNDREL: String = "ULD_209"
 
   const val OLD_GOD: String = "DALA_Priest_06"
 
@@ -698,9 +722,11 @@ object CardId {
 
   const val DEATHSTALKER_REXXAR2: String = "TB_Zombeast_H"
 
+  const val WATCHED2: String = "UNG_015e"
+
   const val DEATHSTALKER_REXXAR1: String = "TB_DK_Rexxar"
 
-  const val WATCHED1: String = "UNG_015e"
+  const val WATCHED1: String = "ULD_716e2"
 
   const val MORE_ARMED: String = "BOT_219te"
 
@@ -795,6 +821,8 @@ object CardId {
   const val BACKROOM_BOUNCER: String = "CFM_658"
 
   const val SILVER_HAND_KNIGHT: String = "CS2_151"
+
+  const val SANDSTORM_ELEMENTAL: String = "ULD_158"
 
   const val PARTY_SUPPLIES: String = "TB_MammothParty_s101"
 
@@ -898,6 +926,8 @@ object CardId {
 
   const val JANALAIS_MANTLE1: String = "TRLA_108t"
 
+  const val SANDWASP: String = "ULD_439t"
+
   const val GONK_THE_RAPTOR: String = "TRL_241"
 
   const val DEMONIC_PROJECT: String = "BOT_913"
@@ -949,6 +979,8 @@ object CardId {
   const val COMMANDING_SHOUT2: String = "NEW1_036e2"
 
   const val DEATHS_SHADOW: String = "ICC_827p"
+
+  const val SIAMATS_WIND: String = "ULD_178a"
 
   const val ALEXSTRASZAS_BOON: String = "AT_071e"
 
@@ -1079,6 +1111,10 @@ object CardId {
   const val CRYSTALLIZED2: String = "UNG_067t1e"
 
   const val CRYSTALLIZED3: String = "UNG_067t1e2"
+
+  const val CRYSTALLIZED4: String = "UNG_067t1e3"
+
+  const val STONE_GOLEM1: String = "ULD_711t"
 
   const val CRYSTALLIZED1: String = "FB_Champs_UNG_067t1e2"
 
@@ -1219,6 +1255,8 @@ object CardId {
   const val HEAL: String = "AT_132_PRIEST"
 
   const val DIREHORN_HATCHLING: String = "UNG_957"
+
+  const val MOGU_CULTIST: String = "ULD_705"
 
   const val TEMPLE_ESCAPE: String = "LOEA04_01"
 
@@ -1418,6 +1456,8 @@ object CardId {
 
   const val EMBERS_OF_RAGNAROS: String = "LOOTA_827"
 
+  const val MAKING_MUMMIES: String = "ULD_431"
+
   const val STORMWIND_INVESTIGATOR: String = "TB_HeadlessHorseman_H2"
 
   const val INTRUSIVE_POMPADOUR: String = "DALA_BOSS_32e2"
@@ -1477,6 +1517,8 @@ object CardId {
   const val FREEZING_TRAP: String = "EX1_611"
 
   const val PICK_YOUR_FATE_RANDOM: String = "TB_PickYourFateRandom"
+
+  const val IMPBALMING: String = "ULD_324"
 
   const val SHIRVALLAHS_GRACE1: String = "TRLA_138t"
 
@@ -1600,6 +1642,8 @@ object CardId {
 
   const val MOTH_DUST: String = "GIL_837e"
 
+  const val DRINK_THE_WATER: String = "ULD_135b"
+
   const val TOTEMIC_MIGHT1: String = "EX1_244e"
 
   const val FROM_THE_GRAVES: String = "DALA_Priest_03"
@@ -1616,9 +1660,13 @@ object CardId {
 
   const val EVOLVED_KOBOLD: String = "OG_082"
 
+  const val DARK_PHARAOH_TEKAHN: String = "TB_LEAGUE_REVIVAL_TekahnAIHero"
+
   const val LIGHTNING_BOLT: String = "EX1_238"
 
   const val VOODOO_DOLL: String = "GIL_614"
+
+  const val ELISE_THE_ENLIGHTENED1: String = "ULD_139"
 
   const val OVERSEER_MOGARK1: String = "LOOTA_BOSS_30h"
 
@@ -1760,6 +1808,8 @@ object CardId {
 
   const val HOUNDMASTER_SHAW: String = "GILA_400h"
 
+  const val LOCUST: String = "ULD_430t"
+
   const val INCREDIBLE_IMPRESSION: String = "KAR_114e"
 
   const val PRIORITIZE: String = "TB_CoOpBossSpell_1"
@@ -1781,6 +1831,8 @@ object CardId {
   const val TOOTHY_CHEST: String = "LOOT_134"
 
   const val THE_THUNDER_KING: String = "HERO_02c"
+
+  const val WRETCHED_RECLAIMER: String = "ULD_269"
 
   const val UNDERBELLY_OOZE: String = "DAL_550"
 
@@ -1872,9 +1924,13 @@ object CardId {
 
   const val CAVERN_GROWTH: String = "TOT_112e"
 
+  const val HEART_OF_VIRNAAL: String = "ULD_291p"
+
   const val MANY_BLESSINGS: String = "LOOTA_Paladin_22"
 
   const val FLOBBIDINOUS_FLOOP: String = "BOTA_BOSS_07h"
+
+  const val ZEPHRYS_THE_GREAT: String = "ULD_003"
 
   const val MRGL_MRGL_NYAH_NYAH1: String = "LOEA10_5H"
 
@@ -1897,6 +1953,8 @@ object CardId {
   const val MICHAEL_SCHWEITZER: String = "CRED_10"
 
   const val DEAN_AYALA: String = "CRED_24"
+
+  const val AMALGAM1: String = "DAL_087tw"
 
   const val SUPER_SIMIAN_SPHERE: String = "DALA_704"
 
@@ -2248,6 +2306,8 @@ object CardId {
 
   const val CARRION_DRAKE: String = "GIL_905"
 
+  const val NURTURE_AND_GROW1: String = "TB_LEAGUE_REVIVAL_Druid_07"
+
   const val TAR_LORD: String = "UNG_838"
 
   const val HERALD_OF_FLAME: String = "TRLA_176"
@@ -2336,6 +2396,8 @@ object CardId {
 
   const val DOUBLE_MINIONS_ENCHANT: String = "TB_DoubleMinions_ench"
 
+  const val AMETS_BLESSING: String = "ULD_262e"
+
   const val JANALAI_THE_DRAGONHAWK: String = "TRL_316"
 
   const val BATTLECRY3: String = "TB_EVILBRM_Rogue_10"
@@ -2354,7 +2416,11 @@ object CardId {
 
   const val ICE_FISHING: String = "ICC_089"
 
+  const val FERAL_BITE1: String = "TB_LEAGUE_REVIVAL_Druid_06"
+
   const val PYROMANIAC: String = "TRL_315"
+
+  const val TEMPLE_BERSERKER: String = "ULD_185"
 
   const val SMUGGLERS_RUN: String = "CFM_305"
 
@@ -2472,6 +2538,8 @@ object CardId {
 
   const val PALADIN_SHRINES: String = "TB_ShrinesPaladin"
 
+  const val PENANCE: String = "ULD_714"
+
   const val BROOM: String = "KAR_025b"
 
   const val ICHOR_OF_UNDEATH: String = "CFM_621t37"
@@ -2564,6 +2632,8 @@ object CardId {
 
   const val SABOTAGE: String = "GVG_047"
 
+  const val COLOSSUS_OF_THE_MOON: String = "ULD_721"
+
   const val PROPHECYS_CHOSEN: String = "TOT_316e"
 
   const val RIFT_WARDEN: String = "TOT_102"
@@ -2645,6 +2715,8 @@ object CardId {
   const val LIL_DEMONS1: String = "EVILBRM_DALA_Warlock_09"
 
   const val CULT_OF_CTHUN1: String = "LOOTA_Priest_13"
+
+  const val LACKEY_EMPOWERMENT: String = "ULD_168e"
 
   const val CULT_OF_CTHUN2: String = "LOOTA_Rogue_15"
 
@@ -2732,11 +2804,15 @@ object CardId {
 
   const val CALL_OF_THE_RAVEN: String = "GILA_BOSS_38p"
 
+  const val RIFTCLEAVER: String = "ULD_165"
+
   const val SPRING_ROCKET: String = "BOT_308"
 
   const val POLLUTED_HOARDER: String = "OG_323"
 
   const val DISTORT: String = "DALA_Priest_HP1"
+
+  const val SANDY_CHEST: String = "TB_LEAGUE_REVIVAL_FinleyChest"
 
   const val WORK_FOR_TOGWAGGLE_ENCHANT: String = "TB_Henchmania_DiscoverCe"
 
@@ -2806,6 +2882,8 @@ object CardId {
 
   const val FROSTMOURNE1: String = "ICCA08_020"
 
+  const val OBELISKS_EYE: String = "ULD_724p"
+
   const val FROSTMOURNE2: String = "ICC_314t1"
 
   const val VAULT_SAFE: String = "DAL_088t2"
@@ -2873,6 +2951,8 @@ object CardId {
   const val DEATH_AND_DECAY: String = "ICC_314t8"
 
   const val DEMONBOLT: String = "TRL_555"
+
+  const val PROTECTORS2: String = "TB_LEAGUE_REVIVAL_Druid_09"
 
   const val SPIRIT_OF_THE_BAT: String = "TRL_251"
 
@@ -2970,6 +3050,8 @@ object CardId {
 
   const val ULTRASAUR: String = "UNG_806"
 
+  const val TREANT7: String = "ULD_137t"
+
   const val TREANT6: String = "GIL_663t"
 
   const val TREANT5: String = "FP1_019t"
@@ -2979,6 +3061,8 @@ object CardId {
   const val EXPLOSIVE_SHEEP: String = "GVG_076"
 
   const val STRATEGIC_INITIATIVE: String = "GILA_602e3"
+
+  const val MISCHIEF_MAKER: String = "ULD_229"
 
   const val POUNCE: String = "TRL_243"
 
@@ -3042,9 +3126,13 @@ object CardId {
 
   const val DRAGONHAWK_RIDER: String = "AT_083"
 
+  const val PHARAOH_CAT: String = "ULD_186"
+
   const val SANDBINDER: String = "GIL_581"
 
   const val STARFIRE: String = "EX1_173"
+
+  const val PLAGUE_OF_MADNESS: String = "ULD_715"
 
   const val STORMPIKE_COMMANDO: String = "CS2_150"
 
@@ -3170,6 +3258,8 @@ object CardId {
 
   const val EXECUTE1: String = "FB_Champs_CS2_108"
 
+  const val HIGH_PRIEST_AMET: String = "ULD_262"
+
   const val DIRE_FATE_TAUNT_AND_CHARGE: String = "TB_PickYourFate_1"
 
   const val ROBES_OF_GAUDINESS_PLAYER_ENCHANTMENT: String = "DALA_735e"
@@ -3189,6 +3279,8 @@ object CardId {
   const val DRUID_OF_THE_SWARM2: String = "ICC_051t2"
 
   const val BRYAN_CHANG: String = "CRED_21"
+
+  const val DINO_BUDDIES: String = "TB_LEAGUE_REVIVAL_BrannAIHp"
 
   const val DEATHS_BITE: String = "FP1_021"
 
@@ -3255,6 +3347,8 @@ object CardId {
   const val CLOCKWORK_GOBLIN: String = "DAL_060"
 
   const val DRAGON_ROAR: String = "TRL_362"
+
+  const val KOBOLD_SANDTROOPER: String = "ULD_184"
 
   const val COPYCAT: String = "GILA_595"
 
@@ -3406,6 +3500,8 @@ object CardId {
 
   const val ANOMALY__REDUCTIVE: String = "DALA_862"
 
+  const val EVIL_TOTEM: String = "ULD_276"
+
   const val EXERCISING_OPTIONS: String = "FB_Toki_ManaPortal2"
 
   const val HESUTU_STONEWIND: String = "DALA_BOSS_73h"
@@ -3423,6 +3519,8 @@ object CardId {
   const val CRUSHING_WALLS: String = "LOOT_522"
 
   const val ECHOES_OF_THE_WITCHWOOD: String = "GILA_BOSS_50p"
+
+  const val ANCESTRAL_GUARDIAN: String = "ULD_207"
 
   const val CORRUPTING_MIST1: String = "UNG_831e"
 
@@ -3443,6 +3541,8 @@ object CardId {
   const val BITE_OF_THE_BLOODQUEEN: String = "ICCA05_020"
 
   const val BLACK_ROOK: String = "KAR_A10_03"
+
+  const val TIP_THE_SCALES: String = "ULD_716"
 
   const val DRAGONSLAYER: String = "BOTA_511"
 
@@ -3564,6 +3664,8 @@ object CardId {
 
   const val TESS_GREYMANE: String = "GILA_500h3"
 
+  const val BAZAAR_BURGLARY: String = "ULD_326"
+
   const val WINDSPEAKER: String = "EX1_587"
 
   const val MALKOROK: String = "OG_220"
@@ -3660,6 +3762,8 @@ object CardId {
 
   const val ACTIVATE_ELECTRON: String = "BRMA14_6"
 
+  const val HUNTERS_PACK: String = "ULD_429"
+
   const val THE_CURATOR: String = "KAR_061"
 
   const val TOKI_TIMETINKER: String = "GILA_900h"
@@ -3715,6 +3819,8 @@ object CardId {
   const val SLEEPING_ACOLYTE: String = "ICCA05_003"
 
   const val TOOTHY: String = "LOOT_134e"
+
+  const val BIG_SURGE: String = "ULD_171e"
 
   const val CAVERN_SHINYFINDER: String = "LOOT_033"
 
@@ -3800,6 +3906,8 @@ object CardId {
 
   const val LIKE_A_SORE_THUMB: String = "TB_MammothParty_s101b"
 
+  const val STUCK: String = "ULD_197e"
+
   const val SPELLBENDER1: String = "tt_010a"
 
   const val LIVING_BOMB: String = "BRMA05_3"
@@ -3835,6 +3943,8 @@ object CardId {
   const val AKALIS_CHAMPION: String = "TRLA_104"
 
   const val SNPSNP: String = "BOT_700"
+
+  const val WHIRLKICK_MASTER: String = "ULD_231"
 
   const val BELLIGERENT_GNOME: String = "TRL_514"
 
@@ -3878,6 +3988,8 @@ object CardId {
 
   const val SWEEPING_STRIKES: String = "DAL_062"
 
+  const val SHADOW1: String = "ULD_286t"
+
   const val MISTCALLER_DECK_ENCH: String = "AT_045ee"
 
   const val VOIDCALLER: String = "FP1_022"
@@ -3907,6 +4019,8 @@ object CardId {
   const val TRAINED1: String = "UNG_073e"
 
   const val UNEXPECTED_RESULTS: String = "BOT_254"
+
+  const val OCTOSARI: String = "ULD_177"
 
   const val DRAKKARI_DEFENDER: String = "ICC_081"
 
@@ -3949,6 +4063,8 @@ object CardId {
   const val SHIV: String = "EX1_278"
 
   const val HOT_POTATO: String = "BOTA_311"
+
+  const val BRAZEN_ZEALOT: String = "ULD_145"
 
   const val MASKED_BALL_ENCHANT: String = "FB_BuildABrawl002b_ench"
 
@@ -4000,6 +4116,8 @@ object CardId {
 
   const val TENDING_TAUREN: String = "BOT_422"
 
+  const val TRANSLATED: String = "ULD_726e"
+
   const val BLACK_QUEEN: String = "KAR_A10_10"
 
   const val JADE_FANGS: String = "LOOTA_Druid_04"
@@ -4038,6 +4156,10 @@ object CardId {
 
   const val POISONED_DAGGERS1: String = "AT_132_ROGUE_H1"
 
+  const val EXPIRED_GOODS: String = "ULD_163e"
+
+  const val GRANDMUMMYS_BLESSING: String = "ULD_266e"
+
   const val EXCAVATE: String = "DALA_BOSS_29p"
 
   const val LOST_SECRETS1: String = "LOOTA_Mage_29"
@@ -4066,6 +4188,8 @@ object CardId {
 
   const val DEMONFUSE: String = "AT_024"
 
+  const val BODY_WRAPPER: String = "ULD_727"
+
   const val AMULET_OF_DOMINATION1: String = "LOOTA_805"
 
   const val AMULET_OF_DOMINATION2: String = "TB_EVILBRM_LOOTA_805"
@@ -4077,6 +4201,8 @@ object CardId {
   const val ICE_BLOCK: String = "EX1_295"
 
   const val ALEX_CHAPMAN: String = "CRED_52"
+
+  const val WEAVED: String = "ULD_410e"
 
   const val DRAGON_EGG: String = "BRM_022"
 
@@ -4146,9 +4272,13 @@ object CardId {
 
   const val EMPOWERING1: String = "DALA_Warlock_10"
 
+  const val SWARM2: String = "TB_LEAGUE_REVIVAL_Druid_01"
+
   const val REFLECTION: String = "KAR_A01_02e"
 
   const val SWARM1: String = "LOOTA_Warlock_07"
+
+  const val SAHKET_SAPPER: String = "ULD_280"
 
   const val COSMIC_ANOMALY: String = "BOT_604"
 
@@ -4286,6 +4416,8 @@ object CardId {
 
   const val GRIMESTREET_OUTFITTER: String = "CFM_753"
 
+  const val RESTLESS_MUMMY: String = "ULD_206"
+
   const val SPIRIT_OF_THE_FROG: String = "TRL_060"
 
   const val JOIN_FORCES: String = "FB_Toki2_Hero"
@@ -4382,6 +4514,8 @@ object CardId {
 
   const val DOCTOR_SEZAVO: String = "GILA_BOSS_44h"
 
+  const val KHARTUT_DEFENDER: String = "ULD_208"
+
   const val LEERING_BAT: String = "TRLA_180"
 
   const val SCARGILS_BLESSING: String = "DAL_726e"
@@ -4456,6 +4590,8 @@ object CardId {
 
   const val CULL_THE_MEEK: String = "GILA_BOSS_62p"
 
+  const val BUG_COLLECTOR: String = "ULD_712"
+
   const val KRAGWAS_GRACE: String = "TRLA_155"
 
   const val WRATHGUARD: String = "AT_026"
@@ -4467,6 +4603,8 @@ object CardId {
   const val BOLSTERED: String = "AT_068e"
 
   const val IMPTASTIC: String = "DAL_605e"
+
+  const val WASTELAND_SCORPID: String = "ULD_194"
 
   const val FROSTFIRE: String = "TRLA_129s"
 
@@ -4494,7 +4632,11 @@ object CardId {
 
   const val COLDWRAITH: String = "ICC_252"
 
+  const val RENO_JACKSON2: String = "TB_LEAGUE_REVIVAL_RenoHistory"
+
   const val MAJORDOMO_EXECUTUS1: String = "BRMA06_1H"
+
+  const val RENO_JACKSON1: String = "TB_LEAGUE_REVIVAL_RenoAIHero"
 
   const val KUN_THE_FORGOTTEN_KING: String = "CFM_308"
 
@@ -4519,6 +4661,8 @@ object CardId {
   const val DEADLY_ARSENAL: String = "GIL_537"
 
   const val TOTEMIC_CALL: String = "CS2_049"
+
+  const val FLAME_WARD: String = "ULD_239"
 
   const val SORCERERS_APPRENTICE: String = "EX1_608"
 
@@ -4619,6 +4763,8 @@ object CardId {
   const val UNDERTAKER1: String = "FP1_028"
 
   const val JUNKED_UP: String = "GVG_106e"
+
+  const val WRAPPED_GOLEM: String = "ULD_215"
 
   const val CAPTURED_FLAG: String = "LOOTA_828"
 
@@ -4733,6 +4879,8 @@ object CardId {
   const val FAVORED: String = "TRLA_802e"
 
   const val CAT_IN_A_HAT: String = "KAR_004a"
+
+  const val RAMKAHEN_WILDTAMER: String = "ULD_151"
 
   const val POSITION_PERFECTION: String = "BOTA_425"
 
@@ -4910,6 +5058,8 @@ object CardId {
 
   const val FURIOUS_ETTIN: String = "GIL_120"
 
+  const val FOCUSED: String = "ULD_292ae"
+
   const val MIND_SHATTER: String = "EX1_625t2"
 
   const val DRAKKARI_ENCHANTER: String = "ICC_901"
@@ -4943,6 +5093,8 @@ object CardId {
   const val EXPLOSIVE_SHOT: String = "EX1_537"
 
   const val THE_PRICE_OF_POWER: String = "ICCA08_028"
+
+  const val EMBALMING_RITUAL: String = "ULD_265"
 
   const val HEX: String = "EX1_246"
 
@@ -5018,6 +5170,8 @@ object CardId {
 
   const val ACTIVATE_ARCANOTRON1: String = "BRMA14_2H"
 
+  const val DWARVEN_ARCHAEOLOGIST: String = "ULD_309"
+
   const val ENTOMB: String = "LOE_104"
 
   const val INSPIRED: String = "AT_109e"
@@ -5049,6 +5203,8 @@ object CardId {
   const val QUILBOAR_RALLY: String = "TRLA_172e"
 
   const val GRAND_WIDOW_FAERLINA: String = "NAX2_01"
+
+  const val WEAPONIZED_WASP: String = "ULD_170"
 
   const val CORROSIVE_BREATH: String = "GIL_905e"
 
@@ -5093,6 +5249,8 @@ object CardId {
   const val FERAL_BITE: String = "DALA_Druid_06"
 
   const val CHRONOMANCER_INARA: String = "LOOTA_BOSS_53h"
+
+  const val EXPIRED_MERCHANT: String = "ULD_163"
 
   const val LONELY: String = "LOOT_124e"
 
@@ -5226,7 +5384,11 @@ object CardId {
 
   const val ANOMALY__ARCANE: String = "DALA_850"
 
+  const val FISHFLINGER: String = "ULD_289"
+
   const val NEVER_SURRENDER1: String = "DAL_570e"
+
+  const val SUBDUED: String = "ULD_728e"
 
   const val ELIZABETH_CHO: String = "CRED_25"
 
@@ -5254,6 +5416,8 @@ object CardId {
 
   const val DECIMATE: String = "NAX12_02"
 
+  const val CORRUPT_THE_WATERS: String = "ULD_291"
+
   const val SNEAK_ATTACK: String = "GILA_810"
 
   const val MILLHOUSE_MANASTORM: String = "NEW1_029"
@@ -5261,6 +5425,8 @@ object CardId {
   const val RACHELLE_DAVIS: String = "CRED_12"
 
   const val CORPSE_WIDOW: String = "ICC_243"
+
+  const val SANDWITCHED: String = "ULD_435e"
 
   const val SCEPTER_OF_SUMMONING: String = "LOOTA_803"
 
@@ -5343,6 +5509,8 @@ object CardId {
   const val BREATH_OF_SINDRAGOSA: String = "ICC_836"
 
   const val DEATHAXE_PUNISHER: String = "ICC_810"
+
+  const val WILD_BLOODSTINGER: String = "ULD_212"
 
   const val SMASH: String = "LOOTA_Warrior_08"
 
@@ -5488,6 +5656,8 @@ object CardId {
 
   const val PHASE_SPIDER: String = "DALA_BOSS_61t"
 
+  const val FRAYED: String = "ULD_256e"
+
   const val BLACKGUARD: String = "ICC_245"
 
   const val SLAMMD_N_JAMMD: String = "TRLA_169e"
@@ -5495,6 +5665,8 @@ object CardId {
   const val VIOLET_SPELLSWORD: String = "DAL_095"
 
   const val ME_SMASH1: String = "BRMA07_2H"
+
+  const val COMMANDED: String = "ULD_179e"
 
   const val ME_SMASH2: String = "BRMA07_2_2_TB"
 
@@ -5774,6 +5946,8 @@ object CardId {
 
   const val TERRIFYING_ROAR1: String = "KARA_08_05H"
 
+  const val SIR_FINLEY_OF_THE_SANDS: String = "ULD_500"
+
   const val LARGE_WAXY_GIFT: String = "TB_KoboldGiftMinion"
 
   const val QUICK_ATTACK: String = "BOTA_420"
@@ -5805,6 +5979,8 @@ object CardId {
   const val FORLORN_STALKER: String = "OG_292"
 
   const val CHECK_FOR_HERO_DEATH: String = "TB_TagTeam"
+
+  const val TOME_OF_ORIGINATION: String = "ULD_140p"
 
   const val BRAZED_PORK: String = "BOTA_505"
 
@@ -5845,6 +6021,8 @@ object CardId {
   const val TAVERNS_ECHO1: String = "TOT_103e"
 
   const val FIRE1: String = "LOOTA_Mage_24"
+
+  const val NEFERSET_THRASHER: String = "ULD_161"
 
   const val SPIRIT_OF_THE_SHARK: String = "TRL_092"
 
@@ -5900,6 +6078,8 @@ object CardId {
 
   const val UNITY: String = "TB_CoOpv3_104e"
 
+  const val GATLING_WAND: String = "TB_LEAGUE_REVIVAL_RenoAIHp"
+
   const val CORE_HOUND_PUP: String = "BRMC_95he"
 
   const val DOOM: String = "OG_239"
@@ -5950,6 +6130,10 @@ object CardId {
 
   const val FROST_BLAST1: String = "NAX15_02H"
 
+  const val ANUBISATH_POWER: String = "ULD_183e"
+
+  const val CONJURED_MIRAGE: String = "ULD_198"
+
   const val HALLAZEAL_THE_ASCENDED: String = "OG_209"
 
   const val REENFORCER: String = "LOOTA_Warrior_09"
@@ -5987,6 +6171,8 @@ object CardId {
   const val DARKSHIRE_LIBRARIAN: String = "OG_109"
 
   const val PANTRY_SPIDER: String = "KAR_030a"
+
+  const val ASSISTING: String = "ULD_191e"
 
   const val BLINK_FOX_ENCHANT: String = "TB_NewBlinkFox"
 
@@ -6083,6 +6269,8 @@ object CardId {
   const val SOULFIRE1: String = "FB_Champs_EX1_308"
 
   const val TWIST__THE_FINALE: String = "DALA_830"
+
+  const val INTO_THE_FRAY: String = "ULD_256"
 
   const val ARCHMAGE_ARUGAL: String = "GIL_691"
 
@@ -6228,6 +6416,8 @@ object CardId {
 
   const val DEVOUR: String = "LOOTA_BOSS_34p"
 
+  const val HYENA1: String = "ULD_154t"
+
   const val PRIMED: String = "BOT_038e"
 
   const val PINK_EGG: String = "TB_Noblegarden_003t6e"
@@ -6296,6 +6486,10 @@ object CardId {
 
   const val BLACKHOWL_GUNSPIRE: String = "GIL_152"
 
+  const val WORTHY_EXPEDITION: String = "ULD_136"
+
+  const val ELISE_THE_ENLIGHTENED: String = "TB_LEAGUE_REVIVAL_Elise"
+
   const val GLORIOUS_FINALE: String = "TB_CoOpv3_001"
 
   const val OOZE: String = "OG_156a"
@@ -6315,6 +6509,8 @@ object CardId {
   const val DUSKBOAR: String = "OG_326"
 
   const val SACRED_BLESSING: String = "LOOT_286t2e"
+
+  const val BLATANT_DECOY: String = "ULD_706"
 
   const val HEALING_WAVE: String = "AT_048"
 
@@ -6393,6 +6589,8 @@ object CardId {
   const val SHRUNK1: String = "GVG_011a"
 
   const val AUCHENAI_PHANTASM: String = "TRL_501"
+
+  const val INJURED_TOLVIR: String = "ULD_271"
 
   const val DOUBLE_DIP: String = "BOTA_615"
 
@@ -6552,6 +6750,8 @@ object CardId {
 
   const val ZENTIMO1: String = "TRL_085"
 
+  const val DISEASED_VULTURE: String = "ULD_167"
+
   const val KNIFE_JUGGLER: String = "FB_Champs_NEW1_019"
 
   const val TACTICAL_REINFORCEMENTS_PLAYER_ENCHANT: String = "GILA_603e2"
@@ -6648,6 +6848,8 @@ object CardId {
 
   const val RIGHT_HAND_MAN: String = "DALA_905"
 
+  const val MYSTERY_CHOICE: String = "ULD_209t"
+
   const val HUGE_TOAD: String = "LOE_046"
 
   const val MASTER_SWORDSMITH: String = "NEW1_037"
@@ -6679,6 +6881,8 @@ object CardId {
   const val STAMPEDING_KODO: String = "NEW1_041"
 
   const val WITCH_COSTUME: String = "TB_HeadlessHorseman_s001a"
+
+  const val GOLDEN_SCARAB: String = "ULD_188"
 
   const val KNOWLEDGE1: String = "TB_SPT_DPromoSecret9e"
 
@@ -6723,6 +6927,8 @@ object CardId {
   const val BARRACKS: String = "TB_SPT_BossHeroPower"
 
   const val LESSER_SAPPHIRE_SPELLSTONE: String = "LOOT_064"
+
+  const val BONE_WRAITH: String = "ULD_275"
 
   const val ANOMALY__REJUVENATING_PLAYER_ENCHANTMENT: String = "DALA_866e"
 
@@ -6778,6 +6984,8 @@ object CardId {
 
   const val FLICKERING_DARKNESS: String = "OG_291e"
 
+  const val CHARITY: String = "ULD_214e"
+
   const val RESET_DECKS1: String = "TB_RandomDeckRecipeResetDecks"
 
   const val FIREBLAST2: String = "CS2_034_H2"
@@ -6785,6 +6993,8 @@ object CardId {
   const val FIREBLAST3: String = "TB_LevelUp_002"
 
   const val BOUNCE: String = "TRLA_Rogue_09"
+
+  const val NEFERSET_RITUALIST: String = "ULD_196"
 
   const val SOOT_UP: String = "GILA_BOSS_52p"
 
@@ -6839,6 +7049,8 @@ object CardId {
   const val OUTLAWS: String = "LOOTA_Rogue_11"
 
   const val STARGAZER_LUNA: String = "BOTA_BOSS_04h"
+
+  const val DUNE_SCULPTOR: String = "ULD_329"
 
   const val FIGHT_THE_LICH_KING: String = "FB_LKStats001a"
 
@@ -6916,6 +7128,8 @@ object CardId {
 
   const val WORTHLESS_IMP: String = "EX1_317t"
 
+  const val TITANIC_LACKEY: String = "ULD_616"
+
   const val FOUR_HORSEMEN: String = "BOTA_317"
 
   const val GELBIN_MEKKATORQUE: String = "EX1_112"
@@ -6947,6 +7161,8 @@ object CardId {
   const val VASSALS_SUBSERVIENCE: String = "OG_339e"
 
   const val WHIRLING_ZAPOMATIC: String = "GVG_037"
+
+  const val INFESTED_GOBLIN: String = "ULD_250"
 
   const val COLD_WATER: String = "DALA_BOSS_26p"
 
@@ -7041,6 +7257,8 @@ object CardId {
   const val STAFF_OF_ORIGINATION2: String = "TB_KTRAF_HP_RAF5"
 
   const val STAFF_OF_ORIGINATION1: String = "LOEA16_2H"
+
+  const val SANDWASP_QUEEN: String = "ULD_439"
 
   const val MASSIVE1: String = "UNG_999t6e"
 
@@ -7244,6 +7462,8 @@ object CardId {
 
   const val LADY_DEATHWHISPER: String = "ICCA10_009"
 
+  const val SIAMATS_SPEED: String = "ULD_178a4"
+
   const val STITCHED_TRACKER: String = "ICC_415"
 
   const val DEMONOLOGIST_DRAAN: String = "BOTA_BOSS_08h"
@@ -7288,6 +7508,8 @@ object CardId {
 
   const val ROTTOOTH: String = "GILA_BOSS_21h"
 
+  const val DRAW_AND_DISCOVER_ENCH: String = "TB_DrawnDiscovery_Ench"
+
   const val ARCANE_BLAST: String = "AT_004"
 
   const val REAVING: String = "DAL_070e"
@@ -7319,6 +7541,8 @@ object CardId {
   const val SILVER_EGG: String = "TB_Noblegarden_003t4e"
 
   const val RADIANT_ELEMENTAL: String = "UNG_034"
+
+  const val SEA_SERPENT: String = "ULD_174t"
 
   const val ENTER_THE_COLISEUM: String = "AT_078"
 
@@ -7407,6 +7631,8 @@ object CardId {
   const val TRADE_PRINCE_GALLYWIX1: String = "GVG_028"
 
   const val TIMELINE_COLLISION: String = "FB_Toki_AttackPlayers"
+
+  const val RECOVERY1: String = "TB_LEAGUE_REVIVAL_Druid_02"
 
   const val GIFT_OF_THE_WILD: String = "EX1_183"
 
@@ -7552,6 +7778,8 @@ object CardId {
 
   const val BLACKSEED: String = "LOOTA_BOSS_06h"
 
+  const val TOUGH: String = "ULD_258e"
+
   const val HANCHO: String = "TB_BossRumble_001"
 
   const val SAZZMI_GENTLEHORN: String = "GILA_BOSS_29h"
@@ -7658,6 +7886,8 @@ object CardId {
 
   const val PIT_OF_SPIKES: String = "LOEA04_06"
 
+  const val HARDENED: String = "ULD_616e"
+
   const val BIGTIME_RACKETEER: String = "CFM_648"
 
   const val UNDERMINE: String = "DALA_Warrior_HP2"
@@ -7719,6 +7949,8 @@ object CardId {
   const val DAVID_PENDERGRAST: String = "CRED_73"
 
   const val BLOODREAVER_GULDAN: String = "ICC_831"
+
+  const val PHARAOHS_BLESSING: String = "ULD_143"
 
   const val LORD_SLITHERSPEAR: String = "LOEA09_1"
 
@@ -7812,6 +8044,8 @@ object CardId {
 
   const val HARVEST1: String = "NAX8_02"
 
+  const val EARTHQUAKE: String = "ULD_181"
+
   const val CALL_OF_THE_WILD: String = "AT_041e"
 
   const val DEFENDER: String = "EX1_130a"
@@ -7823,6 +8057,10 @@ object CardId {
   const val MANA_WYRM1: String = "NEW1_012"
 
   const val SUCCORING_SKYSCREAMER: String = "TRLA_123"
+
+  const val LACKEY_EMPOWERMENT1: String = "ULD_168e2"
+
+  const val LACKEY_EMPOWERMENT2: String = "ULD_168e3"
 
   const val RAGING_WORGEN: String = "EX1_412"
 
@@ -7907,6 +8145,8 @@ object CardId {
   const val JERRY_MASCHO: String = "CRED_32"
 
   const val LEGENDS1: String = "DALA_Hunter_12"
+
+  const val BURIED_FINLEY1: String = "TB_LEAGUE_REVIVAL_FinleySandHero"
 
   const val LEGENDS2: String = "DALA_Mage_12"
 
@@ -8006,6 +8246,8 @@ object CardId {
 
   const val TUSKARR_RAIDER: String = "GILA_611"
 
+  const val VILEFIEND: String = "ULD_450"
+
   const val HARBINGER_OF_CATASTROPHE: String = "TOT_320"
 
   const val TERRIFIED: String = "GILA_BOSS_58e"
@@ -8041,6 +8283,8 @@ object CardId {
   const val BACKSTABBER1: String = "DALA_BOSS_11px"
 
   const val AUGMENTED_REALITY: String = "FB_Toki_IncreaseHealthEnch"
+
+  const val SIR_FINLEY: String = "TB_LEAGUE_REVIVAL_FinleyAIHero"
 
   const val INSIGHTFUL1: String = "KARA_00_05e"
 
@@ -8148,6 +8392,8 @@ object CardId {
 
   const val SPLINTERGRAFT: String = "GILA_BOSS_40h"
 
+  const val BURIED_FINLEY: String = "TB_LEAGUE_REVIVAL_FinleyHistory"
+
   const val AGGRESSIVE_TACTICS: String = "TRLA_Rogue_04"
 
   const val SOOT_SPEWER: String = "GVG_123"
@@ -8183,6 +8429,8 @@ object CardId {
   const val WADE_THROUGH: String = "LOEA04_28b"
 
   const val LEECHING_POISON3: String = "ICC_221e"
+
+  const val HYENA_ALPHA: String = "ULD_154"
 
   const val DARKNESS_CANDLE_DETECT: String = "LOOT_526et"
 
@@ -8296,6 +8544,8 @@ object CardId {
 
   const val BOOTS_OF_HASTE_ENCHANTMENT: String = "LOOTA_812e"
 
+  const val PHARAOHS_BLESSING1: String = "ULD_143e"
+
   const val PLANT: String = "UNG_999t2t1"
 
   const val BLOODTHIRST1: String = "ICC_903t"
@@ -8310,13 +8560,19 @@ object CardId {
 
   const val GENTLEMANS_TOP_HAT: String = "GILA_825"
 
+  const val MIRAGE_BLADE: String = "ULD_326t"
+
   const val DIVINE_SWEETS: String = "TB_MammothParty_303"
+
+  const val PHALANX_COMMANDER: String = "ULD_179"
 
   const val ETHEREAL_LACKEY: String = "DAL_741"
 
   const val SQUASHLING: String = "GIL_835"
 
   const val ARCANE_GORGED: String = "EX1_187e"
+
+  const val SUPREME_ARCHAEOLOGY: String = "ULD_140"
 
   const val PURE: String = "GVG_101e"
 
@@ -8356,6 +8612,8 @@ object CardId {
 
   const val KEATON_GILL: String = "CRED_118"
 
+  const val OASIS_SURGER: String = "ULD_292"
+
   const val SILENCE: String = "EX1_332"
 
   const val BLESSING_OF_THE_VALKYR: String = "ICC_028e"
@@ -8373,6 +8631,8 @@ object CardId {
   const val HIGH_PRIEST_THEKAL: String = "TRLA_203h"
 
   const val GREATER_POTION: String = "CFM_621t12"
+
+  const val PLAGUE_OF_FLAMES: String = "ULD_717"
 
   const val PRINCE_ARTHAS: String = "HERO_04b"
 
@@ -8400,6 +8660,8 @@ object CardId {
 
   const val ARCANOSAUR: String = "TRL_311"
 
+  const val ARMAGEDILLO: String = "ULD_258"
+
   const val CURSE_OF_UR: String = "GIL_692e"
 
   const val FELHUNTER4: String = "LOOT_415t5t"
@@ -8407,6 +8669,8 @@ object CardId {
   const val FELHUNTER3: String = "LOOT_415t4t"
 
   const val FELHUNTER2: String = "LOOT_415t3t"
+
+  const val ASCENDANT_SCROLL: String = "ULD_433p"
 
   const val FELHUNTER1: String = "LOOT_415t2t"
 
@@ -8419,6 +8683,8 @@ object CardId {
   const val CHEATY_ANKLEBITER: String = "TRL_512"
 
   const val EMERALD_HIVE_QUEEN: String = "UNG_085"
+
+  const val PLAGUED_KNIFE: String = "ULD_715t"
 
   const val EVIL_CABLE_RAT: String = "DAL_400"
 
@@ -8548,6 +8814,8 @@ object CardId {
 
   const val SWAP_HERO_WITH_DEATH_KNIGHT1: String = "TB_SwapHeroWithDeathKnight"
 
+  const val CHEAT_SHEET: String = "ULD_433e"
+
   const val ROB_PARDO: String = "CRED_17"
 
   const val RECHARGE_RECHARGE: String = "FB_Annoyo_001"
@@ -8666,6 +8934,8 @@ object CardId {
 
   const val INFUSED: String = "BOT_263e"
 
+  const val MOVE_OVER_FINLEY_SWAPS_IN_NOT_PLAYER_FACING: String = "TB_LEAGUE_REVIVAL_FinleySwap"
+
   const val KINDLY_GRANDMOTHER1: String = "KAR_005"
 
   const val OLD_MURKEYE: String = "EX1_062"
@@ -8744,6 +9014,8 @@ object CardId {
 
   const val FUNGALMANCER_FLURGL: String = "LOOTA_BOSS_46h"
 
+  const val DESERT_OBELISK: String = "ULD_703"
+
   const val ABUSIVE_SERGEANT1: String = "FB_Champs_CS2_188"
 
   const val CUT_FROM_JADE: String = "CFM_602a"
@@ -8820,6 +9092,8 @@ object CardId {
 
   const val FLYING_MONKEY1: String = "KARA_04_05h"
 
+  const val MURLOC_INFESTATION: String = "GILA_BOSS_37e2"
+
   const val KEEPER_OF_ULDAMAN: String = "LOE_017"
 
   const val MADDER_BOMBER: String = "GVG_090"
@@ -8833,6 +9107,8 @@ object CardId {
   const val DEVILSAUR2: String = "UNG_083t1"
 
   const val SEAL_OF_LIGHT: String = "GVG_057"
+
+  const val CRYSTAL_MERCHANT: String = "ULD_133"
 
   const val LOCK_AND_LOAD1: String = "AT_061e"
 
@@ -8877,6 +9153,10 @@ object CardId {
   const val CHARGE2: String = "DS1_178e"
 
   const val CHARGE3: String = "EX1_084e"
+
+  const val UNTAPPED_POTENTIAL: String = "ULD_131"
+
+  const val WORTHLESS_IMP1: String = "ULD_324t"
 
   const val GRASP_THE_FUTURE: String = "TOT_103"
 
@@ -8954,8 +9234,6 @@ object CardId {
 
   const val CHUPACABRAN: String = "GILA_BOSS_35h"
 
-  const val PLAGUE_OF_MURLOCS1: String = "GILA_BOSS_37t"
-
   const val ROARING_TORCH: String = "LOE_002t"
 
   const val WISP1: String = "GILA_BOSS_55t"
@@ -8994,11 +9272,15 @@ object CardId {
 
   const val ANOMALY__WILD_MAGIC: String = "DALA_856"
 
+  const val KING_KRUSH1: String = "ULD_156t3"
+
   const val SOUL_WEAVE: String = "DALA_BOSS_74p"
 
   const val APPLEBOUGH: String = "DALA_BOSS_08h"
 
   const val DARKEN1: String = "DALA_BOSS_62px"
+
+  const val TERRAVISS: String = "TB_LEAGUE_REVIVAL_Terraviss"
 
   const val TRANSFORMED: String = "Mekka4e"
 
@@ -9058,6 +9340,8 @@ object CardId {
 
   const val PATCHWERK: String = "NAX10_01"
 
+  const val PLAGUE_OF_DEATH: String = "ULD_718"
+
   const val ERIC_DEL_PRIORE: String = "CRED_26"
 
   const val WILD_MAGIC: String = "BRMA13_4"
@@ -9071,6 +9355,8 @@ object CardId {
   const val SOUL_REAPER: String = "ICCA08_026"
 
   const val UNSTABLE_GHOUL: String = "FP1_024"
+
+  const val OVERFLOW: String = "ULD_273"
 
   const val ELEMENTIUM_SQUIRREL_BOMB: String = "DALA_BOSS_51t"
 
@@ -9122,6 +9408,8 @@ object CardId {
 
   const val PLATED_BEETLE: String = "LOOT_413"
 
+  const val GENEROUS_MUMMY: String = "ULD_214"
+
   const val FIRE_PLUME_PHOENIX: String = "UNG_084"
 
   const val FLOOPY: String = "BOT_434e"
@@ -9129,6 +9417,10 @@ object CardId {
   const val RAT_TRAP: String = "GIL_577"
 
   const val STAR_ALIGNER: String = "BOT_552"
+
+  const val ROAR1: String = "TB_LEAGUE_REVIVAL_Druid_08"
+
+  const val ROAR2: String = "ULD_155e"
 
   const val MAGIC_CARPET: String = "DAL_773"
 
@@ -9196,6 +9488,8 @@ object CardId {
 
   const val OVERFULL_BELLY: String = "UNG_807e"
 
+  const val LIVING_MONUMENT: String = "ULD_193"
+
   const val TURTLE_ESCORT_QUEST: String = "DALA_BOSS_75e3"
 
   const val CALLING_FOR_BACKUP: String = "FB_LK004"
@@ -9256,6 +9550,8 @@ object CardId {
 
   const val GROWING_STRONG: String = "GILA_BOSS_32e"
 
+  const val DARK_PHARAOH_TEKAHN1: String = "ULD_168"
+
   const val SHADY_DEALS_COPY: String = "AT_032e_copy"
 
   const val FELHOUND_PORTAL: String = "DAL_582t"
@@ -9310,9 +9606,13 @@ object CardId {
 
   const val CORRUPTED_EGG: String = "BRMA10_4"
 
+  const val COBALT_LEYLINE: String = "DAL_579p"
+
   const val HALAZZIS_HASTE: String = "TRLA_163e"
 
   const val LORD_JARAXXUS1: String = "EX1_323h"
+
+  const val MURLOC_INFESTATION1: String = "GILA_BOSS_37t"
 
   const val SNIPE: String = "EX1_609"
 
@@ -9372,6 +9672,8 @@ object CardId {
 
   const val CARTOGRAPHER: String = "GILA_802"
 
+  const val DINOTAMER_BRANN: String = "ULD_156"
+
   const val START_THE_SPEED_RUN: String = "TB_SpeedRun_Start"
 
   const val OFFENSIVE_PLAY: String = "TB_Superfriends001"
@@ -9420,6 +9722,8 @@ object CardId {
 
   const val SPIRIT_OF_WISDOM1: String = "FB_ELO002b_ench"
 
+  const val RAMKAHEN_ROAR: String = "ULD_155p"
+
   const val JAWS1: String = "NAX12_03H"
 
   const val NETHER_BREATH2: String = "KARA_08_03e"
@@ -9456,6 +9760,8 @@ object CardId {
 
   const val INNKEEPERS_CHOICE_ALLSTAR_SQUAD_SETUP: String = "FB_IKC_AllStar_Setup_Ench"
 
+  const val QUICKSAND_ELEMENTAL: String = "ULD_197"
+
   const val FIREBALL: String = "CS2_029"
 
   const val EMPOWERMENT: String = "KARA_08_04"
@@ -9479,6 +9785,8 @@ object CardId {
   const val HAGATHA_THE_WITCH: String = "GILA_BOSS_61h"
 
   const val PURE_COLD: String = "NAX14_04"
+
+  const val POLISHED: String = "ULD_285e"
 
   const val KEEPERS_OF_THE_GATE: String = "BOTA_329"
 
@@ -9555,6 +9863,10 @@ object CardId {
   const val SIPHON_SOUL: String = "EX1_309"
 
   const val ANDY_BROCK: String = "CRED_15"
+
+  const val MORTUARY_MACHINE: String = "ULD_702"
+
+  const val BEEEES: String = "ULD_134"
 
   const val RAAAAR: String = "UNG_004e"
 
@@ -9660,6 +9972,8 @@ object CardId {
 
   const val BONUS1: String = "TB_PickYourFate_9_EnchMinion"
 
+  const val WASTELAND_ASSASSIN: String = "ULD_274"
+
   const val GNOMEFERATU: String = "ICC_407"
 
   const val KRAGWAS_LURE: String = "TRLA_109"
@@ -9684,6 +9998,8 @@ object CardId {
 
   const val IRONFORGE_PORTAL: String = "KAR_091"
 
+  const val THIRD_WISH: String = "TB_3Wishes_Spell_3"
+
   const val CURSED_CURIO: String = "GILA_819"
 
   const val TOWN_CRIER: String = "GIL_580"
@@ -9705,6 +10021,8 @@ object CardId {
   const val ATRAMEDES2: String = "BRMC_86"
 
   const val GLACIAL_SHARD: String = "UNG_205"
+
+  const val PUZZLE_BOX_OF_YOGGSARON: String = "ULD_216"
 
   const val FROZEN_BLOOD: String = "ICC_056e"
 
@@ -9732,7 +10050,7 @@ object CardId {
 
   const val YOUNG_PRIESTESS: String = "EX1_004"
 
-  const val NATURES_WRATH2: String = "TRLA_Druid_10"
+  const val NATURES_WRATH2: String = "TB_LEAGUE_REVIVAL_Druid_05"
 
   const val NATURES_WRATH1: String = "EX1_154b"
 
@@ -9743,6 +10061,8 @@ object CardId {
   const val BLOODTHISTLE_TOXIN: String = "OG_080c"
 
   const val CORPSETAKER: String = "ICC_912"
+
+  const val NATURES_WRATH3: String = "TRLA_Druid_10"
 
   const val FOR_THE_MONEY: String = "TRLA_Rogue_08"
 
@@ -9824,6 +10144,8 @@ object CardId {
 
   const val MUCKLING: String = "GIL_682t"
 
+  const val CHOICES_CHOICES1: String = "TB_LEAGUE_REVIVAL_Druid_03"
+
   const val GOSSIP: String = "DALA_913e"
 
   const val TWISTING_NETHER1: String = "TB_SPT_DpromoEX1_312"
@@ -9850,6 +10172,8 @@ object CardId {
 
   const val BLACK_PAWN: String = "KAR_A10_01"
 
+  const val ICE_BLOCK_IMMUNE: String = "TB_Iceblock"
+
   const val SWARM: String = "DALA_Druid_01"
 
   const val THE_MISTCALLER: String = "AT_054"
@@ -9869,6 +10193,8 @@ object CardId {
   const val HECKLEBOT: String = "DAL_058"
 
   const val FROSTMOURNE: String = "ICCA01_005"
+
+  const val SIR_FINLEY_MRRGGLTON1: String = "TB_LEAGUE_REVIVAL_FinleyHero"
 
   const val STAND_BY_ME: String = "BOTA_304"
 
@@ -9912,6 +10238,8 @@ object CardId {
 
   const val ALLURING_TUNE: String = "LOOTA_BOSS_51p"
 
+  const val ACTIVATE_THE_OBELISK: String = "ULD_724"
+
   const val THE_GLASS_KNIGHT: String = "GIL_817"
 
   const val GREATER_SPIRIT_OF_HEROISM: String = "FB_ELO002a_copy"
@@ -9931,6 +10259,8 @@ object CardId {
   const val SOULREAPERS_SCYTHE: String = "DALA_719"
 
   const val SEAWITCHING: String = "LOE_038e"
+
+  const val SERPENT_EGG: String = "ULD_174"
 
   const val JERRY_CHENG: String = "CRED_51"
 
@@ -10006,7 +10336,11 @@ object CardId {
 
   const val ABYSSAL: String = "KARA_00_02a"
 
+  const val TOTEMIC_SURGE: String = "ULD_171"
+
   const val DARK_WANDERER: String = "TB_SPT_DPromo_Hero"
+
+  const val SPITTING_CAMEL: String = "ULD_182"
 
   const val ANOMALY__ARCANE_PLAYER_ENCHANTMENT: String = "DALA_850e"
 
@@ -10021,6 +10355,8 @@ object CardId {
   const val SEAL_OF_LIGHT1: String = "GVG_057a"
 
   const val MECHANICAL_PARROT: String = "LOEA07_25"
+
+  const val WELL_EQUIPPED1: String = "TB_LEAGUE_REVIVAL_TerravisHp"
 
   const val CHICKEN: String = "GVG_092t"
 
@@ -10048,6 +10384,8 @@ object CardId {
 
   const val NIGHTBANE1: String = "KARA_11_01heroic"
 
+  const val BLOODSWORN_MERCENARY: String = "ULD_720"
+
   const val PURSUIT_OF_KNOWLEDGE: String = "BOTA_504"
 
   const val EXPEDITE_PLAYER_ENCHANTMENT: String = "GILA_813e"
@@ -10072,9 +10410,13 @@ object CardId {
 
   const val TRIBAL_SHRINE: String = "TRLA_107"
 
+  const val SPLITTING_AXE: String = "ULD_413"
+
   const val SHIRVALLAHS_VENGEANCE1: String = "TRLA_137t"
 
   const val SWIFT_MESSENGER1: String = "GIL_528t"
+
+  const val BEFRIEND_THE_ANCIENT: String = "ULD_135a"
 
   const val GLINDA_CROWSKIN1: String = "GIL_618"
 
@@ -10174,6 +10516,8 @@ object CardId {
 
   const val RAISE_THE_ALARM1: String = "DALA_BOSS_55px"
 
+  const val CANDLETAKER: String = "ULD_205"
+
   const val DARIUS_CROWLEY: String = "GILA_600h"
 
   const val GOLDEN_LEGENDARY: String = "ART_BOT_Bundle_001"
@@ -10189,6 +10533,8 @@ object CardId {
   const val DOUBLE_TIME: String = "GILA_913"
 
   const val FIRE_FLY: String = "UNG_809"
+
+  const val HISTORY_BUFF: String = "ULD_290"
 
   const val RECRUITS: String = "TRLA_Paladin_03"
 
@@ -10209,6 +10555,8 @@ object CardId {
   const val HALAZZIS_HUNT2: String = "TRLA_162t"
 
   const val RUSH1: String = "TB_EVILBRM_Warrior_05"
+
+  const val SANDHOOF_WATERBEARER: String = "ULD_270"
 
   const val ZOMBIE_CHOW: String = "FP1_001"
 
@@ -10233,6 +10581,8 @@ object CardId {
   const val HOGGER1: String = "TU4a_001"
 
   const val DISMISS: String = "DALA_902"
+
+  const val BAZAAR_MUGGER: String = "ULD_327"
 
   const val GROMS_AMGUARDS_ENCHANTMENT: String = "LOOTA_818e"
 
@@ -10322,6 +10672,8 @@ object CardId {
 
   const val EXPLOSIVE1: String = "LOOT_440e"
 
+  const val SIAMATS_HEART: String = "ULD_178a3"
+
   const val ALREADY_DRAWN: String = "FB_Duelers_Drawn"
 
   const val FEROCIOUS_HOWL: String = "GIL_637"
@@ -10339,6 +10691,8 @@ object CardId {
   const val TEAMBUILDING: String = "TRLA_Paladin_05"
 
   const val UPGRADE_ANNOYOCORE: String = "FB_Annoyo_002a"
+
+  const val DESERT_SPEAR: String = "ULD_430"
 
   const val DREAMPETAL_FLORIST: String = "BOT_423"
 
@@ -10428,6 +10782,8 @@ object CardId {
 
   const val BUBBA: String = "GILA_410"
 
+  const val VESSINAS_DEVOTION: String = "ULD_173e"
+
   const val JADE_GOLEM19: String = "CFM_712_t20"
 
   const val JADE_GOLEM18: String = "CFM_712_t19"
@@ -10439,6 +10795,8 @@ object CardId {
   const val JADE_GOLEM15: String = "CFM_712_t16"
 
   const val JADE_GOLEM14: String = "CFM_712_t15"
+
+  const val OSSIRIAN_TEAR: String = "ULD_131p"
 
   const val THE_CANDLES1: String = "DALA_714a"
 
@@ -10542,6 +10900,8 @@ object CardId {
 
   const val SHADOWY3: String = "LOOT_412e"
 
+  const val DUKE: String = "ULD_156t"
+
   const val HIGHLORD_OMOKK: String = "BRMA07_1"
 
   const val SHADOWY4: String = "OG_316k"
@@ -10616,11 +10976,17 @@ object CardId {
 
   const val RUMMAGE: String = "LOEA16_16"
 
+  const val PSYCHOPOMP: String = "ULD_268"
+
   const val BLUNDERBUSS: String = "GILA_500t3"
 
   const val HOLD_THE_GATES1: String = "DALA_BOSS_52px"
 
+  const val TOMB_WARDEN: String = "ULD_253"
+
   const val CLAWS: String = "CS2_017o"
+
+  const val DESERT_HARE: String = "ULD_719"
 
   const val DISCOVER_CARD_1: String = "FB_Duelers_Discover2"
 
@@ -10760,6 +11126,8 @@ object CardId {
 
   const val BATTLE_OF_TOL_BARAD1: String = "TB_207_TolBarad"
 
+  const val BURIED: String = "ULD_288e"
+
   const val CHROMAGGUS2: String = "BRM_031"
 
   const val CHROMAGGUS1: String = "BRMA12_1H"
@@ -10793,6 +11161,8 @@ object CardId {
   const val BOMB: String = "BOT_511t"
 
   const val MAIEV_SHADOWSONG: String = "HERO_03a"
+
+  const val JAR_DEALER: String = "ULD_282"
 
   const val HENCHCLAN_HOGSTEED: String = "DAL_743"
 
@@ -10850,6 +11220,8 @@ object CardId {
 
   const val BLOODLUST1: String = "CS2_046e"
 
+  const val KING_KRUSH_UNTAMED: String = "TB_LEAGUE_REVIVAL_BrannBoss"
+
   const val INNKEEPER_TOOLS__RESET_SESSION: String = "TB_Champs_KeepWinnerDeck_Choice"
 
   const val YARRR: String = "NEW1_027e"
@@ -10861,6 +11233,8 @@ object CardId {
   const val SUNWALKER: String = "EX1_032"
 
   const val RUNIC_EGG: String = "KAR_029"
+
+  const val UNSEAL_THE_VAULT: String = "ULD_155"
 
   const val EMBOLDENED1: String = "TB_SPT_Minion2e"
 
@@ -10887,6 +11261,8 @@ object CardId {
   const val ORB_OF_DESTRUCTION: String = "LOOTA_811"
 
   const val ASTRAL_RIFT: String = "BOT_101"
+
+  const val EVIL_RECRUITER: String = "ULD_162"
 
   const val ANCIENT_OF_WAR: String = "EX1_178"
 
@@ -10960,6 +11336,8 @@ object CardId {
 
   const val ANTIMAGIC_SHELL: String = "ICC_314t7"
 
+  const val HIDDEN_OASIS: String = "ULD_135"
+
   const val OBSIDIAN_DESTROYER: String = "LOE_009"
 
   const val CROWSKIN_FAITHFUL: String = "GILA_BOSS_49t"
@@ -10975,6 +11353,8 @@ object CardId {
   const val THE_LAST_KALEIDOSAUR: String = "UNG_954"
 
   const val ASSIMILATION: String = "GILA_BOSS_54e"
+
+  const val CLEVER_DISGUISE: String = "ULD_328"
 
   const val DIRE_WOLF_ALPHA: String = "EX1_162"
 
@@ -10999,6 +11379,8 @@ object CardId {
   const val BREE_LAWLOR: String = "CRED_89"
 
   const val EMPEROR_COBRA: String = "EX1_170"
+
+  const val SINISTER_DEAL: String = "ULD_160"
 
   const val STUBBORN_GASTROPOD: String = "ICC_828t2"
 
@@ -11060,6 +11442,8 @@ object CardId {
 
   const val DEATHMARKED_LOVE: String = "KARA_06_01e"
 
+  const val QUESTING_EXPLORER: String = "ULD_157"
+
   const val MURLOC_TASTYFIN: String = "TRL_520"
 
   const val WAILING_SOUL: String = "FP1_016"
@@ -11069,6 +11453,10 @@ object CardId {
   const val LAB_RECRUITER: String = "BOT_288"
 
   const val BIG_BOOMBA_PLAYER_ENCHANTMENT: String = "DALA_724e"
+
+  const val EVIL_DEMON: String = "ULD_162t"
+
+  const val ANCIENT_BLADES: String = "ULD_326p"
 
   const val BURGLE: String = "AT_033"
 
@@ -11188,9 +11576,13 @@ object CardId {
 
   const val BLIND_WITH_RAGE: String = "BRMA10_6e"
 
+  const val OBELISKS_GAZE: String = "ULD_724e"
+
   const val BOOK_WYRM: String = "KAR_033"
 
   const val HUGE_EGO: String = "AT_121e"
+
+  const val ZEAL: String = "ULD_145e"
 
   const val PROTECTING_THE_GALLERY: String = "KARA_07_02e"
 
@@ -11200,6 +11592,8 @@ object CardId {
 
   const val EMBOLDENER_: String = "Mekka3"
 
+  const val HOOKED_SCIMITAR: String = "ULD_285"
+
   const val SHADOW_WORD_HORROR: String = "OG_100"
 
   const val LIFEDRINKER: String = "GIL_622"
@@ -11207,6 +11601,8 @@ object CardId {
   const val TRACKING: String = "DS1_184"
 
   const val DISPATCH_KODO: String = "CFM_335"
+
+  const val KING_PHAORIS: String = "ULD_304"
 
   const val GIANT_RAT: String = "LOOTA_BOSS_18h"
 
@@ -11334,6 +11730,8 @@ object CardId {
 
   const val DARKSPAWN: String = "LOOTA_BOSS_49t"
 
+  const val SIAMAT: String = "ULD_178"
+
   const val BOAR1: String = "CS2_boar"
 
   const val GOLEMAGG: String = "BRMC_95"
@@ -11370,6 +11768,8 @@ object CardId {
 
   const val MIGHT_OF_MUKLA: String = "TU4c_008e"
 
+  const val BRAVERY: String = "ULD_189e"
+
   const val MUCK_HUNTER: String = "GIL_682"
 
   const val PRINCESS_HUHURAN: String = "OG_309"
@@ -11400,6 +11800,8 @@ object CardId {
 
   const val TWISTED: String = "DALA_Priest_09"
 
+  const val PRESSURE_PLATE: String = "ULD_152"
+
   const val GUARDIAN_SPIRIT2: String = "LOOT_091t2t"
 
   const val GIFT_OF_MANA: String = "GVG_032a"
@@ -11422,7 +11824,11 @@ object CardId {
 
   const val BUCCANEER: String = "AT_029"
 
+  const val HOLY_RIPPLE: String = "ULD_272"
+
   const val LIGHT_AND_FIRE: String = "BOTA_318"
+
+  const val FIRST_WISH: String = "TB_3Wishes_Spell"
 
   const val BLESSING_OF_MIGHT1: String = "CS2_087e"
 
@@ -11431,6 +11837,8 @@ object CardId {
   const val ROBOSAUR: String = "BOT_537t"
 
   const val TWIG_OF_THE_WORLD_TREE: String = "LOOT_392"
+
+  const val SIAMATS_SHIELD: String = "ULD_178a2"
 
   const val SHIFTING_SHADE: String = "OG_335"
 
@@ -11459,6 +11867,8 @@ object CardId {
   const val VASNO: String = "DALA_BOSS_20h"
 
   const val PLOT_TWIST: String = "DAL_602"
+
+  const val BEAMING_SIDEKICK: String = "ULD_191"
 
   const val ELEMENTAL_EVOCATION1: String = "TRL_310e"
 
@@ -11528,6 +11938,8 @@ object CardId {
 
   const val HIREEKS_LEGION: String = "TRLA_Warlock_01"
 
+  const val HEART_OF_VIRNAAL1: String = "ULD_291pe"
+
   const val LAVA_SHOCK: String = "BRM_011"
 
   const val STONEHILL_DEFENDER: String = "UNG_072"
@@ -11554,6 +11966,8 @@ object CardId {
 
   const val GRIEVOUS_BITE: String = "UNG_910"
 
+  const val ARCANE_FLAKMAGE: String = "ULD_240"
+
   const val RUMBLETUSK_BREAKER: String = "TRL_531t"
 
   const val OVERLOAD1: String = "LOOTA_Shaman_08"
@@ -11572,11 +11986,15 @@ object CardId {
 
   const val GHOUL: String = "ICCA01_004t"
 
+  const val MURMY: String = "ULD_723"
+
   const val PTERRORDAX_HATCHLING: String = "UNG_001"
 
   const val BLESSED_MAUL: String = "LOOT_286t3"
 
   const val GRUMBLY_TUMBLY: String = "LOOT_358e"
+
+  const val PILE_OF_SAND: String = "TB_LEAGUE_REVIVAL_FinleySandPile"
 
   const val ELECTRICKING: String = "BOT_411e2"
 
@@ -11752,6 +12170,8 @@ object CardId {
 
   const val CLOCKED: String = "TOT_116e"
 
+  const val ANUBISATH_DEFENDER: String = "ULD_138"
+
   const val RAISE_DEAD1: String = "NAX4_04H"
 
   const val CURATOR1: String = "KARA_07_01heroic"
@@ -11792,6 +12212,8 @@ object CardId {
 
   const val KAZAKUS_POTION1: String = "CFM_621t14"
 
+  const val SHIFTING_SANDS: String = "TB_LEAGUE_REVIVAL_FinleySandHP"
+
   const val INNER_RAGE1: String = "EX1_607e"
 
   const val POUNCE1: String = "TRL_243e"
@@ -11805,6 +12227,8 @@ object CardId {
   const val SHOOTING_STAR: String = "BOT_453"
 
   const val RESTORATION: String = "LOOTA_Druid_10"
+
+  const val EVIL_GRASP: String = "TB_LEAGUE_REVIVAL_TekahnAIHp"
 
   const val SAFE: String = "TB_Face_Ench1"
 
@@ -11853,6 +12277,8 @@ object CardId {
   const val GRIM_PATRON: String = "BRM_019"
 
   const val RECYCLING: String = "DALA_728"
+
+  const val HIGHKEEPER_RA: String = "ULD_705t"
 
   const val VIOLET_IMMUNITY: String = "KAR_712e"
 
@@ -11920,6 +12346,8 @@ object CardId {
 
   const val BOOGIE_WOOGIE1: String = "DALA_BOSS_53px"
 
+  const val PIT_CROCOLISK: String = "ULD_190"
+
   const val MIND_CONTROL_CRYSTAL: String = "NAX7_05"
 
   const val RAZORPETAL_VOLLEY: String = "UNG_057"
@@ -11949,6 +12377,8 @@ object CardId {
   const val BLINGED_OUT1: String = "DALA_BOSS_31ex"
 
   const val LIGHTFORGED_BLESSING1: String = "DAL_568e"
+
+  const val ARMORED_GOON: String = "ULD_709"
 
   const val LIGHTFORGED_BLESSING2: String = "DAL_568ts"
 
@@ -12088,6 +12518,8 @@ object CardId {
 
   const val LADY_NAZJAR: String = "LOEA12_1"
 
+  const val EMPEROR_WRAPPED: String = "ULD_431e"
+
   const val INFINITE_TOKI1: String = "GILA_BOSS_48h"
 
   const val AVIANA1: String = "FB_Champs_AT_045"
@@ -12209,6 +12641,8 @@ object CardId {
   const val ANNOYOMODULE1: String = "BOT_911e"
 
   const val TWILIGHT_SUMMONER: String = "OG_272"
+
+  const val SHADOW_OF_DEATH: String = "ULD_286"
 
   const val BLESSINGS_OF_THE_SUN1: String = "LOEA01_02h"
 
@@ -12466,6 +12900,8 @@ object CardId {
 
   const val SMALLTIME_BUCCANEER: String = "CFM_325"
 
+  const val LIVEWIRE_LANCE: String = "ULD_708"
+
   const val GENTLEMANS_TOP_HAT1: String = "GILA_825e"
 
   const val DEADLY_ANOMALY: String = "FB_Toki_Boss_Poison"
@@ -12492,6 +12928,8 @@ object CardId {
 
   const val TOGWAGGLES_DICE_PLAYER_ENCHANTMENT: String = "DALA_741e"
 
+  const val DUCHESS: String = "ULD_156t2"
+
   const val SPLITTING_SAPLING: String = "GIL_616t"
 
   const val CANNON: String = "GILA_601"
@@ -12505,6 +12943,10 @@ object CardId {
   const val MASTER_OF_EVOLUTION: String = "OG_328"
 
   const val GREASEFIRE_ELEMENTAL: String = "DAL_554t"
+
+  const val SALHETS_PRIDE: String = "ULD_438"
+
+  const val ANUBISATH_WARBRINGER: String = "ULD_183"
 
   const val SUMMON_KILREK1: String = "KARA_09_05heroic"
 
@@ -12554,6 +12996,8 @@ object CardId {
 
   const val PROFESSOR_PUTRICIDE: String = "FB_LK_013h"
 
+  const val RAID_THE_SKY_TEMPLE: String = "ULD_433"
+
   const val PLAGUETOUCHED: String = "EX1_191e"
 
   const val CULT_OF_THE_WOLF: String = "GILA_513"
@@ -12568,6 +13012,8 @@ object CardId {
 
   const val TIERRA_BLYTHE: String = "DALA_BOSS_14h"
 
+  const val ARCHAELOGICAL_STUDY: String = "ULD_309e"
+
   const val SHARKFIN_FAN: String = "TRL_507"
 
   const val LUNAR_VISIONS: String = "CFM_811"
@@ -12579,6 +13025,8 @@ object CardId {
   const val PRIMAL_INVESTMENT: String = "BOTA_635"
 
   const val CLOAK_OF_INVISIBILITY: String = "LOOTA_832"
+
+  const val GARDEN_GNOME: String = "ULD_137"
 
   const val PLAGUEMASTER_RANCEL: String = "GILA_BOSS_68h"
 
@@ -12644,6 +13092,8 @@ object CardId {
 
   const val SLAVE_OF_KELTHUZAD: String = "NAX15_04a"
 
+  const val VESSINA1: String = "ULD_173"
+
   const val SHADOWSTEP: String = "EX1_144"
 
   const val KINGS_DEFENDER1: String = "AT_065e"
@@ -12659,6 +13109,8 @@ object CardId {
   const val SOOTHE: String = "DALA_Priest_HP2"
 
   const val EXCAVATED_EVIL: String = "LOE_111"
+
+  const val SUNSTRUCK_HENCHMAN: String = "ULD_180"
 
   const val DARNASSUS_ASPIRANT: String = "AT_038"
 
@@ -12679,6 +13131,8 @@ object CardId {
   const val ENRAGED11: String = "OG_150e"
 
   const val ENRAGED12: String = "OG_218e"
+
+  const val ENRAGED13: String = "ULD_185e"
 
   const val ANGRY_MOB: String = "GILA_821b"
 
@@ -12752,7 +13206,13 @@ object CardId {
 
   const val ROCKPOOL_HUNTER: String = "UNG_073"
 
+  const val ERUDITE: String = "ULD_290e"
+
   const val DRAGON_BLOOD: String = "BRM_033e"
+
+  const val BRANN_BRONZEBEARD1: String = "TB_LEAGUE_REVIVAL_BrannAIHero"
+
+  const val BRANN_BRONZEBEARD2: String = "TB_LEAGUE_REVIVAL_BrannHistory"
 
   const val KIDNAPPER: String = "NEW1_005"
 
@@ -12800,6 +13260,8 @@ object CardId {
 
   const val HIREEKS_HUNGER1: String = "TRLA_179t"
 
+  const val DIVIDE_AND_CONQUER1: String = "ULD_292b"
+
   const val DOOM_RAT: String = "GIL_577t"
 
   const val TWILIGHT_FLAMECALLER: String = "OG_083"
@@ -12815,6 +13277,8 @@ object CardId {
   const val BOOGIE_BEYOND: String = "DALA_BOSS_53e"
 
   const val CURATIVES1: String = "DALA_Warlock_11"
+
+  const val FRIGHTENED_FLUNKY: String = "ULD_195"
 
   const val CURATIVES2: String = "EVILBRM_DALA_Warlock_11"
 
@@ -12877,6 +13341,8 @@ object CardId {
   const val DEFILING_DEMONS: String = "BOTA_438"
 
   const val DIVINE_FAVOR: String = "EX1_349"
+
+  const val ANCIENT_MYSTERIES: String = "ULD_726"
 
   const val FIGHTERS_FINALE: String = "BOTA_429"
 
@@ -12964,6 +13430,8 @@ object CardId {
 
   const val FORCETANK_OMEGA_MAX: String = "TB_FW_OmegaMax"
 
+  const val ANRAPHETS_CORE: String = "ULD_711p3"
+
   const val EXPLOSIVE_RUNES: String = "LOOT_101"
 
   const val MURLOCS: String = "LOOTA_Paladin_21"
@@ -13018,9 +13486,11 @@ object CardId {
 
   const val MURLOC_BONUS: String = "TB_PickYourFate_11b"
 
+  const val TORTOLLAN_PILGRIM: String = "ULD_236"
+
   const val BAN_OPPONENTS_CARD: String = "FB_TopX_Ban"
 
-  const val PLAGUE_OF_MURLOCS: String = "GILA_BOSS_37e2"
+  const val PLAGUE_OF_MURLOCS: String = "ULD_172"
 
   const val MECHANICAL_YETI: String = "GVG_078"
 
@@ -13086,6 +13556,8 @@ object CardId {
 
   const val DRAKKISATHS_COMMAND: String = "BRMA08_3"
 
+  const val SCARLET_WEBWEAVER: String = "ULD_410"
+
   const val ANIMATED_STATUE1: String = "LOEA16_17"
 
   const val RARE_FIND: String = "GIL_640e"
@@ -13105,6 +13577,10 @@ object CardId {
   const val EARTHEN_MIGHT: String = "GIL_586"
 
   const val MUSTER_FOR_BATTLE: String = "GVG_061"
+
+  const val HACK_THE_SYSTEM: String = "ULD_711"
+
+  const val BEASTS_AND_BUFFS1: String = "TB_LEAGUE_REVIVAL_Druid_10"
 
   const val BRAD_CRUSCO: String = "CRED_59"
 
@@ -13232,6 +13708,8 @@ object CardId {
 
   const val STONESCULPTING1: String = "LOEA06_02h"
 
+  const val RENO_THE_RELICOLOGIST: String = "ULD_238"
+
   const val CHROMATIC_MUTATION: String = "BRMA12_8"
 
   const val FULL_NORTHSHIRE: String = "BOTA_337"
@@ -13247,6 +13725,8 @@ object CardId {
   const val WOLF: String = "LOOT_077t"
 
   const val BLOODQUEEN_LANATHEL2: String = "ICC_841"
+
+  const val ANKA_THE_BURIED: String = "ULD_288"
 
   const val BLOODQUEEN_LANATHEL1: String = "ICCA05_001"
 
@@ -13275,6 +13755,8 @@ object CardId {
   const val TOIL_AND_TROUBLE: String = "GIL_119e"
 
   const val PROTECTION: String = "TRLA_Warrior_08"
+
+  const val SCARAB2: String = "ULD_215t"
 
   const val EXPLOSIVE_TRAP: String = "EX1_610"
 
@@ -13332,6 +13814,10 @@ object CardId {
 
   const val BASH: String = "AT_064"
 
+  const val FACELESS_LURKER: String = "ULD_189"
+
+  const val FOCUSED_BURST: String = "ULD_292a"
+
   const val LIGHT_OF_THE_NAARU: String = "GVG_012"
 
   const val RIPPLE_IN_TIME: String = "TOT_345"
@@ -13346,6 +13832,8 @@ object CardId {
 
   const val THE_BOX: String = "DALA_701"
 
+  const val MOGU_FLESHSHAPER: String = "ULD_169"
+
   const val FROST_BLAST: String = "NAX15_02"
 
   const val EXPLORE_UNGORO: String = "UNG_922"
@@ -13358,6 +13846,8 @@ object CardId {
 
   const val MIGHT_OF_TINKERTOWN: String = "GVG_102e"
 
+  const val VIRNAAL_ANCIENT: String = "ULD_135at"
+
   const val METEOR: String = "UNG_955"
 
   const val KEITH_LANDES: String = "CRED_46"
@@ -13367,6 +13857,8 @@ object CardId {
   const val TAKE_A_CHANCE: String = "DALA_903"
 
   const val SPUD_ME: String = "BOTA_101"
+
+  const val SWARM_OF_LOCUSTS: String = "ULD_713"
 
   const val ADDLED: String = "OG_313e"
 
@@ -13531,6 +14023,8 @@ object CardId {
   const val THE_RAY_OF_ROASTING: String = "BOTA_519"
 
   const val ARCANE_ANOMALY: String = "KAR_036"
+
+  const val GRANDMUMMY: String = "ULD_266"
 
   const val WHITE_BISHOP: String = "KAR_A10_05"
 
