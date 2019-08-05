@@ -39,7 +39,6 @@ data class Card(
     }
 
 
-
     companion object {
 
         val UNKNOWN_COST = null
@@ -48,13 +47,13 @@ data class Card(
         const val CLASS_INDEX_NEUTRAL = 9
 
         val ARENA_SETS = setOf(
-                HSSet.CORE, // Classic
-                HSSet.EXPERT1, // Basic
-                HSSet.GVG, // Goblin vs Gnomes
-                HSSet.TGT, // The Grand Tournament
-                HSSet.KARA, // One Night in Karazhan
-                HSSet.BOOMSDAY,
-                HSSet.DALARAN
+                HSSet.CORE, // Basic
+                HSSet.EXPERT1, // Classic
+                HSSet.ULDUM, // Saviors of Uldum
+                HSSet.TROLL, // Rastakhan's
+                HSSet.UNGORO, // Ungoro
+                HSSet.LOOTAPALOOZA, // Kobolds & Catacombs
+                HSSet.LOE // League of Explorers
         )
         val STANDARD_SETS = setOf(
                 HSSet.CORE, // Classic
