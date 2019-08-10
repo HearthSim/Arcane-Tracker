@@ -119,6 +119,7 @@ class SecretLogic(val console: Console) {
                     && it.tags[Entity.KEY_CARDTYPE] == Type.MINION
         }.isEmpty()
     }
+
     private fun opponentHasMinionOnBoard(game: Game): Boolean {
         return opponentMinionOnBoardCount(game) > 0
     }
@@ -161,8 +162,8 @@ class SecretLogic(val console: Console) {
             when (targetEntity.tags[Entity.KEY_CARDTYPE]) {
                 Type.MINION -> {
                     if (opponentHasRoomOnBoard(game)) {
-                        exclude(game, CardId.FREEZING_TRAP)
                         exclude(game, CardId.VENOMSTRIKE_TRAP)
+                        exclude(game, CardId.SNAKE_TRAP)
                         exclude(game, CardId.SPLITTING_IMAGE)
                     }
                 }
@@ -201,7 +202,7 @@ class SecretLogic(val console: Console) {
                         && it.tags[Entity.KEY_CONTROLLER] == attackingEntity.tags[Entity.KEY_CONTROLLER]
             }.size
 
-            return position > 0 || totalMinions  > position + 1
+            return position > 0 || totalMinions > position + 1
         } catch (e: Exception) {
             return false
         }
@@ -214,9 +215,8 @@ class SecretLogic(val console: Console) {
                 for (id in tag.Info) {
                     val damagedEntity = game.findEntitySafe(id)
 
-                    if (damagedEntity != null
-                            && damagedEntity.tags[Entity.KEY_CONTROLLER] == game.opponent?.entity?.PlayerID
-                    && damagedEntity.tags[Entity.KEY_CARDTYPE] == Type.HERO) {
+                    if (damagedEntity.tags[Entity.KEY_CONTROLLER] == game.opponent?.entity?.PlayerID
+                            && damagedEntity.tags[Entity.KEY_CARDTYPE] == Type.HERO) {
                         exclude(game, CardId.EVASION)
                     }
                 }
@@ -233,7 +233,7 @@ class SecretLogic(val console: Console) {
             return
         }
 
-        if ( "0" != game.opponent?.entity?.tags?.get(Entity.KEY_CURRENT_PLAYER)) {
+        if ("0" != game.opponent?.entity?.tags?.get(Entity.KEY_CURRENT_PLAYER)) {
             // secret don't get triggered during the oponent turn
             return
         }

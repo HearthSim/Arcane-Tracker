@@ -64,7 +64,7 @@ class PowerParserTest {
     }
 
     @Test
-    fun `secret listener is called`() {
+    fun `vaporize test`() {
         // https://hsreplay.net/replay/i5RvfvjFGFBpFmeoQUxFT4
         val powerLines = File("/home/martin/dev/hsdata/2019_07_21_Spex").readLines()
 
@@ -80,10 +80,46 @@ class PowerParserTest {
                     }
                     // I played a minion on turn 13 so Mirror Entity should now excluded
                     14 -> {
-                        assert(secrets.firstOrNull { it.cardId == CardId.MIRROR_ENTITY && it.count == 0 } != null)
+                        assert(secrets.firstOrNull { it.cardId == CardId.MIRROR_ENTITY }?.count == 0)
                     }
-                    // I attached during turn 15 so there shouldn't be secrets anymore
+                    // I attacked the hero during turn 15 so secret should have triggered
                     16 -> {
+                        assert(secrets.isEmpty())
+                    }
+                }
+            }
+
+            override fun onSecrets(possibleSecrets: List<PossibleSecret>) {
+                secrets = possibleSecrets
+            }
+        })
+        powerLines.forEach {
+            hsLog.processPower(it, false)
+        }
+    }
+
+    @Test
+    fun `pressure plate test`() {
+        // https://hsreplay.net/replay/i5RvfvjFGFBpFmeoQUxFT4
+        val powerLines = File("/home/martin/dev/hsdata/2019_08_10_Glorfindel").readLines()
+
+        hsLog.setListener(object : DefaultHSLogListener() {
+
+            var secrets = emptyList<PossibleSecret>()
+            override fun onTurn(game: Game, turn: Int, isPlayer: Boolean) {
+                super.onTurn(game, turn, isPlayer)
+                when (turn) {
+                    // Opponent played PRESSURE_PLATE on turn 4
+                    5 -> {
+                        assert(secrets.firstOrNull { it.cardId == CardId.PRESSURE_PLATE && it.count > 0 } != null)
+                    }
+                    // I attacked the secret keeper on turn 5 so both freezing trap and snake trap should be excluded
+                    6 -> {
+                        assert(secrets.firstOrNull { it.cardId == CardId.SNAKE_TRAP }?.count == 0)
+                        assert(secrets.firstOrNull { it.cardId == CardId.FREEZING_TRAP }?.count == 0)
+                    }
+                    // I played prismatic lens on turn 7 so secret should have triggered
+                    8 -> {
                         assert(secrets.isEmpty())
                     }
                 }
