@@ -14,6 +14,7 @@ kotlin {
     android {
         publishAllLibraryVariants()
     }
+    macosX64()
 
     sourceSets {
         val commonMain by getting {
@@ -32,6 +33,11 @@ kotlin {
             dependencies {
                 implementation(kotlin("stdlib"))
                 api(Libs.kotlinxIoJvm)
+            }
+        }
+        macosX64().compilations["main"].defaultSourceSet {
+            dependencies {
+                api(Libs.kotlinxIoNative)
             }
         }
     }

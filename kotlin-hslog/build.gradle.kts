@@ -8,6 +8,11 @@ kotlin {
     android {
         publishAllLibraryVariants()
     }
+    macosX64 {
+        binaries {
+            framework()
+        }
+    }
 
     sourceSets {
         val commonMain by getting {

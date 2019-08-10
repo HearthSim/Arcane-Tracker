@@ -14,6 +14,7 @@ kotlin {
     android {
         publishAllLibraryVariants()
     }
+    macosX64()
 
     sourceSets {
         val commonMain by getting {

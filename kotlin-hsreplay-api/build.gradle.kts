@@ -14,6 +14,7 @@ kotlin {
     android {
         publishAllLibraryVariants()
     }
+    macosX64()
 
     sourceSets {
         val commonMain by getting {
@@ -58,12 +59,24 @@ kotlin {
 
                 implementation(Libs.coroutines)
                 implementation(Libs.serializationRuntime)
-                implementation(Libs.ktorClientSerializationJvm)
 
                 api(Libs.ktorClientCoreJvm)
                 implementation(Libs.ktorClientJsonJvm)
                 implementation(Libs.ktorClientOkhttp)
                 implementation(Libs.ktorClientEncodingJvm)
+                implementation(Libs.ktorClientSerializationJvm)
+            }
+        }
+        macosX64().compilations["main"].defaultSourceSet {
+            dependencies {
+                implementation(Libs.coroutinesMacOS)
+                implementation(Libs.serializationRuntimeMacOS)
+
+                api(Libs.ktorClientCoreMacOS)
+                implementation(Libs.ktorClientJsonMacOS)
+                implementation(Libs.ktorClientEncodingMacOS)
+                implementation(Libs.ktorClientSerializationMacOS)
+                implementation(Libs.ktorClientCurl)
             }
         }
     }
