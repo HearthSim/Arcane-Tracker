@@ -120,8 +120,12 @@ class ViewManager(context: Context) {
         layoutParams.x = params.x
         layoutParams.y = params.y
 
-        mWindowManager.addView(view, layoutParams)
-        mViews.add(view)
+        try {
+            mWindowManager.addView(view, layoutParams)
+            mViews.add(view)
+        } catch (e: WindowManager.BadTokenException) {
+            Crashlytics.logException(Exception("cannot add View", e))
+        }
     }
 
     fun addView(view: View, params: Params) {
