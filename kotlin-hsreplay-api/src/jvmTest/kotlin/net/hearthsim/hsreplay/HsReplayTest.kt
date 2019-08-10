@@ -63,8 +63,8 @@ class HsReplayTest {
         val text = File(dir, "src/jvmTest/files/power.log").readText()
         runBlocking {
             val result = hsReplay.uploadGame(uploadRequest, text)
-            if (result.isFailure) {
-                result.exceptionOrNull()!!.printStackTrace()
+            if (result is HsReplay.UploadResult.Failure) {
+                result.e.printStackTrace()
             }
         }
     }

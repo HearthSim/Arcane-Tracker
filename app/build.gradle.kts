@@ -22,11 +22,6 @@ kotlin {
     android()
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.freeCompilerArgs += "-Xallow-result-return-type"
-}
-
-
 android {
     compileSdkVersion(Versions.compileSdkVersion)
     lintOptions {

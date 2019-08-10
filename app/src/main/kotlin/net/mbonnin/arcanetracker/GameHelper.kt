@@ -5,6 +5,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.*
 import net.mbonnin.arcanetracker.detector.RANK_UNKNOWN
 import net.hearthsim.hslog.parser.power.Game
+import net.hearthsim.hsreplay.HsReplay
 import net.hearthsim.hsreplay.model.legacy.HSPlayer
 import net.hearthsim.hsreplay.model.legacy.UploadRequest
 import net.mbonnin.arcanetracker.RankHolder.opponentRank
@@ -112,25 +113,25 @@ object GameHelper {
             if (ArcaneTrackerApplication.get().hsReplay.account() != null) {
                 ArcaneTrackerApplication.get().analytics.logEvent("hsreplay_upload")
                 val result = ArcaneTrackerApplication.get().hsReplay.uploadGame(uploadRequest, gameStr)
-                result.fold(
-                        onSuccess = {
-                            summary.hsreplayUrl = it
-                            GameSummary.sync()
+                when (result) {
+                    is HsReplay.UploadResult.Success -> {
+                        summary.hsreplayUrl = result.replayUrl
+                        GameSummary.sync()
 
-                            if (insertResult.success) {
-                                withContext(Dispatchers.IO) {
-                                    RDatabaseSingleton.instance.gameDao().update(insertResult.id, it)
-                                }
+                        if (insertResult.success) {
+                            withContext(Dispatchers.IO) {
+                                RDatabaseSingleton.instance.gameDao().update(insertResult.id, result.replayUrl)
                             }
-
-                            Timber.d("hsreplay upload success")
-                            Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplaySuccess))
-                        },
-                        onFailure = {
-                            Timber.d(result.exceptionOrNull())
-                            Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplayError))
                         }
-                )
+
+                        Timber.d("hsreplay upload success")
+                        Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplaySuccess))
+                    }
+                    is HsReplay.UploadResult.Failure -> {
+                        Timber.d(result.e)
+                        Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplayError))
+                    }
+                }
             }
         }
     }

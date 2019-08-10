@@ -84,7 +84,12 @@ class HsReplay(val preferences: Preferences, val console: Console, val analytics
         account = null
     }
 
-    suspend fun login(code: String): Result<Unit> = coroutineScope {
+    sealed class LoginResult {
+        object Success: LoginResult()
+        class  Failure(val e: Throwable): LoginResult()
+    }
+
+    suspend fun login(code: String) = coroutineScope {
         val uploadTokenDeferred = async {
             try {
                 legacyApi.createUploadToken()
@@ -96,12 +101,12 @@ class HsReplay(val preferences: Preferences, val console: Console, val analytics
         val token = try {
             oauthApi.login(code)
         } catch (e: Exception) {
-            return@coroutineScope Result.failure<Unit>(e)
+            return@coroutineScope LoginResult.Failure(e)
         }
 
         val uploadToken = uploadTokenDeferred.await()
         if (uploadToken !is UploadToken) {
-            return@coroutineScope Result.failure<Unit>(uploadToken as Exception)
+            return@coroutineScope LoginResult.Failure(uploadToken as Exception)
         }
 
         accessTokenProvider.remember(token.access_token, token.refresh_token)
@@ -110,14 +115,14 @@ class HsReplay(val preferences: Preferences, val console: Console, val analytics
             newApi.claimToken(ClaimInput(uploadToken.key))
         } catch (e: Exception) {
             accessTokenProvider.forget()
-            return@coroutineScope Result.failure<Unit>(e)
+            return@coroutineScope LoginResult.Failure(e)
         }
 
         account = try {
             newApi.account()
         } catch (e: Exception) {
             accessTokenProvider.forget()
-            return@coroutineScope Result.failure<Unit>(e)
+            return@coroutineScope LoginResult.Failure(e)
         }
 
         uploadTokenKey = uploadToken.key
@@ -127,14 +132,18 @@ class HsReplay(val preferences: Preferences, val console: Console, val analytics
         preferences.putString(KEY_HSREPLAY_BATTLETAG, account!!.battletag)
         preferences.putString(KEY_HSREPLAY_USERNAME, account!!.username)
 
-        return@coroutineScope Result.success(Unit)
+        return@coroutineScope LoginResult.Success
     }
 
-    suspend fun uploadGame(uploadRequest: UploadRequest, gameStr: String): Result<String> {
+    sealed class UploadResult{
+        class Success(val replayUrl: String): UploadResult()
+        class Failure(val e: Throwable): UploadResult()
+    }
+    suspend fun uploadGame(uploadRequest: UploadRequest, gameStr: String): UploadResult {
         console.debug("uploadGame [token=$uploadTokenKey]")
 
         if (uploadTokenKey == null) {
-            return Result.failure(Exception("no token"))
+            return UploadResult.Failure(Exception("no token"))
         }
 
         val authorization = "Token $uploadTokenKey"
@@ -142,7 +151,7 @@ class HsReplay(val preferences: Preferences, val console: Console, val analytics
         val upload = try {
             legacyApi.createUpload(uploadRequest, authorization)
         } catch (e: Exception) {
-            return Result.failure(e)
+            return UploadResult.Failure(e)
         }
 
         console.debug("url is ${upload.url}")
@@ -152,13 +161,13 @@ class HsReplay(val preferences: Preferences, val console: Console, val analytics
             s3Api.put(putUrl = upload.put_url, gameString = gameStr)
         } catch (e: Exception) {
             console.error(Exception(e))
-            return Result.failure(e)
+            return UploadResult.Failure(e)
         }
 
         if (response.status.value/100 != 2) {
-            return Result.failure(Exception("Bad status: ${response.status.value}: ${response.content.readRemaining().readText()}"))
+            return UploadResult.Failure(Exception("Bad status: ${response.status.value}: ${response.content.readRemaining().readText()}"))
         }
 
-        return Result.success(upload.url)
+        return UploadResult.Success(upload.url)
     }
 }

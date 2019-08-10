@@ -26,6 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import net.hearthsim.hsreplay.HsReplay
 import net.hearthsim.hsreplay.HsReplayOauthApi
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.R
@@ -91,16 +92,16 @@ class MainActivity : AppCompatActivity() {
                 job = GlobalScope.launch(Dispatchers.Main) {
                     val result = ArcaneTrackerApplication.get().hsReplay.login(code)
 
-                    result.fold(
-                            onFailure = {
-                                Utils.reportNonFatal(it)
-                                Toast.makeText(this@MainActivity, it.message, Toast.LENGTH_LONG).show()
-                                updateState(state.copy(needLogin = true, loginLoading = false))
-                            },
-                            onSuccess = {
-                                updateState(state.copy(loginLoading = false, needLogin = false))
-                            }
-                    )
+                    when (result) {
+                        is HsReplay.LoginResult.Success -> {
+                            updateState(state.copy(loginLoading = false, needLogin = false))
+                        }
+                        is HsReplay.LoginResult.Failure -> {
+                            Utils.reportNonFatal(result.e)
+                            Toast.makeText(this@MainActivity, result.e.message, Toast.LENGTH_LONG).show()
+                            updateState(state.copy(needLogin = true, loginLoading = false))
+                        }
+                    }
                 }
 
                 return
