@@ -79,7 +79,7 @@ class MainViewCompanion(val mainView: View) {
             val card = CardUtil.getCard(secret.cardId)
             DeckEntry.Item(
                     card = card,
-                    count = Math.min(secret.count, 1),
+                    count = secret.count,
                     entityList = emptyList()
             )
         })
