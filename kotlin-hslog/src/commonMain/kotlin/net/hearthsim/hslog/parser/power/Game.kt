@@ -29,10 +29,15 @@ class Game(private val console: Console) {
         get() = player != null && opponent != null
 
     fun findController(entity: Entity): Player {
-        return findPlayer(entity.tags[Entity.KEY_CONTROLLER]!!)
-    }
+        val playerId = entity.tags[Entity.KEY_CONTROLLER]
+        if (playerId == null) {
+            console.error("cannot find playerId for $entity")
+            /**
+             * do not crash...
+             */
+            return Player()
+        }
 
-    fun findPlayer(playerId: String): Player {
         val player = playerMap[playerId]
         if (player == null) {
             console.error("cannot find player $playerId")
@@ -43,6 +48,7 @@ class Game(private val console: Console) {
         }
         return player
     }
+
 
     fun getEntityList(predicate: (Entity) -> Boolean): List<Entity> {
         return entityMap.values.filter(predicate)
