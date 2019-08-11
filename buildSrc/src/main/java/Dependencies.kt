@@ -78,7 +78,7 @@ object Libs {
     const val kotlinxIoJvm = "org.jetbrains.kotlinx:kotlinx-io-jvm:0.1.13"
     const val kotlinxIoNative = "org.jetbrains.kotlinx:kotlinx-io-native:0.1.13"
 
-    const val klock = "com.soywiz.korlibs.klock:klock:1.4.0"
+    const val klock = "com.soywiz.korlibs.klock:klock:1.5.0"
 
     const val kotlinTestCommon = "org.jetbrains.kotlin:kotlin-test-common"
     const val kotlinTestAnnotationCommon = "org.jetbrains.kotlin:kotlin-test-annotations-common"
