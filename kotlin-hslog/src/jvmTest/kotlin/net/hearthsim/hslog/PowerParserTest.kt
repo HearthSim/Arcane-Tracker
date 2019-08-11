@@ -133,4 +133,35 @@ class PowerParserTest {
             hsLog.processPower(it, false)
         }
     }
+
+    @Test
+    fun `pressure plate test2`() {
+        // https://hsreplay.net/replay/i5RvfvjFGFBpFmeoQUxFT4
+        val powerLines = File("/home/martin/dev/hsdata/2019_08_11_MrDude").readLines()
+
+        hsLog.setListener(object : DefaultHSLogListener() {
+
+            var secrets = emptyList<PossibleSecret>()
+            override fun onTurn(game: Game, turn: Int, isPlayer: Boolean) {
+                super.onTurn(game, turn, isPlayer)
+                when (turn) {
+                    // Opponent played PRESSURE_PLATE on turn 4
+                    5 -> {
+                        assert(secrets.firstOrNull { it.cardId == CardId.PRESSURE_PLATE }?.count ?: 0 > 0)
+                    }
+                    // I played prismatic lens on turn 11 with an empty board so it should not exclude PRESSURE_PLATE
+                    12 -> {
+                        assert(secrets.firstOrNull { it.cardId == CardId.PRESSURE_PLATE }?.count ?: 0 > 0)
+                    }
+                }
+            }
+
+            override fun onSecrets(possibleSecrets: List<PossibleSecret>) {
+                secrets = possibleSecrets
+            }
+        })
+        powerLines.forEach {
+            hsLog.processPower(it, false)
+        }
+    }
 }

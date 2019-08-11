@@ -98,27 +98,34 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
 
     @Suppress("UNUSED_PARAMETER")
     private fun handleBlockTag(tag: BlockTag) {
+        val game = mGame!!
+        when (tag.BlockType) {
+            BlockTag.TYPE_PLAY -> {
+                val playedEntity = mGame!!.findEntitySafe(tag.Entity!!)
+                if (playedEntity.CardID == null) {
+                    console.error("no CardID for play")
+                    return
+                }
+
+
+                val isOpponent = game.findController(playedEntity).isOpponent
+                console.debug("${if (isOpponent) "opponent" else "I"} played ${playedEntity.CardID}")
+
+                /**
+                 * This has do be called pre-visit else some minions might already be there.
+                 *
+                 * For an exemple, playing "Tip the scale" will fill the board with 7 minions and therefore will exclude "pressure_plate"
+                 * even if there was no minion on board in the first place
+                 */
+                secretLogic.blockPlayed(game, tag.Target, playedEntity)
+            }
+        }
     }
 
     private fun handleBlockTag2(tag: BlockTag) {
         val game = mGame!!
 
-        if (BlockTag.TYPE_PLAY == tag.BlockType) {
-            val playedEntity = mGame!!.findEntitySafe(tag.Entity!!)
-            if (playedEntity.CardID == null) {
-                console.error("no CardID for play")
-                return
-            }
-
-            val isOpponent = game.findController(playedEntity).isOpponent
-
-            mGame!!.lastPlayedCardId = playedEntity.CardID
-            console.debug("${if (isOpponent) "opponent" else "I"} played ${playedEntity.CardID}")
-
-            secretLogic.blockPlayed(game, tag.Target, playedEntity)
-
-        } else if (BlockTag.TYPE_ATTACK == tag.BlockType) {
-
+        if (BlockTag.TYPE_ATTACK == tag.BlockType) {
             secretLogic.blockAttack(game, tag)
         }
     }

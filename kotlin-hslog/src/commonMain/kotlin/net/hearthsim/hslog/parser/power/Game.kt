@@ -18,7 +18,6 @@ class Game(private val console: Console) {
 
     var victory: Boolean = false
 
-    var lastPlayedCardId: String? = null
     var spectator: Boolean = false
     var buildNumber: String? = null
     var gameType: GameType = GameType.GT_RANKED
