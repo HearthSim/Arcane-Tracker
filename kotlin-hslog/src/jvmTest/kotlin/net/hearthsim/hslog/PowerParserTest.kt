@@ -3,6 +3,7 @@ package net.hearthsim.hslog
 import kotlinx.io.streams.asInput
 import net.hearthsim.console.Console
 import net.hearthsim.console.DefaultConsole
+import net.hearthsim.hslog.parser.decks.Deck
 import net.hearthsim.hslog.parser.power.Game
 import net.hearthsim.hsmodel.CardJson
 import net.hearthsim.hsmodel.enum.CardId
@@ -136,7 +137,7 @@ class PowerParserTest {
 
     @Test
     fun `pressure plate test2`() {
-        // https://hsreplay.net/replay/i5RvfvjFGFBpFmeoQUxFT4
+        // https://hsreplay.net/replay/bDVPN8buJHt9apsVXKSDSo
         val powerLines = File("/home/martin/dev/hsdata/2019_08_11_MrDude").readLines()
 
         hsLog.setListener(object : DefaultHSLogListener() {
@@ -163,5 +164,39 @@ class PowerParserTest {
         powerLines.forEach {
             hsLog.processPower(it, false)
         }
+    }
+
+    @Test
+    fun `bombs are shown in opponent deck`() {
+        // https://hsreplay.net/replay/6Wfwiptda9QLiascu9tSJ6
+        val powerLines = File("/home/martin/dev/hsdata/2019_08_11_sofa").readLines()
+
+        var opponentDeckEntries = emptyList<DeckEntry>()
+
+        hsLog.setListener(object : DefaultHSLogListener() {
+            override fun onDeckEntries(game: Game, isPlayer: Boolean, deckEntries: List<DeckEntry>) {
+                if (!isPlayer) {
+                    opponentDeckEntries = deckEntries
+                }
+            }
+
+            override fun onTurn(game: Game, turn: Int, isPlayer: Boolean) {
+                super.onTurn(game, turn, isPlayer)
+                if (turn == 30) {
+                    println("Bombs have been placed")
+                }
+            }
+        })
+
+        powerLines.forEach {
+            hsLog.processPower(it, false)
+        }
+
+        val bombEntry = opponentDeckEntries.firstOrNull {
+            it is DeckEntry.Item
+                    && it.card.id == CardId.BOMB
+        }
+
+        assert((bombEntry is DeckEntry.Item) && bombEntry.count == 2)
     }
 }

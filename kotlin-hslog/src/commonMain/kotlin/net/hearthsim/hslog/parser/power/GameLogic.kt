@@ -436,15 +436,26 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
             return
         }
 
-        val blockTag = stack[stack.size - 1]
+        var depth = stack.size - 1
+        var blockTag = stack[depth]
 
-        val blockEntity = mGame!!.findEntitySafe(blockTag.Entity!!)
-        val entity = mGame!!.findEntitySafe(fullEntityTag.ID!!)
+        var blockEntity = mGame!!.findEntitySafe(blockTag.Entity!!)
 
         if (blockEntity.CardID.isNullOrBlank()) {
             return
         }
 
+        if (blockEntity.CardID == CardId.AUGMENTED_ELEKK) {
+            // use the parent block to determine what card is shuffled in
+            if (depth <= 0) {
+                return
+            }
+            depth -= 1
+            blockTag = stack[depth]
+            blockEntity = mGame!!.findEntitySafe(blockTag.Entity!!)
+        }
+
+        val entity = mGame!!.findEntitySafe(fullEntityTag.ID!!)
         var guessedId: String? = null
 
         if (BlockTag.TYPE_POWER == blockTag.BlockType) {
@@ -460,7 +471,7 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
                 CardId.HOLY_WATER,
                 CardId.LAB_RECRUITER,
                 CardId.SEANCE,
-                CardId.SPLINTERGRAFT -> mGame!!.findEntitySafe(blockTag.Target!!)!!.CardID
+                CardId.SPLINTERGRAFT -> mGame!!.findEntitySafe(blockTag.Target!!).CardID
                 //CardId.DOLLMASTER_DORIAN
                 CardId.WANTED -> CardId.THE_COIN
                 CardId.BENEATH_THE_GROUNDS -> CardId.NERUBIAN_AMBUSH
@@ -497,6 +508,8 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
                 CardId.SEAFORIUM_BOMBER -> CardId.BOMB
                 CardId.SPRINGPAW -> CardId.LYNX
                 CardId.HALAZZI_THE_LYNX -> CardId.LYNX
+                CardId.CLOCKWORK_GOBLIN -> CardId.BOMB
+                CardId.WRENCHCALIBUR -> CardId.BOMB
 
                 else -> null
             }
@@ -511,12 +524,12 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
                 CardId.BURGLY_BULLY -> CardId.THE_COIN
                 CardId.IGNEOUS_ELEMENTAL -> CardId.FLAME_ELEMENTAL
                 CardId.RHONIN -> CardId.ARCANE_MISSILES
-                CardId.FROZEN_CLONE -> stack.firstOrNull { BlockTag.TYPE_PLAY == it.BlockType }?.let { mGame!!.findEntitySafe(it.Entity!!)!!.CardID }
+                CardId.FROZEN_CLONE -> stack.firstOrNull { BlockTag.TYPE_PLAY == it.BlockType }?.let { mGame!!.findEntitySafe(it.Entity!!).CardID }
                 CardId.BONE_BARON -> CardId.SKELETON
                 CardId.WEASEL_TUNNELER -> CardId.WEASEL_TUNNELER
                 CardId.RAPTOR_HATCHLING -> CardId.RAPTOR_PATRIARCH
                 CardId.DIREHORN_HATCHLING -> CardId.DIREHORN_MATRIARCH
-                CardId.MANA_BIND -> stack.firstOrNull { BlockTag.TYPE_PLAY == it.BlockType }?.let { mGame!!.findEntitySafe(it.Entity!!)!!.CardID }
+                CardId.MANA_BIND -> stack.firstOrNull { BlockTag.TYPE_PLAY == it.BlockType }?.let { mGame!!.findEntitySafe(it.Entity!!).CardID }
                 CardId.ARCHMAGE_ANTONIDAS -> CardId.FIREBALL
                 CardId.HOARDING_DRAGON -> CardId.THE_COIN
                 CardId.ASTRAL_TIGER -> CardId.ASTRAL_TIGER
