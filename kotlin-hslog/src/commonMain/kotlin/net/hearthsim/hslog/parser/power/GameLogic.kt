@@ -440,10 +440,7 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
         var blockTag = stack[depth]
 
         var blockEntity = mGame!!.findEntitySafe(blockTag.Entity!!)
-
-        if (blockEntity.CardID.isNullOrBlank()) {
-            return
-        }
+        val createdByCardId = blockEntity.CardID
 
         if (blockEntity.CardID == CardId.AUGMENTED_ELEKK) {
             // use the parent block to determine what card is shuffled in
@@ -453,6 +450,10 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
             depth -= 1
             blockTag = stack[depth]
             blockEntity = mGame!!.findEntitySafe(blockTag.Entity!!)
+        }
+
+        if (blockEntity.CardID.isNullOrBlank()) {
+            return
         }
 
         val entity = mGame!!.findEntitySafe(fullEntityTag.ID!!)
@@ -553,7 +554,7 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
         }
 
         // even if we don't know the guessedId, record that this was createdBy this entity
-        entity.extra.createdBy = blockEntity.CardID
+        entity.extra.createdBy = createdByCardId
     }
 
     @Suppress("UNUSED_PARAMETER")
