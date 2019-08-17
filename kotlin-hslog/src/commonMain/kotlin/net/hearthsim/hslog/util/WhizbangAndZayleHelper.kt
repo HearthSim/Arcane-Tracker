@@ -7,24 +7,24 @@ import net.hearthsim.hsmodel.CardJson
 
 object WhizbangAndZayleHelper {
     val whizbangRecipes = listOf(
-            "AAEBAZICBCT9AsX9AsOUAw3tA/cD5gWxCNfvAt/7AuH7Ar/9AtWDA7SJA86UA8qcA9OcAwA=", // Trees are friends
-            "AAEBAZICBu0Fm/AC9fwCoIAD05QDypwDDEBWX5MExAaYB9UI8wz6/gK5lAPPlAO7nwMA", // Nature restauration
-            "AAEBAR8CgPMC44sDDqgCtQPeBNkH6wfbCe0JgQqghQOiigOwiwPkiwOenQPHnQMA", // Animal Instincts
-            "AAEBAR8EoIADm4UD8ZYD+ZYDDbUDlwjg9QLi9QLv9QK09gK5+AKH+wKY+wL2/QKghQPylgO2nAMA", // The scrap heap
-            "AAEBAf0ECMUE+wyggAOvhwPnlQODlgOWmgOKngMLTYoBuwLJA6sEywSWBewHw/gCn5sDoJsDAA==", // Khadgars Creations
-            "AAEBAf0EBO0FuAj77ALu9gINuwKrBLQE5gSWBZX/Arn/AqOHA8iHA4mWA5+bA+KbA/+dAwA=", // Archmages of Dalaran
-            "AAEBAZ8FCtIE+wyb8AL9+wKE/AKggAO9hgPehgPjhgPOhwMK3AP0Ba8H9gf57ALmhgPshgPvhgOKmgO0mwMA", // Shirvallah's chosen
-            "AAEBAZ8FAq8ElJoDDkaMAZ4ByAT1Bc8GrwexCK3yAtj+AvWJA76YA46aA5CaAwA=", // Sunreaver's secret
-            "AAEBAa0GBqUJ5fcCoIADi4oDgpQDoKwDDO0B5QTSCtMK8gzc9QK09gKh/gLriAPvkgODlAONlwMA", // Whispers from the grave
-            "AAEBAa0GBND+AqCAA5ObA4OgAw3tAeUE1QjRCtIK1wryDPLxAvv+ApeHA4OUA5ibA5mbAwA=", // Day of the dead
-            "AAEBAaIHBrICyAPdCM6MA9aMA9uMAwy0AZsFqAXUBYgH5weGCabvAt/vAqr/As+JA5CXAwA=", // Cursed crew
-            "AAEBAaIHCLIC6/AC7/MCqPcC5/oCzowDr5EDiJsDC7QBmwX1BYgH3QiGCcf4ApCXA6iYA/uaA/6aAwA=", // The Heist
-            "AAEBAaoIBCCiCafuAqCAAw2UA/UE/gWyBp/9Apv/AoqFA72FA/OKA62RA4qUA4+UA8SZAwA=", // Swamp of horrors
-            "AAEBAaoIArWYA5ybAw6/AcUD2wP+A+MF0AenCJMJ8PMC3oID4okDjJQDxpkD9JkDAA==", // Underbelly Underlings
-            "AAEBAf0GCJME8gXbBooHkgec+AKggAOXlwMLigH7BrYH4QeNCMQIzAjzDMXzAo+AA8KZAwA=", // Hand of Gul'dan
-            "AAEBAf0GAA8w0wHVA84H2QexCMIIkO4CnvEC9PcCw/0Cq5EDv5gDgJoDh50DAA==", // Ultimate Impfestation
-            "AAEBAQcIkAf/B6IJ+wzeggP4hgOShwO9mQMLogSJ8QKb8wL09QKBhwOLhwPoiQPsiQOqiwPolAPCmQMA", // Wings of war
-            "AAEBAQcI0gL8BLj2ApL4AqCAA5qHA5uKA/aWAwtLogSRBv8Hsgjy8QKb8wKO+wLYjAOWlAOZlAMA" // Dropping The Boom
+            "AAECAZICBpvwAvX8AqCAA9OUA8mcA9ulAwxAVpMExAaYB+QI6PwCuZQDypwDu58Dr6IDyKIDAA==", //Nature's Restoration
+            "AAECAZICBiRfrtIC9fwCyZwD+KEDDEBWigH3A8QGi+4C4fsCypwDr6IDyKID3KID2akDAA==", //Untapped potential
+            "AAECAR8Gh/sCoIADm4UD8ZYD+ZYDn7cDDLUDlwjg9QLi9QLv9QLw9QK09gK5+AKY+wL2/QLylgO2nAMA", //Scrap Heap
+            "AAECAR8GuwXtCcn4AuOLA+aWA6SlAwy1A94E2wmBCvbsAqCFA6SIA9ePA56dA8edA+SkA5ipAwA=", // Unseal the vault
+            "AAECAf0EBO0FuAju9gKJlgMNuwKrBLQE5gSWBZX/Arn/AqOHA8iHA5+bA+KbA/+dA4ipAwA=", // Archmages of Dalaran
+            "AAECAf0EHk2KAbsCiwPJA6sEywSWBd4F8gWKB+wH+wzL7AKe8AK38QLF8wLG+AKggAOvhwPsiQPnlQO9mQOfmwOKngOhoQP8owOSpAO/pAOEpwMAAA==", // Reno's riches
+            "AAECAZ8FBowBrwTIBMD9AqeCA5SaAwyeAc8G7gavB63yAtj+AvWJA/mTA76YA46aA5CaA8OkAwA=", // Sunreaver's secrets
+            "AAECAZ8FHooB3APSBN4F8gX0Bc8G+gaKB68H9gf+B48J+wz57AKb8AL9+wKE/ALd/gKggAO9hgPjhgPshgPsiQODoQOhoQP8owPDpAOEpwOWrAMAAA==", // Perfect Justice
+            "AAECAa0GCNcKvfMC+/4CoIAD1pkDk5sDg6ADn6kDC/gC5QTRCtMK8vECl4cD/okDgpQDmJsDmZsD0qUDAA==", // Day of the dead
+            "AAECAa0GBqCAA4OUA6mlA7ulA9OlA92rAwz4AuUE9gfVCNEK0gryDPsMvfMC5fcC0qUDhKgDAA==", // Activate the obelisk
+            "AAECAaIHBrICyAPdCKbvAtaMA9uMAwy0AagF1AWIB+cHhgnf7wKq/wLVjAOPlwOQlwP/pQMA", // Cursed crew
+            "AAECAaIHBLIC6/ACtIYDp6gDDbQBmwWIB90IhgnH+AKPlwOQlwP7mgP+mgO7pQOqqAOtqAMA", // Bazaar Burglary
+            "AAECAaoICqbwAu/3AqH4Aur6ArmZA72ZA8WZA9qdA4SnA+GoAwr1BN4F/gWyBu/xAq2RA7SRA8aZA7ulA8+lAwA=", // Corrupt the waters
+            "AAECAaoIAt6CA5ybAw7FA9sD/gPjBdAHpwiTCeKJA4yUA7WYA8aZA/SZA6+nA8qrAwA=", // Underbelly underlings
+            "AAECAf0GAA8w0wHOB9kHsQjCCJDuAp7xAvT3AquRA7+YA4CaA4edA4idA/qkAwA=", // Ultimate Impfestation
+            "AAECAf0GCtsGxAjMCMLxApz4AqCAA4+CA5eXA4mdA+ujAwowtgfzDMXzAtqWA8KZA9qbA6GhA7ulA9KlAwA=", // Supreme Archeology
+            "AAECAQcK0gL8BLj2ApL4AoP7AqCAA5qHA5uKA/aWA9+pAwpLogSRBv8Hsgjy8QKb8wKO+wLYjAOWlAMA", // Dropping the Boom
+            "AAECAQcES6CAA/KoA/eoAw3/A6IE/wf7DJ3wApvzAvT1Ap77ArP8AoiHA5+hA/WoA/aoAwA=" // Hack the system
     )
 
     val zayleRecipes = listOf(
