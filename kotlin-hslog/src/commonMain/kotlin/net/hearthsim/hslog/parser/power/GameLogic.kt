@@ -511,6 +511,10 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
                 CardId.HALAZZI_THE_LYNX -> CardId.LYNX
                 CardId.CLOCKWORK_GOBLIN -> CardId.BOMB
                 CardId.WRENCHCALIBUR -> CardId.BOMB
+                CardId.IMPBALMING -> CardId.WORTHLESS_IMP
+                CardId.INFESTED_GOBLIN -> CardId.SCARAB2
+                CardId.SANDWASP_QUEEN -> CardId.SANDWASP
+                CardId.SHADOW_OF_DEATH -> mGame?.findEntitySafe(blockTag.Target ?: "")?.CardID
 
                 else -> null
             }
