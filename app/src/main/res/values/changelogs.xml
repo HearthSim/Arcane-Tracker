@@ -35,4 +35,5 @@
     <string name="changelog_417" translatable="false">Added a turn timer\nTentative fix for the "Auto-restart issue" on Galaxy S10\nAdded a message when a Hearthstone restart is required\nFixed "Magnetized minions not showing in opponent\'s Deck"\nFixed "Text is white on white when changing the win/loss count"</string>
     <string name="changelog_420" translatable="false">Saviors of Uldum!</string>
     <string name="changelog_421" translatable="false">Add Uldum secrets in ranked.\nUpdate Whizbang decks.</string>
+    <string name="changelog_422" translatable="false">Updated for nerfs.\nAdded Tracking for generated Uldum cards.</string>
 </resources>
