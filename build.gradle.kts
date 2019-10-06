@@ -8,6 +8,7 @@ buildscript {
 //        maven {
 //            url = uri("https://dl.bintray.com/kotlin/kotlin-eap")
 //        }
+        jcenter() // for trove4j
     }
 
     dependencies {
