@@ -21,6 +21,7 @@ object Libs {
     const val play_auth = "com.google.android.gms:play-services-auth:17.0.0"
     const val play_firebase_core = "com.google.firebase:firebase-core:17.0.1"
     const val play_firebase_messaging = "com.google.firebase:firebase-messaging:19.0.1"
+    const val play_firebase_config = "com.google.firebase:firebase-config:18.0.0"
 
     const val crashlytics = "com.crashlytics.sdk.android:crashlytics:2.10.1"
     const val timber = "com.jakewharton.timber:timber:4.7.1"

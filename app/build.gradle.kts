@@ -126,6 +126,7 @@ dependencies {
     implementation(Libs.play_auth)
     implementation(Libs.play_firebase_core)
     implementation(Libs.play_firebase_messaging)
+    implementation(Libs.play_firebase_core)
 
     implementation(Libs.multidex)
     implementation(Libs.picassoDownloader)

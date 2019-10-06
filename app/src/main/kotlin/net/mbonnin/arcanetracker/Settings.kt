@@ -8,6 +8,7 @@ import android.preference.PreferenceManager
  */
 
 object Settings {
+    val WILD_PROMO_SHOWN = "WILD_PROMO_SHOWN"
     val HAS_SEEN_POWER_LOG = "HAS_SEEN_POWER_LOG"
     val TURN_TIMER_ENABLED = "TURN_TIMER_ENABLED"
     val SHOW_NEXT_TIME = "SHOW_NEXT_TIME"
