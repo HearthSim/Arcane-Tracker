@@ -12,6 +12,8 @@ import android.view.ContextThemeWrapper
 import androidx.multidex.MultiDexApplication
 import com.google.android.gms.security.ProviderInstaller
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.LruCache
 import com.squareup.picasso.Picasso
@@ -122,7 +124,6 @@ class ArcaneTrackerApplication : MultiDexApplication() {
             }
         }
 
-        val oldVersion = Settings[Settings.VERSION, 0]
         Timber.plant(FileTree.get())
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -203,6 +204,13 @@ class ArcaneTrackerApplication : MultiDexApplication() {
                 Settings.get(Settings.IS_PRE_HEARTHSIM_USER, false).toString())
         FirebaseAnalytics.getInstance(this).setUserProperty(FirebaseConstants.SCREEN_CAPTURE_ENABLED.name.toLowerCase(),
                 Settings.get(Settings.SCREEN_CAPTURE_ENABLED, true).toString())
+
+        FirebaseRemoteConfig.getInstance().setDefaults(mapOf(
+                NetworkSwitch.HALLOW_END_PROMO to false
+        ))
+        val settings = FirebaseRemoteConfigSettings.Builder().setMinimumFetchIntervalInSeconds(10).build()
+        FirebaseRemoteConfig.getInstance().setConfigSettingsAsync(settings)
+        FirebaseRemoteConfig.getInstance().fetchAndActivate()
     }
 
     companion object {
