@@ -23,7 +23,7 @@ class PromoView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 visibility = View.GONE
             }
             else -> {
-                //Settings.set(Settings.WILD_PROMO_SHOWN, true)
+                Settings.set(Settings.WILD_PROMO_SHOWN, true)
             }
         }
 

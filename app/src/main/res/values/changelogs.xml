@@ -36,4 +36,5 @@
     <string name="changelog_420" translatable="false">Saviors of Uldum!</string>
     <string name="changelog_421" translatable="false">Add Uldum secrets in ranked.\nUpdate Whizbang decks.</string>
     <string name="changelog_422" translatable="false">Updated for nerfs.\nAdded Tracking for generated Uldum cards.</string>
+    <string name="changelog_423" translatable="false">Hallow\'s end is there!</string>
 </resources>

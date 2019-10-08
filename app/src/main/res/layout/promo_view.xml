@@ -30,7 +30,7 @@
         android:layout_width="0dp"
         android:src="@drawable/promo"
         android:id="@+id/image"
-        app:layout_constraintDimensionRatio="624:456"
+        app:layout_constraintDimensionRatio="624:550"
         android:scaleType="centerCrop"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
