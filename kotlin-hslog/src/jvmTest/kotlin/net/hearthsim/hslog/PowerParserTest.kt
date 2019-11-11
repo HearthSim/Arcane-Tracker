@@ -11,32 +11,9 @@ import org.junit.Test
 import java.io.File
 
 class PowerParserTest {
-    val input = File("../app/src/main/res/raw/cards.json").inputStream().asInput()
-    val cardJson = CardJson(lang = "enUS", injectedCards = null, input = input)
+    val cardJson = TestUtils.cardJson
 
-    val console = object : Console {
-        override fun debug(message: String) {
-            /**
-             * A small hack to resolve the card ids on the fly
-             */
-            val regex = Regex("[a-zA-Z0-9]{2,3}_[0-9]{3}")
-            val m = message.replace(regex) {
-                val cardId = it.groupValues[0]
-                "$cardId (${cardJson.getCard(cardId).name})"
-            }
-            println(m)
-        }
-
-        override fun error(message: String) {
-            debug(message)
-        }
-
-        override fun error(throwable: Throwable) {
-            throwable.printStackTrace()
-        }
-
-    }
-    val hsLog = HSLog(console = console, cardJson = cardJson, debounceDelay = 0)
+    val hsLog = TestUtils.newHSLog()
 
     @Test
     fun `magnetized minions appear in the opponent deck`() {
