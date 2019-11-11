@@ -6,11 +6,15 @@ import kotlin.String
 object Type {
   const val ENCHANTMENT: String = "ENCHANTMENT"
 
+  const val GAME_MODE_BUTTON: String = "GAME_MODE_BUTTON"
+
   const val HERO: String = "HERO"
 
   const val HERO_POWER: String = "HERO_POWER"
 
   const val MINION: String = "MINION"
+
+  const val MOVE_MINION_HOVER_TARGET: String = "MOVE_MINION_HOVER_TARGET"
 
   const val SPELL: String = "SPELL"
 

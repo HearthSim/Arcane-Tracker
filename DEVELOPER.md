@@ -17,6 +17,6 @@ The hsmodel submodule contains the cards database as well as some enums (CardIds
 
 To update it from the root of the repo (This requires [kscript](https://github.com/holgerbrandl/kscript))
 
-    ./script/update_card_json.kts
+    ./scripts/update_card_json.kts
 
 
