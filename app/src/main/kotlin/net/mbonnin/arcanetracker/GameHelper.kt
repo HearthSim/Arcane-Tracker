@@ -1,22 +1,19 @@
 package net.mbonnin.arcanetracker
 
-import android.os.Bundle
-import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.*
 import net.mbonnin.arcanetracker.detector.RANK_UNKNOWN
 import net.hearthsim.hslog.parser.power.Game
 import net.hearthsim.hsreplay.HsReplay
 import net.hearthsim.hsreplay.model.legacy.HSPlayer
 import net.hearthsim.hsreplay.model.legacy.UploadRequest
-import net.mbonnin.arcanetracker.RankHolder.opponentRank
 import net.mbonnin.arcanetracker.model.GameSummary
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RGame
 import net.mbonnin.arcanetracker.room.WLCounter
+import net.hearthsim.hslog.parser.power.FormatType
 import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
 import timber.log.Timber
 import java.util.*
-import kotlin.collections.ArrayList
 
 object GameHelper {
     class InsertResult(val id: Long, val success: Boolean)
@@ -50,11 +47,15 @@ object GameHelper {
         }
     }
 
+
     fun insertAndUploadGame(gameStr: String, gameStart: Date, currentOrFinishedGame: () -> Game?) {
         val summary = GameSummary()
         val game = currentOrFinishedGame()
 
         if (game == null) {
+            if (gameStr.contains("GameType=GT_BATTLEGROUNDS")) {
+                uploadBattlegroundsGame(gameStr, gameStart)
+            }
             return
         } else if (game.spectator) {
             return
@@ -75,19 +76,19 @@ object GameHelper {
 
 
         val deck = MainViewCompanion.playerCompanion.deck?.let {
-            it.cards.flatMap {entry->
-                Array(entry.value, {entry.key}).toList()
+            it.cards.flatMap { entry ->
+                Array(entry.value, { entry.key }).toList()
             }
         }
 
         val player = HSPlayer(
-                rank = if ( game.playerRank != RANK_UNKNOWN)  game.playerRank else null,
-                deck_id =MainViewCompanion.playerCompanion.deck?.id?.toLongOrNull(),
+                rank = if (game.playerRank != RANK_UNKNOWN) game.playerRank else null,
+                deck_id = MainViewCompanion.playerCompanion.deck?.id?.toLongOrNull(),
                 deck = deck ?: emptyList()
         )
 
         val opponent = HSPlayer(
-                rank = if ( RankHolder.opponentRank != RANK_UNKNOWN) RankHolder.opponentRank else null,
+                rank = if (RankHolder.opponentRank != RANK_UNKNOWN) RankHolder.opponentRank else null,
                 deck_id = null,
                 deck = emptyList()
         )
@@ -105,7 +106,7 @@ object GameHelper {
                 game_type = fromGameAndFormat(game.gameType, game.formatType).intValue,
                 player1 = player1,
                 player2 = player2
-                )
+        )
 
         GlobalScope.launch(Dispatchers.Main) {
             val insertResult = insertGame(game)
@@ -133,6 +134,19 @@ object GameHelper {
                     }
                 }
             }
+        }
+    }
+
+    fun uploadBattlegroundsGame(gameStr: String, gameStart: Date) {
+        val uploadRequest = UploadRequest(
+                match_start = Utils.ISO8601DATEFORMAT.format(gameStart),
+                build = ArcaneTrackerApplication.get().hearthstoneBuild,
+                spectator_mode = false,
+                format = FormatType.FT_WILD.intValue,
+                game_type = BnetGameType.BGT_BATTLEGROUNDS.intValue
+        )
+        GlobalScope.launch(Dispatchers.Main) {
+            val result = ArcaneTrackerApplication.get().hsReplay.uploadGame(uploadRequest, gameStr)
         }
     }
 

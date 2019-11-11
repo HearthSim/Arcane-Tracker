@@ -69,6 +69,29 @@ class HsReplayTest {
         }
     }
 
+    @Test
+    fun testBattleGroundsUpload() {
+        val hsReplay = HsReplay(userAgent = "net.mbonnin.arcanetracker/4.13; Android 9;",
+                console = DefaultConsole(),
+                preferences = preferences,
+                analytics = DefaultAnalytics())
+
+        val uploadRequest = UploadRequest(
+                match_start = "2019-07-13T13:05:44+0200",
+                build = 31353,
+                spectator_mode = false,
+                format = 1, // Wild
+                game_type = 50 // Battlegrounds
+        )
+
+        val text = File("/home/martin/dev/hsdata/2019_11_11_battlegrounds").readText()
+        runBlocking {
+            val result = hsReplay.uploadGame(uploadRequest, text)
+            if (result is HsReplay.UploadResult.Failure) {
+                result.e.printStackTrace()
+            }
+        }
+    }
     @InternalAPI
     @Test
     fun testGzip() {
