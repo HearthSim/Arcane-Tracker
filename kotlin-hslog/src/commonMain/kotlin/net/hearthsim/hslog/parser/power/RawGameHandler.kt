@@ -32,7 +32,7 @@ class RawGameHandler(private val rawGameConsumer: ((rawGame: String, unixMillis:
         if (rawLine.contains("GOLD_REWARD_STATE")) {
             rawGoldRewardStateCount++
 
-            var max = if (!isBattleGrounds) {
+            val max = if (!isBattleGrounds) {
                 // 4 = 2 (for GameState) + 2 (for Power TaskList)
                 // We want to make sure the GameLogic has the game info when we send the logs to HSReplay
                 4
