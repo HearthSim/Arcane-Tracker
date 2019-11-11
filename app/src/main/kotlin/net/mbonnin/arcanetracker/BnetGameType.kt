@@ -41,7 +41,10 @@ enum class BnetGameType(val intValue: Int) {
     BGT_FSG_BRAWL_VS_FRIEND(40),
     BGT_FSG_BRAWL_PVP(41),
     BGT_FSG_BRAWL_1P_VERSUS_AI(42),
-    BGT_FSG_BRAWL_2P_COOP(43)
+    BGT_FSG_BRAWL_2P_COOP(43),
+    BGT_RANKED_STANDARD_NEW_PLAYER(45),
+    BGT_BATTLEGROUNDS(50),
+
 }
 
 fun fromGameAndFormat(gameType: GameType, format: FormatType): BnetGameType {
@@ -63,6 +66,7 @@ fun fromGameAndFormat(gameType: GameType, format: FormatType): BnetGameType {
                 else -> BnetGameType.BGT_UNKNOWN
             }
         }
+        GameType.GT_BATTLEGROUNDS -> BnetGameType.BGT_BATTLEGROUNDS
         else -> BnetGameType.BGT_UNKNOWN
     }
 }

@@ -7,4 +7,5 @@ enum class GameType {
     GT_ARENA,
     GT_TAVERNBRAWL,
     GT_VS_FRIEND,
+    GT_BATTLEGROUNDS
 }
