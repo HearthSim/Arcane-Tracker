@@ -57,14 +57,6 @@ object Utils {
     val hsExternalDir: String
         get() = Environment.getExternalStorageDirectory().path + "/Android/data/com.blizzard.wtcg.hearthstone/files/"
 
-    val isNetworkConnected: Boolean
-        get() {
-            val cm = ArcaneTrackerApplication.context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-            val activeNetwork = cm.activeNetworkInfo
-            return activeNetwork != null && activeNetwork.isConnectedOrConnecting
-        }
-
     fun dpToPx(dp: Int): Int {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(),
                 ArcaneTrackerApplication.context.resources.displayMetrics).toInt()
@@ -123,32 +115,6 @@ object Utils {
         return BitmapFactory.decodeStream(inputStream)
     }
 
-    fun getCardArtBlocking(cardId: String): Bitmap? {
-
-        var t = getAssetBitmap("cards/" + cardId + ".webp")
-
-        if (t == null) {
-            try {
-                val client = OkHttpClient()
-                val request = Request.Builder()
-                        .get()
-                        .url("https://arcanetracker.com/cards/${cardId}.webp")
-                        .build()
-
-                val response = client.newCall(request).execute()
-
-                val inputStream = response.body()?.byteStream()
-                if (inputStream != null) {
-                    t = BitmapFactory.decodeStream(inputStream)
-                }
-            } catch (e: IOException) {
-                Timber.e(e)
-            }
-        }
-
-        return t
-    }
-
     fun getCardUrl(id: String): String {
         // On my Pixel 3XL, a card is ~500px wide. Putting 256x down there will result in significant blur
         // It would be nice to have webp or jpg on the server but they're not present as of today
@@ -200,14 +166,6 @@ object Utils {
         }
 
         return "" == str
-    }
-
-    fun cardMapGet(map: HashMap<String, Int>, key: String): Int {
-        var a: Int? = map[key]
-        if (a == null) {
-            a = 0
-        }
-        return a
     }
 
     fun runOnMainThread(action: () -> Unit) {
