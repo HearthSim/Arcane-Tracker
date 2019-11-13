@@ -144,7 +144,12 @@ object GameHelper {
                 game_type = BnetGameType.BGT_BATTLEGROUNDS.intValue
         )
         GlobalScope.launch(Dispatchers.Main) {
-            val result = ArcaneTrackerApplication.get().hsReplay.uploadGame(uploadRequest, gameStr)
+            try {
+                ArcaneTrackerApplication.get().hsReplay.uploadGame(uploadRequest, gameStr)
+            } catch (e: Exception) {
+                // battlegrounds file are large and ktor
+                Utils.reportNonFatal(e)
+            }
         }
     }
 
