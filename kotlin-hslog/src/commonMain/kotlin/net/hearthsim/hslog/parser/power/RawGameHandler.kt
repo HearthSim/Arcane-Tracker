@@ -1,9 +1,10 @@
 package net.hearthsim.hslog.parser.power
 
 import com.soywiz.klock.DateTime
+import kotlinx.io.core.toByteArray
 
-class RawGameHandler(private val rawGameConsumer: ((rawGame: String, unixMillis: Long) -> Unit)?) {
-    private val rawBuilder = StringBuilder()
+class RawGameHandler(private val rawGameConsumer: ((rawGame: ByteArray, unixMillis: Long) -> Unit)?) {
+    private val rawBuilder = MyByteArrayOutputStream()
     private var rawMatchStart: Long = 0
     private var rawGoldRewardStateCount: Int = 0
     private var isBattleGrounds = false
@@ -22,8 +23,8 @@ class RawGameHandler(private val rawGameConsumer: ((rawGame: String, unixMillis:
             isBattleGrounds = false
         }
 
-        rawBuilder.append(rawLine)
-        rawBuilder.append('\n')
+        rawBuilder.write(rawLine.toByteArray())
+        rawBuilder.write("\n".toByteArray())
 
         if (rawLine.contains("GameType=GT_BATTLEGROUNDS")) {
             isBattleGrounds = true
@@ -41,7 +42,7 @@ class RawGameHandler(private val rawGameConsumer: ((rawGame: String, unixMillis:
                 2
             }
             if (rawGoldRewardStateCount == max) {
-                val gameStr = rawBuilder.toString()
+                val gameStr = rawBuilder.bytes()
 
                 rawGameConsumer?.invoke(gameStr, rawMatchStart)
             }

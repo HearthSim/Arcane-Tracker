@@ -75,9 +75,9 @@ object Libs {
     const val ktorClientEncodingJvm = "io.ktor:ktor-client-encoding-jvm:${Versions.ktor}"
     const val ktorClientEncodingMacOS = "io.ktor:ktor-client-encoding-macosx64:${Versions.ktor}"
 
-    const val kotlinxIo = "org.jetbrains.kotlinx:kotlinx-io:0.1.13"
-    const val kotlinxIoJvm = "org.jetbrains.kotlinx:kotlinx-io-jvm:0.1.13"
-    const val kotlinxIoNative = "org.jetbrains.kotlinx:kotlinx-io-native:0.1.13"
+    const val kotlinxIo = "org.jetbrains.kotlinx:kotlinx-io:0.1.15"
+    const val kotlinxIoJvm = "org.jetbrains.kotlinx:kotlinx-io-jvm:0.1.15"
+    const val kotlinxIoNative = "org.jetbrains.kotlinx:kotlinx-io-native:0.1.15"
 
     const val klock = "com.soywiz.korlibs.klock:klock:1.5.0"
 

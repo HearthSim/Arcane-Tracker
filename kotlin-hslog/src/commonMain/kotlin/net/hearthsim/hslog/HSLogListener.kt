@@ -26,7 +26,7 @@ interface HSLogListener {
     /**
      *
      */
-    fun onRawGame(gameString: String, gameStartMillis: Long)
+    fun onRawGame(gameString: ByteArray, gameStartMillis: Long)
 
     /**
      *

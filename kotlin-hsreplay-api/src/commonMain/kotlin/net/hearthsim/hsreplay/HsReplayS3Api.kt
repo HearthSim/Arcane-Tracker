@@ -6,6 +6,7 @@ import io.ktor.client.request.header
 import io.ktor.client.request.put
 import io.ktor.client.response.HttpResponse
 import io.ktor.http.ContentType
+import io.ktor.http.content.ByteArrayContent
 import io.ktor.http.content.OutgoingContent
 import io.ktor.http.content.TextContent
 import io.ktor.http.contentType
@@ -16,8 +17,8 @@ class HsReplayS3Api(val userAgent: String) {
         install(GzipCompressFeature)
     }
 
-    suspend fun put(putUrl: String, gameString: String): HttpResponse = client.put(putUrl) {
-        body = TextContent(gameString, contentType = ContentType.Text.Plain)
+    suspend fun put(putUrl: String, gameString: ByteArray): HttpResponse = client.put(putUrl) {
+        body = ByteArrayContent(gameString, contentType = ContentType.Text.Plain)
 
         header("User-Agent", userAgent)
     }

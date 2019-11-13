@@ -12,10 +12,10 @@ class RawGameTest {
         val powerLines = File("/home/martin/dev/hsdata/2019_11_11_battlegrounds").readLines()
         val hsLog = TestUtils.newHSLog()
 
-        var rawGame: String? = null
+        var rawGame: ByteArray? = null
 
         hsLog.setListener(object : DefaultHSLogListener() {
-            override fun onRawGame(gameString: String, gameStartMillis: Long) {
+            override fun onRawGame(gameString: ByteArray, gameStartMillis: Long) {
                 rawGame = gameString
             }
         })

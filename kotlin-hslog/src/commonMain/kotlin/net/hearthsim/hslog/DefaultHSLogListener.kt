@@ -28,7 +28,7 @@ open class DefaultHSLogListener : HSLogListener {
 
     }
 
-    override fun onRawGame(gameString: String, gameStartMillis: Long) {
+    override fun onRawGame(gameString: ByteArray, gameStartMillis: Long) {
 
     }
 

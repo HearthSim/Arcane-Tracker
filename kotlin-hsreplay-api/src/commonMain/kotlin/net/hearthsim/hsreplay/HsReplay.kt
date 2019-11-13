@@ -139,7 +139,8 @@ class HsReplay(val preferences: Preferences, val console: Console, val analytics
         class Success(val replayUrl: String): UploadResult()
         class Failure(val e: Throwable): UploadResult()
     }
-    suspend fun uploadGame(uploadRequest: UploadRequest, gameStr: String): UploadResult {
+
+    suspend fun uploadGame(uploadRequest: UploadRequest, gameStr: ByteArray): UploadResult {
         console.debug("uploadGame [token=$uploadTokenKey]")
 
         if (uploadTokenKey == null) {

@@ -38,7 +38,7 @@ class ATHSLogListener(val currentOrFinishedGame: () -> Game?): HSLogListener {
         MainViewCompanion.get().onSecrets(possibleSecrets)
     }
 
-    override fun onRawGame(gameString: String, gameStartMillis: Long) {
+    override fun onRawGame(gameString: ByteArray, gameStartMillis: Long) {
         val url = BuildConfig.DEBUG_URL
         if (!url.isBlank()) {
             GlobalScope.launch {

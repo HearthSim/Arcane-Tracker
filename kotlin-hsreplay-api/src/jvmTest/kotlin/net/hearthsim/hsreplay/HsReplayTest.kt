@@ -60,7 +60,7 @@ class HsReplayTest {
         )
 
         val dir = System.getProperty("user.dir")
-        val text = File(dir, "src/jvmTest/files/power.log").readText()
+        val text = File(dir, "src/jvmTest/files/power.log").readBytes()
         runBlocking {
             val result = hsReplay.uploadGame(uploadRequest, text)
             if (result is HsReplay.UploadResult.Failure) {
@@ -84,7 +84,7 @@ class HsReplayTest {
                 game_type = 50 // Battlegrounds
         )
 
-        val text = File("/home/martin/dev/hsdata/2019_11_11_battlegrounds").readText()
+        val text = File("/home/martin/dev/hsdata/2019_11_11_battlegrounds").readBytes()
         runBlocking {
             val result = hsReplay.uploadGame(uploadRequest, text)
             if (result is HsReplay.UploadResult.Failure) {

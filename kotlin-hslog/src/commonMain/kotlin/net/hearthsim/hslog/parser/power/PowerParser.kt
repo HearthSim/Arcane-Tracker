@@ -10,7 +10,7 @@ import net.hearthsim.hslog.parser.parseLineWithMethod
 
 class PowerParser(
         private val tagConsumer: (Tag) -> Unit,
-        private val rawGameConsumer: ((rawGame: String, unixMillis: Long) -> Unit)?,
+        private val rawGameConsumer: ((rawGame: ByteArray, unixMillis: Long) -> Unit)?,
         private val logger: ((String, Array<out String>) -> Unit)?
 ) {
 

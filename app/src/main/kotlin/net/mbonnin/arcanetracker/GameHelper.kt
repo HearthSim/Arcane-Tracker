@@ -48,14 +48,12 @@ object GameHelper {
     }
 
 
-    fun insertAndUploadGame(gameStr: String, gameStart: Date, currentOrFinishedGame: () -> Game?) {
+    fun insertAndUploadGame(gameStr: ByteArray, gameStart: Date, currentOrFinishedGame: () -> Game?) {
         val summary = GameSummary()
         val game = currentOrFinishedGame()
 
         if (game == null) {
-            if (gameStr.contains("GameType=GT_BATTLEGROUNDS")) {
-                uploadBattlegroundsGame(gameStr, gameStart)
-            }
+            uploadBattlegroundsGame(gameStr, gameStart)
             return
         } else if (game.spectator) {
             return
@@ -137,7 +135,7 @@ object GameHelper {
         }
     }
 
-    fun uploadBattlegroundsGame(gameStr: String, gameStart: Date) {
+    private fun uploadBattlegroundsGame(gameStr: ByteArray, gameStart: Date) {
         val uploadRequest = UploadRequest(
                 match_start = Utils.ISO8601DATEFORMAT.format(gameStart),
                 build = ArcaneTrackerApplication.get().hearthstoneBuild,
