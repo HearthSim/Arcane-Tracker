@@ -7,7 +7,7 @@ object Versions {
     const val fabricPlugin = "1.30.0"
     const val playServicesPlugin = "4.3.0"
     const val coroutines = "1.3.2"
-    const val ktor = "1.2.2"
+    const val ktor = "1.2.5"
 }
 
 object Libs {
