@@ -45,7 +45,7 @@ class HsReplayTest {
                 analytics = DefaultAnalytics())
 
         val uploadRequest = UploadRequest(
-                match_start = "2019-07-13T13:05:44+0200",
+                match_start = "2019-11-13T13:05:44+0200",
                 spectator_mode = false,
                 game_type = 2, // ranked_standard
                 format = 2, // standard

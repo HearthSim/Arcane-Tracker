@@ -18,6 +18,7 @@ class MyByteArrayOutputStream {
             buffer = buffer.copyOf(written + bytes.size + GROW_SIZE)
         }
         bytes.copyInto(buffer, written, 0, bytes.size)
+        written += bytes.size
     }
 
     fun bytes(): ByteArray {
