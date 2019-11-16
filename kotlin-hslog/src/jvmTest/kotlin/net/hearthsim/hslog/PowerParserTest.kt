@@ -4,6 +4,8 @@ import kotlinx.io.streams.asInput
 import net.hearthsim.console.Console
 import net.hearthsim.console.DefaultConsole
 import net.hearthsim.hslog.parser.decks.Deck
+import net.hearthsim.hslog.parser.power.BattlegroundState
+import net.hearthsim.hslog.parser.power.Entity
 import net.hearthsim.hslog.parser.power.Game
 import net.hearthsim.hsmodel.CardJson
 import net.hearthsim.hsmodel.enum.CardId
@@ -179,17 +181,36 @@ class PowerParserTest {
 
     @Test
     fun `battlegrounds games are correctly parsed`() {
-        val powerLines = File("/home/martin/dev/hsdata/2019_11_11_battlegrounds").readLines()
+        //val powerLines = File("/home/martin/dev/hsdata/2019_11_11_battlegrounds").readLines()
+        val powerLines = File("/home/martin/dev/hsdata/2019_11_14_22-18_battlegrounds").readLines()
         val hsLog = TestUtils.newHSLog()
 
         var gameAtStart: Game? = null
         var gameAtEnd: Game? = null
 
         hsLog.setListener(object : DefaultHSLogListener() {
+            var lastState: BattlegroundState? = null
+
             override fun onGameStart(game: Game) {
                 super.onGameStart(game)
                 gameAtStart = game
             }
+
+            override fun onGameChanged(game: Game) {
+                super.onGameChanged(game)
+
+                val newState = game.battlegroundState
+                if (newState != lastState) {
+                    println("----------------------------------------")
+                    println("--------------Turn ${game.gameEntity?.tags?.get(Entity.KEY_TURN)}-------------------")
+                    println("----------------------------------------")
+                    newState.boards.forEach {
+                        TestUtils.console.debug(it.toString())
+                    }
+                    lastState = newState
+                }
+            }
+
 
             override fun onGameEnd(game: Game) {
                 super.onGameEnd(game)

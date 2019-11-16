@@ -243,18 +243,24 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
                     callTurnListenersIfNeeded()
                 }
                 Entity.KEY_STEP -> {
-                    if (Entity.STEP_BEGIN_MULLIGAN == newValue) {
-                        gameStepBeginMulligan()
-                        if (mGame!!.isStarted) {
-                            for (listener in gameStartListenerList) {
-                                listener.invoke(mGame!!)
+                    when (newValue) {
+                        Entity.STEP_BEGIN_MULLIGAN -> {
+                            gameStepBeginMulligan()
+                            if (mGame!!.isStarted) {
+                                for (listener in gameStartListenerList) {
+                                    listener.invoke(mGame!!)
+                                }
+                                currentOrFinishedGame = mGame!!
                             }
-                            currentOrFinishedGame = mGame!!
                         }
-                    } else if (Entity.STEP_FINAL_GAMEOVER == newValue) {
-                        // do not set mGame = null here, we might be part of a block where other tag handlers
-                        // require access to mGame
-                        mLastTag = true
+                        Entity.STEP_FINAL_GAMEOVER -> {
+                            // do not set mGame = null here, we might be part of a block where other tag handlers
+                            // require access to mGame
+                            mLastTag = true
+                        }
+                        Entity.STEP_MAIN_READY -> {
+                            captureBattlegroundBoard()
+                        }
                     }
                 }
             }
@@ -303,6 +309,47 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
         if (key == Entity.KEY_MULLIGAN_STATE && newValue == "DONE") {
             callTurnListenersIfNeeded()
         }
+
+        if (key == Entity.KEY_PLAYER_LEADERBOARD_PLACE) {
+        }
+    }
+
+    private fun captureBattlegroundBoard() {
+        val game = mGame
+        if (game == null) {
+            return
+        }
+        val opponentHero = game.getEntityList {
+            it.tags[Entity.KEY_CARDTYPE] == Type.HERO
+                    && it.tags[Entity.KEY_CONTROLLER] == mGame?.opponent?.entity?.PlayerID
+                    && it.tags[Entity.KEY_ZONE] == Entity.ZONE_PLAY
+        }.firstOrNull()
+
+        if (opponentHero == null || opponentHero.CardID == CardId.BOBS_TAVERN)
+            return
+
+        val minions = game.getEntityList {
+            it.tags[Entity.KEY_CARDTYPE] == Type.MINION
+                    && it.tags[Entity.KEY_CONTROLLER] == game.opponent?.entity?.PlayerID
+                    && it.tags[Entity.KEY_ZONE] == Entity.ZONE_PLAY
+        }
+
+        val board = BattlegroundBoard(
+                opponentHero = opponentHero,
+                turn = game.gameEntity?.tags?.get(Entity.KEY_TURN)?.toInt() ?: 0,
+                minions = minions.map { entityToBattlegroundMinion(it) }
+        )
+        game.battlegroundsBoard.put(opponentHero.CardID!!, board)
+    }
+
+    private fun entityToBattlegroundMinion(entity: Entity): BattlegroundMinion {
+        return BattlegroundMinion(
+                entity.CardID ?: "",
+                entity.tags.get(Entity.KEY_ATK)?.toInt() ?: 0,
+                entity.tags.get(Entity.KEY_HEALTH)?.toInt() ?: 0,
+                entity.tags.get(Entity.KEY_POISONOUS)?.toInt() ?: 0 > 0,
+                entity.tags.get(Entity.KEY_DIVINE_SHIELD)?.toInt() ?: 0 > 0
+        )
     }
 
     private fun callTurnListenersIfNeeded() {
@@ -384,7 +431,7 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
             return
         }
 
-        game.playerMap.values.forEach {player ->
+        game.playerMap.values.forEach { player ->
             val handEntities = game.getEntityList { entity ->
                 player.entity!!.PlayerID == entity.tags[Entity.KEY_CONTROLLER]
                         && Entity.ZONE_HAND == entity.tags[Entity.KEY_ZONE]
@@ -408,7 +455,7 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
 
         if (game.opponent == null || game.player == null) {
             // This must be a battlegrounds game
-            game.playerMap.values.forEach {player->
+            game.playerMap.values.forEach { player ->
                 if (player.entity?.tags?.get(Entity.KEY_BACON_DUMMY_PLAYER) != null) {
                     game.opponent = player
                 } else {
@@ -420,7 +467,6 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
         val firstPlayer = if (!game.player!!.hasCoin) "player" else "opponent"
         console.debug("firstPlayer=$firstPlayer")
     }
-
 
     private fun notifyListeners() {
         if (mGame != null && mGame!!.isStarted) {

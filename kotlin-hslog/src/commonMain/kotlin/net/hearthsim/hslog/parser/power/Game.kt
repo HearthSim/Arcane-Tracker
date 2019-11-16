@@ -12,6 +12,9 @@ class Game(private val console: Console) {
     var gameEntity: Entity? = null
 
     var player: Player? = null
+    /**
+     * For battlegrounds, the opponent will be BACON_DUMMY_PLAYER
+     */
     var opponent: Player? = null
 
     var playerRank: Int = 0
@@ -24,6 +27,16 @@ class Game(private val console: Console) {
     var gameType: GameType = GameType.GT_RANKED
     var formatType: FormatType = FormatType.FT_UNKNOWN
     var scenarioId: String? = null
+
+    internal val battlegroundsBoard = mutableMapOf<String, BattlegroundBoard>()
+
+    val battlegroundState: BattlegroundState
+        get() {
+            val boardsOrdered = battlegroundsBoard.values.sortedBy { board ->
+                board.opponentHero.tags.get(Entity.KEY_PLAYER_LEADERBOARD_PLACE)?.toInt() ?: 0
+            }
+            return BattlegroundState(boardsOrdered)
+        }
 
     val isStarted: Boolean
         get() = player != null && opponent != null
