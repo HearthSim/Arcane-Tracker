@@ -6,6 +6,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.hearthsim.console.Console
 import net.hearthsim.hslog.HSLog
@@ -17,6 +18,7 @@ import net.mbonnin.arcanetracker.room.RPack
 import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
 import net.hearthsim.hsmodel.CardJson
 import timber.log.Timber
+import java.io.File
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -45,22 +47,27 @@ object HSLogFactory {
             }
         })
 
-        /*
-         * Power.log, we just want the incremental changes
-         */
-        val powerLogReader = LogReader("Power.log", true)
-        powerLogReader.start(object : LogReader.LineConsumer {
-            var isOldData = true
-            override fun onLine(rawLine: String) {
-                handler.post {
-                    hsLog.processPower(rawLine, isOldData)
-                }
-            }
 
-            override fun onPreviousDataRead() {
-                isOldData = false
-            }
-        })
+        if (false) {
+            configureDebugReader(hsLog, handler)
+        } else {
+            /*
+             * Power.log, we just want the incremental changes
+             */
+            val powerLogReader = LogReader("Power.log", true)
+            powerLogReader.start(object : LogReader.LineConsumer {
+                var isOldData = true
+                override fun onLine(rawLine: String) {
+                    handler.post {
+                        hsLog.processPower(rawLine, isOldData)
+                    }
+                }
+
+                override fun onPreviousDataRead() {
+                    isOldData = false
+                }
+            })
+        }
 
 
         val achievementLogReader = LogReader("Achievements.log", true)
@@ -92,5 +99,24 @@ object HSLogFactory {
         })
 
         return hsLog
+    }
+
+    private fun configureDebugReader(hsLog: HSLog, handler: Handler) {
+        val reader = File("/sdcard/2019_11_14_22-18_battlegrounds").bufferedReader()
+
+        GlobalScope.launch(Dispatchers.IO) {
+            while (true) {
+                val line = reader.readLine()
+                if (line == null) {
+                    break
+                }
+                if (line.contains("tag=NEXT_STEP value=MAIN_READY")) {
+                    delay(2000)
+                }
+                handler.post {
+                    hsLog.processPower(line, false)
+                }
+            }
+        }
     }
 }

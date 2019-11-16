@@ -47,7 +47,7 @@ class ATHSLogListener(val currentOrFinishedGame: () -> Game?): HSLogListener {
                         body = gameString
                     }
                 } catch(e: Exception) {
-                    Timber.e("could not upload debug data: ${e.message}")
+                    Timber.e("uploadbin error: ${e.message}")
                 }
             }
         }

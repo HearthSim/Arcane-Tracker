@@ -11,6 +11,7 @@ import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RGame
 import net.mbonnin.arcanetracker.room.WLCounter
 import net.hearthsim.hslog.parser.power.FormatType
+import net.hearthsim.hslog.parser.power.GameType
 import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
 import timber.log.Timber
 import java.util.*
@@ -53,7 +54,6 @@ object GameHelper {
         val game = currentOrFinishedGame()
 
         if (game == null) {
-            uploadBattlegroundsGame(gameStr, gameStart)
             return
         } else if (game.spectator) {
             return
@@ -61,6 +61,10 @@ object GameHelper {
 
         Timber.d("ready to send hsreplay %s", game.gameType)
 
+        if (game.gameType == GameType.GT_BATTLEGROUNDS) {
+            uploadBattlegroundsGame(gameStr, gameStart)
+            return
+        }
         summary.coin = game.player!!.hasCoin
         summary.win = game.victory
         summary.hero = game.player!!.classIndex!!
