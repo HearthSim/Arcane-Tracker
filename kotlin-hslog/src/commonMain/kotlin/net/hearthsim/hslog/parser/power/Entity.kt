@@ -79,6 +79,7 @@ class Entity {
         val KEY_CURRENT_PLAYER = "CURRENT_PLAYER"
         val KEY_NUM_CARDS_PLAYED_THIS_TURN = "NUM_CARDS_PLAYED_THIS_TURN"
         val KEY_TIMEOUT = "TIMEOUT"
+        val KEY_BACON_DUMMY_PLAYER = "BACON_DUMMY_PLAYER"
 
         val PLAYSTATE_WON = "WON"
 
@@ -88,7 +89,6 @@ class Entity {
         val ZONE_GRAVEYARD = "GRAVEYARD"
         val ZONE_SECRET = "SECRET"
         val ZONE_SETASIDE = "SETASIDE"
-        val ENTITY_ID_GAME = "1"
         val STEP_FINAL_GAMEOVER = "FINAL_GAMEOVER"
         val STEP_BEGIN_MULLIGAN = "BEGIN_MULLIGAN"
 

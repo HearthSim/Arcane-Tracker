@@ -13,6 +13,7 @@ class Game(private val console: Console) {
 
     var player: Player? = null
     var opponent: Player? = null
+
     var playerRank: Int = 0
     var opponentRank: Int = 0
 

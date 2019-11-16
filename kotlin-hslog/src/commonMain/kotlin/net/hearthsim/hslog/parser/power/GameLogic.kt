@@ -234,7 +234,7 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
 
         entity.tags.put(key, newValue!!)
 
-        if (Entity.ENTITY_ID_GAME == entity.EntityID) {
+        if (entity.EntityID == mGame?.gameEntity?.EntityID) {
             when (key) {
                 Entity.KEY_TURN -> {
                     mCurrentTurn = newValue.toIntOrNull() ?: 0
@@ -376,41 +376,48 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
         fun gameOver()
     }
 
-
     private fun gameStepBeginMulligan() {
-
-        var knownCardsInHand = 0
-        var totalCardsInHand = 0
-
         val game = mGame!!
 
-        val player1 = game.playerMap["1"]
-        val player2 = game.playerMap["2"]
-
-        if (player1 == null || player2 == null) {
-            console.error("cannot find players")
+        if (game.playerMap.size != 2) {
+            console.error("unsupported number of players: ${game.playerMap.size}")
             return
         }
 
-        val entities = game.getEntityList { entity -> "1" == entity.tags[Entity.KEY_CONTROLLER] && Entity.ZONE_HAND == entity.tags[Entity.KEY_ZONE] }
-
-        for (entity in entities) {
-            if (!entity.CardID.isNullOrBlank()) {
-                knownCardsInHand++
+        game.playerMap.values.forEach {player ->
+            val handEntities = game.getEntityList { entity ->
+                player.entity!!.PlayerID == entity.tags[Entity.KEY_CONTROLLER]
+                        && Entity.ZONE_HAND == entity.tags[Entity.KEY_ZONE]
             }
-            totalCardsInHand++
+
+            val knownCardsInHand = handEntities.filter {
+                !it.CardID.isNullOrBlank()
+            }.size
+
+            val totalCardsInHand = handEntities.size
+
+            player.isOpponent = knownCardsInHand < 3
+            player.hasCoin = totalCardsInHand > 3
+
+            if (player.isOpponent) {
+                game.opponent = player
+            } else {
+                game.player = player
+            }
         }
 
-        player1.isOpponent = knownCardsInHand < 3
-        player1.hasCoin = totalCardsInHand > 3
+        if (game.opponent == null || game.player == null) {
+            // This must be a battlegrounds game
+            game.playerMap.values.forEach {player->
+                if (player.entity?.tags?.get(Entity.KEY_BACON_DUMMY_PLAYER) != null) {
+                    game.opponent = player
+                } else {
+                    game.player = player
+                }
+            }
+        }
 
-        player2.isOpponent = !player1.isOpponent
-        player2.hasCoin = !player1.hasCoin
-
-        game.player = if (player1.isOpponent) player2 else player1
-        game.opponent = if (player1.isOpponent) player1 else player2
-
-        val firstPlayer = if (game.player!!.hasCoin == false) "player" else "opponent"
+        val firstPlayer = if (!game.player!!.hasCoin) "player" else "opponent"
         console.debug("firstPlayer=$firstPlayer")
     }
 

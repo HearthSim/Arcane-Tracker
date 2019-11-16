@@ -176,4 +176,31 @@ class PowerParserTest {
 
         assert((bombEntry is DeckEntry.Item) && bombEntry.count == 2)
     }
+
+    @Test
+    fun `battlegrounds games are correctly parsed`() {
+        val powerLines = File("/home/martin/dev/hsdata/2019_11_11_battlegrounds").readLines()
+        val hsLog = TestUtils.newHSLog()
+
+        var gameAtStart: Game? = null
+        var gameAtEnd: Game? = null
+
+        hsLog.setListener(object : DefaultHSLogListener() {
+            override fun onGameStart(game: Game) {
+                super.onGameStart(game)
+                gameAtStart = game
+            }
+
+            override fun onGameEnd(game: Game) {
+                super.onGameEnd(game)
+                gameAtEnd = game
+            }
+        })
+        powerLines.forEach {
+            hsLog.processPower(it, false)
+        }
+
+        assert(gameAtStart != null)
+        assert(gameAtEnd != null)
+    }
 }
