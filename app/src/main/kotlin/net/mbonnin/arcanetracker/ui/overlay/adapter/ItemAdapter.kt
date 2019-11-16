@@ -32,6 +32,7 @@ class ItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemViewType(position: Int): Int {
         val o = list[position]
         return when (o) {
+            is DeckEntry.Hero -> TYPE_HERO
             is DeckEntry.Item -> TYPE_DECK_ENTRY
             is DeckEntry.Unknown -> TYPE_STRING
             else -> TYPE_HEADER
@@ -43,6 +44,9 @@ class ItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val context = parent.context
         val view: View
         when (viewType) {
+            TYPE_HERO -> {
+                view = LayoutInflater.from(parent.context).inflate(R.layout.bar_hero, null)
+            }
             TYPE_DECK_ENTRY -> {
                 view = LayoutInflater.from(parent.context).inflate(R.layout.bar_card, null)
             }
@@ -62,6 +66,7 @@ class ItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         when (viewType) {
             TYPE_DECK_ENTRY -> return DeckEntryHolder(barTemplate)
+            TYPE_HERO -> return HeroHolder(barTemplate)
             else -> return object : RecyclerView.ViewHolder(barTemplate) {
 
             }
@@ -71,6 +76,9 @@ class ItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val o = list[position]
         when (o) {
+            is DeckEntry.Hero -> {
+                (holder as HeroHolder).bind(o)
+            }
             is DeckEntry.Item -> {
                 (holder as DeckEntryHolder).bind(o)
             }
@@ -102,6 +110,7 @@ class ItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         internal val TYPE_DECK_ENTRY = 0
         internal val TYPE_STRING = 1
         internal val TYPE_HEADER = 2
+        internal val TYPE_HERO = 2
     }
 
 

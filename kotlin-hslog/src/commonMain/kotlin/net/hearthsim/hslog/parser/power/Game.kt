@@ -28,12 +28,15 @@ class Game(private val console: Console) {
     var formatType: FormatType = FormatType.FT_UNKNOWN
     var scenarioId: String? = null
 
-    internal val battlegroundsBoard = mutableMapOf<String, BattlegroundBoard>()
+    internal val battlegroundsBoard = mutableMapOf<String, BattlegroundsBoard>()
 
     val battlegroundState: BattlegroundState
         get() {
+            val currentTurn = gameEntity?.tags?.get(Entity.KEY_TURN)?.toInt() ?: 0
             val boardsOrdered = battlegroundsBoard.values.sortedBy { board ->
                 board.opponentHero.tags.get(Entity.KEY_PLAYER_LEADERBOARD_PLACE)?.toInt() ?: 0
+            }.map {
+                it.copy(currentTurn = currentTurn)
             }
             return BattlegroundState(boardsOrdered)
         }

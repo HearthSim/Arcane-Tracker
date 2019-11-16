@@ -101,7 +101,7 @@ class ATHSLogListener(val currentOrFinishedGame: () -> Game?): HSLogListener {
             deck.name = Utils.getString(R.string.deck)
         }
         MainViewCompanion.playerCompanion.deck = deck
-        Controller.get().onDeckEntries(null, true, getDeckEntriesFromCardMap(deck.cards))
+        Controller.get().onDeckEntries(true, getDeckEntriesFromCardMap(deck.cards))
     }
 
     override fun onOpponentDeckChanged(deck: Deck) {
@@ -141,7 +141,7 @@ class ATHSLogListener(val currentOrFinishedGame: () -> Game?): HSLogListener {
     }
 
     override fun onDeckEntries(game: Game, isPlayer: Boolean, deckEntries: List<DeckEntry>) {
-        Controller.get().onDeckEntries(game, isPlayer, deckEntries)
+        Controller.get().onDeckEntries(isPlayer, deckEntries)
     }
 
 }

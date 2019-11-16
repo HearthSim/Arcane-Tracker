@@ -13,7 +13,7 @@ class Controller {
     val opponentAdapter = ItemAdapter()
 
 
-    fun onDeckEntries(game: Game?, isPlayer: Boolean, deckEntries: List<DeckEntry>) {
+    fun onDeckEntries(isPlayer: Boolean, deckEntries: List<DeckEntry>) {
         if (isPlayer) {
             playerAdapter.setList(deckEntries)
         } else {

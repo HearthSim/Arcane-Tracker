@@ -259,7 +259,9 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
                             mLastTag = true
                         }
                         Entity.STEP_MAIN_READY -> {
-                            captureBattlegroundBoard()
+                            if (mGame?.gameType == GameType.GT_BATTLEGROUNDS) {
+                                captureBattlegroundBoard()
+                            }
                         }
                     }
                 }
@@ -334,7 +336,7 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
                     && it.tags[Entity.KEY_ZONE] == Entity.ZONE_PLAY
         }
 
-        val board = BattlegroundBoard(
+        val board = BattlegroundsBoard(
                 opponentHero = opponentHero,
                 turn = game.gameEntity?.tags?.get(Entity.KEY_TURN)?.toInt() ?: 0,
                 minions = minions.map { entityToBattlegroundMinion(it) }
@@ -342,8 +344,8 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
         game.battlegroundsBoard.put(opponentHero.CardID!!, board)
     }
 
-    private fun entityToBattlegroundMinion(entity: Entity): BattlegroundMinion {
-        return BattlegroundMinion(
+    private fun entityToBattlegroundMinion(entity: Entity): BattlegroundsMinion {
+        return BattlegroundsMinion(
                 entity.CardID ?: "",
                 entity.tags.get(Entity.KEY_ATK)?.toInt() ?: 0,
                 entity.tags.get(Entity.KEY_HEALTH)?.toInt() ?: 0,

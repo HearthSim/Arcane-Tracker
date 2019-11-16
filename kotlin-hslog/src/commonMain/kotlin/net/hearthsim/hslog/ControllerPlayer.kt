@@ -20,7 +20,7 @@ class ControllerPlayer(private val console: Console, private val cardJson: CardJ
         val list = mutableListOf<DeckEntry>()
         val playerId = game.player?.entity?.PlayerID!!
 
-        list.add(DeckEntry.PlayerDeck())
+        list.add(DeckEntry.PlayerDeck)
 
         val originalDeckEntityList = game.getEntityList { entity -> playerId == entity.extra.originalController }
 

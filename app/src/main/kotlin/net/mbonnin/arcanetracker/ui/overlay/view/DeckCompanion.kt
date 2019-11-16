@@ -53,10 +53,10 @@ open class DeckCompanion(v: View) {
         }
     private val background: ImageView
 
-    private fun update() {
-        nodeck.visibility = if (deck != null) View.GONE else View.VISIBLE
-
+    protected fun update() {
+        nodeck.visibility = if (recyclerView.adapter?.itemCount ?: 0 > 0) View.GONE else View.VISIBLE
     }
+
     init {
         mViewManager = ViewManager.get()
 

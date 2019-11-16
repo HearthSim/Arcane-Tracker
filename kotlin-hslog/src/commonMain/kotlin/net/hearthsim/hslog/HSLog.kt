@@ -6,10 +6,7 @@ import net.hearthsim.hslog.parser.achievements.AchievementsParser
 import net.hearthsim.hslog.parser.decks.Deck
 import net.hearthsim.hslog.parser.decks.DecksParser
 import net.hearthsim.hslog.parser.loadingscreen.LoadingScreenParser
-import net.hearthsim.hslog.parser.power.Game
-import net.hearthsim.hslog.parser.power.GameLogic
-import net.hearthsim.hslog.parser.power.GameType
-import net.hearthsim.hslog.parser.power.PowerParser
+import net.hearthsim.hslog.parser.power.*
 import net.hearthsim.hslog.util.WhizbangAndZayleHelper
 import net.hearthsim.hslog.util.getClassIndex
 import net.hearthsim.hsmodel.CardJson
@@ -23,6 +20,7 @@ class HSLog(private val console: Console, private val cardJson: CardJson, privat
 
     private val controllerPlayer = ControllerPlayer(console, cardJson)
     private val controllerOpponent = ControllerOpponent(console, cardJson)
+    private val controllerBattleGrounds = ControllerBattlegrounds(console, cardJson)
     private val possibleSecrets = PossibleSecrets(cardJson)
 
     private val loadingScreenParser = LoadingScreenParser(console)
@@ -54,32 +52,42 @@ class HSLog(private val console: Console, private val cardJson: CardJson, privat
     )
 
     var lastTime = DateTime.now().unixMillisLong
+    var lastBattlegroundState: BattlegroundState? = null
     var lastSecrets = emptyList<PossibleSecret>()
 
     init {
-        gameLogic.onGameStart {game ->
+        gameLogic.onGameStart { game ->
             selectDecks(game)
             listener?.onGameStart(game)
         }
-        gameLogic.whenSomethingChanges {game ->
+        gameLogic.whenSomethingChanges { game ->
             listener?.onGameChanged(game)
 
-            /**
-             * This is not perfect as we might lose the very last last events in a game but it help debouncing the callbacks
-             */
-            if (DateTime.now().unixMillisLong - lastTime >= debounceDelay) {
-                listener?.onDeckEntries(game, true, controllerPlayer.getDeckEntries(game))
-                listener?.onDeckEntries(game, false, controllerOpponent.getDeckEntries(game))
-
-                val secrets = possibleSecrets.getAll(game)
-                if (secrets != lastSecrets) {
-                    listener?.onSecrets(secrets)
-                    lastSecrets = secrets
+            if (game.gameType == GameType.GT_BATTLEGROUNDS) {
+                val state = game.battlegroundState
+                if (state != lastBattlegroundState) {
+                    listener?.onDeckEntries(game, false, controllerBattleGrounds.getDeckEntries(game, state))
+                    lastBattlegroundState = state
                 }
-                lastTime = DateTime.now().unixMillisLong
+            } else {
+                /**
+                 * This is not perfect as we might lose the very last last events in a game but it help debouncing the callbacks
+                 */
+                if (DateTime.now().unixMillisLong - lastTime >= debounceDelay) {
+                    listener?.onDeckEntries(game, true, controllerPlayer.getDeckEntries(game))
+                    listener?.onDeckEntries(game, false, controllerOpponent.getDeckEntries(game))
+
+                    val secrets = possibleSecrets.getAll(game)
+                    if (secrets != lastSecrets) {
+                        listener?.onSecrets(secrets)
+                        lastSecrets = secrets
+                    }
+                    lastTime = DateTime.now().unixMillisLong
+                }
+
             }
         }
-        gameLogic.onGameEnd {game ->
+        gameLogic.onGameEnd { game ->
             listener?.onGameEnd(game)
         }
         gameLogic.onTurn { game, turn, isPlayer ->
