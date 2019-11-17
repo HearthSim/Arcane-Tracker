@@ -7,7 +7,6 @@ import net.hearthsim.hslog.parser.decks.Deck
 import net.hearthsim.hslog.parser.power.BattlegroundState
 import net.hearthsim.hslog.parser.power.Entity
 import net.hearthsim.hslog.parser.power.Game
-import net.hearthsim.hsmodel.CardJson
 import net.hearthsim.hsmodel.enum.CardId
 import org.junit.Test
 import java.io.File
@@ -228,14 +227,29 @@ class PowerParserTest {
     @Test
     fun balanceBlocks() {
         val dir = File("/home/martin/dev/hsdata")
-        dir.listFiles().forEach {
+
+        val map = mutableMapOf<String, Int>()
+
+        dir.listFiles().filter {
+            !it.name.contains("battleground")
+                    && !it.name.contains("wisersheis")
+        }.forEach {
             if (it.isFile) {
-                balance(it)
+                balance(it, map)
             }
         }
+
+        println("TOTAL")
+        map.entries.sortedBy { it.key }.forEach {
+            System.out.printf(      "%30.30s: %4d\n",
+                    it.key,
+                    it.value
+            )
+        }
+
     }
 
-    private fun balance(file: File) {
+    private fun balance(file: File, blockTypes: MutableMap<String, Int>) {
         val lines = file.readLines()
 
         var BLOCK_START = 0
@@ -243,11 +257,20 @@ class PowerParserTest {
         var BlockStart = 0
         var BlockEnd = 0
 
-        lines.forEach {
-            if (it.contains("BLOCK_START")) {
+        var depth = 0
+        val map = mutableMapOf<String, Int>()
+
+        lines.filter { it.contains("PowerTaskList.DebugPrintPower") }.forEach {
+            val m = Regex(".*BLOCK_START BlockType=([^ ]*) .*").matchEntire(it)
+            if (m != null) {
+                map.merge(m.groupValues[1] + depth.toString(), 1) { old, new ->
+                    old + 1
+                }
+                depth++
                 BLOCK_START++
             }
             if (it.contains("BLOCK_END")) {
+                depth--
                 BLOCK_END++
             }
             if (it.contains("Block Start")) {
@@ -264,5 +287,18 @@ class PowerParserTest {
                 BlockStart, BlockEnd, BlockStart - BlockEnd,
                 BLOCK_START + BlockStart, BLOCK_END + BlockEnd, BLOCK_START + BlockStart - BLOCK_END - BlockEnd
                 )
+
+        map.entries.sortedBy { it.key }.forEach {
+            System.out.printf(      "%30.30s: %4d\n",
+                    it.key,
+                    it.value
+            )
+        }
+        blockTypes.mergeReduceInPlace(map) { a, b ->
+            a + b
+        }
     }
 }
+
+fun <K, V> MutableMap<K, V>.mergeReduceInPlace(vararg others: Map<K, V>, reduce: (V, V) -> V) =
+        others.forEach { other -> other.forEach { merge(it.key, it.value, reduce) } }

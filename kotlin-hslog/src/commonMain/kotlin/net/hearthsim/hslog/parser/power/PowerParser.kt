@@ -14,30 +14,32 @@ class PowerParser(
         private val logger: ((String, Array<out String>) -> Unit)?
 ) {
 
-    private val BLOCK_START_PATTERN = Regex("BLOCK_START BlockType=(.*) Entity=(.*) EffectCardId=(.*) EffectIndex=(.*) Target=(.*) SubOption=(.*)")
-    private val BLOCK_START_CONTINUATION_PATTERN = Regex("(.*) TriggerKeyword=(.*)")
-    private val BLOCK_END_PATTERN = Regex("BLOCK_END")
+    companion object {
+        private val BLOCK_START_PATTERN = Regex("BLOCK_START BlockType=(.*) Entity=(.*) EffectCardId=(.*) EffectIndex=(.*) Target=(.*) SubOption=(.*)")
+        private val BLOCK_START_CONTINUATION_PATTERN = Regex("(.*) TriggerKeyword=(.*)")
+        private val BLOCK_END_PATTERN = Regex("BLOCK_END")
 
-    private val BLOCK_START_PATTERN2 = Regex("Block Start=.*")
-    private val BLOCK_END_PATTERN2 = Regex("Block End=.*")
+        private val BLOCK_START_PATTERN2 = Regex("Block Start=.*")
+        private val BLOCK_END_PATTERN2 = Regex("Block End=.*")
 
-    private val GameEntityPattern = Regex("GameEntity EntityID=(.*)")
-    private val PlayerEntityPattern = Regex("Player EntityID=(.*) PlayerID=(.*) GameAccountId=(.*)")
+        private val GameEntityPattern = Regex("GameEntity EntityID=(.*)")
+        private val PlayerEntityPattern = Regex("Player EntityID=(.*) PlayerID=(.*) GameAccountId=(.*)")
 
-    private val FULL_ENTITY = Regex("FULL_ENTITY - Updating (.*) CardID=(.*)")
-    private val TAG_CHANGE = Regex("TAG_CHANGE Entity=(.*) tag=(.*) value=(.*)")
-    private val SHOW_ENTITY = Regex("SHOW_ENTITY - Updating Entity=(.*) CardID=(.*)")
+        private val FULL_ENTITY = Regex("FULL_ENTITY - Updating (.*) CardID=(.*)")
+        private val TAG_CHANGE = Regex("TAG_CHANGE Entity=(.*) tag=(.*) value=(.*)")
+        private val SHOW_ENTITY = Regex("SHOW_ENTITY - Updating Entity=(.*) CardID=(.*)")
 
-    private val HIDE_ENTITY = Regex("HIDE_ENTITY - Entity=(.*) tag=(.*) value=(.*)")
-    private val TAG = Regex("tag=(.*) value=(.*)")
-    private val META_DATA = Regex("META_DATA - Meta=(.*) Data=(.*) Info=(.*)")
-    private val INFO = Regex("Info\\[[0-9]*\\] = (.*)")
+        private val HIDE_ENTITY = Regex("HIDE_ENTITY - Entity=(.*) tag=(.*) value=(.*)")
+        private val TAG = Regex("tag=(.*) value=(.*)")
+        private val META_DATA = Regex("META_DATA - Meta=(.*) Data=(.*) Info=(.*)")
+        private val INFO = Regex("Info\\[[0-9]*\\] = (.*)")
 
-    private val BUILD_NUMBER = Regex("BuildNumber=(.*)")
-    private val GAME_TYPE = Regex("GameType=(.*)")
-    private val FORMAT_TYPE = Regex("FormatType=(.*)")
-    private val SCENARIO_ID = Regex("ScenarioID=(.*)")
-    private val PLAYER_MAPPING = Regex("PlayerID=(.*), PlayerName=(.*)")
+        private val BUILD_NUMBER = Regex("BuildNumber=(.*)")
+        private val GAME_TYPE = Regex("GameType=(.*)")
+        private val FORMAT_TYPE = Regex("FormatType=(.*)")
+        private val SCENARIO_ID = Regex("ScenarioID=(.*)")
+        private val PLAYER_MAPPING = Regex("PlayerID=(.*), PlayerName=(.*)")
+    }
 
     private val rawGameHandler = RawGameHandler(rawGameConsumer)
     private val mBlockTagStack = ArrayList<BlockTag>()
