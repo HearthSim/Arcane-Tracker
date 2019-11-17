@@ -70,7 +70,7 @@ class PossibleSecrets(val cardJson: CardJson) {
                 }
             } else {
                 // Hands of salvation is only in arena
-                secrets = secrets.filterNot { it.id != CardId.HAND_OF_SALVATION }
+                secrets = secrets.filterNot { it.id == CardId.HAND_OF_SALVATION }
 
                 if (formatType == FormatType.FT_STANDARD) {
                     secrets = secrets.filter {
