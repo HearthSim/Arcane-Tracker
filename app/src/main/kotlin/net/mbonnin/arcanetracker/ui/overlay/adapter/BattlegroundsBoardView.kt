@@ -20,7 +20,7 @@ class BattlegroundsBoardView(context: Context) : ConstraintLayout(context) {
     }
 
     fun configure(board: BattlegroundsBoard) {
-        findViewById<TextView>(R.id.age).text = context.getString(R.string.battlegrounds_turn, board.currentTurn - board.turn)
+        findViewById<TextView>(R.id.age).text = context.getString(R.string.battlegrounds_turn, (board.currentTurn - board.turn)/2)
         board.minions.forEachIndexed { index, minion ->
             val frameLayout= getChildAt(index) as FrameLayout
 

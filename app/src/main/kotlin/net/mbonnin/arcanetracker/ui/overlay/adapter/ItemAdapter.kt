@@ -110,8 +110,6 @@ class ItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         internal val TYPE_DECK_ENTRY = 0
         internal val TYPE_STRING = 1
         internal val TYPE_HEADER = 2
-        internal val TYPE_HERO = 2
+        internal val TYPE_HERO = 3
     }
-
-
 }

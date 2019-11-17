@@ -18,8 +18,8 @@ class OpponentDeckCompanion(v: View) : DeckCompanion(v) {
 
         recyclerView.adapter = Controller.get().opponentAdapter
 
-        Controller.get().opponentAdapter.setList(debugList())
-        update()
+        //Controller.get().opponentAdapter.setList(debugList())
+        //update()
 
         (v.findViewById<TextView>(R.id.text)).setText(v.context.getString(R.string.opponent_deck_will_appear))
     }

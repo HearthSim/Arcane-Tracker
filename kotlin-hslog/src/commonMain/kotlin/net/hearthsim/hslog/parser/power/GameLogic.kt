@@ -311,12 +311,10 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
         if (key == Entity.KEY_MULLIGAN_STATE && newValue == "DONE") {
             callTurnListenersIfNeeded()
         }
-
-        if (key == Entity.KEY_PLAYER_LEADERBOARD_PLACE) {
-        }
     }
 
     private fun captureBattlegroundBoard() {
+        console.debug("Capturing Battleground Board")
         val game = mGame
         if (game == null) {
             return
@@ -327,7 +325,10 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
                     && it.tags[Entity.KEY_ZONE] == Entity.ZONE_PLAY
         }.firstOrNull()
 
-        if (opponentHero == null || opponentHero.CardID == CardId.BOBS_TAVERN)
+        if (opponentHero == null
+                || opponentHero.CardID == CardId.BOBS_TAVERN
+                || opponentHero.CardID == CardId.KELTHUZAD
+        )
             return
 
         val minions = game.getEntityList {
@@ -339,8 +340,9 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
         val board = BattlegroundsBoard(
                 opponentHero = opponentHero,
                 turn = game.gameEntity?.tags?.get(Entity.KEY_TURN)?.toInt() ?: 0,
-                minions = minions.map { entityToBattlegroundMinion(it) }
+                minions = minions.sortedBy { it.tags[Entity.KEY_ZONE_POSITION] }.map { entityToBattlegroundMinion(it) }
         )
+        console.debug(board.toString())
         game.battlegroundsBoard.put(opponentHero.CardID!!, board)
     }
 
@@ -487,6 +489,16 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
     }
 
     private fun tryToGuessCardIdFromBlock(stack: ArrayList<BlockTag>, fullEntityTag: FullEntityTag) {
+        val fullEntityId = fullEntityTag.ID
+        if (fullEntityId == null) {
+            return
+        }
+        val entity = mGame!!.findEntitySafe(fullEntityId)
+        if (!entity.CardID.isNullOrBlank()) {
+            // we already know this entity
+            return
+        }
+
         if (stack.isEmpty()) {
             return
         }
@@ -494,7 +506,12 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
         var depth = stack.size - 1
         var blockTag = stack[depth]
 
-        var blockEntity = mGame!!.findEntitySafe(blockTag.Entity!!)
+        val blockTagEntity = blockTag.Entity
+        if (blockTagEntity == null) {
+            return
+        }
+
+        var blockEntity = mGame!!.findEntitySafe(blockTagEntity)
         val createdByCardId = blockEntity.CardID
 
         if (blockEntity.CardID == CardId.AUGMENTED_ELEKK) {
@@ -511,7 +528,6 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
             return
         }
 
-        val entity = mGame!!.findEntitySafe(fullEntityTag.ID!!)
         var guessedId: String? = null
 
         if (BlockTag.TYPE_POWER == blockTag.BlockType) {

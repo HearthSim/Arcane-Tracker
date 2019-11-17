@@ -12,23 +12,24 @@ import net.hearthsim.hsmodel.enum.Rarity
 
 class PossibleSecrets(val cardJson: CardJson) {
     data class AvailableSecretKey(val playerClass: String, val gameType: GameType, val formatType: FormatType)
-    val cachedAvailableSecrets= mutableMapOf<AvailableSecretKey, List<String>>()
+
+    val cachedAvailableSecrets = mutableMapOf<AvailableSecretKey, List<String>>()
 
     fun getAll(game: Game): List<PossibleSecret> {
         val entities = game.getEntityList {
             it.tags[Entity.KEY_CONTROLLER] == game.opponentId()
-            && it.tags[Entity.KEY_ZONE] == Entity.ZONE_SECRET
+                    && it.tags[Entity.KEY_ZONE] == Entity.ZONE_SECRET
                     && Rarity.LEGENDARY != it.tags[Entity.KEY_RARITY]
         }
 
         val map = mutableMapOf<String, Int>()
-        entities.forEach {entity ->
+        entities.forEach { entity ->
             availableSecretsCached(
                     playerClass = entity.tags[Entity.KEY_CLASS] ?: "",
                     formatType = game.formatType,
                     gameType = game.gameType
-                    ).forEach {
-                val possibleCount = map.getOrElse(it, {0})
+            ).forEach {
+                val possibleCount = map.getOrElse(it, { 0 })
 
                 map.put(it, possibleCount + if (entity.extra.excludedSecretList.contains(it)) 0 else 1)
             }
@@ -67,9 +68,14 @@ class PossibleSecrets(val cardJson: CardJson) {
                 secrets = secrets.filter {
                     Card.ARENA_SETS.contains(it.set)
                 }
-            } else if (formatType == FormatType.FT_STANDARD) {
-                secrets = secrets.filter {
-                    it.isStandard()
+            } else {
+                // Hands of salvation is only in arena
+                secrets = secrets.filterNot { it.id != CardId.HAND_OF_SALVATION }
+
+                if (formatType == FormatType.FT_STANDARD) {
+                    secrets = secrets.filter {
+                        it.isStandard()
+                    }
                 }
             }
 

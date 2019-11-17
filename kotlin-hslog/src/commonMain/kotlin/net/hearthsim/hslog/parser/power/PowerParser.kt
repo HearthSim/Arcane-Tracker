@@ -18,6 +18,9 @@ class PowerParser(
     private val BLOCK_START_CONTINUATION_PATTERN = Regex("(.*) TriggerKeyword=(.*)")
     private val BLOCK_END_PATTERN = Regex("BLOCK_END")
 
+    private val BLOCK_START_PATTERN2 = Regex("Block Start=.*")
+    private val BLOCK_END_PATTERN2 = Regex("Block End=.*")
+
     private val GameEntityPattern = Regex("GameEntity EntityID=(.*)")
     private val PlayerEntityPattern = Regex("Player EntityID=(.*) PlayerID=(.*) GameAccountId=(.*)")
 
@@ -61,11 +64,12 @@ class PowerParser(
 
         val logLine = parseLineWithMethod(rawLine, logger) ?: return
 
+        log(logLine.line)
         val line = logLine.line.trim()
 
         if (logLine.method.startsWith("GameState.DebugPrintGame()")) {
             handleDebugPrintGame(line)
-        } else if (logLine.method.startsWith("PowerTaskList.DebugPrintPower()")) {
+        } else if (logLine.method.startsWith("PowerTaskList")) {
             handleDebugPrintPower(line)
         }
     }
@@ -73,6 +77,10 @@ class PowerParser(
     private fun handleDebugPrintPower(line: String) {
         var m: MatchResult?
         var newTag: Tag? = null
+
+        if (mBlockTagStack.size > 3) {
+            log("ooops")
+        }
 
         if ("TAG_CHANGE Entity=GameEntity tag=STEP value=FINAL_GAMEOVER" == line) {
             /*
@@ -193,9 +201,30 @@ class PowerParser(
             mBlockTagStack.add(tag)
             return
         }
-
-        m = BLOCK_END_PATTERN.matchEntire(line)
+        m = BLOCK_START_PATTERN2.matchEntire(line)
         if (m != null) {
+            val tag = BlockTag(
+                    BlockType = "",
+                    Entity = null,
+                    EffectCardId = "",
+                    EffectIndex = "",
+                    Target = null,
+                    SubOption = "",
+                    TriggerKeyword = "",
+                    children = mutableListOf()
+            )
+
+            openNewTag(null)
+
+            if (mBlockTagStack.size > 0) {
+                mBlockTagStack[mBlockTagStack.size - 1].children.add(tag)
+            }
+            mBlockTagStack.add(tag)
+            return
+        }
+
+        if (BLOCK_END_PATTERN.matchEntire(line) != null
+                || BLOCK_END_PATTERN2.matchEntire(line) != null) {
             openNewTag(null)
             if (mBlockTagStack.size > 0) {
                 val blockTag = mBlockTagStack.removeAt(mBlockTagStack.size - 1)

@@ -10,6 +10,7 @@ import io.ktor.http.content.ByteArrayContent
 import io.ktor.http.content.OutgoingContent
 import io.ktor.http.content.TextContent
 import io.ktor.http.contentType
+import kotlinx.coroutines.withTimeout
 import net.hearthsim.hsreplay.model.Token
 
 class HsReplayS3Api(val userAgent: String) {

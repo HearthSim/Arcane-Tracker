@@ -182,7 +182,7 @@ class PowerParserTest {
     @Test
     fun `battlegrounds games are correctly parsed`() {
         //val powerLines = File("/home/martin/dev/hsdata/2019_11_11_battlegrounds").readLines()
-        val powerLines = File("/home/martin/dev/hsdata/2019_11_14_22-18_battlegrounds").readLines()
+        val powerLines = File("/home/martin/dev/hsdata/2019_11_17_01-01_battlegrounds").readLines()
         val hsLog = TestUtils.newHSLog()
 
         var gameAtStart: Game? = null

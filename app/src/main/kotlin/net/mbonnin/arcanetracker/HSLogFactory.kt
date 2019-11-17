@@ -102,7 +102,7 @@ object HSLogFactory {
     }
 
     private fun configureDebugReader(hsLog: HSLog, handler: Handler) {
-        val reader = File("/sdcard/2019_11_14_22-18_battlegrounds").bufferedReader()
+        val reader = File("/sdcard/2019_11_16_19-51_battlegrounds").bufferedReader()
 
         GlobalScope.launch(Dispatchers.IO) {
             while (true) {

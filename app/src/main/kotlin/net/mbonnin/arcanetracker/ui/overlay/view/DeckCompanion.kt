@@ -49,13 +49,10 @@ open class DeckCompanion(v: View) {
             background.setImageDrawable(Utils.getDrawableForClassIndex(value.classIndex))
             deckName.text = value.name
 
-            update()
+            nodeck.visibility = View.GONE
         }
     private val background: ImageView
 
-    protected fun update() {
-        nodeck.visibility = if (recyclerView.adapter?.itemCount ?: 0 > 0) View.GONE else View.VISIBLE
-    }
 
     init {
         mViewManager = ViewManager.get()
