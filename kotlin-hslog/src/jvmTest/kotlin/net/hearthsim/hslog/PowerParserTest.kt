@@ -224,4 +224,45 @@ class PowerParserTest {
         assert(gameAtStart != null)
         assert(gameAtEnd != null)
     }
+
+    @Test
+    fun balanceBlocks() {
+        val dir = File("/home/martin/dev/hsdata")
+        dir.listFiles().forEach {
+            if (it.isFile) {
+                balance(it)
+            }
+        }
+    }
+
+    private fun balance(file: File) {
+        val lines = file.readLines()
+
+        var BLOCK_START = 0
+        var BLOCK_END = 0
+        var BlockStart = 0
+        var BlockEnd = 0
+
+        lines.forEach {
+            if (it.contains("BLOCK_START")) {
+                BLOCK_START++
+            }
+            if (it.contains("BLOCK_END")) {
+                BLOCK_END++
+            }
+            if (it.contains("Block Start")) {
+                BlockStart++
+            }
+            if (it.contains("Block End")) {
+                BlockEnd++
+            }
+        }
+
+        System.out.printf("%30.30s: BLOCK_START/BLOCK_END: %4d - %4d = %4d    BlockStart/BlockEnd: %4d - %4d = %4d    Sum: %4d - %4d = %4d\n",
+                file.name,
+                BLOCK_START, BLOCK_END, BLOCK_START - BLOCK_END,
+                BlockStart, BlockEnd, BlockStart - BlockEnd,
+                BLOCK_START + BlockStart, BLOCK_END + BlockEnd, BLOCK_START + BlockStart - BLOCK_END - BlockEnd
+                )
+    }
 }

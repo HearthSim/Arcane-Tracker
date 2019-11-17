@@ -78,10 +78,6 @@ class PowerParser(
         var m: MatchResult?
         var newTag: Tag? = null
 
-        if (mBlockTagStack.size > 3) {
-            log("ooops")
-        }
-
         if ("TAG_CHANGE Entity=GameEntity tag=STEP value=FINAL_GAMEOVER" == line) {
             /*
              *  it could happen that the game is stopped in the middle of a block
