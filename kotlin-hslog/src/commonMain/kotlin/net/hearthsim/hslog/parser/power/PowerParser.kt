@@ -69,7 +69,7 @@ class PowerParser(
 
         if (logLine.method.startsWith("GameState.DebugPrintGame()")) {
             handleDebugPrintGame(line)
-        } else if (logLine.method.startsWith("PowerTaskList.DebugPrintPower")) {
+        } else if (logLine.method.startsWith("PowerTaskList.DebugPrintPower()")) {
             handleDebugPrintPower(line)
         }
     }

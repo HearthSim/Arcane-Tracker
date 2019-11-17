@@ -496,7 +496,8 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
         val entity = mGame!!.findEntitySafe(fullEntityId)
         if (!entity.CardID.isNullOrBlank()) {
             // we already know this entity
-            return
+            // but let's do all the below anyway to set extra.createdBy
+            // return
         }
 
         if (stack.isEmpty()) {
