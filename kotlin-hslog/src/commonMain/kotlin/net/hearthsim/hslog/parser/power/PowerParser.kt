@@ -64,7 +64,7 @@ class PowerParser(
 
         val logLine = parseLineWithMethod(rawLine, logger) ?: return
 
-        log(logLine.line)
+        //log(logLine.line)
         val line = logLine.line.trim()
 
         if (logLine.method.startsWith("GameState.DebugPrintGame()")) {

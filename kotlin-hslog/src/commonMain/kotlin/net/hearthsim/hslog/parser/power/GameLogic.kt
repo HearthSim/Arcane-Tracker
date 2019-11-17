@@ -327,7 +327,7 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
 
         if (opponentHero == null
                 || opponentHero.CardID == CardId.BOBS_TAVERN
-                || opponentHero.CardID == CardId.KELTHUZAD
+                || opponentHero.CardID == CardId.KELTHUZAD3
         )
             return
 
