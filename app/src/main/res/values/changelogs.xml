@@ -38,4 +38,5 @@
     <string name="changelog_422" translatable="false">Updated for nerfs.\nAdded Tracking for generated Uldum cards.</string>
     <string name="changelog_423" translatable="false">Hallow\'s end is there!</string>
     <string name="changelog_424" translatable="false">Add Sathrovarr.</string>
+    <string name="changelog_425" translatable="false">Battlegrounds support.</string>
 </resources>
