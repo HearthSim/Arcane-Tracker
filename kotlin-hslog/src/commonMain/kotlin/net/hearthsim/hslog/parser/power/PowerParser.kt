@@ -71,12 +71,16 @@ class PowerParser(
             handleDebugPrintGame(line)
         } else if (logLine.method.startsWith("PowerTaskList.DebugPrintPower()")) {
             handleDebugPrintPower(line)
+        } else if (logLine.method.startsWith("GameState.DebugPrintOptions()")) {
+            // see https://github.com/HearthSim/python-hslog/commit/63e9e41976cbec7ef95ced0f49f4b9a06c02cf3c
+            // let's hope GameState and PowerTaskList will be sync enough so that it's working here as well
+            resynchronizeBlockStackIfNeeded()
         }
     }
 
     private fun resynchronizeBlockStackIfNeeded() {
         if (mBlockTagStack.size > 0) {
-            log("Ended in the middle of a block")
+            log("Resynchronize blocks")
             if (mCurrentTag != null) {
                 mBlockTagStack[mBlockTagStack.size - 1].children.add(mCurrentTag!!)
             }

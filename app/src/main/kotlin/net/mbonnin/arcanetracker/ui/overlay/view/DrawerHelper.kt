@@ -216,7 +216,7 @@ class DrawerHelper(private val view: View, private val handles: HandlesView, pri
     }
 
     private fun setOffset(offset: Int) {
-        Timber.w("${edge}: setOffset: %d", mOffset);
+        //Timber.w("${edge}: setOffset: %d", mOffset);
         mOffset = offset
         when (edge) {
             Edge.LEFT -> {
