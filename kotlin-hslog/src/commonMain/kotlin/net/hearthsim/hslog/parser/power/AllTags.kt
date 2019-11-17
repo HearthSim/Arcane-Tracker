@@ -19,6 +19,21 @@ class BlockTag(
         var TriggerKeyword: String?
 ) : Tag() {
     companion object {
+        /**
+         * A few examples:
+         *
+         * PLAY/POWER/POWER:
+         * - Play Pterrordax Hatchling -> Power for discover -> Power to get +3 ATK (16:11:02.6726470)
+         *
+         * PLAY/POWER/TRIGGER:
+         * - Play Flame Imp -> Power 3 damage to face -> Trigger Floating watcher +2/+2 (10:16:51.5999680)
+         *
+         * PLAY/POWER/ATTACK:
+         * - Play Wild Bloodstinger -> Power for putting an opponent minion on the battlefield -> Attack from the Wild BloodStinger (01:58:20.9630490
+         *
+         * TRIGGER/TRIGGER/TRIGGER:
+         * - Draw 3 Felhound Portal in a row (21:27:53.8728050)
+         */
         val TYPE_PLAY = "PLAY"
         val TYPE_POWER = "POWER"
         val TYPE_TRIGGER = "TRIGGER"

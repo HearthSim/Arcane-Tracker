@@ -3,7 +3,9 @@ package net.hearthsim.hslog.parser.power
 import com.soywiz.klock.DateTime
 import net.hearthsim.hslog.parser.LogLine
 import net.hearthsim.hslog.parser.parseLineWithMethod
+import net.hearthsim.hslog.parser.power.BlockTag.Companion.TYPE_ATTACK
 import net.hearthsim.hslog.parser.power.BlockTag.Companion.TYPE_PLAY
+import net.hearthsim.hslog.parser.power.BlockTag.Companion.TYPE_TRIGGER
 
 /**
  * Created by martin on 10/27/16.
@@ -71,10 +73,6 @@ class PowerParser(
             handleDebugPrintGame(line)
         } else if (logLine.method.startsWith("PowerTaskList.DebugPrintPower()")) {
             handleDebugPrintPower(line)
-        } else if (logLine.method.startsWith("GameState.DebugPrintOptions()")) {
-            // see https://github.com/HearthSim/python-hslog/commit/63e9e41976cbec7ef95ced0f49f4b9a06c02cf3c
-            // let's hope GameState and PowerTaskList will be sync enough so that it's working here as well
-            resynchronizeBlockStackIfNeeded()
         }
     }
 
@@ -199,10 +197,18 @@ class PowerParser(
 
             openNewTag(null)
 
+            // Some battlegrounds files do not balance the BLOCK_START and BLOCK_END
+            // This seems to be mainly about ATTACK block
+            // see https://github.com/HearthSim/python-hslog/commit/63e9e41976cbec7ef95ced0f49f4b9a06c02cf3c
             if (tag.BlockType == TYPE_PLAY) {
-                // Some battlegrounds files do not balance the BLOCK_START and BLOCK_END
-                // in this cases, we resync here
+                // PLAY is always at the root
                 resynchronizeBlockStackIfNeeded()
+            } else if (mBlockTagStack.size > 0
+                    && mBlockTagStack[mBlockTagStack.size - 1].BlockType == TYPE_ATTACK
+                    && tag.BlockType != TYPE_TRIGGER
+            ) {
+                // Attack blocks should only have TRIGGER beneath them. If something else, it certainly
+                // means the ATTACK block wasn't correctly closed
             }
 
             if (mBlockTagStack.size > 0) {
