@@ -209,6 +209,7 @@ class PowerParser(
             ) {
                 // Attack blocks should only have TRIGGER beneath them. If something else, it certainly
                 // means the ATTACK block wasn't correctly closed
+                resynchronizeBlockStackIfNeeded()
             }
 
             if (mBlockTagStack.size > 0) {
