@@ -20,24 +20,26 @@ class BattlegroundsBoardView(context: Context) : ConstraintLayout(context) {
     }
 
     fun configure(board: BattlegroundsBoard) {
-        findViewById<TextView>(R.id.age).text = context.getString(R.string.battlegrounds_turn, (board.currentTurn - board.turn)/2)
-        board.minions.forEachIndexed { index, minion ->
-            val frameLayout= getChildAt(index) as FrameLayout
+        findViewById<TextView>(R.id.age).text = context.getString(R.string.battlegrounds_turn, (board.currentTurn - board.turn) / 2)
+        board.minions
+                .take(7)
+                .forEachIndexed { index, minion ->
+                    val frameLayout = getChildAt(index) as FrameLayout
 
-            val minionView = LayoutInflater.from(context).inflate(R.layout.battlegrounds_minion, frameLayout, true)
+                    val minionView = LayoutInflater.from(context).inflate(R.layout.battlegrounds_minion, frameLayout, true)
 
-            val card = ArcaneTrackerApplication.get().cardJson.getCard(minion.CardId)
+                    val card = ArcaneTrackerApplication.get().cardJson.getCard(minion.CardId)
 
-            Picasso.with(context)
-                    .load(Utils.getTileUrl(card.id))
-                    .placeholder(R.drawable.hero_10)
-                    .into( minionView.findViewById<TextView>(R.id.background) as ImageView)
+                    Picasso.with(context)
+                            .load(Utils.getTileUrl(card.id))
+                            .placeholder(R.drawable.hero_10)
+                            .into(minionView.findViewById<TextView>(R.id.background) as ImageView)
 
-            minionView.findViewById<TextView>(R.id.attack).text = minion.attack.toString()
-            minionView.findViewById<TextView>(R.id.health).text = minion.health.toString()
-            minionView.findViewById<TextView>(R.id.name).text = card.name
-            minionView.findViewById<View>(R.id.divine_shield_image).alpha = if (minion.divineShield) 1f else 0f
-            minionView.findViewById<View>(R.id.poisonous_image).alpha = if (minion.poisonous) 1f else 0f
-        }
+                    minionView.findViewById<TextView>(R.id.attack).text = minion.attack.toString()
+                    minionView.findViewById<TextView>(R.id.health).text = minion.health.toString()
+                    minionView.findViewById<TextView>(R.id.name).text = card.name
+                    minionView.findViewById<View>(R.id.divine_shield_image).alpha = if (minion.divineShield) 1f else 0f
+                    minionView.findViewById<View>(R.id.poisonous_image).alpha = if (minion.poisonous) 1f else 0f
+                }
     }
 }
