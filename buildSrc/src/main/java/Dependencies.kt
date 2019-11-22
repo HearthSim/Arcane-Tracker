@@ -2,8 +2,8 @@ object Versions {
     const val minSdkVersion = 21
     const val targetSdkVersion = 28
     const val compileSdkVersion = 28
-    const val kotlin = "1.3.50"
-    const val androidPlugin = "3.5.1"
+    const val kotlin = "1.3.60"
+    const val androidPlugin = "3.5.2"
     const val fabricPlugin = "1.30.0"
     const val playServicesPlugin = "4.3.0"
     const val coroutines = "1.3.2"
@@ -19,13 +19,13 @@ object Libs {
     const val recyclerview_v7 = "com.android.support:recyclerview-v7:$supportLibVersion"
     const val cardview_v7 = "com.android.support:cardview-v7:$supportLibVersion"
     const val play_auth = "com.google.android.gms:play-services-auth:17.0.0"
-    const val play_firebase_core = "com.google.firebase:firebase-core:17.2.0"
-    const val play_firebase_messaging = "com.google.firebase:firebase-messaging:20.0.0"
-    const val play_firebase_config = "com.google.firebase:firebase-config:18.0.0"
+    const val play_firebase_core = "com.google.firebase:firebase-core:17.2.1"
+    const val play_firebase_messaging = "com.google.firebase:firebase-messaging:20.0.1"
+    const val play_firebase_config = "com.google.firebase:firebase-config:19.0.3"
 
     const val crashlytics = "com.crashlytics.sdk.android:crashlytics:2.10.1"
     const val timber = "com.jakewharton.timber:timber:4.7.1"
-    const val rxjava2 = "io.reactivex.rxjava2:rxjava:2.2.13"
+    const val rxjava2 = "io.reactivex.rxjava2:rxjava:2.2.14"
     const val junit = "junit:junit:4.12"
     const val espresso = "com.android.support.test.espresso:espresso-core:3.0.2"
     const val espressoIntents = "com.android.support.test.espresso:espresso-intents:3.0.2"

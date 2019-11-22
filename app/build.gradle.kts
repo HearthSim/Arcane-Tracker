@@ -13,7 +13,7 @@ plugins {
     id("kotlinx-serialization")
     id("kotlin-android-extensions")
     id("io.fabric")
-    id("com.github.ben-manes.versions") version ("0.25.0")
+    id("com.github.ben-manes.versions") version ("0.27.0")
 }
 
 apply<ATAppPlugin>()
