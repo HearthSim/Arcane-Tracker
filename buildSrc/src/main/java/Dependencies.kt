@@ -7,7 +7,9 @@ object Versions {
     const val fabricPlugin = "1.30.0"
     const val playServicesPlugin = "4.3.0"
     const val coroutines = "1.3.2"
-    const val ktor = "1.2.5"
+    const val ktor = "1.2.6"
+    const val kotlinxIo = "0.1.16"
+    const val serialization = "0.14.0"
 }
 
 object Libs {
@@ -56,9 +58,9 @@ object Libs {
     const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
     const val coroutinesMacOS = "org.jetbrains.kotlinx:kotlinx-coroutines-core-macosx64:${Versions.coroutines}"
     const val coroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
-    const val serializationRuntimeCommon = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:0.11.1"
-    const val serializationRuntime = "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.11.1"
-    const val serializationRuntimeMacOS = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-macosx64:0.11.1"
+    const val serializationRuntimeCommon = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:${Versions.serialization}"
+    const val serializationRuntime = "org.jetbrains.kotlinx:kotlinx-serialization-runtime:${Versions.serialization}"
+    const val serializationRuntimeMacOS = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-macosx64:${Versions.serialization}"
 
     const val ktorClientCore = "io.ktor:ktor-client-core:${Versions.ktor}"
     const val ktorClientCoreJvm = "io.ktor:ktor-client-core-jvm:${Versions.ktor}"
@@ -75,11 +77,12 @@ object Libs {
     const val ktorClientEncodingJvm = "io.ktor:ktor-client-encoding-jvm:${Versions.ktor}"
     const val ktorClientEncodingMacOS = "io.ktor:ktor-client-encoding-macosx64:${Versions.ktor}"
 
-    const val kotlinxIo = "org.jetbrains.kotlinx:kotlinx-io:0.1.15"
-    const val kotlinxIoJvm = "org.jetbrains.kotlinx:kotlinx-io-jvm:0.1.15"
-    const val kotlinxIoNative = "org.jetbrains.kotlinx:kotlinx-io-native:0.1.15"
 
-    const val klock = "com.soywiz.korlibs.klock:klock:1.5.0"
+    const val kotlinxIo = "org.jetbrains.kotlinx:kotlinx-io:${Versions.kotlinxIo}"
+    const val kotlinxIoJvm = "org.jetbrains.kotlinx:kotlinx-io-jvm:${Versions.kotlinxIo}"
+    const val kotlinxIoNative = "org.jetbrains.kotlinx:kotlinx-io-native:${Versions.kotlinxIo}"
+
+    const val klock = "com.soywiz.korlibs.klock:klock:1.8.0"
 
     const val kotlinTestCommon = "org.jetbrains.kotlin:kotlin-test-common"
     const val kotlinTestAnnotationCommon = "org.jetbrains.kotlin:kotlin-test-annotations-common"
