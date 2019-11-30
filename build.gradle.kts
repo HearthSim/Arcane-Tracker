@@ -9,6 +9,9 @@ buildscript {
 //            url = uri("https://dl.bintray.com/kotlin/kotlin-eap")
 //        }
         jcenter() // for trove4j
+        maven {
+            url = uri("https://dl.bintray.com/nimroddayan/buildmetrics")
+        }
     }
 
     dependencies {
@@ -18,6 +21,15 @@ buildscript {
         classpath("io.fabric.tools:gradle:${Versions.fabricPlugin}")
         classpath("org.jetbrains.kotlin:kotlin-serialization:${Versions.kotlin}")
     }
+}
+
+
+plugins {
+    id("com.nimroddayan.buildmetrics.googleanalytics").version("0.1.0")
+}
+
+googleAnalytics {
+    trackingId.set("UA-122919265-2")
 }
 
 allprojects {
