@@ -88,7 +88,7 @@ class ArcaneTrackerApplication : MultiDexApplication() {
 
         val input = resources.openRawResource(R.raw.cards).asInput()
 
-        return CardJson(jsonName, injectedCards, input)
+        return CardJson.fromMultiLangJson(jsonName, injectedCards, input)
     }
 
 

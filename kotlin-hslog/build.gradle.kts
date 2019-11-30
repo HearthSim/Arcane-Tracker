@@ -10,7 +10,11 @@ kotlin {
     }
     macosX64 {
         binaries {
-            framework()
+            framework {
+                export(project(":kotlin-hsmodel")) {
+                    transitiveExport = true // for kotlinx.io
+                }
+            }
         }
     }
 

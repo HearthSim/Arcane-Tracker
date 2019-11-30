@@ -7,43 +7,15 @@ import kotlinx.serialization.list
 import net.hearthsim.hsmodel.enum.HSSet
 
 
-class CardJson(lang: String, injectedCards: List<Card>? = null, input: Input) {
+class CardJson private constructor(cards: List<Card>) {
     private val allCards = mutableListOf<Card>()
-    private val INVALID_PLAYER_CLASS = "INVALID_PLAYER_CLASS"
-    private val INVALID_DFB_ID = Int.MIN_VALUE
-
-
-    private fun mapToCard(hsCard: HSCard, lang: String): Card {
-        return Card(id = hsCard.id,
-                mechanics = hsCard.mechanics?.toSet() ?: emptySet(),
-                name = hsCard.name?.get(lang) ?: "",
-                attack = hsCard.attack,
-                collectible = hsCard.collectible ?: false,
-                cost = hsCard.cost,
-                dbfId = hsCard.dbfId ?: INVALID_DFB_ID,
-                durability = hsCard.durability,
-                health = hsCard.health,
-                multiClassGroup = hsCard.multiClassGroup,
-                playerClass = hsCard.cardClass ?: INVALID_PLAYER_CLASS,
-                race = hsCard.race,
-                rarity = hsCard.rarity,
-                set = hsCard.set ?: "CORE",
-                text = hsCard.text?.get(lang) ?: "",
-                type = hsCard.type ?: ""
-        )
-    }
 
     init {
-        val str = input.readText()
-        val cardList = Json.nonstrict.parse(HSCard.serializer().list, str).map { mapToCard(it, lang) }
-
         allCards.addAll(
-                cardList
+                cards
                         .filter { it.dbfId != INVALID_DFB_ID } // removes "PlaceholderCard"
                         .filter { it.playerClass != INVALID_PLAYER_CLASS } // removes a bunch of FB_LK_BossSetup cards
         )
-
-        injectedCards?.let { allCards.addAll(it) }
 
         allCards.sortBy { it.id }
     }
@@ -75,6 +47,22 @@ class CardJson(lang: String, injectedCards: List<Card>? = null, input: Input) {
     }
 
     companion object {
+        fun fromMultiLangJson(lang: String, injectedCards: List<Card> = emptyList(), input: Input): CardJson {
+            val str = input.readText()
+            val cards = Json.nonstrict.parse(HSCard.serializer().list, str).map { mapToCard(it, lang) }
+
+            return CardJson(injectedCards + cards)
+        }
+
+        fun fromLocalizedJson(input: Input): CardJson {
+            val str = input.readText()
+            val cards = Json.nonstrict.parse(LocalizedHSCard.serializer().list, str).map {
+                mapToCard(it)
+            }
+
+            return CardJson(cards)
+        }
+
         val UNKNOWN = unknown()
 
         fun unknown(name: String? = null): Card {
@@ -92,5 +80,48 @@ class CardJson(lang: String, injectedCards: List<Card>? = null, input: Input) {
                     set = HSSet.CORE
             )
         }
+
+        private fun mapToCard(hsCard: HSCard, lang: String): Card {
+            return Card(id = hsCard.id,
+                    mechanics = hsCard.mechanics?.toSet() ?: emptySet(),
+                    name = hsCard.name?.get(lang) ?: "",
+                    attack = hsCard.attack,
+                    collectible = hsCard.collectible ?: false,
+                    cost = hsCard.cost,
+                    dbfId = hsCard.dbfId ?: INVALID_DFB_ID,
+                    durability = hsCard.durability,
+                    health = hsCard.health,
+                    multiClassGroup = hsCard.multiClassGroup,
+                    playerClass = hsCard.cardClass ?: INVALID_PLAYER_CLASS,
+                    race = hsCard.race,
+                    rarity = hsCard.rarity,
+                    set = hsCard.set ?: "CORE",
+                    text = hsCard.text?.get(lang) ?: "",
+                    type = hsCard.type ?: ""
+            )
+        }
+
+        private fun mapToCard(hsCard: LocalizedHSCard): Card {
+            return Card(id = hsCard.id,
+                    mechanics = hsCard.mechanics?.toSet() ?: emptySet(),
+                    name = hsCard.name ?: "",
+                    attack = hsCard.attack,
+                    collectible = hsCard.collectible ?: false,
+                    cost = hsCard.cost,
+                    dbfId = hsCard.dbfId ?: INVALID_DFB_ID,
+                    durability = hsCard.durability,
+                    health = hsCard.health,
+                    multiClassGroup = hsCard.multiClassGroup,
+                    playerClass = hsCard.cardClass ?: INVALID_PLAYER_CLASS,
+                    race = hsCard.race,
+                    rarity = hsCard.rarity,
+                    set = hsCard.set ?: "CORE",
+                    text = hsCard.text ?: "",
+                    type = hsCard.type ?: ""
+            )
+        }
+
+        private val INVALID_PLAYER_CLASS = "INVALID_PLAYER_CLASS"
+        private val INVALID_DFB_ID = Int.MIN_VALUE
     }
 }

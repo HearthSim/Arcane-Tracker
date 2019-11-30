@@ -31,7 +31,7 @@ object  TestUtils {
 
     val cardJson by lazy {
         val input = File("../app/src/main/res/raw/cards.json").inputStream().asInput()
-        CardJson(lang = "enUS", injectedCards = null, input = input)
+        CardJson.fromMultiLangJson(lang = "enUS", injectedCards = emptyList(), input = input)
     }
 
     fun newHSLog() = HSLog(console = console, cardJson = cardJson, debounceDelay = 0)
