@@ -71,7 +71,7 @@ android {
                 signingConfig = signingConfigs.getByName("mbonnin")
             }
             val f2 = project.file("debug.url")
-            val debugUrl = if (f2.exists()) f2.readText().trim() else "\"\""
+            val debugUrl = if (f2.exists()) f2.readText().trim() else ""
             buildConfigField("String", "DEBUG_URL", "\"${debugUrl}\"")
         }
         getByName("release") {

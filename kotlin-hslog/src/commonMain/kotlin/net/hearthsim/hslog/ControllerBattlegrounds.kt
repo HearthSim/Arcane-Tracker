@@ -8,7 +8,7 @@ import net.hearthsim.hsmodel.CardJson
 class ControllerBattlegrounds(console: Console, val cardJson: CardJson) {
     fun getDeckEntries(game: Game, state: BattlegroundState): List<DeckEntry> {
         return state.boards.map {
-            DeckEntry.Hero(cardJson.getCard(it.opponentHero.CardID!!), it)
+            DeckEntry.Hero(cardJson.getCard(it.heroCardId), it)
         }
     }
 }

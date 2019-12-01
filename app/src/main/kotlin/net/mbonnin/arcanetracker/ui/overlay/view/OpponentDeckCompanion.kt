@@ -28,28 +28,29 @@ class OpponentDeckCompanion(v: View) : DeckCompanion(v) {
         return listOf(
                 DeckEntry.Hero(
                         ArcaneTrackerApplication.get().cardJson.getCard(CardId.THE_RAT_KING),
-                        BattlegroundsBoard(opponentHero = Entity(), turn = 2, minions = emptyList())
+                        BattlegroundsBoard(heroCardId = "", turn = 2, minions = emptyList(), leaderBoardPosition = 0)
                 ),
                 DeckEntry.Hero(
                         ArcaneTrackerApplication.get().cardJson.getCard(CardId.THE_LICH_KING),
                         BattlegroundsBoard(
-                                opponentHero = Entity(),
+                                heroCardId = "",
                                 currentTurn = 6,
+                                leaderBoardPosition = 0,
                                 turn = 3,
                                 minions = listOf(
-                                BattlegroundsMinion(CardId.VOIDWALKER,
-                                        12,
-                                        13,
-                                        true,
-                                        true
-                                ),
-                                BattlegroundsMinion(CardId.TIRION_FORDRING,
-                                        5,
-                                        6,
-                                        false,
-                                        false
+                                        BattlegroundsMinion(CardId.VOIDWALKER,
+                                                12,
+                                                13,
+                                                true,
+                                                true
+                                        ),
+                                        BattlegroundsMinion(CardId.TIRION_FORDRING,
+                                                5,
+                                                6,
+                                                false,
+                                                false
+                                        )
                                 )
-                        )
                         )
                 )
         )

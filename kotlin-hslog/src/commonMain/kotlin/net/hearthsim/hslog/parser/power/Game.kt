@@ -33,18 +33,10 @@ class Game(private val console: Console) {
     val battlegroundState: BattlegroundState
         get() {
             val currentTurn = gameEntity?.tags?.get(Entity.KEY_TURN)?.toInt() ?: 0
-            val boardsOrdered = battlegroundsBoard.values.sortedBy { board ->
-                // There are multiple entities for the same hero
-                val leaderBoardPlace = getEntityList {
-                    it.CardID == board.opponentHero.CardID
-                }.mapNotNull {
-                    it.tags.get(Entity.KEY_PLAYER_LEADERBOARD_PLACE)?.toInt()
-                }.firstOrNull()
-
-                leaderBoardPlace
-            }.map {
-                it.copy(currentTurn = currentTurn)
-            }
+            val boardsOrdered = battlegroundsBoard.values.sortedBy { it.leaderBoardPosition }
+                    .map {
+                        it.copy(currentTurn = currentTurn)
+                    }
             return BattlegroundState(boardsOrdered)
         }
 

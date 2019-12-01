@@ -220,11 +220,11 @@ class PowerParserTest {
             hsLog.processPower(it, false)
         }
 
-        assert(lastState!!.boards[0].opponentHero.CardID == CardId.KING_MUKLA1)
-        assert(lastState!!.boards[1].opponentHero.CardID == CardId.BARTENDOTRON1)
-        assert(lastState!!.boards[2].opponentHero.CardID == CardId.PATCHWERK2)
-        assert(lastState!!.boards[3].opponentHero.CardID == CardId.LICH_BAZHIAL)
-        assert(lastState!!.boards[4].opponentHero.CardID == CardId.YOGGSARON_HOPES_END1)
+        assert(lastState!!.boards[0].heroCardId == CardId.KING_MUKLA1)
+        assert(lastState!!.boards[1].heroCardId == CardId.BARTENDOTRON1)
+        assert(lastState!!.boards[2].heroCardId == CardId.PATCHWERK2)
+        assert(lastState!!.boards[3].heroCardId == CardId.LICH_BAZHIAL)
+        assert(lastState!!.boards[4].heroCardId == CardId.YOGGSARON_HOPES_END1)
 
         assert(gameAtStart != null)
         assert(gameAtEnd != null)
