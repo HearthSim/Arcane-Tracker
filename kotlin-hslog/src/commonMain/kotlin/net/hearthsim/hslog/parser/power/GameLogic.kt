@@ -347,7 +347,7 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
 
         val board = BattlegroundsBoard(
                 heroCardId = opponentHero.CardID!!,
-                leaderBoardPosition = leaderBoardPlace ?: Int.MAX_VALUE,
+                leaderBoardPlace = leaderBoardPlace ?: Int.MAX_VALUE,
                 turn = game.gameEntity?.tags?.get(Entity.KEY_TURN)?.toInt() ?: 0,
                 minions = minions.sortedBy { it.tags[Entity.KEY_ZONE_POSITION] }.map { entityToBattlegroundMinion(it) }
         )

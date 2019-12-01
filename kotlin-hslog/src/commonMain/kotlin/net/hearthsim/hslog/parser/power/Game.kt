@@ -33,7 +33,7 @@ class Game(private val console: Console) {
     val battlegroundState: BattlegroundState
         get() {
             val currentTurn = gameEntity?.tags?.get(Entity.KEY_TURN)?.toInt() ?: 0
-            val boardsOrdered = battlegroundsBoard.values.sortedBy { it.leaderBoardPosition }
+            val boardsOrdered = battlegroundsBoard.values.sortedBy { it.leaderBoardPlace }
                     .map {
                         it.copy(currentTurn = currentTurn)
                     }

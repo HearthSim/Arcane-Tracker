@@ -7,7 +7,6 @@ import net.mbonnin.arcanetracker.ui.overlay.adapter.Controller
 import net.hearthsim.hslog.DeckEntry
 import net.hearthsim.hslog.parser.power.BattlegroundsBoard
 import net.hearthsim.hslog.parser.power.BattlegroundsMinion
-import net.hearthsim.hslog.parser.power.Entity
 import net.hearthsim.hsmodel.enum.CardId
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 
@@ -28,14 +27,14 @@ class OpponentDeckCompanion(v: View) : DeckCompanion(v) {
         return listOf(
                 DeckEntry.Hero(
                         ArcaneTrackerApplication.get().cardJson.getCard(CardId.THE_RAT_KING),
-                        BattlegroundsBoard(heroCardId = "", turn = 2, minions = emptyList(), leaderBoardPosition = 0)
+                        BattlegroundsBoard(heroCardId = "", turn = 2, minions = emptyList(), leaderBoardPlace = 0)
                 ),
                 DeckEntry.Hero(
                         ArcaneTrackerApplication.get().cardJson.getCard(CardId.THE_LICH_KING),
                         BattlegroundsBoard(
                                 heroCardId = "",
                                 currentTurn = 6,
-                                leaderBoardPosition = 0,
+                                leaderBoardPlace = 0,
                                 turn = 3,
                                 minions = listOf(
                                         BattlegroundsMinion(CardId.VOIDWALKER,
