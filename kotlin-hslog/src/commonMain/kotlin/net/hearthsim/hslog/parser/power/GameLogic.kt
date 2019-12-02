@@ -337,21 +337,12 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
                     && it.tags[Entity.KEY_ZONE] == Entity.ZONE_PLAY
         }
 
-        // There are multiple entities for the same hero
-        // lookup the current leaderboard position
-        val leaderBoardPlace = game.getEntityList {
-            it.CardID == opponentHero.CardID!!
-        }.mapNotNull {
-            it.tags.get(Entity.KEY_PLAYER_LEADERBOARD_PLACE)?.toInt()
-        }.firstOrNull()
-
         val board = BattlegroundsBoard(
                 heroCardId = opponentHero.CardID!!,
-                leaderBoardPlace = leaderBoardPlace ?: Int.MAX_VALUE,
                 turn = game.gameEntity?.tags?.get(Entity.KEY_TURN)?.toInt() ?: 0,
                 minions = minions.sortedBy { it.tags[Entity.KEY_ZONE_POSITION] }.map { entityToBattlegroundMinion(it) }
         )
-        console.debug(board.toString())
+
         game.battlegroundsBoard.put(opponentHero.CardID!!, board)
     }
 

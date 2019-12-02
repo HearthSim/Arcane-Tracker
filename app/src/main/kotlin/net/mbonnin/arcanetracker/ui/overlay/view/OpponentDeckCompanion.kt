@@ -27,14 +27,13 @@ class OpponentDeckCompanion(v: View) : DeckCompanion(v) {
         return listOf(
                 DeckEntry.Hero(
                         ArcaneTrackerApplication.get().cardJson.getCard(CardId.THE_RAT_KING),
-                        BattlegroundsBoard(heroCardId = "", turn = 2, minions = emptyList(), leaderBoardPlace = 0)
+                        BattlegroundsBoard(heroCardId = "", turn = 2, minions = emptyList())
                 ),
                 DeckEntry.Hero(
                         ArcaneTrackerApplication.get().cardJson.getCard(CardId.THE_LICH_KING),
                         BattlegroundsBoard(
                                 heroCardId = "",
                                 currentTurn = 6,
-                                leaderBoardPlace = 0,
                                 turn = 3,
                                 minions = listOf(
                                         BattlegroundsMinion(CardId.VOIDWALKER,

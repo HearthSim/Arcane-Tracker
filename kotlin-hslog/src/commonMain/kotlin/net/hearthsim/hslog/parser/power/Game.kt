@@ -30,12 +30,36 @@ class Game(private val console: Console) {
 
     internal val battlegroundsBoard = mutableMapOf<String, BattlegroundsBoard>()
 
+    /*
+     * We patch turn and leaderboard place on the fly
+     */
     val battlegroundState: BattlegroundState
         get() {
             val currentTurn = gameEntity?.tags?.get(Entity.KEY_TURN)?.toInt() ?: 0
-            val boardsOrdered = battlegroundsBoard.values.sortedBy { it.leaderBoardPlace }
-                    .map {
-                        it.copy(currentTurn = currentTurn)
+            val boardsOrdered = battlegroundsBoard.values
+                    .map {board ->
+                        // There are multiple entities for the same hero
+                        // lookup the current leaderboard position
+                        val candidates = getEntityList {
+                            it.CardID == board.heroCardId
+                                    && it.tags.get(Entity.KEY_PLAYER_LEADERBOARD_PLACE) != null
+                        }
+
+                        if (candidates.size >1) {
+                            console.debug("${candidates.size} candidates to determine leaderboard")
+                        }
+
+                        val actual = candidates.firstOrNull()
+                        val leaderBoardPlace = actual?.tags?.get(Entity.KEY_PLAYER_LEADERBOARD_PLACE)?.toIntOrNull()
+
+                        //console.debug("CardId=${actual?.CardID} entity=${actual?.EntityID} leaderBoardPlace=$leaderBoardPlace")
+
+                        board.copy(
+                                currentTurn = currentTurn,
+                                leaderboardPlace = leaderBoardPlace ?: 8
+                                )
+                    }.sortedBy {
+                        it.leaderboardPlace
                     }
             return BattlegroundState(boardsOrdered)
         }
