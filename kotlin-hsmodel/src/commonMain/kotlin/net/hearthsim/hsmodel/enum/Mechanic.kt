@@ -116,6 +116,8 @@ object Mechanic {
 
   const val SECRET: String = "SECRET"
 
+  const val SIDEQUEST: String = "SIDEQUEST"
+
   const val SILENCE: String = "SILENCE"
 
   const val SPARE_PART: String = "SPARE_PART"
