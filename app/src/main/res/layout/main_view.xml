@@ -18,6 +18,13 @@
                 android:layout_height="match_parent"
                 />
 
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/battlegroundsRecyclerView"
+                android:layout_width="match_parent"
+                android:background="#000"
+                android:layout_height="match_parent"
+        />
+
         <include
             android:id="@+id/playerView"
             layout="@layout/deck_view"

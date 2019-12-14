@@ -28,15 +28,16 @@ class MainViewCompanion(val mainView: View) {
     private val playerView: View
     private val opponentView: View
     private val secretView: View
+    private val battlegroundsView: View
     private val mViewManager = ViewManager.get()
 
     val handlesView = LayoutInflater.from(mainView.context).inflate(R.layout.handles_view, null) as HandlesView
-
 
     private var state: Int = 0
 
     private var mWidth = 0
     val secretsAdapter = ItemAdapter()
+    val battlegroundsAdapter = ItemAdapter()
 
     private val drawerHelper = DrawerHelper(mainView, handlesView, DrawerHelper.Edge.LEFT)
     fun setAlpha(progress: Int) {
@@ -50,6 +51,7 @@ class MainViewCompanion(val mainView: View) {
         opponentView = mainView.findViewById(R.id.opponentView)
         secretView = mainView.findViewById(R.id.secretRecyclerView)
         playerView = mainView.findViewById(R.id.playerView)
+        battlegroundsView = mainView.findViewById(R.id.battlegroundsRecyclerView)
 
         mWidth = Settings.get(Settings.DRAWER_WIDTH, 0)
         if (mWidth < minDrawerWidth || mWidth >= maxDrawerWidth) {
@@ -63,11 +65,24 @@ class MainViewCompanion(val mainView: View) {
         recyclerView.layoutManager = LinearLayoutManager(mainView.context)
         recyclerView.adapter = secretsAdapter
 
+        val battlegroundsRecyclerView = mainView.findViewById<RecyclerView>(R.id.battlegroundsRecyclerView)
+        battlegroundsRecyclerView.layoutManager = LinearLayoutManager(mainView.context)
+        battlegroundsRecyclerView.adapter = battlegroundsAdapter
+
         drawerHelper.setViewHeight(mViewManager.height)
 
         configureHandles(handlesView)
 
         setState(STATE_PLAYER, false)
+    }
+
+
+    fun onBattlegrounds(list: List<DeckEntry>) {
+        handlesView.findViewById<View>(R.id.battlegroundsHandle).visibility = if (list.isEmpty()) View.GONE else View.VISIBLE
+        handlesView.findViewById<View>(R.id.playerHandle).visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
+        handlesView.findViewById<View>(R.id.opponentHandle).visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
+
+        battlegroundsAdapter.setList(list)
     }
 
     fun onSecrets(possibleSecrets: List<PossibleSecret>) {
@@ -128,6 +143,7 @@ class MainViewCompanion(val mainView: View) {
             opponentView.visibility = View.GONE
             playerView.visibility = View.GONE
             secretView.visibility = View.GONE
+            battlegroundsView.visibility = View.GONE
 
             when (targetState) {
                 STATE_PLAYER -> {
@@ -145,6 +161,10 @@ class MainViewCompanion(val mainView: View) {
                 STATE_SECRET -> {
                     secretView.visibility = View.VISIBLE
                     ArcaneTrackerApplication.get().analytics.logEvent("state_secret")
+                }
+                STATE_BATTLEGROUNDS -> {
+                    battlegroundsView.visibility = View.VISIBLE
+                    ArcaneTrackerApplication.get().analytics.logEvent("state_battlegrounds")
                 }
             }
             drawerHelper.open()
@@ -237,6 +257,11 @@ class MainViewCompanion(val mainView: View) {
         handleView.init(drawable, Color.BLACK)
         handleView.setOnClickListener(ClickListener(STATE_SECRET))
 
+        handleView = v.findViewById(R.id.battlegroundsHandle)
+        drawable = v.context.resources.getDrawable(R.drawable.swords)
+        handleView.init(drawable, v.context.resources.getColor(R.color.battlegroundsColor))
+        handleView.setOnClickListener(ClickListener(STATE_BATTLEGROUNDS))
+
         handleView = v.findViewById(R.id.opponentHandle)
         drawable = v.context.resources.getDrawable(R.drawable.icon_white)
         handleView.init(drawable, v.context.resources.getColor(R.color.opponentColor))
@@ -260,6 +285,7 @@ class MainViewCompanion(val mainView: View) {
         val STATE_PLAYER = 0
         val STATE_OPPONENT = 1
         val STATE_SECRET = 2
+        val STATE_BATTLEGROUNDS = 3
 
         val opponentCompanion: DeckCompanion
             get() {

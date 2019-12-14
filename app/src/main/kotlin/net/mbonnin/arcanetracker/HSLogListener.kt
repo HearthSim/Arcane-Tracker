@@ -141,7 +141,12 @@ class ATHSLogListener(val currentOrFinishedGame: () -> Game?): HSLogListener {
     }
 
     override fun onDeckEntries(game: Game, isPlayer: Boolean, deckEntries: List<DeckEntry>) {
-        Controller.get().onDeckEntries(isPlayer, deckEntries)
+        if (deckEntries.firstOrNull { it is DeckEntry.Hero } != null) {
+            // this is a battlegrounds board
+            MainViewCompanion.get().onBattlegrounds(deckEntries)
+        } else {
+            Controller.get().onDeckEntries(isPlayer, deckEntries)
+            MainViewCompanion.get().onBattlegrounds(emptyList())
+        }
     }
-
 }

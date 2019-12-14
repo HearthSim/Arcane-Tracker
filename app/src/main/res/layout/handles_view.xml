@@ -1,36 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <net.mbonnin.arcanetracker.ui.overlay.view.HandlesView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:orientation="vertical"
-    android:layout_height="wrap_content">
+                                                       android:layout_width="wrap_content"
+                                                       android:orientation="vertical"
+                                                       android:layout_height="wrap_content">
 
     <net.mbonnin.arcanetracker.ui.overlay.view.HandleView
-        android:id="@+id/hsReplayHandle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp" />
+            android:id="@+id/hsReplayHandle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"/>
 
     <net.mbonnin.arcanetracker.ui.overlay.view.HandleView
-        android:id="@+id/settingsHandle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp" />
+            android:id="@+id/settingsHandle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"/>
 
     <net.mbonnin.arcanetracker.ui.overlay.view.HandleView
             android:id="@+id/secretHandle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            android:layout_marginBottom="10dp" />
+            android:layout_marginBottom="10dp"/>
 
     <net.mbonnin.arcanetracker.ui.overlay.view.HandleView
-        android:id="@+id/opponentHandle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp" />
+            android:id="@+id/opponentHandle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"/>
 
     <net.mbonnin.arcanetracker.ui.overlay.view.HandleView
-        android:id="@+id/playerHandle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+            android:id="@+id/playerHandle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"/>
+
+    <net.mbonnin.arcanetracker.ui.overlay.view.HandleView
+            android:id="@+id/battlegroundsHandle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginBottom="10dp"/>
+
 </net.mbonnin.arcanetracker.ui.overlay.view.HandlesView>
