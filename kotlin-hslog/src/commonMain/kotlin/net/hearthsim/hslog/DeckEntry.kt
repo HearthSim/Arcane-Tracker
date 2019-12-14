@@ -10,7 +10,13 @@ sealed class DeckEntry {
     object OpponentDeck : DeckEntry()
     object Secrets: DeckEntry()
 
-    class Item(var card: Card, var count: Int = 0, var gift: Boolean = false , var entityList: List<Entity>): DeckEntry()
+    class Text(val text: String): DeckEntry()
+    class Item(var card: Card,
+               var count: Int = 0,
+               var gift: Boolean = false ,
+               var entityList: List<Entity>,
+               val techLevel: Int? = null
+    ): DeckEntry()
     class Hero(val card: Card, val board: BattlegroundsBoard): DeckEntry()
     class Unknown(val count: Int) : DeckEntry()
     class Hand(val count: Int) : DeckEntry()

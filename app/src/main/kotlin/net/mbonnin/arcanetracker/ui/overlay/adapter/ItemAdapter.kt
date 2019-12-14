@@ -94,6 +94,7 @@ class ItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     is DeckEntry.Secrets -> Utils.getString(R.string.secrets)
                     is DeckEntry.OpponentDeck -> Utils.getString(R.string.allCards)
                     is DeckEntry.Hand -> "${Utils.getString(R.string.hand)} (${o.count})"
+                    is DeckEntry.Text -> o.text
                     else -> ""
                 }
             }

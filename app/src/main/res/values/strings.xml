@@ -246,4 +246,5 @@
     <string name="hsreplayDescription">Replays upload: %1$s\nReplays claimed by: %2$s</string>
     <string name="turnTimerTitle">Turn Timer</string>
     <string name="battlegrounds_turn">%d turn(s) ago</string>
+    <string name="minions">Minions Tiers</string>
 </resources>

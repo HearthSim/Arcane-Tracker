@@ -82,7 +82,13 @@ class MainViewCompanion(val mainView: View) {
         handlesView.findViewById<View>(R.id.playerHandle).visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
         handlesView.findViewById<View>(R.id.opponentHandle).visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
 
-        battlegroundsAdapter.setList(list)
+        if (!list.isEmpty()) {
+            val list2 = mutableListOf<DeckEntry>()
+            list2.add(DeckEntry.Text(handlesView.context.getString(R.string.opponents)))
+            list2.addAll(list)
+            list2.add(DeckEntry.Text(handlesView.context.getString(R.string.minions)))
+            battlegroundsAdapter.setList(list2)
+        }
     }
 
     fun onSecrets(possibleSecrets: List<PossibleSecret>) {
@@ -276,7 +282,6 @@ class MainViewCompanion(val mainView: View) {
 
         drawerHelper.notifyHandlesChanged(resetY = true)
     }
-
 
     companion object {
         private var sOpponentCompanion: DeckCompanion? = null

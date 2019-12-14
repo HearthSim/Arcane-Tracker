@@ -10,18 +10,19 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
-import net.hearthsim.hslog.*
+import net.hearthsim.hslog.DeckEntry
 import net.hearthsim.hslog.parser.power.Entity
 import net.hearthsim.hsmodel.Card
 import net.hearthsim.hsmodel.enum.Rarity
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
-import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.ViewManager
+
 
 internal class DeckEntryHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnTouchListener {
     private val mHandler: Handler
     var gift: ImageView
+    val tier: ImageView
     var background: ImageView
     var cost: TextView
     var name: TextView
@@ -43,7 +44,7 @@ internal class DeckEntryHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
         count = itemView.findViewById(R.id.count)
         overlay = itemView.findViewById(R.id.overlay)
         gift = itemView.findViewById(R.id.gift)
-
+        tier = itemView.findViewById(R.id.tier)
         mHandler = Handler()
         itemView.setOnTouchListener(this)
     }
@@ -58,7 +59,11 @@ internal class DeckEntryHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
                 .placeholder(R.drawable.hero_10)
                 .into(background)
 
-        val costInt = Utils.valueOf(card.cost)
+        val costInt = if (entry.techLevel != null) {
+            Utils.valueOf(card.cost)
+        } else {
+            -1
+        }
         if (costInt >= 0) {
             cost.text = costInt.toString() + ""
             cost.visibility = View.VISIBLE
@@ -74,13 +79,13 @@ internal class DeckEntryHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
             overlay.setBackgroundColor(Color.argb(150, 0, 0, 0))
         }
 
-        if (entry.gift) {
+        if (entry.gift && entry.techLevel == null) {
             gift.visibility = View.VISIBLE
         } else {
             gift.visibility = GONE
         }
 
-        if (c > 1) {
+        if (c > 1 && entry.techLevel == null) {
             count.visibility = View.VISIBLE
             count.text = c.toString() + ""
         } else if (c == 1 && Rarity.LEGENDARY == card.rarity) {
@@ -90,6 +95,12 @@ internal class DeckEntryHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
             count.visibility = GONE
         }
 
+        val resID = tier.getResources().getIdentifier("tier_${entry.techLevel}",
+                "drawable", tier.context.getPackageName())
+        tier.visibility = if (resID > 0) View.VISIBLE else View.GONE
+        if (resID > 0) {
+            tier.setImageResource(resID)
+        }
         deckEntry = entry
     }
 

@@ -81,4 +81,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:src="@drawable/ic_card_giftcard_black_24dp"
         android:tint="#fff" />
+    <ImageView
+            android:id="@+id/tier"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            app:layout_constraintRight_toLeftOf="@+id/count"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/tier_1"
+            />
 </androidx.constraintlayout.widget.ConstraintLayout>
