@@ -85,6 +85,7 @@ class Entity {
         const val KEY_POISONOUS = "POISONOUS"
         const val KEY_DIVINE_SHIELD = "DIVINE_SHIELD"
         const val KEY_PLAYER_LEADERBOARD_PLACE = "PLAYER_LEADERBOARD_PLACE"
+        const val KEY_SIDEQUEST = "SIDEQUEST"
 
         const val PLAYSTATE_WON = "WON"
 

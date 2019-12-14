@@ -19,7 +19,8 @@ class PossibleSecrets(val cardJson: CardJson) {
         val entities = game.getEntityList {
             it.tags[Entity.KEY_CONTROLLER] == game.opponentId()
                     && it.tags[Entity.KEY_ZONE] == Entity.ZONE_SECRET
-                    && Rarity.LEGENDARY != it.tags[Entity.KEY_RARITY]
+                    && it.tags[Entity.KEY_RARITY] != Rarity.LEGENDARY
+                    && it.tags[Entity.KEY_SIDEQUEST].isNullOrBlank()
         }
 
         val map = mutableMapOf<String, Int>()
