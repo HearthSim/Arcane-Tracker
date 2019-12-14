@@ -16,6 +16,7 @@ import net.hearthsim.hsmodel.Card
 import net.hearthsim.hsmodel.enum.Rarity
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.Utils
+import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.ViewManager
 
 
@@ -59,7 +60,7 @@ internal class DeckEntryHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
                 .placeholder(R.drawable.hero_10)
                 .into(background)
 
-        val costInt = if (entry.techLevel != null) {
+        val costInt = if (entry.techLevel == null) {
             Utils.valueOf(card.cost)
         } else {
             -1
@@ -88,7 +89,7 @@ internal class DeckEntryHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
         if (c > 1 && entry.techLevel == null) {
             count.visibility = View.VISIBLE
             count.text = c.toString() + ""
-        } else if (c == 1 && Rarity.LEGENDARY == card.rarity) {
+        } else if (c == 1 && entry.techLevel == null && Rarity.LEGENDARY == card.rarity) {
             count.visibility = View.VISIBLE
             count.text = "\u2605"
         } else {

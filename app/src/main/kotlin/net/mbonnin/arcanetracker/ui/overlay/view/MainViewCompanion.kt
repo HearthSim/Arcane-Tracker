@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import net.hearthsim.hslog.DeckEntry
 import net.hearthsim.hslog.PossibleSecret
+import net.hearthsim.hsmodel.battlegrounds.battlegroundsMinions
+import net.hearthsim.hsmodel.enum.Race
 import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.ui.my_games.YourGamesActivity
 import net.mbonnin.arcanetracker.ui.my_packs.YourPacksActivity
@@ -42,6 +44,25 @@ class MainViewCompanion(val mainView: View) {
     private val drawerHelper = DrawerHelper(mainView, handlesView, DrawerHelper.Edge.LEFT)
     fun setAlpha(progress: Int) {
         drawerHelper.setAlpha(progress)
+    }
+
+    val battlegroundDeckEntries by lazy {
+        battlegroundsMinions.map {
+            DeckEntry.Item(card = ArcaneTrackerApplication.get().cardJson.getCard(it.cardId),
+                    count = 1,
+                    entityList = emptyList(),
+                    gift = false,
+                    techLevel = it.techLevel)
+        }.sortedByDescending {
+            10 * it.techLevel!! + when(it.card.race) {
+                Race.ALL -> 9
+                Race.MURLOC -> 8
+                Race.BEAST -> 7
+                Race.DEMON -> 6
+                Race.MECHANICAL -> 5
+                else -> 4
+            }
+        }
     }
 
     init {
@@ -76,7 +97,6 @@ class MainViewCompanion(val mainView: View) {
         setState(STATE_PLAYER, false)
     }
 
-
     fun onBattlegrounds(list: List<DeckEntry>) {
         handlesView.findViewById<View>(R.id.battlegroundsHandle).visibility = if (list.isEmpty()) View.GONE else View.VISIBLE
         handlesView.findViewById<View>(R.id.playerHandle).visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
@@ -84,9 +104,10 @@ class MainViewCompanion(val mainView: View) {
 
         if (!list.isEmpty()) {
             val list2 = mutableListOf<DeckEntry>()
-            list2.add(DeckEntry.Text(handlesView.context.getString(R.string.opponents)))
+            list2.add(DeckEntry.Text(handlesView.context.getString(R.string.battlegroundsOpponents)))
             list2.addAll(list)
             list2.add(DeckEntry.Text(handlesView.context.getString(R.string.minions)))
+            list2.addAll(battlegroundDeckEntries)
             battlegroundsAdapter.setList(list2)
         }
     }
@@ -267,6 +288,9 @@ class MainViewCompanion(val mainView: View) {
         drawable = v.context.resources.getDrawable(R.drawable.swords)
         handleView.init(drawable, v.context.resources.getColor(R.color.battlegroundsColor))
         handleView.setOnClickListener(ClickListener(STATE_BATTLEGROUNDS))
+
+        //handleView.visibility = View.VISIBLE
+        //battlegroundsAdapter.setList(battlegroundDeckEntries)
 
         handleView = v.findViewById(R.id.opponentHandle)
         drawable = v.context.resources.getDrawable(R.drawable.icon_white)

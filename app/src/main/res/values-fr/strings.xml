@@ -233,4 +233,5 @@
     <string name="step2">Etape 2/2</string>
     <string name="trackobotDeprecated">Attention: Track-o-boto n\'est plus maintenu et le support sera arrêté début 2019.</string>
     <string name="minions">Serviteurs par niveau</string>
+    <string name="battlegroundsOpponents">Adversaires</string>
 </resources>

@@ -10,7 +10,7 @@ class BattlegroundMinion(
   val techLevel: Int
 )
 
-val : List<BattlegroundMinion> = listOf(
+val battlegroundsMinions: List<BattlegroundMinion> = listOf(
   BattlegroundMinion("AT_121", 3),
   BattlegroundMinion("BGS_001", 2),
   BattlegroundMinion("BGS_002", 3),
