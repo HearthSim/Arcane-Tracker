@@ -14,6 +14,7 @@ plugins {
     id("kotlin-android-extensions")
     id("io.fabric")
     id("com.github.ben-manes.versions") version ("0.27.0")
+    id("com.google.gms.google-services")
 }
 
 apply<ATAppPlugin>()
@@ -61,7 +62,6 @@ android {
     dataBinding {
         isEnabled = true
     }
-
     
     buildTypes {
         getByName("debug") {
@@ -125,6 +125,7 @@ dependencies {
 
     implementation(Libs.play_auth)
     implementation(Libs.play_firebase_core)
+    implementation(Libs.play_firebase_analytics)
     implementation(Libs.play_firebase_messaging)
     implementation(Libs.play_firebase_config)
 
@@ -171,6 +172,3 @@ tasks.named<DependencyUpdatesTask>("dependencyUpdates") {
         }
     }
 }
-
-
-apply(plugin = "com.google.gms.google-services")
