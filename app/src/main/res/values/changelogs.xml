@@ -40,4 +40,5 @@
     <string name="changelog_424" translatable="false">Add Sathrovarr.</string>
     <string name="changelog_425" translatable="false">Battlegrounds support.</string>
     <string name="changelog_427" translatable="false">Update for patch 16.0.0.37060.</string>
+    <string name="changelog_429" translatable="false">Battlegrounds now has its own icon.\nAdd battlegrounds minions tiers.</string>
 </resources>
