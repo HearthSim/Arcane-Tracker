@@ -1,8 +1,15 @@
 package net.hearthsim.hsreplay
 
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.request.post
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.io.readRemaining
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import net.hearthsim.analytics.Analytics
 import net.hearthsim.console.Console
 import net.hearthsim.hsreplay.Preferences.Companion.KEY_HSREPLAY_BATTLETAG
@@ -13,6 +20,7 @@ import net.hearthsim.hsreplay.model.legacy.UploadRequest
 import net.hearthsim.hsreplay.model.legacy.UploadToken
 import net.hearthsim.hsreplay.model.new.Account
 import net.hearthsim.hsreplay.model.new.ClaimInput
+import net.hearthsim.hsreplay.model.new.CollectionUploadData
 
 class HsReplay(val preferences: Preferences, val console: Console, val analytics: Analytics, val userAgent: String) {
     private val oauthApi = HsReplayOauthApi(userAgent)
@@ -87,6 +95,10 @@ class HsReplay(val preferences: Preferences, val console: Console, val analytics
     sealed class LoginResult {
         object Success: LoginResult()
         class  Failure(val e: Throwable): LoginResult()
+    }
+
+    fun setTokens(accessToken: String, refreshToken: String) {
+        accessTokenProvider.remember(accessToken, refreshToken)
     }
 
     suspend fun login(code: String) = coroutineScope {
@@ -170,5 +182,25 @@ class HsReplay(val preferences: Preferences, val console: Console, val analytics
         }
 
         return UploadResult.Success(upload.url)
+    }
+
+    sealed class CollectionUploadResult{
+        object Success: CollectionUploadResult()
+        class Failure(val e: Throwable): CollectionUploadResult()
+    }
+
+    suspend fun uploadCollection(collectionUploadData: CollectionUploadData, account_hi: String, account_lo: String): CollectionUploadResult {
+        try {
+            val uploadCollectionRequest = newApi.collectionUploadRequest(account_hi, account_lo)
+
+            HttpClient {  }.post<String>(uploadCollectionRequest.url) {
+                header("User-Agent", userAgent)
+
+                body = Json.nonstrict.stringify(CollectionUploadData.serializer(), collectionUploadData)
+            }
+            return CollectionUploadResult.Success
+        } catch(e: Exception) {
+            return CollectionUploadResult.Failure(e)
+        }
     }
 }

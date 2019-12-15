@@ -92,6 +92,7 @@ class HsReplayTest {
             }
         }
     }
+
     @InternalAPI
     @Test
     fun testGzip() {

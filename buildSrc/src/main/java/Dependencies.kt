@@ -6,7 +6,7 @@ object Versions {
     const val androidPlugin = "3.5.2"
     const val fabricPlugin = "1.30.0"
     const val playServicesPlugin = "4.3.3"
-    const val coroutines = "1.3.2"
+    const val coroutines = "1.3.3"
     const val ktor = "1.2.6"
     const val kotlinxIo = "0.1.16"
     const val serialization = "0.14.0"

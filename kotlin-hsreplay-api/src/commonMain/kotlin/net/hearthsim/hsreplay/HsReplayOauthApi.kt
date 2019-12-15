@@ -46,6 +46,5 @@ class HsReplayOauthApi(val userAgent: String) {
             append("refresh_token", refreshToken)
         })
         header("User-Agent", userAgent)
-
     }
 }

@@ -1,28 +1,29 @@
 package net.hearthsim.hsreplay
 
 import kotlinx.cinterop.*
-import platform.darwin.COMPRESSION_ZLIB
-import platform.darwin.compression_encode_buffer
+import platform.zlib.compress
 import platform.posix.size_t
 import platform.posix.uint8_tVar
+import platform.zlib.uLongfVar
 
 actual object GzipEncoder {
     actual fun encode(bytes: ByteArray): ByteArray {
-        val src = nativeHeap.allocArrayOf(bytes).reinterpret<uint8_tVar>()
-        val dst = nativeHeap.allocArray<uint8_tVar>(bytes.size)
-        val count = compression_encode_buffer(
-                dst,
-                bytes.size.convert(),
-                src,
-                bytes.size.convert(),
-                null,
-                COMPRESSION_ZLIB)
+        return memScoped {
+            val src = allocArrayOf(bytes).reinterpret<uint8_tVar>()
+            val dst = allocArray<uint8_tVar>(bytes.size)
 
-        val result = dst.readBytes(count.convert())
+            val size = alloc<uLongfVar>()
+            size.value = bytes.size.convert()
 
-        nativeHeap.free(src)
-        nativeHeap.free(dst)
+            val count = compress(
+                    dst,
+                    size.ptr,
+                    src,
+                    bytes.size.convert())
 
-        return result
+            val result = dst.readBytes(count.convert())
+
+            result
+        }
     }
 }
