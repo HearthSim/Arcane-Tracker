@@ -73,7 +73,7 @@ object Libs {
     const val ktorClientSerializationJvm = "io.ktor:ktor-client-serialization-jvm:${Versions.ktor}"
     const val ktorClientSerializationMacOS = "io.ktor:ktor-client-serialization-macosx64:${Versions.ktor}"
     const val ktorClientOkhttp = "io.ktor:ktor-client-okhttp:${Versions.ktor}"
-    const val ktorClientCurl = "io.ktor:ktor-client-okhttp:${Versions.ktor}"
+    const val ktorClientCurl = "io.ktor:ktor-client-curl:${Versions.ktor}"
     const val ktorClientEncoding = "io.ktor:ktor-client-encoding:${Versions.ktor}"
     const val ktorClientEncodingJvm = "io.ktor:ktor-client-encoding-jvm:${Versions.ktor}"
     const val ktorClientEncodingMacOS = "io.ktor:ktor-client-encoding-macosx64:${Versions.ktor}"

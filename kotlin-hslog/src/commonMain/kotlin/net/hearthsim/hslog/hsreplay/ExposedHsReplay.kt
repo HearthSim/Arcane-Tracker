@@ -15,12 +15,21 @@ class ExposedHsReplay(preferences: Preferences, console: Console, analytics: Ana
         hsReplay.setTokens(accessToken, refreshToken)
     }
 
+    sealed class Result {
+        object Success: Result()
+        class Failure(val e: Throwable): Result()
+    }
     fun uploadCollectionWithCallback(collectionUploadData: CollectionUploadData,
                                      account_hi: String,
                                      account_lo: String,
-                                     callback: (HsReplay.CollectionUploadResult) -> Unit) {
+                                     callback: (Result) -> Unit) {
         GlobalScope.launch {
-            callback(hsReplay.uploadCollection(collectionUploadData, account_hi, account_lo))
+            val r = hsReplay.uploadCollection(collectionUploadData, account_hi, account_lo)
+            callback(when(r) {
+                is HsReplay.CollectionUploadResult.Success -> Result.Success
+                is HsReplay.CollectionUploadResult.Failure -> Result.Failure(r.e)
+
+            })
         }
     }
 
