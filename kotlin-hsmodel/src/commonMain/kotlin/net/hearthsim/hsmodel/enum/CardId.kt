@@ -15060,7 +15060,8 @@ object CardId {
 
   const val BONE_MINIONS2: String = "BRMA17_5_TB"
 
-  const val RAGRAID_INNKEEPER_TOOLS_FOR_RESET__NOT_PLAYER_FACING: String = "FB_RagRaid_InnkeeperTools"
+  const val RAGRAID_INNKEEPER_TOOLS_FOR_RESET__NOT_PLAYER_FACING: String =
+      "FB_RagRaid_InnkeeperTools"
 
   const val BONE_MINIONS1: String = "BRMA17_5H"
 

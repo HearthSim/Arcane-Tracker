@@ -232,7 +232,7 @@ println("rootDir=${rootDir}")
 
 val outputDir = File(rootDir, "kotlin-hsmodel/src/commonMain/kotlin")
 val cardsJsonFile = File(rootDir, "app/src/main/res/raw/cards.json")
-//download("https://api.hearthstonejson.com/v1/latest/all/cards.json", cardsJsonFile)
-//updateEnums(cardsJsonFile, outputDir)
+download("https://api.hearthstonejson.com/v1/latest/all/cards.json", cardsJsonFile)
+updateEnums(cardsJsonFile, outputDir)
 
 updateBattlegrounds(outputDir)
