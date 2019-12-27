@@ -213,4 +213,5 @@
     <string name="meta">Meta</string>
     <string name="exploreDecks">Esplora mazzi</string>
     <string name="signOut">Esci</string>
+    <string name="please_restart_hearthstone">Logs di Hearthstone non trovati. Di solito occorre riavviare Hearthstone.</string>
 </resources>
