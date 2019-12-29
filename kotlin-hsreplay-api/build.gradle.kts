@@ -30,6 +30,7 @@ kotlin {
                 implementation(Libs.ktorClientJson)
                 implementation(Libs.ktorClientSerialization)
                 implementation(Libs.ktorClientEncoding)
+                implementation(Libs.ktorClientLogging)
             }
         }
         jvm().compilations["main"].defaultSourceSet {
@@ -44,6 +45,7 @@ kotlin {
                 implementation(Libs.ktorClientJsonJvm)
                 implementation(Libs.ktorClientOkhttp)
                 implementation(Libs.ktorClientEncodingJvm)
+                implementation(Libs.ktorClientLoggingJvm)
             }
         }
         jvm().compilations["test"].defaultSourceSet {
@@ -65,6 +67,7 @@ kotlin {
                 implementation(Libs.ktorClientOkhttp)
                 implementation(Libs.ktorClientEncodingJvm)
                 implementation(Libs.ktorClientSerializationJvm)
+                implementation(Libs.ktorClientLoggingJvm)
             }
         }
         macosX64().compilations["main"].defaultSourceSet {
@@ -77,6 +80,7 @@ kotlin {
                 implementation(Libs.ktorClientEncodingMacOS)
                 implementation(Libs.ktorClientSerializationMacOS)
                 implementation(Libs.ktorClientCurl)
+                implementation(Libs.ktorClientLoggingNative)
             }
         }
     }

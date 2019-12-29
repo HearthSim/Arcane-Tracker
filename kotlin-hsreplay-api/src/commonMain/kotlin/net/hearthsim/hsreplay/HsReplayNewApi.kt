@@ -17,7 +17,7 @@ import net.hearthsim.hsreplay.model.new.CollectionUploadRequest
 
 class HsReplayNewApi(val userAgent: String, val accessTokenProvider: AccessTokenProvider) {
     companion object {
-        const val BASE_URL = "https://api.hsreplay.net/v1"
+        const val BASE_URL = "https://api.hsreplay.net/api/v1"
     }
 
     private val client = HttpClient {

@@ -2,17 +2,19 @@ package net.hearthsim.hsreplay.model.new
 
 import kotlinx.serialization.Serializable
 
-@Serializable
-class CollectionCard(
-        val cardId: String,
-        val count: Int,
-        val premium: Boolean
-)
 
 @Serializable
 class CollectionUploadData(
-        val collection: List<CollectionCard>,
-        val favoriteHeroes: Map<Int, CollectionCard>,
+        /*
+         * key is the dfbId as a string
+         * value is a list of 2 ints: one for the number of non-gold and one for the number of gold cards
+         */
+        val collection: Map<String, List<Int>>,
+        /*
+         * key is the playerClass int
+         * value is the dfbId of the given hero as a int
+         */
+        val favoriteHeroes: Map<String, Int>,
         val cardbacks: List<Int>,
         val favoriteCardback: Int?,
         val dust: Int?,

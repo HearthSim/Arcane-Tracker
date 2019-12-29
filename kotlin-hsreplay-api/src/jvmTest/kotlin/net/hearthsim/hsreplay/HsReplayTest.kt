@@ -11,6 +11,7 @@ import net.hearthsim.hsreplay.model.legacy.UploadRequest
 import kotlinx.coroutines.*
 import net.hearthsim.analytics.DefaultAnalytics
 import net.hearthsim.console.DefaultConsole
+import net.hearthsim.hsreplay.model.new.CollectionUploadData
 import okhttp3.logging.HttpLoggingInterceptor
 import org.junit.Test
 import java.io.File
@@ -97,7 +98,7 @@ class HsReplayTest {
     @Test
     fun testGzip() {
         val client = HttpClient(OkHttp) {
-           // install(GzipCompressFeature)
+            // install(GzipCompressFeature)
             engine {
                 addInterceptor(HttpLoggingInterceptor().apply {
                     setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -110,6 +111,57 @@ class HsReplayTest {
                 body = TextContent("Hello Martin", contentType = ContentType.Text.Plain)
             }
             Unit
+        }
+    }
+
+    class DummyPreferences : Preferences {
+        override fun getBoolean(key: String): Boolean? {
+            return false
+        }
+
+        override fun getString(key: String): String? {
+            return null
+        }
+
+        override fun putBoolean(key: String, value: Boolean?) {
+        }
+
+        override fun putString(key: String, value: String?) {
+        }
+
+    }
+
+    @Test
+    fun testCollectionUpload() {
+        val hsReplay = HsReplay(console = DefaultConsole(),
+                userAgent = "tests",
+                analytics = DefaultAnalytics(),
+                preferences = DummyPreferences())
+
+        println("testCollectionUpload")
+        hsReplay.setTokens("bar"	, "foo")
+
+        runBlocking {
+            val uploadData = CollectionUploadData(
+                    collection = mapOf(
+                            "52295" to listOf(2, 1),
+                            "149" to listOf(2,1)
+                    ),
+                    cardbacks = emptyList(),
+                    dust = 289,
+                    favoriteCardback = null,
+                    favoriteHeroes = emptyMap(),
+                    gold = 2349
+                    )
+            val result = hsReplay.uploadCollection(
+                    collectionUploadData = uploadData,
+                    account_hi = "144115198130930503",
+                    account_lo = "27472745"
+            )
+
+            if (result is HsReplay.CollectionUploadResult.Failure) {
+                throw (result.e)
+            }
         }
     }
 }

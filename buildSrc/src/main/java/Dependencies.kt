@@ -77,7 +77,9 @@ object Libs {
     const val ktorClientEncoding = "io.ktor:ktor-client-encoding:${Versions.ktor}"
     const val ktorClientEncodingJvm = "io.ktor:ktor-client-encoding-jvm:${Versions.ktor}"
     const val ktorClientEncodingMacOS = "io.ktor:ktor-client-encoding-macosx64:${Versions.ktor}"
-
+    const val ktorClientLogging = "io.ktor:ktor-client-logging:${Versions.ktor}"
+    const val ktorClientLoggingJvm = "io.ktor:ktor-client-logging-jvm:${Versions.ktor}"
+    const val ktorClientLoggingNative = "io.ktor:ktor-client-logging-native:${Versions.ktor}"
 
     const val kotlinxIo = "org.jetbrains.kotlinx:kotlinx-io:${Versions.kotlinxIo}"
     const val kotlinxIoJvm = "org.jetbrains.kotlinx:kotlinx-io-jvm:${Versions.kotlinxIo}"

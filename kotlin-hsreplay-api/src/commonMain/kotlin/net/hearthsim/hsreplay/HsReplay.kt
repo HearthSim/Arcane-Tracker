@@ -1,10 +1,19 @@
 package net.hearthsim.hsreplay
 
 import io.ktor.client.HttpClient
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.features.json.serializer.KotlinxSerializer
+import io.ktor.client.features.logging.DEFAULT
+import io.ktor.client.features.logging.LogLevel
+import io.ktor.client.features.logging.Logger
+import io.ktor.client.features.logging.Logging
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
-import kotlinx.coroutines.GlobalScope
+import io.ktor.client.request.put
+import io.ktor.client.response.HttpResponse
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.io.readRemaining
@@ -21,6 +30,7 @@ import net.hearthsim.hsreplay.model.legacy.UploadToken
 import net.hearthsim.hsreplay.model.new.Account
 import net.hearthsim.hsreplay.model.new.ClaimInput
 import net.hearthsim.hsreplay.model.new.CollectionUploadData
+import net.hearthsim.hsreplay.model.new.CollectionUploadRequest
 
 class HsReplay(val preferences: Preferences, val console: Console, val analytics: Analytics, val userAgent: String) {
     private val oauthApi = HsReplayOauthApi(userAgent)
@@ -191,12 +201,31 @@ class HsReplay(val preferences: Preferences, val console: Console, val analytics
 
     suspend fun uploadCollection(collectionUploadData: CollectionUploadData, account_hi: String, account_lo: String): CollectionUploadResult {
         try {
+            // Get the account first to ensure a valid access token else the collection upload route returns 400 instead of 401
+            newApi.account()
+
             val uploadCollectionRequest = newApi.collectionUploadRequest(account_hi, account_lo)
 
-            HttpClient {  }.post<String>(uploadCollectionRequest.url) {
-                header("User-Agent", userAgent)
+            HttpClient {
+                install(Logging) {
+                    logger = object: Logger {
+                        override fun log(message: String) {
+                            console.debug(message)
+                        }
+                    }
+                    level = LogLevel.BODY
+                }
+                install(JsonFeature) {
+                    serializer = KotlinxSerializer(Json.nonstrict).apply {
+                        setMapper(CollectionUploadData::class, CollectionUploadData.serializer())
+                    }
+                }
 
-                body = Json.nonstrict.stringify(CollectionUploadData.serializer(), collectionUploadData)
+            }.put<HttpResponse>(uploadCollectionRequest.url) {
+                header("User-Agent", userAgent)
+                contentType(ContentType.Application.Json)
+
+                body = collectionUploadData
             }
             return CollectionUploadResult.Success
         } catch(e: Exception) {
