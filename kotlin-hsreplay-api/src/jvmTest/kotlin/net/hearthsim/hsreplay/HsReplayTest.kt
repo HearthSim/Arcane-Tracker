@@ -43,7 +43,10 @@ class HsReplayTest {
         val hsReplay = HsReplay(userAgent = "net.mbonnin.arcanetracker/4.13; Android 9;",
                 console = DefaultConsole(),
                 preferences = preferences,
-                analytics = DefaultAnalytics())
+                analytics = DefaultAnalytics(),
+                clientId = "pk_live_iKPWQuznmNf2BbBCxZa1VzmP",
+                clientSecret = "sk_live_20180319oDB6PgKuHSwnDVs5B5SLBmh3"
+        )
 
         val uploadRequest = UploadRequest(
                 match_start = "2019-11-13T13:05:44+0200",
@@ -75,7 +78,10 @@ class HsReplayTest {
         val hsReplay = HsReplay(userAgent = "net.mbonnin.arcanetracker/4.13; Android 9;",
                 console = DefaultConsole(),
                 preferences = preferences,
-                analytics = DefaultAnalytics())
+                analytics = DefaultAnalytics(),
+                clientId = "pk_live_iKPWQuznmNf2BbBCxZa1VzmP",
+                clientSecret = "sk_live_20180319oDB6PgKuHSwnDVs5B5SLBmh3"
+                )
 
         val uploadRequest = UploadRequest(
                 match_start = "2019-07-13T13:05:44+0200",
@@ -136,7 +142,10 @@ class HsReplayTest {
         val hsReplay = HsReplay(console = DefaultConsole(),
                 userAgent = "tests",
                 analytics = DefaultAnalytics(),
-                preferences = DummyPreferences())
+                preferences = DummyPreferences(),
+                clientId = "pk_live_iKPWQuznmNf2BbBCxZa1VzmP",
+                clientSecret = "sk_live_20180319oDB6PgKuHSwnDVs5B5SLBmh3"
+        )
 
         println("testCollectionUpload")
         hsReplay.setTokens("bar"	, "foo")

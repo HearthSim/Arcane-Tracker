@@ -180,10 +180,17 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         analytics = ArcaneTrackerAnalytics()
         hsLog = HSLogFactory.createHSLog(console, cardJson)
 
-        val userAgent = (ArcaneTrackerApplication.context.packageName + "/" + BuildConfig.VERSION_NAME
+        val userAgent = (context.packageName + "/" + BuildConfig.VERSION_NAME
                 + "; Android " + Build.VERSION.RELEASE + ";")
 
-        hsReplay = HsReplay(HsReplayPreferences(this), console, analytics, userAgent)
+        hsReplay = HsReplay(
+                HsReplayPreferences(this),
+                console,
+                analytics,
+                "pk_live_iKPWQuznmNf2BbBCxZa1VzmP",
+                "sk_live_20180319oDB6PgKuHSwnDVs5B5SLBmh3",
+                userAgent
+        )
 
         MainService.start()
 

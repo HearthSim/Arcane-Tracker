@@ -32,7 +32,7 @@ class AccessTokenProvider(val preferences: Preferences, val oauthApi: HsReplayOa
                 return@forEach
             }
 
-            when(response.status.value/100) {
+            when (response.status.value / 100) {
                 2 -> Unit
                 4 -> {
                     // a 4xx response means the token is bad. In these cases, we should logout the user and have him log in again
@@ -46,7 +46,7 @@ class AccessTokenProvider(val preferences: Preferences, val oauthApi: HsReplayOa
                     return@forEach
                 }
             }
-            val text= response.content.readRemaining().readText()
+            val text = response.content.readRemaining().readText()
             val token = try {
                 Json.nonstrict.parse(Token.serializer(), text)
             } catch (e: Exception) {

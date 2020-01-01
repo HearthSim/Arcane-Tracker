@@ -32,8 +32,19 @@ import net.hearthsim.hsreplay.model.new.ClaimInput
 import net.hearthsim.hsreplay.model.new.CollectionUploadData
 import net.hearthsim.hsreplay.model.new.CollectionUploadRequest
 
-class HsReplay(val preferences: Preferences, val console: Console, val analytics: Analytics, val userAgent: String) {
-    private val oauthApi = HsReplayOauthApi(userAgent)
+class HsReplay(
+        val preferences: Preferences,
+        val console: Console,
+        val analytics: Analytics,
+        clientId: String,
+        clientSecret: String,
+        val userAgent: String) {
+    private val oauthApi = HsReplayOauthApi(
+            userAgent,
+            clientId,
+            clientSecret,
+            console
+    )
     private val legacyApi = HsReplayLegacyApi(userAgent)
     private val accessTokenProvider = AccessTokenProvider(preferences, oauthApi, analytics)
     private val newApi = HsReplayNewApi(userAgent, accessTokenProvider)
@@ -83,11 +94,14 @@ class HsReplay(val preferences: Preferences, val console: Console, val analytics
     suspend fun refreshAccountInformation() {
         try {
             account = newApi.account()
+
+            console.debug("got account: ${account!!.battletag}")
+
             preferences.putBoolean(KEY_HSREPLAY_PREMIUM, account!!.is_premium)
             preferences.putString(KEY_HSREPLAY_BATTLETAG, account!!.battletag)
             preferences.putString(KEY_HSREPLAY_USERNAME, account!!.username)
         } catch (e: Exception) {
-            console.error(Exception(e))
+            console.error(Exception("cannot get account:", e))
         }
 
     }
