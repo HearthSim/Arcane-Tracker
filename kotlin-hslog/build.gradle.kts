@@ -11,9 +11,8 @@ kotlin {
     macosX64 {
         binaries {
             framework {
-                export(project(":kotlin-hsmodel")) {
-                    transitiveExport = true // for kotlinx.io
-                }
+                export(project(":kotlin-hsmodel"))
+                export(Libs.kotlinxIoMacOS)
             }
         }
     }
@@ -38,6 +37,11 @@ kotlin {
         named("androidMain") {
             dependencies {
                 implementation(kotlin("stdlib"))
+            }
+        }
+        macosX64().compilations["main"].defaultSourceSet {
+            dependencies {
+                api(Libs.kotlinxIoMacOS)
             }
         }
     }

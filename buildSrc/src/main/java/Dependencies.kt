@@ -84,6 +84,7 @@ object Libs {
     const val kotlinxIo = "org.jetbrains.kotlinx:kotlinx-io:${Versions.kotlinxIo}"
     const val kotlinxIoJvm = "org.jetbrains.kotlinx:kotlinx-io-jvm:${Versions.kotlinxIo}"
     const val kotlinxIoNative = "org.jetbrains.kotlinx:kotlinx-io-native:${Versions.kotlinxIo}"
+    const val kotlinxIoMacOS = "org.jetbrains.kotlinx:kotlinx-io-macosx64:${Versions.kotlinxIo}"
 
     const val klock = "com.soywiz.korlibs.klock:klock:1.8.0"
 
