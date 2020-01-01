@@ -91,6 +91,7 @@ class HsReplay(val preferences: Preferences, val console: Console, val analytics
         }
 
     }
+
     fun logout() {
         accessTokenProvider.forget()
         preferences.putString(KEY_HSREPLAY_LEGACY_TOKEN, null)
@@ -103,8 +104,8 @@ class HsReplay(val preferences: Preferences, val console: Console, val analytics
     }
 
     sealed class LoginResult {
-        object Success: LoginResult()
-        class  Failure(val e: Throwable): LoginResult()
+        object Success : LoginResult()
+        class Failure(val e: Throwable) : LoginResult()
     }
 
     fun setTokens(accessToken: String, refreshToken: String) {
@@ -157,9 +158,9 @@ class HsReplay(val preferences: Preferences, val console: Console, val analytics
         return@coroutineScope LoginResult.Success
     }
 
-    sealed class UploadResult{
-        class Success(val replayUrl: String): UploadResult()
-        class Failure(val e: Throwable): UploadResult()
+    sealed class UploadResult {
+        class Success(val replayUrl: String) : UploadResult()
+        class Failure(val e: Throwable) : UploadResult()
     }
 
     suspend fun uploadGame(uploadRequest: UploadRequest, gameStr: ByteArray): UploadResult {
@@ -187,49 +188,62 @@ class HsReplay(val preferences: Preferences, val console: Console, val analytics
             return UploadResult.Failure(e)
         }
 
-        if (response.status.value/100 != 2) {
+        if (response.status.value / 100 != 2) {
             return UploadResult.Failure(Exception("Bad status: ${response.status.value}: ${response.content.readRemaining().readText()}"))
         }
 
         return UploadResult.Success(upload.url)
     }
 
-    sealed class CollectionUploadResult{
-        object Success: CollectionUploadResult()
-        class Failure(val e: Throwable): CollectionUploadResult()
+    sealed class CollectionUploadResult {
+        object Success : CollectionUploadResult()
+        class Failure(val code: Int, val throwable: Throwable) : CollectionUploadResult()
     }
 
     suspend fun uploadCollection(collectionUploadData: CollectionUploadData, account_hi: String, account_lo: String): CollectionUploadResult {
         try {
             // Get the account first to ensure a valid access token else the collection upload route returns 400 instead of 401
             newApi.account()
+        } catch (throwable: Throwable) {
+            return CollectionUploadResult.Failure(101, throwable)
+        }
 
-            val uploadCollectionRequest = newApi.collectionUploadRequest(account_hi, account_lo)
+        val uploadCollectionRequest = try {
+            newApi.collectionUploadRequest(account_hi, account_lo)
+        } catch (throwable: Throwable) {
+            return CollectionUploadResult.Failure(102, throwable)
+        }
 
-            HttpClient {
-                install(Logging) {
-                    logger = object: Logger {
-                        override fun log(message: String) {
-                            console.debug(message)
-                        }
+        val s3Client = HttpClient {
+            install(Logging) {
+                logger = object : Logger {
+                    override fun log(message: String) {
+                        console.debug(message)
                     }
-                    level = LogLevel.BODY
                 }
-                install(JsonFeature) {
-                    serializer = KotlinxSerializer(Json.nonstrict).apply {
-                        setMapper(CollectionUploadData::class, CollectionUploadData.serializer())
-                    }
+                level = LogLevel.NONE
+            }
+            install(JsonFeature) {
+                serializer = KotlinxSerializer(Json.nonstrict).apply {
+                    setMapper(CollectionUploadData::class, CollectionUploadData.serializer())
                 }
+            }
+        }
 
-            }.put<HttpResponse>(uploadCollectionRequest.url) {
+        try {
+            val response = s3Client.put<HttpResponse>(uploadCollectionRequest.url) {
                 header("User-Agent", userAgent)
                 contentType(ContentType.Application.Json)
 
                 body = collectionUploadData
             }
+
+            if (response.status.value / 100 != 2) {
+                return CollectionUploadResult.Failure(response.status.value * 1000 + 103, Exception("HTTP error during collection upload"))
+            }
             return CollectionUploadResult.Success
-        } catch(e: Exception) {
-            return CollectionUploadResult.Failure(e)
+        } catch (throwable: Throwable) {
+            return CollectionUploadResult.Failure(102, throwable)
         }
     }
 }

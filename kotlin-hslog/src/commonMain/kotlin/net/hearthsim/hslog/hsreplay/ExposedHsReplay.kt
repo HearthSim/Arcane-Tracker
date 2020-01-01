@@ -18,7 +18,7 @@ class ExposedHsReplay(preferences: Preferences, val console: Console, analytics:
 
     sealed class Result {
         object Success : Result()
-        class Failure(val e: Throwable) : Result()
+        class Failure(val code: Int, val throwable: Throwable) : Result()
     }
 
     fun uploadCollectionWithCallback(collectionUploadData: CollectionUploadData,
@@ -29,22 +29,9 @@ class ExposedHsReplay(preferences: Preferences, val console: Console, analytics:
             val r = hsReplay.uploadCollection(collectionUploadData, account_hi, account_lo)
             callback(when (r) {
                 is HsReplay.CollectionUploadResult.Success -> Result.Success
-                is HsReplay.CollectionUploadResult.Failure -> Result.Failure(r.e)
+                is HsReplay.CollectionUploadResult.Failure -> Result.Failure(r.code, r.throwable)
             })
         }
-    }
-
-    fun simpleCoroutine() {
-        console.debug("simpleCoroutine enters")
-        launch {
-            console.debug("Hello from inside the coroutine")
-            console.debug("sleep")
-            delay(1000)
-            console.debug("sleep more")
-            delay(1000)
-            console.debug("done")
-        }
-        console.debug("simpleCoroutine exits")
     }
 
     override val coroutineContext: CoroutineContext = SupervisorJob() + mainDispatcher
