@@ -27,7 +27,7 @@ object GameHelper {
 
         val rgame = RGame(
                 deck_id = deck.id,
-                victory = game.victory,
+                victory = game.victory == true,
                 coin = game.player!!.hasCoin,
                 player_class = game.player!!.playerClass!!,
                 opponent_class = game.opponent!!.playerClass!!,
@@ -66,7 +66,7 @@ object GameHelper {
             return
         }
         summary.coin = game.player!!.hasCoin
-        summary.win = game.victory
+        summary.win = game.victory == true
         summary.hero = game.player!!.classIndex!!
         summary.opponentHero = game.opponent!!.classIndex!!
         summary.date = Utils.ISO8601DATEFORMAT.format(Date())
@@ -164,11 +164,11 @@ object GameHelper {
         RankHolder.reset()
 
         Timber.w("gameOver  %s [gameType %s][format_type %s]",
-                if (game.victory) "victory" else "lost",
+                if (game.victory == true) "victory" else "lost",
                 game.gameType,
                 game.formatType)
 
-        MainViewCompanion.playerCompanion.deck?.let { updateCounter(it.id!!, game.victory) }
+        MainViewCompanion.playerCompanion.deck?.let { updateCounter(it.id!!, game.victory == true) }
 
         FileTree.get().sync()
 

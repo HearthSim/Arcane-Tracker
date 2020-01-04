@@ -20,7 +20,7 @@ class Game(private val console: Console) {
     var playerRank: Int = 0
     var opponentRank: Int = 0
 
-    var victory: Boolean = false
+    var victory: Boolean? = null
 
     var spectator: Boolean = false
     var buildNumber: String? = null
