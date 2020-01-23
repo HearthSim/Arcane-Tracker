@@ -4,6 +4,7 @@ import android.view.View
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.login_view.*
 import net.hearthsim.hsreplay.HsReplayOauthApi
+import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.helper.RandomHelper
 import okhttp3.HttpUrl
@@ -35,7 +36,7 @@ class LoginCompanion(override val containerView: View) : LayoutContainer {
             val url = HttpUrl.parse(HsReplayOauthApi.AUTHORIZE_URL)!!
                     .newBuilder()
                     .addQueryParameter("response_type", "code")
-                    .addQueryParameter("client_id", HsReplayOauthApi.A)
+                    .addQueryParameter("client_id", ArcaneTrackerApplication.HSREPLAY_CLIENT_ID)
                     .addQueryParameter("redirect_uri", HsReplayOauthApi.CALLBACK_URL)
                     .addQueryParameter("scope", "fullaccess")
                     .addQueryParameter("state", RandomHelper.random(16))

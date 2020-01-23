@@ -6,6 +6,8 @@
 //DEPS com.offbytwo:docopt:0.6.0.20150202
 //DEPS com.squareup:kotlinpoet:1.4.4
 
+//KOTLIN_OPTS -J-Xmx5g
+
 import com.squareup.kotlinpoet.*
 import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient

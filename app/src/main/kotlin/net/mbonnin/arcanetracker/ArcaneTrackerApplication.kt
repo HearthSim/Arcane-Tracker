@@ -187,8 +187,8 @@ class ArcaneTrackerApplication : MultiDexApplication() {
                 HsReplayPreferences(this),
                 console,
                 analytics,
-                "pk_live_iKPWQuznmNf2BbBCxZa1VzmP",
-                "sk_live_20180319oDB6PgKuHSwnDVs5B5SLBmh3",
+                HSREPLAY_CLIENT_ID,
+                HSREPLAY_CLIENT_SECRET,
                 userAgent
         )
 
@@ -221,6 +221,9 @@ class ArcaneTrackerApplication : MultiDexApplication() {
     }
 
     companion object {
+        val HSREPLAY_CLIENT_ID = "pk_live_iKPWQuznmNf2BbBCxZa1VzmP"
+        val HSREPLAY_CLIENT_SECRET = "sk_live_20180319oDB6PgKuHSwnDVs5B5SLBmh3"
+
         val NOTIFICATION_CHANNEL_ID = "channel_id"
         lateinit var context: Context
             private set

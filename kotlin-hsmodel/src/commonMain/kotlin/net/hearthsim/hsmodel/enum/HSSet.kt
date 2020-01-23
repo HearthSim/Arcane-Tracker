@@ -57,4 +57,6 @@ object HSSet {
   const val UNGORO: String = "UNGORO"
 
   const val WILD_EVENT: String = "WILD_EVENT"
+
+  const val YEAR_OF_THE_DRAGON: String = "YEAR_OF_THE_DRAGON"
 }
