@@ -62,7 +62,8 @@ data class Card(
                 HSSet.BOOMSDAY, // Boomsday Project
                 HSSet.TROLL, // Rastakhan's Rumble
                 HSSet.DALARAN,  // Rise of Shadows
-                HSSet.ULDUM // ULDUM
+                HSSet.ULDUM, // ULDUM
+                HSSet.YEAR_OF_THE_DRAGON
         )
         val HALL_OF_FAME_CARDS = setOf(
                 CardId.ICE_BLOCK,
