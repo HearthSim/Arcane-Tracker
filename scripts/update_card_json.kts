@@ -1,12 +1,17 @@
 #!/usr/bin/env kscript
 
-//DEPS com.squareup.okhttp3:okhttp:3.14.1
-//DEPS com.squareup.moshi:moshi:1.8.0
-//DEPS org.nanohttpd:nanohttpd:2.2.0
-//DEPS com.offbytwo:docopt:0.6.0.20150202
-//DEPS com.squareup:kotlinpoet:1.4.4
+@file:DependsOn("com.squareup.okhttp3:okhttp:4.4.0")
+@file:DependsOn("com.squareup.moshi:moshi:1.8.0")
+@file:DependsOn("org.nanohttpd:nanohttpd:2.2.0")
+@file:DependsOn("com.offbytwo:docopt:0.6.0.20150202")
+@file:DependsOn("com.squareup:kotlinpoet:1.4.4")
 
-//KOTLIN_OPTS -J-Xmx5g
+
+@file:DependsOn("org.nanohttpd:nanohttpd:2.2.0")
+
+@file:KotlinOpts("-J-Xmx5g")
+// Uncomment for debug
+// @file:KotlinOpts("-J-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:1044")
 
 import com.squareup.kotlinpoet.*
 import com.squareup.moshi.Moshi
@@ -18,10 +23,14 @@ import java.io.File
 import java.util.*
 import javax.xml.parsers.DocumentBuilderFactory
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import okio.buffer
+import okio.source
 
 val rootDir = File(System.getenv("KSCRIPT_FILE")).parentFile.parentFile
 
 fun download(url: String, file: File) {
+    print("$url...")
+    System.out.flush()
     val client = OkHttpClient()
     val request = Request.Builder().url(url).get().build()
 
@@ -29,20 +38,21 @@ fun download(url: String, file: File) {
 
     val response = client.newCall(request).execute()
     if (!response.isSuccessful) {
-        throw Exception("cannot download $url: ${response.code()}")
+        throw Exception("cannot download $url: ${response.code}")
     }
 
-    response.body()!!.byteStream().use { inputStream ->
+    response.body!!.byteStream().use { inputStream ->
         file.outputStream().use {
             inputStream.copyTo(it)
         }
     }
+    println("done.")
 }
 
 fun updateEnums(cardsJsonFile: File, outputDir: File) {
     val moshi = Moshi.Builder().build()
     val adapter = moshi.adapter<Any>(Any::class.java)
-    val hsCardList = adapter.fromJson(Okio.buffer(Okio.source(cardsJsonFile))) as List<Map<*, *>>
+    val hsCardList = adapter.fromJson(cardsJsonFile.source().buffer()) as List<Map<*, *>>
 
     val playerClassSet = TreeSet<String>()
     val raceSet = TreeSet<String>()
@@ -193,10 +203,10 @@ fun updateBattlegrounds(outputDir: File) {
 
     val response = client.newCall(request).execute()
     if (!response.isSuccessful) {
-        throw Exception("cannot download $url: ${response.code()}")
+        throw Exception("cannot download $url: ${response.code}")
     }
 
-    val document = response.body()!!.byteStream().use { inputStream ->
+    val document = response.body!!.byteStream().use { inputStream ->
         val factory = DocumentBuilderFactory.newInstance()
         val builder = factory.newDocumentBuilder()
         builder.parse(inputStream)
@@ -229,12 +239,11 @@ fun updateBattlegrounds(outputDir: File) {
     generateBattlegroundsFile(minions, outputDir)
 }
 
-
-println("rootDir=${rootDir}")
-
 val outputDir = File(rootDir, "kotlin-hsmodel/src/commonMain/kotlin")
 val cardsJsonFile = File(rootDir, "app/src/main/res/raw/cards.json")
 download("https://api.hearthstonejson.com/v1/latest/all/cards.json", cardsJsonFile)
 updateEnums(cardsJsonFile, outputDir)
 
 updateBattlegrounds(outputDir)
+
+println("done.")
