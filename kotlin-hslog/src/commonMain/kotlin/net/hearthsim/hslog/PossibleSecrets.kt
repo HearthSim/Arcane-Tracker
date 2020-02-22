@@ -63,6 +63,7 @@ class PossibleSecrets(val cardJson: CardJson) {
                         && it.playerClass == playerClass
                         && it.id != CardId.FLAME_WREATH  // these are bosses secrets
                         && it.id != CardId.FLAME_WREATH1
+                        && it.id != CardId.BUBBLEHEARTH
             }
 
             if (gameType == GameType.GT_ARENA) {
