@@ -371,7 +371,7 @@ class MainViewCompanion(val mainView: View) {
         handleView.init(drawable, v.context.resources.getColor(R.color.battlegroundsColor))
         handleView.setOnClickListener(ClickListener(STATE_BATTLEGROUNDS))
 
-        handleView.visibility = View.VISIBLE
+//        handleView.visibility = View.VISIBLE
 //        GlobalScope.launch(Dispatchers.Main) {
 //            delay(10)
 //            updateAdapter()
