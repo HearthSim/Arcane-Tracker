@@ -9,8 +9,13 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import net.hearthsim.hslog.DeckEntry
 import net.hearthsim.hslog.PossibleSecret
+import net.hearthsim.hsmodel.Card
 import net.hearthsim.hsmodel.battlegrounds.battlegroundsMinions
 import net.hearthsim.hsmodel.enum.Race
 import net.mbonnin.arcanetracker.*
@@ -46,24 +51,9 @@ class MainViewCompanion(val mainView: View) {
         drawerHelper.setAlpha(progress)
     }
 
-    val battlegroundDeckEntries by lazy {
-        battlegroundsMinions.map {
-            DeckEntry.Item(card = ArcaneTrackerApplication.get().cardJson.getCard(it.cardId),
-                    count = 1,
-                    entityList = emptyList(),
-                    gift = false,
-                    techLevel = it.techLevel)
-        }.sortedByDescending {
-            10 * it.techLevel!! + when(it.card.race) {
-                Race.ALL -> 9
-                Race.MURLOC -> 8
-                Race.BEAST -> 7
-                Race.DEMON -> 6
-                Race.MECHANICAL -> 5
-                else -> 4
-            }
-        }
-    }
+    var opponents = emptyList<DeckEntry>()
+    val expandedTechLevels = mutableMapOf<Int, Boolean>()
+    val expandedRaces = mutableMapOf<Pair<Int, String>, Boolean>()
 
     init {
         mHandler = Handler()
@@ -102,14 +92,105 @@ class MainViewCompanion(val mainView: View) {
         handlesView.findViewById<View>(R.id.playerHandle).visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
         handlesView.findViewById<View>(R.id.opponentHandle).visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
 
-        if (!list.isEmpty()) {
-            val list2 = mutableListOf<DeckEntry>()
-            list2.add(DeckEntry.Text(handlesView.context.getString(R.string.battlegroundsOpponents)))
-            list2.addAll(list)
-            list2.add(DeckEntry.Text(handlesView.context.getString(R.string.minions)))
-            list2.addAll(battlegroundDeckEntries)
-            battlegroundsAdapter.setList(list2)
+        opponents = list
+        updateAdapter()
+    }
+
+    class BGMinionWithCard(
+        val card: Card,
+        val techLevel: Int
+    )
+
+    val bgMinionsWithCard = battlegroundsMinions.map {
+        BGMinionWithCard(card = ArcaneTrackerApplication.get().cardJson.getCard(it.cardId),
+            techLevel = it.techLevel)
+    }
+
+    fun getTierList(): List<DeckEntry> {
+        val byTechLevel = bgMinionsWithCard.groupBy {
+            it.techLevel
+        }.values
+            .filter { it.isNotEmpty() }
+            .sortedBy {
+                it[0].techLevel
+            }
+
+        return byTechLevel.flatMap {
+
+            val techLevel = it[0].techLevel
+
+            val header: DeckEntry.Text
+            if (expandedTechLevels.getOrElse(techLevel, { false })) {
+                header = DeckEntry.Text(handlesView.context.getString(R.string.techLevelExpanded, techLevel)) {
+                    expandedTechLevels.put(techLevel, false)
+                    updateAdapter()
+                }
+
+                listOf(header) + getEntriesFor(techLevel)
+            } else {
+                header = DeckEntry.Text(handlesView.context.getString(R.string.techLevelCollapsed, techLevel)) {
+                    expandedTechLevels.put(techLevel, true)
+                    updateAdapter()
+                }
+                listOf(header)
+            }
         }
+    }
+
+    fun getEntriesFor(techLevel: Int): List<DeckEntry> {
+        val byRace = bgMinionsWithCard
+            .filter {
+                it.techLevel == techLevel
+            }
+            .groupBy {
+                it.card.race
+            }.values
+            .filter { it.isNotEmpty() }
+            .sortedBy {
+                it[0].card.race
+            }
+
+        return byRace.flatMap {
+
+            var race = it[0].card.race
+
+            if (race.isNullOrBlank()) {
+                race = ArcaneTrackerApplication.get().getString(R.string.neutral)
+            }
+            require(race != null)
+            race = race.toLowerCase().capitalize()
+
+            val header: DeckEntry.Text
+            if (expandedRaces.getOrElse(techLevel to race, { true })) {
+                header = DeckEntry.Text("$race ▼") {
+                    expandedRaces.put(techLevel to race, false)
+                    updateAdapter()
+                }
+
+                listOf(header) + it.map {
+                    DeckEntry.Item(card = it.card,
+                        count = 1,
+                        entityList = emptyList(),
+                        gift = false,
+                        techLevel = it.techLevel)
+                }
+            } else {
+                header = DeckEntry.Text("$race ▶") {
+                    expandedRaces.put(techLevel to race, true)
+                    updateAdapter()
+                }
+                listOf(header)
+            }
+        }
+    }
+
+    fun updateAdapter() {
+        val list2 = mutableListOf<DeckEntry>()
+        list2.add(DeckEntry.Text(handlesView.context.getString(R.string.battlegroundsOpponents)))
+        list2.addAll(opponents)
+        list2.add(DeckEntry.Text(handlesView.context.getString(R.string.minions)))
+        list2.addAll(getTierList())
+        battlegroundsAdapter.setList(list2)
     }
 
     fun onSecrets(possibleSecrets: List<PossibleSecret>) {
@@ -120,9 +201,9 @@ class MainViewCompanion(val mainView: View) {
         list.addAll(possibleSecrets.map { secret ->
             val card = CardUtil.getCard(secret.cardId)
             DeckEntry.Item(
-                    card = card,
-                    count = secret.count,
-                    entityList = emptyList()
+                card = card,
+                count = secret.count,
+                entityList = emptyList()
             )
         })
 
@@ -132,6 +213,7 @@ class MainViewCompanion(val mainView: View) {
 
         drawerHelper.notifyHandlesChanged()
     }
+
     val minDrawerWidth: Int
         get() = Utils.dpToPx(50)
 
@@ -289,8 +371,11 @@ class MainViewCompanion(val mainView: View) {
         handleView.init(drawable, v.context.resources.getColor(R.color.battlegroundsColor))
         handleView.setOnClickListener(ClickListener(STATE_BATTLEGROUNDS))
 
-        //handleView.visibility = View.VISIBLE
-        //battlegroundsAdapter.setList(battlegroundDeckEntries)
+        handleView.visibility = View.VISIBLE
+//        GlobalScope.launch(Dispatchers.Main) {
+//            delay(10)
+//            updateAdapter()
+//        }
 
         handleView = v.findViewById(R.id.opponentHandle)
         drawable = v.context.resources.getDrawable(R.drawable.icon_white)

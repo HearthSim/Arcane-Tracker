@@ -99,6 +99,12 @@ class ItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 }
             }
         }
+
+        if (o is DeckEntry.Text) {
+            holder.itemView.setOnClickListener {
+                o.onClick?.invoke()
+            }
+        }
         val params2 = RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(30))
         holder.itemView.layoutParams = params2
     }

@@ -10,7 +10,8 @@ sealed class DeckEntry {
     object OpponentDeck : DeckEntry()
     object Secrets: DeckEntry()
 
-    class Text(val text: String): DeckEntry()
+    class Text(val text: String,
+               val onClick: (() -> Unit)? = null): DeckEntry()
     class Item(var card: Card,
                var count: Int = 0,
                var gift: Boolean = false ,
