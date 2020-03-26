@@ -6,6 +6,8 @@ import kotlin.String
 object HSSet {
   const val BATTLEGROUNDS: String = "BATTLEGROUNDS"
 
+  const val BLACK_TEMPLE: String = "BLACK_TEMPLE"
+
   const val BOOMSDAY: String = "BOOMSDAY"
 
   const val BRM: String = "BRM"
@@ -15,6 +17,8 @@ object HSSet {
   const val CREDITS: String = "CREDITS"
 
   const val DALARAN: String = "DALARAN"
+
+  const val DEMON_HUNTER_INITIATE: String = "DEMON_HUNTER_INITIATE"
 
   const val DRAGONS: String = "DRAGONS"
 

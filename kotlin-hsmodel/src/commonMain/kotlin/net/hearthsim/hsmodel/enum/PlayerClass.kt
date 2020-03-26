@@ -6,6 +6,8 @@ import kotlin.String
 object PlayerClass {
   const val DEATHKNIGHT: String = "DEATHKNIGHT"
 
+  const val DEMONHUNTER: String = "DEMONHUNTER"
+
   const val DREAM: String = "DREAM"
 
   const val DRUID: String = "DRUID"
