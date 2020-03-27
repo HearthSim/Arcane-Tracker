@@ -1,8 +1,3 @@
-import Versions.compileSdkVersion
-import Versions.kotlin
-import Versions.minSdkVersion
-import Versions.targetSdkVersion
-
 plugins {
     id("com.android.library")
     kotlin("multiplatform")
@@ -10,7 +5,15 @@ plugins {
 }
 
 kotlin {
-    jvm()
+    jvm() {
+        val main by compilations.getting {
+            kotlinOptions {
+                // Setup the Kotlin compiler options for the 'main' compilation:
+                jvmTarget = "1.8"
+            }
+        }
+    }
+
     android {
         publishAllLibraryVariants()
     }
@@ -45,5 +48,9 @@ android {
     defaultConfig {
         minSdkVersion(Versions.minSdkVersion)
         targetSdkVersion(Versions.targetSdkVersion)
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }

@@ -99,6 +99,7 @@ dependencies {
         exclude(module = "answers-shim")
     }
     implementation(Libs.appcompat_v7)
+    compileOnly("javax.annotation:javax.annotation-api:1.3.2")
     implementation(Libs.design)
     implementation(Libs.recyclerview_v7)
     implementation(Libs.cardview_v7)
