@@ -3,7 +3,7 @@ object Versions {
     const val targetSdkVersion = 28
     const val compileSdkVersion = 28
     const val kotlin = "1.3.71"
-    const val androidPlugin = "3.5.2"
+    const val androidPlugin = "3.6.1"
     const val fabricPlugin = "1.30.0"
     const val playServicesPlugin = "4.3.3"
     const val coroutines = "1.3.3"
@@ -85,6 +85,8 @@ object Libs {
     const val kotlinxIoJvm = "org.jetbrains.kotlinx:kotlinx-io-jvm:${Versions.kotlinxIo}"
     const val kotlinxIoNative = "org.jetbrains.kotlinx:kotlinx-io-native:${Versions.kotlinxIo}"
     const val kotlinxIoMacOS = "org.jetbrains.kotlinx:kotlinx-io-macosx64:${Versions.kotlinxIo}"
+
+    const val okio = "com.squareup.okio:okio-multiplatform:2.5.0"
 
     const val klock = "com.soywiz.korlibs.klock:klock:1.8.0"
 

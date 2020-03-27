@@ -30,6 +30,8 @@ import net.hearthsim.hsmodel.enum.PlayerClass
 import net.hearthsim.hsreplay.HsReplay
 import okhttp3.Cache
 import okhttp3.OkHttpClient
+import okio.buffer
+import okio.source
 import timber.log.Timber
 import java.io.File
 import java.util.*
@@ -86,9 +88,9 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         injectedCards.add(CardUtil.secret(PlayerClass.MAGE))
         injectedCards.add(CardUtil.secret(PlayerClass.ROGUE))
 
-        val input = resources.openRawResource(R.raw.cards).asInput()
+        val src = resources.openRawResource(R.raw.cards).source()
 
-        return CardJson.fromMultiLangJson(jsonName, injectedCards, input)
+        return CardJson.fromMultiLangJson(jsonName, injectedCards, src.buffer())
     }
 
 

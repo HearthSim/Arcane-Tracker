@@ -1,10 +1,6 @@
-import Versions.compileSdkVersion
-import Versions.minSdkVersion
-import Versions.targetSdkVersion
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import net.arcanetracker.app.ATAppPlugin
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.util.Properties
+import java.util.*
 
 plugins {
     id("com.android.application")
@@ -49,20 +45,20 @@ android {
     val f = project.file("keystore.properties")
     signingConfigs {
         val props = Properties()
-        if( f.exists()) {
+        if (f.exists()) {
             props.load(f.reader())
         }
         create("mbonnin") {
-            keyAlias = props.getProperty("keyAlias")?: "mbonnin"
-            keyPassword = props.getProperty("keyAliasPassword")?:"password"
+            keyAlias = props.getProperty("keyAlias") ?: "mbonnin"
+            keyPassword = props.getProperty("keyAliasPassword") ?: "password"
             storeFile = project.file(props.getProperty("keyStore") ?: "keystore.jks")
-            storePassword = props.getProperty("keyAliasPassword")?:"password"
+            storePassword = props.getProperty("keyAliasPassword") ?: "password"
         }
     }
     dataBinding {
         isEnabled = true
     }
-    
+
     buildTypes {
         getByName("debug") {
             isMinifyEnabled = false
@@ -97,9 +93,7 @@ androidExtensions {
     isExperimental = true
 }
 
-
 dependencies {
-
     implementation(Libs.support_v4) {
         isTransitive = true
         exclude(module = "answers-shim")

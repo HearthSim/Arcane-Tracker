@@ -12,7 +12,6 @@ kotlin {
         binaries {
             framework {
                 export(project(":kotlin-hsmodel"))
-                export(Libs.kotlinxIoMacOS)
             }
         }
     }
@@ -41,7 +40,6 @@ kotlin {
         }
         macosX64().compilations["main"].defaultSourceSet {
             dependencies {
-                api(Libs.kotlinxIoMacOS)
             }
         }
     }

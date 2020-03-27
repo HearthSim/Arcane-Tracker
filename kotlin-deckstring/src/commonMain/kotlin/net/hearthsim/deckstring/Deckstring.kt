@@ -1,9 +1,7 @@
 package net.hearthsim.deckstring
 
 import decodeBase64
-import kotlinx.io.core.ByteReadPacket
-import kotlinx.io.core.Input
-import kotlinx.io.core.toByteArray
+import okio.*
 
 
 object Deckstring {
@@ -18,10 +16,11 @@ object Deckstring {
         var cards: MutableList<Card> = mutableListOf()
     }
 
-    private fun getVarInt(src: Input): Int {
+    private fun getVarInt(src: BufferedSource): Int {
         var result = 0
         var shift = 0
         var b: Int
+
         do {
             if (shift >= 32) {
                 // Out of range
@@ -47,8 +46,13 @@ object Deckstring {
      * @return
      * @throws Exception
      */
+    @OptIn(ExperimentalStdlibApi::class)
     fun decode(deckString: String): Result {
-        return decode(ByteReadPacket(deckString.toByteArray().decodeBase64()))
+        val byteArray = deckString.encodeToByteArray().decodeBase64()
+        val buffer = Buffer().apply {
+            write(byteArray)
+        }
+        return decode(buffer)
     }
 
     /**
@@ -57,9 +61,9 @@ object Deckstring {
      * @return
      * @throws Exception
      */
-    fun decode(data: Input): Result {
+    fun decode(data: BufferedSource): Result {
         val result = Result()
-        
+
         data.readByte()
         val version = data.readByte().toInt()
         if (version != VERSION) {

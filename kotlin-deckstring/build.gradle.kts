@@ -20,24 +20,21 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(Libs.stdlibCommon)
-                api(Libs.kotlinxIo)
+                api(Libs.okio)
             }
         }
         jvm().compilations["main"].defaultSourceSet {
             dependencies {
                 implementation(Libs.stdlibJdk8)
-                api(Libs.kotlinxIoJvm)
             }
         }
         named("androidMain") {
             dependencies {
                 implementation(kotlin("stdlib"))
-                api(Libs.kotlinxIoJvm)
             }
         }
         macosX64().compilations["main"].defaultSourceSet {
             dependencies {
-                api(Libs.kotlinxIoNative)
             }
         }
     }
