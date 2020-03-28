@@ -82,7 +82,7 @@ object Libs {
 
     const val okio = "com.squareup.okio:okio-multiplatform:2.5.0"
 
-    const val klock = "com.soywiz.korlibs.klock:klock:1.8.0"
+    const val klock = "com.soywiz.korlibs.klock:klock:1.9.1"
 
     const val kotlinTestCommon = "org.jetbrains.kotlin:kotlin-test-common"
     const val kotlinTestAnnotationCommon = "org.jetbrains.kotlin:kotlin-test-annotations-common"

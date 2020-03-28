@@ -1,7 +1,7 @@
 package net.hearthsim.hslog.parser.power
 
 import com.soywiz.klock.DateTime
-import kotlinx.io.core.toByteArray
+import io.ktor.utils.io.core.toByteArray
 
 class RawGameHandler(private val rawGameConsumer: ((rawGame: ByteArray, unixMillis: Long) -> Unit)?) {
     private val rawBuilder = MyByteArrayOutputStream()
