@@ -11,13 +11,11 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.put
-import io.ktor.client.response.HttpResponse
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.io.readRemaining
-import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import net.hearthsim.analytics.Analytics
 import net.hearthsim.console.Console
@@ -203,7 +201,7 @@ class HsReplay(
         }
 
         if (response.status.value / 100 != 2) {
-            return UploadResult.Failure(Exception("Bad status: ${response.status.value}: ${response.content.readRemaining().readText()}"))
+            return UploadResult.Failure(Exception("Bad status: ${response.status.value}: ${response.content.readRemaining(Long.MAX_VALUE, 16*1024).readText()}"))
         }
 
         return UploadResult.Success(upload.url)

@@ -9,7 +9,7 @@ import io.ktor.client.features.logging.Logging
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.header
 import io.ktor.client.request.post
-import io.ktor.client.response.HttpResponse
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.Parameters
 import kotlinx.serialization.json.Json
 import net.hearthsim.console.Console

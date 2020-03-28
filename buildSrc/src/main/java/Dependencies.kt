@@ -7,9 +7,8 @@ object Versions {
     const val fabricPlugin = "1.30.0"
     const val playServicesPlugin = "4.3.3"
     const val coroutines = "1.3.3"
-    const val ktor = "1.2.6"
-    const val kotlinxIo = "0.1.16"
-    const val serialization = "0.14.0"
+    const val ktor = "1.3.2"
+    const val serialization = "0.20.0"
 }
 
 object Libs {
@@ -80,11 +79,6 @@ object Libs {
     const val ktorClientLogging = "io.ktor:ktor-client-logging:${Versions.ktor}"
     const val ktorClientLoggingJvm = "io.ktor:ktor-client-logging-jvm:${Versions.ktor}"
     const val ktorClientLoggingNative = "io.ktor:ktor-client-logging-native:${Versions.ktor}"
-
-    const val kotlinxIo = "org.jetbrains.kotlinx:kotlinx-io:${Versions.kotlinxIo}"
-    const val kotlinxIoJvm = "org.jetbrains.kotlinx:kotlinx-io-jvm:${Versions.kotlinxIo}"
-    const val kotlinxIoNative = "org.jetbrains.kotlinx:kotlinx-io-native:${Versions.kotlinxIo}"
-    const val kotlinxIoMacOS = "org.jetbrains.kotlinx:kotlinx-io-macosx64:${Versions.kotlinxIo}"
 
     const val okio = "com.squareup.okio:okio-multiplatform:2.5.0"
 

@@ -4,7 +4,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.features.compression.ContentEncoding
 import io.ktor.client.request.header
 import io.ktor.client.request.put
-import io.ktor.client.response.HttpResponse
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.content.ByteArrayContent
 import io.ktor.http.content.OutgoingContent

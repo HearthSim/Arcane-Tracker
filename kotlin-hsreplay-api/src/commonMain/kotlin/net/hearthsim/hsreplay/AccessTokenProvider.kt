@@ -1,7 +1,6 @@
 package net.hearthsim.hsreplay
 
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.io.readRemaining
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.json.Json
@@ -46,7 +45,7 @@ class AccessTokenProvider(val preferences: Preferences, val oauthApi: HsReplayOa
                     return@forEach
                 }
             }
-            val text = response.content.readRemaining().readText()
+            val text = response.content.readRemaining(Long.MAX_VALUE, 16*1024).readText()
             val token = try {
                 Json.nonstrict.parse(Token.serializer(), text)
             } catch (e: Exception) {

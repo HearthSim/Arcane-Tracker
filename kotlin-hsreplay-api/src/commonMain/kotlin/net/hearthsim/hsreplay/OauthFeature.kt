@@ -48,7 +48,7 @@ class OauthFeature(val accessTokenProvider: AccessTokenProvider) {
                     request.takeFrom(call.request)
                     request.headers.append(HttpHeaders.Authorization, "Bearer ${feature.accessToken()}")
 
-                    call.close()
+                    //call.close()
                     call = execute(request)
                 }
 
