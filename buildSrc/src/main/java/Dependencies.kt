@@ -6,7 +6,7 @@ object Versions {
     const val androidPlugin = "3.6.1"
     const val fabricPlugin = "1.30.0"
     const val playServicesPlugin = "4.3.3"
-    const val coroutines = "1.3.3"
+    const val coroutines = "1.3.5"
     const val ktor = "1.3.2"
     const val serialization = "0.20.0"
 }
@@ -54,31 +54,21 @@ object Libs {
     const val stdlibCommon = "org.jetbrains.kotlin:kotlin-stdlib-common"
     const val stdlibJdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
-    const val corountinesCommon = "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:${Versions.coroutines}"
-    const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
-    const val coroutinesMacOS = "org.jetbrains.kotlinx:kotlinx-coroutines-core-macosx64:${Versions.coroutines}"
+    // See https://github.com/Kotlin/kotlinx.coroutines/issues/1096
+    const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:${Versions.coroutines}"
     const val coroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
     const val serializationRuntimeCommon = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:${Versions.serialization}"
     const val serializationRuntime = "org.jetbrains.kotlinx:kotlinx-serialization-runtime:${Versions.serialization}"
     const val serializationRuntimeMacOS = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-macosx64:${Versions.serialization}"
 
-    const val ktorClientCore = "io.ktor:ktor-client-core:${Versions.ktor}"
-    const val ktorClientCoreJvm = "io.ktor:ktor-client-core-jvm:${Versions.ktor}"
-    const val ktorClientCoreMacOS = "io.ktor:ktor-client-core-macosx64:${Versions.ktor}"
-    const val ktorClientJson = "io.ktor:ktor-client-json:${Versions.ktor}"
-    const val ktorClientJsonJvm = "io.ktor:ktor-client-json-jvm:${Versions.ktor}"
-    const val ktorClientJsonMacOS = "io.ktor:ktor-client-json-macosx64:${Versions.ktor}"
-    const val ktorClientSerialization = "io.ktor:ktor-client-serialization:${Versions.ktor}"
-    const val ktorClientSerializationJvm = "io.ktor:ktor-client-serialization-jvm:${Versions.ktor}"
-    const val ktorClientSerializationMacOS = "io.ktor:ktor-client-serialization-macosx64:${Versions.ktor}"
+    // See https://github.com/ktorio/ktor/issues/1619
+    const val ktorClientCore = "io.ktor:ktor-client-core-native:${Versions.ktor}"
+    const val ktorClientJson = "io.ktor:ktor-client-json-native:${Versions.ktor}"
+    const val ktorClientSerialization = "io.ktor:ktor-client-serialization-native:${Versions.ktor}"
+    const val ktorClientLogging = "io.ktor:ktor-client-logging-native:${Versions.ktor}"
+    const val ktorClientEncoding = "io.ktor:ktor-client-encoding-native:${Versions.ktor}"
     const val ktorClientOkhttp = "io.ktor:ktor-client-okhttp:${Versions.ktor}"
     const val ktorClientCurl = "io.ktor:ktor-client-curl:${Versions.ktor}"
-    const val ktorClientEncoding = "io.ktor:ktor-client-encoding:${Versions.ktor}"
-    const val ktorClientEncodingJvm = "io.ktor:ktor-client-encoding-jvm:${Versions.ktor}"
-    const val ktorClientEncodingMacOS = "io.ktor:ktor-client-encoding-macosx64:${Versions.ktor}"
-    const val ktorClientLogging = "io.ktor:ktor-client-logging:${Versions.ktor}"
-    const val ktorClientLoggingJvm = "io.ktor:ktor-client-logging-jvm:${Versions.ktor}"
-    const val ktorClientLoggingNative = "io.ktor:ktor-client-logging-native:${Versions.ktor}"
 
     const val okio = "com.squareup.okio:okio-multiplatform:2.5.0"
 

@@ -12,16 +12,18 @@ import io.ktor.utils.io.ByteWriteChannel
 import io.ktor.utils.io.writeStringUtf8
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonBuilder
+import kotlinx.serialization.json.JsonConfiguration
 import net.hearthsim.hsreplay.model.legacy.Upload
 import net.hearthsim.hsreplay.model.legacy.UploadRequest
 import net.hearthsim.hsreplay.model.legacy.UploadToken
 
 class HsReplayLegacyApi(val userAgent: String) {
     private val client = HttpClient {
-        val json = Json(JsonBuilder().apply {
-            encodeDefaults = false
-            ignoreUnknownKeys = true
-        }.buildConfiguration())
+        val json = Json(JsonConfiguration(
+            encodeDefaults = false,
+            ignoreUnknownKeys = true,
+            isLenient = true
+            ))
 
         install(JsonFeature) {
             serializer = KotlinxSerializer(json).apply {

@@ -20,7 +20,6 @@ import com.squareup.picasso.Picasso
 import io.paperdb.Paper
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.io.streams.asInput
 import net.hearthsim.analytics.Analytics
 import net.hearthsim.console.Console
 import net.hearthsim.hslog.HSLog

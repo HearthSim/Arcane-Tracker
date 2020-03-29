@@ -1,12 +1,11 @@
-package net.hearthsim.hsmodel
+package net.hearthsim.hslog
 
-import kotlinx.cinterop.allocArray
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.refTo
+import net.hearthsim.hsmodel.CardJson
 import okio.Buffer
 import platform.posix.read
-import platform.posix.uint8_tVar
 
 fun cardJson(fd: Int): CardJson {
     val buffer = Buffer()

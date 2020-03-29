@@ -233,7 +233,7 @@ class HsReplay(
                         console.debug(message)
                     }
                 }
-                level = LogLevel.NONE
+                level = LogLevel.ALL
             }
             install(JsonFeature) {
                 serializer = KotlinxSerializer(Json.nonstrict).apply {

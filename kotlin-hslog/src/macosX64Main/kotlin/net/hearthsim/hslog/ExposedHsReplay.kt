@@ -1,6 +1,9 @@
 package net.hearthsim.hslog
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import net.hearthsim.analytics.Analytics
 import net.hearthsim.console.Console
 import net.hearthsim.hsreplay.HsReplay
@@ -10,12 +13,12 @@ import kotlin.coroutines.CoroutineContext
 
 class ExposedHsReplay(preferences: Preferences, val console: Console, analytics: Analytics, userAgent: String) : CoroutineScope {
     val hsReplay = HsReplay(
-            preferences = preferences,
-            console = console,
-            analytics = analytics,
-            userAgent = userAgent,
-            clientId = "pk_live_IB0TiMMT8qrwIJ4G6eVHYaAi",
-            clientSecret = "sk_live_20180308078UceCXo8qmoG72ExZxeqOW"
+        preferences = preferences,
+        console = console,
+        analytics = analytics,
+        userAgent = userAgent,
+        clientId = "pk_live_IB0TiMMT8qrwIJ4G6eVHYaAi",
+        clientSecret = "sk_live_20180308078UceCXo8qmoG72ExZxeqOW"
     )
 
     fun setTokens(accessToken: String, refreshToken: String) {

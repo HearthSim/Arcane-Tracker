@@ -27,7 +27,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(kotlin("stdlib"))
-                implementation(Libs.corountinesCommon)
+                implementation(Libs.coroutines)
                 implementation(Libs.serializationRuntimeCommon)
 
                 api(Libs.ktorClientCore)
@@ -44,21 +44,13 @@ kotlin {
             dependencies {
                 implementation(kotlin("stdlib"))
 
-                implementation(Libs.coroutines)
                 implementation(Libs.serializationRuntime)
-                implementation(Libs.ktorClientSerializationJvm)
-
-                api(Libs.ktorClientCoreJvm)
-                implementation(Libs.ktorClientJsonJvm)
                 implementation(Libs.ktorClientOkhttp)
-                implementation(Libs.ktorClientEncodingJvm)
-                implementation(Libs.ktorClientLoggingJvm)
             }
         }
         jvm().compilations["test"].defaultSourceSet {
             dependencies {
                 implementation(Libs.okhttpLogging)
-                implementation(Libs.coroutines)
                 implementation(Libs.kotlinTestJvm)
             }
         }
@@ -66,28 +58,15 @@ kotlin {
             dependencies {
                 implementation(kotlin("stdlib"))
 
-                implementation(Libs.coroutines)
                 implementation(Libs.serializationRuntime)
-
-                api(Libs.ktorClientCoreJvm)
-                implementation(Libs.ktorClientJsonJvm)
                 implementation(Libs.ktorClientOkhttp)
-                implementation(Libs.ktorClientEncodingJvm)
-                implementation(Libs.ktorClientSerializationJvm)
-                implementation(Libs.ktorClientLoggingJvm)
             }
         }
         macosX64().compilations["main"].defaultSourceSet {
             dependencies {
-                implementation(Libs.coroutinesMacOS)
                 implementation(Libs.serializationRuntimeMacOS)
 
-                api(Libs.ktorClientCoreMacOS)
-                implementation(Libs.ktorClientJsonMacOS)
-                implementation(Libs.ktorClientEncodingMacOS)
-                implementation(Libs.ktorClientSerializationMacOS)
                 implementation(Libs.ktorClientCurl)
-                implementation(Libs.ktorClientLoggingNative)
             }
         }
     }
