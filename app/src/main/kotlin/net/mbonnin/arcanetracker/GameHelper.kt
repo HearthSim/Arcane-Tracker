@@ -89,14 +89,14 @@ object GameHelper {
             player_id = game.player?.entity?.PlayerID?.toInt() ?: -1,
             deck_id = MainViewCompanion.playerCompanion.deck?.id?.toLongOrNull(),
             deck = deck ?: emptyList(),
-            star_level = 1
+            star_level = null
         )
 
         val opponent = HSPlayer(
             player_id = game.opponent?.entity?.PlayerID?.toInt() ?: -1,
             deck_id = null,
             deck = emptyList(),
-            star_level = 1
+            star_level = null
         )
 
         val uploadRequest = UploadRequest(
@@ -107,7 +107,7 @@ object GameHelper {
             format = game.formatType.intValue,
             game_type = fromGameAndFormat(game.gameType, game.formatType).intValue,
             players = listOf(player, opponent),
-            league_id = 3
+            league_id = null
         )
 
         GlobalScope.launch(Dispatchers.Main) {

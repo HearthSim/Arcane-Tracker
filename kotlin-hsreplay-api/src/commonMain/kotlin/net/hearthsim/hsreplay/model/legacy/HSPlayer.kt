@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 class HSPlayer(
     val player_id: Int,
     val deck: List<String>? = emptyList(),
-    val star_level: Int,
+    val star_level: Int?,
     val deck_id: Long? = null)
