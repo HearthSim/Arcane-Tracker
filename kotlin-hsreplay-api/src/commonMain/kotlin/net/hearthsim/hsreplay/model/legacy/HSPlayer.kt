@@ -3,4 +3,8 @@ package net.hearthsim.hsreplay.model.legacy
 import kotlinx.serialization.Serializable
 
 @Serializable
-class HSPlayer(var rank: Int? = null, val deck: List<String> ?= emptyList(), val deck_id: Long? = null)
+class HSPlayer(
+    val player_id: Int,
+    val deck: List<String>? = emptyList(),
+    val star_level: Int,
+    val deck_id: Long? = null)

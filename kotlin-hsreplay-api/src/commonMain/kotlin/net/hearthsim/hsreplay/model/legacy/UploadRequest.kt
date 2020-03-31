@@ -7,9 +7,9 @@ class UploadRequest(
         val match_start: String,
         val friendly_player: String? = null,
         val build: Int,
+        val league_id: Int? = null,
         val game_type: Int,
-        val player1: HSPlayer? = null,
-        val player2: HSPlayer? = null,
+        val players: List<HSPlayer>?,
         val spectator_mode: Boolean,
         val format: Int
 )

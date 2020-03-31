@@ -1,8 +1,12 @@
 package net.mbonnin.arcanetracker
 
-import kotlinx.coroutines.*
-import net.mbonnin.arcanetracker.detector.RANK_UNKNOWN
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import net.hearthsim.hslog.parser.power.FormatType
 import net.hearthsim.hslog.parser.power.Game
+import net.hearthsim.hslog.parser.power.GameType
 import net.hearthsim.hsreplay.HsReplay
 import net.hearthsim.hsreplay.model.legacy.HSPlayer
 import net.hearthsim.hsreplay.model.legacy.UploadRequest
@@ -10,8 +14,6 @@ import net.mbonnin.arcanetracker.model.GameSummary
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RGame
 import net.mbonnin.arcanetracker.room.WLCounter
-import net.hearthsim.hslog.parser.power.FormatType
-import net.hearthsim.hslog.parser.power.GameType
 import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
 import timber.log.Timber
 import java.util.*
@@ -26,16 +28,16 @@ object GameHelper {
         }
 
         val rgame = RGame(
-                deck_id = deck.id,
-                victory = game.victory == true,
-                coin = game.player!!.hasCoin,
-                player_class = game.player!!.playerClass!!,
-                opponent_class = game.opponent!!.playerClass!!,
-                date = System.currentTimeMillis(),
-                format_type = game.formatType.name,
-                game_type = game.gameType.name,
-                rank = game.playerRank,
-                deck_name = deck.name!!
+            deck_id = deck.id,
+            victory = game.victory == true,
+            coin = game.player!!.hasCoin,
+            player_class = game.player!!.playerClass!!,
+            opponent_class = game.opponent!!.playerClass!!,
+            date = System.currentTimeMillis(),
+            format_type = game.formatType.name,
+            game_type = game.gameType.name,
+            rank = game.playerRank,
+            deck_name = deck.name!!
         )
 
         return withContext(Dispatchers.IO) {
@@ -84,30 +86,28 @@ object GameHelper {
         }
 
         val player = HSPlayer(
-                rank = if (game.playerRank != RANK_UNKNOWN) game.playerRank else null,
-                deck_id = MainViewCompanion.playerCompanion.deck?.id?.toLongOrNull(),
-                deck = deck ?: emptyList()
+            player_id = game.player?.entity?.PlayerID?.toInt() ?: -1,
+            deck_id = MainViewCompanion.playerCompanion.deck?.id?.toLongOrNull(),
+            deck = deck ?: emptyList(),
+            star_level = 1
         )
 
         val opponent = HSPlayer(
-                rank = if (RankHolder.opponentRank != RANK_UNKNOWN) RankHolder.opponentRank else null,
-                deck_id = null,
-                deck = emptyList()
+            player_id = game.opponent?.entity?.PlayerID?.toInt() ?: -1,
+            deck_id = null,
+            deck = emptyList(),
+            star_level = 1
         )
 
-        val player1 = if (friendlyPlayer == "1") player else opponent
-        val player2 = if (friendlyPlayer == "1") opponent else player
-
-
         val uploadRequest = UploadRequest(
-                match_start = Utils.ISO8601DATEFORMAT.format(gameStart),
-                build = ArcaneTrackerApplication.get().hearthstoneBuild,
-                spectator_mode = game.spectator,
-                friendly_player = friendlyPlayer,
-                format = game.formatType.intValue,
-                game_type = fromGameAndFormat(game.gameType, game.formatType).intValue,
-                player1 = player1,
-                player2 = player2
+            match_start = Utils.ISO8601DATEFORMAT.format(gameStart),
+            build = ArcaneTrackerApplication.get().hearthstoneBuild,
+            spectator_mode = game.spectator,
+            friendly_player = friendlyPlayer,
+            format = game.formatType.intValue,
+            game_type = fromGameAndFormat(game.gameType, game.formatType).intValue,
+            players = listOf(player, opponent),
+            league_id = 3
         )
 
         GlobalScope.launch(Dispatchers.Main) {
@@ -141,11 +141,13 @@ object GameHelper {
 
     private fun uploadBattlegroundsGame(gameStr: ByteArray, gameStart: Date) {
         val uploadRequest = UploadRequest(
-                match_start = Utils.ISO8601DATEFORMAT.format(gameStart),
-                build = ArcaneTrackerApplication.get().hearthstoneBuild,
-                spectator_mode = false,
-                format = FormatType.FT_WILD.intValue,
-                game_type = BnetGameType.BGT_BATTLEGROUNDS.intValue
+            match_start = Utils.ISO8601DATEFORMAT.format(gameStart),
+            build = ArcaneTrackerApplication.get().hearthstoneBuild,
+            spectator_mode = false,
+            format = FormatType.FT_WILD.intValue,
+            game_type = BnetGameType.BGT_BATTLEGROUNDS.intValue,
+            league_id = null,
+            players = null
         )
         GlobalScope.launch(Dispatchers.Main) {
             try {
@@ -164,21 +166,21 @@ object GameHelper {
         RankHolder.reset()
 
         Timber.w("gameOver  %s [gameType %s][format_type %s]",
-                if (game.victory == true) "victory" else "lost",
-                game.gameType,
-                game.formatType)
+            if (game.victory == true) "victory" else "lost",
+            game.gameType,
+            game.formatType)
 
         MainViewCompanion.playerCompanion.deck?.let { updateCounter(it.id!!, game.victory == true) }
 
         FileTree.get().sync()
 
         ArcaneTrackerApplication.get().analytics.logEvent(
-                "game_ended",
-                mapOf(
-                        EventParams.GAME_TYPE.value to game.gameType.name,
-                        EventParams.FORMAT_TYPE.value to game.formatType.name,
-                        EventParams.HSREPLAY.value to (ArcaneTrackerApplication.get().hsReplay.account() != null).toString()
-                )
+            "game_ended",
+            mapOf(
+                EventParams.GAME_TYPE.value to game.gameType.name,
+                EventParams.FORMAT_TYPE.value to game.formatType.name,
+                EventParams.HSREPLAY.value to (ArcaneTrackerApplication.get().hsReplay.account() != null).toString()
+            )
         )
     }
 
