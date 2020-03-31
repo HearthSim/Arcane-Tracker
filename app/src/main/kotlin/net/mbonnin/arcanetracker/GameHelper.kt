@@ -107,7 +107,7 @@ object GameHelper {
             format = game.formatType.intValue,
             game_type = fromGameAndFormat(game.gameType, game.formatType).intValue,
             players = listOf(player, opponent),
-            league_id = null
+            league_id = 5
         )
 
         GlobalScope.launch(Dispatchers.Main) {
