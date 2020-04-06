@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
-import net.hearthsim.hslog.*
+import net.hearthsim.hslog.DeckEntry
 import net.hearthsim.hslog.parser.power.BattlegroundsBoard
 import net.hearthsim.hsmodel.Card
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication

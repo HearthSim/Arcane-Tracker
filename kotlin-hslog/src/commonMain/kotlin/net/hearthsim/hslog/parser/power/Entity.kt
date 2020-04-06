@@ -31,6 +31,7 @@ class Entity {
     }
 
     class Extra {
+        var isBgHeroChoice = false
         var originalController: String? = null
         var drawTurn = -1
         var playTurn = -1

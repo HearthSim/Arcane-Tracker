@@ -1,6 +1,6 @@
 package net.hearthsim.hslog.parser.power
 
-class MyByteArrayOutputStream {
+internal class MyByteArrayOutputStream {
     companion object {
         const val INITIAL_SIZE = 500 * 1024
         const val GROW_SIZE = 500 * 1024

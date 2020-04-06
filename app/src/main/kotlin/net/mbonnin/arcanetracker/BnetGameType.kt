@@ -44,23 +44,44 @@ enum class BnetGameType(val intValue: Int) {
     BGT_FSG_BRAWL_2P_COOP(43),
     BGT_RANKED_STANDARD_NEW_PLAYER(45),
     BGT_BATTLEGROUNDS(50),
+}
 
+fun BnetGameType.toGameTypeAndFormatType(): Pair<GameType, FormatType> {
+    return when (this) {
+        BnetGameType.BGT_FRIENDS -> GameType.GT_VS_FRIEND to FormatType.FT_UNKNOWN
+        BnetGameType.BGT_RANKED_STANDARD_NEW_PLAYER,
+        BnetGameType.BGT_RANKED_STANDARD -> GameType.GT_RANKED to FormatType.FT_STANDARD
+        BnetGameType.BGT_ARENA -> GameType.GT_ARENA to FormatType.FT_UNKNOWN
+        BnetGameType.BGT_VS_AI -> GameType.GT_VS_AI to FormatType.FT_UNKNOWN
+        BnetGameType.BGT_TUTORIAL -> GameType.GT_VS_AI to FormatType.FT_UNKNOWN
+        BnetGameType.BGT_CASUAL_STANDARD_NEWBIE,
+        BnetGameType.BGT_CASUAL_STANDARD_NORMAL -> GameType.GT_CASUAL to FormatType.FT_STANDARD
+        BnetGameType.BGT_TAVERNBRAWL_1P_VERSUS_AI,
+        BnetGameType.BGT_FSG_BRAWL_2P_COOP,
+        BnetGameType.BGT_FSG_BRAWL_PVP,
+        BnetGameType.BGT_FSG_BRAWL_VS_FRIEND,
+        BnetGameType.BGT_FSG_BRAWL_1P_VERSUS_AI -> GameType.GT_TAVERNBRAWL to FormatType.FT_UNKNOWN
+        BnetGameType.BGT_RANKED_WILD -> GameType.GT_RANKED to FormatType.FT_WILD
+        BnetGameType.BGT_CASUAL_WILD -> GameType.GT_CASUAL to FormatType.FT_WILD
+        BnetGameType.BGT_BATTLEGROUNDS -> GameType.GT_BATTLEGROUNDS to FormatType.FT_UNKNOWN
+        else -> GameType.GT_VS_AI to FormatType.FT_UNKNOWN
+    }
 }
 
 fun fromGameAndFormat(gameType: GameType, format: FormatType): BnetGameType {
-    return when(gameType) {
+    return when (gameType) {
         GameType.GT_ARENA -> BnetGameType.BGT_ARENA
-        GameType.GT_TAVERNBRAWL-> BnetGameType.BGT_TAVERNBRAWL_1P_VERSUS_AI
+        GameType.GT_TAVERNBRAWL -> BnetGameType.BGT_TAVERNBRAWL_1P_VERSUS_AI
         GameType.GT_VS_AI -> BnetGameType.BGT_VS_AI
         GameType.GT_CASUAL -> {
-            when(format) {
+            when (format) {
                 FormatType.FT_STANDARD -> BnetGameType.BGT_CASUAL_STANDARD_NORMAL
                 FormatType.FT_WILD -> BnetGameType.BGT_CASUAL_WILD
                 else -> BnetGameType.BGT_UNKNOWN
             }
         }
         GameType.GT_RANKED -> {
-            when(format) {
+            when (format) {
                 FormatType.FT_STANDARD -> BnetGameType.BGT_RANKED_STANDARD
                 FormatType.FT_WILD -> BnetGameType.BGT_RANKED_WILD
                 else -> BnetGameType.BGT_UNKNOWN

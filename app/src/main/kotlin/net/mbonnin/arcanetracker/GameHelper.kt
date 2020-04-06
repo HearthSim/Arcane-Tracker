@@ -1,85 +1,63 @@
 package net.mbonnin.arcanetracker
 
+import android.view.LayoutInflater
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import net.hearthsim.hslog.parser.decks.Deck
 import net.hearthsim.hslog.parser.power.FormatType
 import net.hearthsim.hslog.parser.power.Game
 import net.hearthsim.hslog.parser.power.GameType
 import net.hearthsim.hsreplay.HsReplay
 import net.hearthsim.hsreplay.model.legacy.HSPlayer
 import net.hearthsim.hsreplay.model.legacy.UploadRequest
-import net.mbonnin.arcanetracker.model.GameSummary
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RGame
 import net.mbonnin.arcanetracker.room.WLCounter
+import net.mbonnin.arcanetracker.sqldelight.mainDatabase
 import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
 import timber.log.Timber
 import java.util.*
 
 object GameHelper {
-    class InsertResult(val id: Long, val success: Boolean)
 
-    private suspend fun insertGame(game: Game): InsertResult {
+    sealed class InsertResult {
+        class Success(val id: Long) : InsertResult()
+        object Error : InsertResult()
+    }
+
+    fun (Boolean?).toLong() = if (this == true) 1L else 0L
+
+    private suspend fun insertGame(game: Game, gameStart: Date): InsertResult {
         val deck = MainViewCompanion.playerCompanion.deck
         if (deck == null) {
-            return InsertResult(-1L, false)
+            return InsertResult.Error
         }
 
-        val rgame = RGame(
-            deck_id = deck.id,
-            victory = game.victory == true,
-            coin = game.player!!.hasCoin,
-            player_class = game.player!!.playerClass!!,
-            opponent_class = game.opponent!!.playerClass!!,
-            date = System.currentTimeMillis(),
-            format_type = game.formatType.name,
-            game_type = game.gameType.name,
-            rank = game.playerRank,
-            deck_name = deck.name!!
-        )
-
         return withContext(Dispatchers.IO) {
-            try {
-                val id = RDatabaseSingleton.instance.gameDao().insert(rgame)
-                InsertResult(id, true)
-            } catch (e: Exception) {
-                InsertResult(-1, false)
-            }
+            mainDatabase.gameQueries.insertGame(
+                deck_id = deck.id,
+                match_start_millis = gameStart.time,
+                deck_name = deck.name!!,
+                format_type = game.formatType.name,
+                game_type = game.gameType.name,
+                rank = game.playerRank.toLong(),
+                hs_replay_url = null,
+                coin = game.player!!.hasCoin.toLong(),
+                opponent_player_class = game.opponent!!.playerClass!!,
+                player_player_class = game.player!!.playerClass!!,
+                victory = game.victory.toLong()
+            )
+            val id = mainDatabase.gameQueries.lastRowId().executeAsOne()
+            InsertResult.Success(id)
         }
     }
 
-
-    fun insertAndUploadGame(gameStr: ByteArray, gameStart: Date, currentOrFinishedGame: () -> Game?) {
-        val summary = GameSummary()
-        val game = currentOrFinishedGame()
-
-        if (game == null) {
-            return
-        } else if (game.spectator) {
-            return
-        }
-
-        Timber.d("ready to send hsreplay %s", game.gameType)
-
-        if (game.gameType == GameType.GT_BATTLEGROUNDS) {
-            uploadBattlegroundsGame(gameStr, gameStart)
-            return
-        }
-        summary.coin = game.player!!.hasCoin
-        summary.win = game.victory == true
-        summary.hero = game.player!!.classIndex!!
-        summary.opponentHero = game.opponent!!.classIndex!!
-        summary.date = Utils.ISO8601DATEFORMAT.format(Date())
-        summary.deckName = MainViewCompanion.playerCompanion.deck?.name
-
-        GameSummary.addFirst(summary)
-
+    private fun createUploadRequest(game: Game, gameStart: Date, deck: Deck?, hearthstoneBuild: Int): UploadRequest {
         val friendlyPlayer = game.player?.entity?.PlayerID ?: "1"
 
-
-        val deck = MainViewCompanion.playerCompanion.deck?.let {
+        val cards = deck?.let {
             it.cards.flatMap { entry ->
                 Array(entry.value, { entry.key }).toList()
             }
@@ -87,8 +65,8 @@ object GameHelper {
 
         val player = HSPlayer(
             player_id = game.player?.entity?.PlayerID?.toInt() ?: -1,
-            deck_id = MainViewCompanion.playerCompanion.deck?.id?.toLongOrNull(),
-            deck = deck ?: emptyList(),
+            deck_id = deck?.id?.toLongOrNull(),
+            deck = cards ?: emptyList(),
             star_level = null
         )
 
@@ -99,9 +77,9 @@ object GameHelper {
             star_level = null
         )
 
-        val uploadRequest = UploadRequest(
+        return UploadRequest(
             match_start = Utils.ISO8601DATEFORMAT.format(gameStart),
-            build = ArcaneTrackerApplication.get().hearthstoneBuild,
+            build = hearthstoneBuild,
             spectator_mode = game.spectator,
             friendly_player = friendlyPlayer,
             format = game.formatType.intValue,
@@ -109,52 +87,65 @@ object GameHelper {
             players = listOf(player, opponent),
             league_id = 5
         )
-
-        GlobalScope.launch(Dispatchers.Main) {
-            val insertResult = insertGame(game)
-
-            if (ArcaneTrackerApplication.get().hsReplay.account() != null) {
-                ArcaneTrackerApplication.get().analytics.logEvent("hsreplay_upload")
-                val result = ArcaneTrackerApplication.get().hsReplay.uploadGame(uploadRequest, gameStr)
-                when (result) {
-                    is HsReplay.UploadResult.Success -> {
-                        summary.hsreplayUrl = result.replayUrl
-                        GameSummary.sync()
-
-                        if (insertResult.success) {
-                            withContext(Dispatchers.IO) {
-                                RDatabaseSingleton.instance.gameDao().update(insertResult.id, result.replayUrl)
-                            }
-                        }
-
-                        Timber.d("hsreplay upload success")
-                        Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplaySuccess))
-                    }
-                    is HsReplay.UploadResult.Failure -> {
-                        Timber.d(result.e)
-                        Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplayError))
-                    }
-                }
-            }
-        }
     }
 
-    private fun uploadBattlegroundsGame(gameStr: ByteArray, gameStart: Date) {
-        val uploadRequest = UploadRequest(
-            match_start = Utils.ISO8601DATEFORMAT.format(gameStart),
-            build = ArcaneTrackerApplication.get().hearthstoneBuild,
-            spectator_mode = false,
-            format = FormatType.FT_WILD.intValue,
-            game_type = BnetGameType.BGT_BATTLEGROUNDS.intValue,
-            league_id = null,
-            players = null
+    fun insertAndUploadGame(gameStr: ByteArray, gameStart: Date, currentOrFinishedGame: () -> Game?) {
+        val game = currentOrFinishedGame()
+
+        if (game == null) {
+            return
+        } else if (game.spectator) {
+            return
+        }
+
+        Timber.d("ready to send hsreplay %s", game.gameType)
+
+        val deck = when (game.gameType) {
+            GameType.GT_BATTLEGROUNDS,
+            GameType.GT_VS_AI,
+            GameType.GT_TAVERNBRAWL -> null
+            else -> MainViewCompanion.playerCompanion.deck
+        }
+        val uploadRequest = createUploadRequest(game,
+            gameStart,
+            deck,
+            ArcaneTrackerApplication.get().hearthstoneBuild
         )
+
         GlobalScope.launch(Dispatchers.Main) {
-            try {
-                ArcaneTrackerApplication.get().hsReplay.uploadGame(uploadRequest, gameStr)
-            } catch (e: Exception) {
-                // battlegrounds file are large and ktor
-                Utils.reportNonFatal(e)
+            val insertResult = insertGame(game, gameStart)
+
+            if (ArcaneTrackerApplication.get().hsReplay.account() == null) {
+                return@launch
+            }
+            ArcaneTrackerApplication.get().analytics.logEvent("hsreplay_upload")
+            val result = ArcaneTrackerApplication.get().hsReplay.uploadGame(uploadRequest, gameStr)
+            when (result) {
+                is HsReplay.UploadResult.Success -> {
+                    if (insertResult is InsertResult.Success) {
+                        withContext(Dispatchers.IO) {
+                            mainDatabase.gameQueries.setReplayUrl(id = insertResult.id, replay_url = result.replayUrl)
+                        }
+                    }
+
+                    Timber.d("hsreplay upload success")
+                    when (game.gameType) {
+                        GameType.GT_CASUAL,
+                        GameType.GT_ARENA,
+                        GameType.GT_RANKED -> {
+                            val toast = LayoutInflater.from(ArcaneTrackerApplication.context).inflate(R.layout.toast_hsreplay_upload, null, false)
+
+                            toast.setOnClickListener {
+                                Utils.openLink(result.replayUrl)
+                            }
+                            Toaster.show(toast)
+                        }
+                    }
+                }
+                is HsReplay.UploadResult.Failure -> {
+                    Timber.d(result.e)
+                    //Toaster.show(ArcaneTrackerApplication.context.getString(R.string.hsreplayError))
+                }
             }
         }
     }

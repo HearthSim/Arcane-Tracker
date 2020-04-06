@@ -1,10 +1,10 @@
 package net.mbonnin.arcanetracker.ui.my_packs
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_packs_header.*
-import net.mbonnin.arcanetracker.*
+import net.mbonnin.arcanetracker.R
 
 class PacksHeaderViewHolder(override val containerView: View) : LayoutContainer, RecyclerView.ViewHolder(containerView) {
     fun bind(item: Item) {

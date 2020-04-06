@@ -4,17 +4,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-
+import androidx.core.content.res.ResourcesCompat
+import androidx.recyclerview.widget.RecyclerView
+import net.hearthsim.hslog.DeckEntry
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
-
-import net.hearthsim.hslog.*
-import java.util.ArrayList
-
-import androidx.core.content.res.ResourcesCompat
-import androidx.recyclerview.widget.RecyclerView
-import timber.log.Timber
 
 /**
  * Created by martin on 10/17/16.

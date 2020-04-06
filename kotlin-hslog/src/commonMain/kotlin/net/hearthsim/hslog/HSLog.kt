@@ -21,7 +21,6 @@ class HSLog(private val console: Console, private val cardJson: CardJson, privat
     private val controllerPlayer = ControllerPlayer(console, cardJson)
     private val controllerOpponent = ControllerOpponent(console, cardJson)
     private val controllerBattleGrounds = ControllerBattlegrounds(console, cardJson)
-    private val possibleSecrets = PossibleSecrets(cardJson)
 
     private val loadingScreenParser = LoadingScreenParser(console)
     private val achievementsParser = AchievementsParser(console,
@@ -51,15 +50,30 @@ class HSLog(private val console: Console, private val cardJson: CardJson, privat
             logger = { format, args -> console.debug(message = format) }
     )
 
-    var lastTime = DateTime.now().unixMillisLong
-    var lastBattlegroundState: BattlegroundState? = null
-    var lastSecrets = emptyList<PossibleSecret>()
+    private var lastTime = DateTime.now().unixMillisLong
+    private var lastBattlegroundState: BattlegroundState? = null
+    private var lastSecrets = emptyList<PossibleSecret>()
+    private var hasShownBgHeroes = false
 
     init {
         gameLogic.onGameStart { game ->
             selectDecks(game)
+
+            hasShownBgHeroes = false
+
             listener?.onGameStart(game)
         }
+
+        gameLogic.onBgHeroes { game ->
+            val entities = game.getEntityList {
+                it.extra.isBgHeroChoice
+            }.sortedBy {
+                it.tags[Entity.KEY_ZONE_POSITION]
+            }
+
+            listener?.bgHeroesShow(game, entities)
+        }
+
         gameLogic.whenSomethingChanges { game ->
             listener?.onGameChanged(game)
 
@@ -69,6 +83,11 @@ class HSLog(private val console: Console, private val cardJson: CardJson, privat
                     listener?.onDeckEntries(game, false, controllerBattleGrounds.getDeckEntries(game, state))
                     lastBattlegroundState = state
                 }
+
+                if (hasShownBgHeroes) {
+                    listener?.bgHeroesHide()
+                    hasShownBgHeroes = false
+                }
             } else {
                 /**
                  * This is not perfect as we might lose the very last last events in a game but it help debouncing the callbacks
@@ -77,7 +96,7 @@ class HSLog(private val console: Console, private val cardJson: CardJson, privat
                     listener?.onDeckEntries(game, true, controllerPlayer.getDeckEntries(game))
                     listener?.onDeckEntries(game, false, controllerOpponent.getDeckEntries(game))
 
-                    val secrets = possibleSecrets.getAll(game)
+                    val secrets = gameLogic.getSecrets(game)
                     if (secrets != lastSecrets) {
                         listener?.onSecrets(secrets)
                         lastSecrets = secrets
@@ -87,6 +106,7 @@ class HSLog(private val console: Console, private val cardJson: CardJson, privat
 
             }
         }
+
         gameLogic.onGameEnd { game ->
             listener?.onGameEnd(game)
         }

@@ -9,14 +9,13 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.google.android.flexbox.FlexboxLayout
-import net.hearthsim.hslog.PossibleSecret
+import net.hearthsim.hslog.DeckEntry
+import net.hearthsim.hslog.parser.power.PossibleSecret
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
+import net.mbonnin.arcanetracker.CardUtil
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.ui.overlay.adapter.DeckEntryHolder
-import net.hearthsim.hslog.DeckEntry
-import net.mbonnin.arcanetracker.CardUtil
-import net.hearthsim.hsmodel.enum.PlayerClass
 
 class TopDrawerCompanion {
     val context = ArcaneTrackerApplication.get()

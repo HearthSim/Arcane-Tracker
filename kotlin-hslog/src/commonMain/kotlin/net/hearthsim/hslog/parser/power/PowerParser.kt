@@ -11,7 +11,7 @@ import net.hearthsim.hslog.parser.power.BlockTag.Companion.TYPE_TRIGGER
  * Created by martin on 10/27/16.
  */
 
-class PowerParser(
+internal class PowerParser(
         private val tagConsumer: (Tag) -> Unit,
         private val rawGameConsumer: ((rawGame: ByteArray, unixMillis: Long) -> Unit)?,
         private val logger: ((String, Array<out String>) -> Unit)?
@@ -169,6 +169,12 @@ class PowerParser(
 
         if (newTag != null) {
             openNewTag(newTag)
+
+            if (newTag is TagChangeTag
+                && newTag.tag == "MULLIGAN_STATE" && newTag.value == "INPUT") {
+                // workaround to have the Battlegrounds heroes appear before the block is actually closed
+                closeBlock()
+            }
             return
         }
 
@@ -220,15 +226,7 @@ class PowerParser(
         }
 
         if (BLOCK_END_PATTERN.matchEntire(line) != null) {
-            openNewTag(null)
-            if (mBlockTagStack.size > 0) {
-                val blockTag = mBlockTagStack.removeAt(mBlockTagStack.size - 1)
-                if (mBlockTagStack.size == 0) {
-                    tagConsumer(blockTag)
-                }
-            } else {
-                log("BLOCK_END without BLOCK_START")
-            }
+            closeBlock()
             return
         }
 
@@ -287,6 +285,18 @@ class PowerParser(
             }
 
             break@contentLoop
+        }
+    }
+
+    private fun closeBlock() {
+        openNewTag(null)
+        if (mBlockTagStack.size > 0) {
+            val blockTag = mBlockTagStack.removeAt(mBlockTagStack.size - 1)
+            if (mBlockTagStack.size == 0) {
+                tagConsumer(blockTag)
+            }
+        } else {
+            log("BLOCK_END without BLOCK_START")
         }
     }
 

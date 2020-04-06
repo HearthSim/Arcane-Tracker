@@ -1,6 +1,6 @@
 package net.mbonnin.arcanetracker.ui.overlay.adapter
 
-import androidx.recyclerview.widget.RecyclerView
+import android.graphics.Path
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -8,46 +8,44 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Function3
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import net.hearthsim.hslog.util.allPlayerClasses
+import net.hearthsim.hsmodel.enum.PlayerClass
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.helper.HeroUtil
-import net.hearthsim.hslog.util.allHeroes
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
-import net.hearthsim.hsmodel.enum.PlayerClass
+import net.mbonnin.arcanetracker.sqldelight.mainDatabase
 import timber.log.Timber
 
 class OpponentsAdapter(val deckId: String) : RecyclerView.Adapter<OpponentsAdapter.ViewHolder>() {
-    val heroes = allHeroes().filter { it != PlayerClass.NEUTRAL }
+    val allPlayerClasses = allPlayerClasses().filter { it != PlayerClass.NEUTRAL }
 
     class Opponent(val playerClass: String, val total: Int, val won: Int)
 
-    val opponentList = mutableListOf<Opponent>()
+    var opponentList = emptyList<Opponent>()
 
     init {
-
-        val singleList = heroes.map {
-            Single.zip(Single.just(it),
-                    RDatabaseSingleton.instance.gameDao().totalPlayedAgainst(deckId, it).toSingle().onErrorReturn { 0 },
-                    RDatabaseSingleton.instance.gameDao().totalVictoriesAgainst(deckId, it).toSingle().onErrorReturn { 0 },
-                    Function3<String, Int, Int, Opponent> { playerClass, total, won ->
-                        Opponent(playerClass, total, won)
-                    })
+        GlobalScope.launch(Dispatchers.Main) {
+            opponentList = allPlayerClasses.map {
+                val total = async {
+                    mainDatabase.gameQueries.totalPlayedAgainst(deck_id = deckId, opponent_class = it).executeAsOne()
+                }
+                val won = async {
+                    mainDatabase.gameQueries.totalVictoriesAgainst(deck_id = deckId, opponent_class = it).executeAsOne()
+                }
+                Opponent(playerClass = it, total = total.await().toInt(), won = won.await().toInt())
+            }
+            notifyDataSetChanged()
         }
-        Single.concat(singleList)
-                .toList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    opponentList.clear()
-                    opponentList.addAll(it)
-                    notifyDataSetChanged()
-                }, {
-                    Timber.e(it)
-                })
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

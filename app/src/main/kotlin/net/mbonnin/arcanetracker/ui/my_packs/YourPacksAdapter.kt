@@ -10,12 +10,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
+import net.hearthsim.hslog.parser.achievements.CardGained
+import net.hearthsim.hsmodel.enum.CardId
 import net.mbonnin.arcanetracker.CardUtil
 import net.mbonnin.arcanetracker.R
-import net.hearthsim.hslog.parser.achievements.AchievementsParser
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RPack
-import net.hearthsim.hsmodel.enum.CardId
 import java.util.*
 
 class YourPacksAdapter(val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -132,11 +132,11 @@ class YourPacksAdapter(val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapte
 
     private fun instertTestPacks() {
         val cardList = listOf(
-                AchievementsParser.CardGained(CardId.MILLHOUSE_MANASTORM, true),
-                AchievementsParser.CardGained(CardId.RAGNAROS_THE_FIRELORD, false),
-                AchievementsParser.CardGained(CardId.MURLOC_WARLEADER, false),
-                AchievementsParser.CardGained(CardId.IRONBEAK_OWL, true),
-                AchievementsParser.CardGained(CardId.BRING_IT_ON, false)
+            CardGained(CardId.MILLHOUSE_MANASTORM, true),
+            CardGained(CardId.RAGNAROS_THE_FIRELORD, false),
+            CardGained(CardId.MURLOC_WARLEADER, false),
+            CardGained(CardId.IRONBEAK_OWL, true),
+            CardGained(CardId.BRING_IT_ON, false)
         )
 
         for (i in 0..100) {

@@ -1,15 +1,12 @@
 package net.mbonnin.arcanetracker
 
-import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-
-import net.mbonnin.arcanetracker.ui.settings.SettingsActivity
 import androidx.core.app.NotificationCompat
+import net.mbonnin.arcanetracker.ui.settings.SettingsActivity
 
 /**
  * Created by martin on 10/14/16.

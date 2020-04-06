@@ -1,14 +1,14 @@
 package net.hearthsim.hslog.parser.power
 
-sealed class Tag
-data class SpectatorTag(val spectator: Boolean) : Tag()
-data class BuildNumberTag(val buildNumber: String) : Tag()
-data class GameTypeTag(val gameType: String) : Tag()
-data class FormatTypeTag(val formatType: String) : Tag()
-data class ScenarioIdTag(val scenarioId: String) : Tag()
-data class PlayerMappingTag(val playerId: String, val playerName: String) : Tag()
+internal sealed class Tag
+internal data class SpectatorTag(val spectator: Boolean) : Tag()
+internal data class BuildNumberTag(val buildNumber: String) : Tag()
+internal data class GameTypeTag(val gameType: String) : Tag()
+internal data class FormatTypeTag(val formatType: String) : Tag()
+internal data class ScenarioIdTag(val scenarioId: String) : Tag()
+internal data class PlayerMappingTag(val playerId: String, val playerName: String) : Tag()
 
-class BlockTag(
+internal class BlockTag(
         var BlockType: String,
         var Entity: String?,
         var EffectCardId: String,
@@ -41,29 +41,29 @@ class BlockTag(
     }
 }
 
-class CreateGameTag : Tag() {
+internal class CreateGameTag : Tag() {
     lateinit var gameEntity: GameEntityTag
     val playerList: MutableList<PlayerTag> = mutableListOf()
 }
 
-class FullEntityTag : Tag() {
+internal class FullEntityTag : Tag() {
     var ID: String? = null
     var CardID: String? = null
     var tags: MutableMap<String, String> = mutableMapOf()
 }
 
-class GameEntityTag : Tag() {
+internal class GameEntityTag : Tag() {
     var EntityID: String? = null
     var tags: MutableMap<String, String> = mutableMapOf()
 }
 
-class HideEntityTag : Tag() {
+internal class HideEntityTag : Tag() {
     var Entity: String? = null
     var tag: String? = null
     var value: String? = null
 }
 
-class MetaDataTag : Tag() {
+internal class MetaDataTag : Tag() {
 
     var Meta: String? = null
     var Data: String? = null
@@ -75,19 +75,19 @@ class MetaDataTag : Tag() {
     }
 }
 
-class PlayerTag : Tag() {
+internal class PlayerTag : Tag() {
     var EntityID: String? = null
     var PlayerID: String? = null
     var tags: MutableMap<String, String> = mutableMapOf()
 }
 
-class ShowEntityTag : Tag() {
+internal class ShowEntityTag : Tag() {
     var Entity: String? = null
     var CardID: String? = null
     var tags: MutableMap<String, String> = mutableMapOf()
 }
 
-class TagChangeTag : Tag() {
+internal class TagChangeTag : Tag() {
     var ID: String? = null
     var tag: String? = null
     var value: String? = null

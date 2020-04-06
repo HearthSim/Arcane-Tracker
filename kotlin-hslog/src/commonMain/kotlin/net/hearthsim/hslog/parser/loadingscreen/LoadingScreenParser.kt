@@ -3,7 +3,7 @@ package net.hearthsim.hslog.parser.loadingscreen
 import net.hearthsim.console.Console
 import kotlin.jvm.Volatile
 
-class LoadingScreenParser(val console: Console) {
+internal class LoadingScreenParser(val console: Console) {
 
     private var isOldData = true
 

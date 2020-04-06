@@ -11,9 +11,16 @@ plugins {
     id("io.fabric")
     id("com.github.ben-manes.versions") version ("0.27.0")
     id("com.google.gms.google-services")
+    id("com.squareup.sqldelight")
 }
 
 apply<ATAppPlugin>()
+
+sqldelight {
+    database("MainDatabase") {
+        packageName = "net.mbonnin.arcanetracker.sqldelight"
+    }
+}
 
 kotlin {
     android()
@@ -133,13 +140,14 @@ dependencies {
     implementation(Libs.rxRoom)
     implementation(Libs.flexbox)
     implementation(Libs.coroutines)
+    implementation(Libs.sqldelight)
+    implementation(Libs.sqldelightCoroutinesExtensions)
     implementation(Libs.coroutinesAndroid)
 
     add("kapt", Libs.roomProcessor)
 
     implementation(project(":detector"))
-    implementation(project(":kotlin-hsmodel"))
-    implementation(project(":kotlin-hslog"))
+    implementation(project(":kotlin-hearthstone"))
     implementation(project(":kotlin-deckstring"))
 
 

@@ -23,11 +23,11 @@ class ControllerOpponent(private val console: Console, private val cardJson: Car
             val card = entity.card
             val deckEntry = if (card == null || entity.extra.hide) {
                 val builder = StringBuilder()
-                builder.append("#").append(GameLogic.gameTurnToHumanTurn(entity.extra.drawTurn))
+                builder.append("#").append(GameUtil.gameTurnToHumanTurn(entity.extra.drawTurn))
                 if (entity.extra.mulliganed) {
                     builder.append(" (M)")
                 }
-                val drawTurn = GameLogic.gameTurnToHumanTurn(entity.extra.drawTurn)
+                val drawTurn = GameUtil.gameTurnToHumanTurn(entity.extra.drawTurn)
                 val mulliganed = if (entity.extra.mulliganed) " (M)" else ""
 
                 val displayedEntity = Entity()

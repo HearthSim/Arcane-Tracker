@@ -1,0 +1,41 @@
+CREATE TABLE game (
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  deck_id TEXT,
+  victory INTEGER,
+  player_player_class TEXT NOT NULL,
+  opponent_player_class TEXT NOT NULL,
+  coin INTEGER NOT NULL,
+  rank INTEGER,
+  game_type TEXT NOT NULL,
+  format_type TEXT NOT NULL,
+  hs_replay_url TEXT,
+  match_start_millis INTEGER,
+  deck_name TEXT NOT NULL
+);
+
+
+insertGame:
+INSERT INTO game(deck_id, victory, player_player_class, opponent_player_class, coin, rank, game_type, format_type, hs_replay_url, match_start_millis, deck_name)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+setReplayUrl:
+UPDATE game SET hs_replay_url = :replay_url WHERE id = :id;
+
+selectArenaAndPvPGames:
+SELECT * FROM game WHERE game_type IN ('GT_RANKED', 'GT_CASUAL', 'GT_ARENA') ORDER BY match_start_millis DESC;
+
+lastRowId:
+SELECT last_insert_rowid();
+
+deleteAllGames:
+DELETE FROM game;
+
+totalPlayedAgainst:
+SELECT COUNT(*) FROM game WHERE opponent_player_class = :opponent_class AND deck_id = :deck_id AND game_type IN ('GT_RANKED', 'GT_CASUAL');
+
+totalVictoriesAgainst:
+SELECT COUNT(*) FROM game WHERE opponent_player_class = :opponent_class AND deck_id = :deck_id AND victory = 1 AND game_type IN ('GT_RANKED', 'GT_CASUAL');
+
+counter:
+SELECT SUM(victory) AS won, SUM(CASE victory WHEN 1 THEN 0 ELSE 1 END) AS lost FROM game WHERE deck_id = :deck_id AND game_type IN ('GT_RANKED', 'GT_CASUAL');
+

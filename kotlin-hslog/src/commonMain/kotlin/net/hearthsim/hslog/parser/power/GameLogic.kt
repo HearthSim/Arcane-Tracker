@@ -9,14 +9,16 @@ import net.hearthsim.hslog.parser.power.BlockTag.Companion.TYPE_TRIGGER
 import net.hearthsim.hslog.util.getClassIndex
 import net.hearthsim.hsmodel.CardJson
 import net.hearthsim.hsmodel.enum.CardId
+import net.hearthsim.hsmodel.enum.PlayerClass
 import net.hearthsim.hsmodel.enum.Type
 
 
 typealias TurnListener = ((game: Game, turn: Int, isPlayer: Boolean) -> Unit)
 
-class GameLogic(private val console: Console, private val cardJson: CardJson) {
+internal class GameLogic(private val console: Console, private val cardJson: CardJson) {
 
     private val gameStartListenerList = mutableListOf<(Game) -> Unit>()
+    private val bgHeroesListenerList = mutableListOf<(Game) -> Unit>()
     private val gameEndListenerList = mutableListOf<(Game) -> Unit>()
     private val somethingChangedListenerList = mutableListOf<(Game) -> Unit>()
     private val turnListenerList = mutableListOf<TurnListener>()
@@ -25,7 +27,7 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
     private var mCurrentTurn: Int = 0
     private var mLastTag: Boolean = false
     private var spectator = false
-    private val secretLogic = SecretLogic(console)
+    private val secretLogic = SecretLogic(cardJson, console)
 
     private val queuedTagList = mutableListOf<Tag>()
 
@@ -238,6 +240,7 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
             when (key) {
                 Entity.KEY_TURN -> {
                     mCurrentTurn = newValue.toIntOrNull() ?: 0
+                    console.debug("GameLogic: turn=$mCurrentTurn")
                     secretLogic.newTurn(mGame!!)
 
                     callTurnListenersIfNeeded()
@@ -308,8 +311,22 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
             }
         }
 
-        if (key == Entity.KEY_MULLIGAN_STATE && newValue == "DONE") {
-            callTurnListenersIfNeeded()
+
+        if (key == Entity.KEY_MULLIGAN_STATE ) {
+            when(newValue) {
+                "DONE" -> callTurnListenersIfNeeded()
+                "INPUT" -> {
+                    if (mGame!!.gameType == GameType.GT_BATTLEGROUNDS) {
+                        if (mGame?.hasSentBattlegroundsHeroes != true) {
+                            for (listener in bgHeroesListenerList) {
+                                listener.invoke(mGame!!)
+                            }
+                            mGame!!.hasSentBattlegroundsHeroes = true
+                        }
+                    }
+                }
+            }
+
         }
     }
 
@@ -661,29 +678,43 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
 
         console.debug("entity created ${entity.EntityID} controller=${playerId} zone=${entity.tags[Entity.KEY_ZONE]} ")
 
-        if (Type.HERO == cardType) {
-            player.hero = entity
+        if (mGame!!.gameEntity!!.tags[Entity.KEY_STEP] == null) {
+            if (Entity.ZONE_DECK == entity.tags[Entity.KEY_ZONE]) {
+                entity.extra.originalController = entity.tags[Entity.KEY_CONTROLLER]
+            } else if (Entity.ZONE_HAND == entity.tags[Entity.KEY_ZONE]) {
+                // an entity created in hand at this point is the coin
+                entity.setCardId(CardId.THE_COIN, cardJson.getCard(CardId.THE_COIN))
+                entity.extra.drawTurn = 0
+            }
+        }
 
-            val card = cardJson.getCard(entity.CardID!!)
-            player.classIndex = getClassIndex(card.playerClass)
-            player.playerClass = card.playerClass
+        if (Type.HERO == cardType) {
+            if (mGame?.gameType == GameType.GT_BATTLEGROUNDS) {
+                if (mGame!!.gameEntity!!.tags[Entity.KEY_STEP] == Entity.STEP_BEGIN_MULLIGAN
+                    && entity.tags[Entity.KEY_ZONE] == Entity.ZONE_HAND) {
+                    entity.extra.isBgHeroChoice = true
+                }
+                // put something in there to make it not crash
+                player.classIndex = -1
+                player.playerClass = PlayerClass.NEUTRAL
+            } else {
+                player.hero = entity
+
+                val card = cardJson.getCard(entity.CardID!!)
+                player.classIndex = getClassIndex(card.playerClass)
+                player.playerClass = card.playerClass
+            }
         } else if (Type.HERO_POWER == cardType) {
             player.heroPower = entity
-        } else {
-            if (mGame!!.gameEntity!!.tags[Entity.KEY_STEP] == null) {
-                if (Entity.ZONE_DECK == entity.tags[Entity.KEY_ZONE]) {
-                    entity.extra.originalController = entity.tags[Entity.KEY_CONTROLLER]
-                } else if (Entity.ZONE_HAND == entity.tags[Entity.KEY_ZONE]) {
-                    // this must be the coin
-                    entity.setCardId(CardId.THE_COIN, cardJson.getCard(CardId.THE_COIN))
-                    entity.extra.drawTurn = 0
-                }
-            }
         }
     }
 
     fun onGameStart(block: (Game) -> Unit) {
         gameStartListenerList.add(block)
+    }
+
+    fun onBgHeroes(block: (Game) -> Unit) {
+        bgHeroesListenerList.add(block)
     }
 
     fun whenSomethingChanges(block: (Game) -> Unit) {
@@ -698,6 +729,10 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
         turnListenerList.add(block)
     }
 
+    fun getSecrets(game: Game): List<PossibleSecret> {
+        return secretLogic.getAll(game)
+    }
+
     companion object {
         fun isPlayerWhizbang(game: Game): Boolean {
             return !game.player!!.entity!!.tags["WHIZBANG_DECK_ID"].isNullOrBlank()
@@ -710,10 +745,6 @@ class GameLogic(private val console: Console, private val cardJson: CardJson) {
                         // && it.extra.originalController == game.player!!.entity!!.PlayerID
                         && it.tags.get(Entity.KEY_ZONE) == Entity.ZONE_SETASIDE
             }.isNotEmpty()
-        }
-
-        fun gameTurnToHumanTurn(turn: Int): Int {
-            return (turn + 1) / 2
         }
     }
 }

@@ -1,12 +1,9 @@
 package net.hearthsim.hslog
 
-import kotlinx.io.streams.asInput
-import net.hearthsim.console.Console
-import net.hearthsim.console.DefaultConsole
-import net.hearthsim.hslog.parser.decks.Deck
 import net.hearthsim.hslog.parser.power.BattlegroundState
 import net.hearthsim.hslog.parser.power.Entity
 import net.hearthsim.hslog.parser.power.Game
+import net.hearthsim.hslog.parser.power.PossibleSecret
 import net.hearthsim.hsmodel.enum.CardId
 import org.junit.Test
 import java.io.File
@@ -15,6 +12,7 @@ class PowerParserTest {
     val cardJson = TestUtils.cardJson
 
     val hsLog = TestUtils.newHSLog()
+    val home = System.getenv("HOME")
 
     @Test
     fun `magnetized minions appear in the opponent deck`() {
@@ -45,7 +43,7 @@ class PowerParserTest {
     @Test
     fun `vaporize test`() {
         // https://hsreplay.net/replay/i5RvfvjFGFBpFmeoQUxFT4
-        val powerLines = File("/home/martin/dev/hsdata/2019_07_21_Spex").readLines()
+        val powerLines = File("$home/dev/hsdata/2019_07_21_Spex").readLines()
 
         hsLog.setListener(object : DefaultHSLogListener() {
 
@@ -80,7 +78,7 @@ class PowerParserTest {
     @Test
     fun `pressure plate test`() {
         // https://hsreplay.net/replay/i5RvfvjFGFBpFmeoQUxFT4
-        val powerLines = File("/home/martin/dev/hsdata/2019_08_10_Glorfindel").readLines()
+        val powerLines = File("$home/dev/hsdata/2019_08_10_Glorfindel").readLines()
 
         hsLog.setListener(object : DefaultHSLogListener() {
 
@@ -116,7 +114,7 @@ class PowerParserTest {
     @Test
     fun `pressure plate test2`() {
         // https://hsreplay.net/replay/bDVPN8buJHt9apsVXKSDSo
-        val powerLines = File("/home/martin/dev/hsdata/2019_08_11_MrDude").readLines()
+        val powerLines = File("$home/dev/hsdata/2019_08_11_MrDude").readLines()
 
         hsLog.setListener(object : DefaultHSLogListener() {
 
@@ -147,7 +145,7 @@ class PowerParserTest {
     @Test
     fun `bombs are shown in opponent deck`() {
         // https://hsreplay.net/replay/6Wfwiptda9QLiascu9tSJ6
-        val powerLines = File("/home/martin/dev/hsdata/2019_08_11_sofa").readLines()
+        val powerLines = File("$home/dev/hsdata/2019_08_11_sofa").readLines()
 
         var opponentDeckEntries = emptyList<DeckEntry>()
 
@@ -180,8 +178,8 @@ class PowerParserTest {
 
     @Test
     fun `battlegrounds games are correctly parsed`() {
-        //val powerLines = File("/home/martin/dev/hsdata/2019_11_11_battlegrounds").readLines()
-        val powerLines = File("${System.getenv("HOME")}/dev/hsdata/2019_11_17_01-01_battlegrounds").readLines()
+        //val powerLines = File("$home/dev/hsdata/2019_11_11_battlegrounds").readLines()
+        val powerLines = File("$home/dev/hsdata/2019_11_17_01-01_battlegrounds").readLines()
         val hsLog = TestUtils.newHSLog()
 
         var gameAtStart: Game? = null
@@ -231,8 +229,28 @@ class PowerParserTest {
     }
 
     @Test
+    fun `battlegrounds heroes are correctly detected`() {
+        //val powerLines = File("$home/dev/hsdata/2019_11_11_battlegrounds").readLines()
+        val powerLines = File("$home/dev/hsdata/2019_11_17_18-26_battlegrounds").readLines()
+        val hsLog = TestUtils.newHSLog()
+
+        val foundEntities = mutableListOf<Entity>()
+        hsLog.setListener(object : DefaultHSLogListener() {
+            override fun bgHeroesShow(game: Game, entities: List<Entity>) {
+                foundEntities.addAll(entities)
+            }
+        })
+        powerLines.forEach {
+            hsLog.processPower(it, false)
+        }
+
+        assert(foundEntities[0].CardID == CardId.THE_RAT_KING1)
+        assert(foundEntities[1].CardID == CardId.LORD_JARAXXUS2)
+        assert(foundEntities[2].CardID == CardId.QUEEN_WAGTOGGLE1)
+    }
+
     fun balanceBlocks() {
-        val dir = File("/home/martin/dev/hsdata")
+        val dir = File("$home/dev/hsdata")
 
         val map = mutableMapOf<String, Int>()
 
@@ -252,7 +270,6 @@ class PowerParserTest {
                     it.value
             )
         }
-
     }
 
     private fun balance(file: File, blockTypes: MutableMap<String, Int>) {

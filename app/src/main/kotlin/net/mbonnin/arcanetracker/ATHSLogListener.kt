@@ -1,5 +1,6 @@
 package net.mbonnin.arcanetracker
 
+import android.view.LayoutInflater
 import io.ktor.client.HttpClient
 import io.ktor.client.request.post
 import io.reactivex.Completable
@@ -7,11 +8,17 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import net.hearthsim.hslog.ControllerCommon
+import net.hearthsim.hslog.DeckEntry
+import net.hearthsim.hslog.HSLogListener
+import net.hearthsim.hslog.parser.power.PossibleSecret
+import net.hearthsim.hslog.parser.achievements.CardGained
 import net.hearthsim.hslog.parser.decks.Deck
-import net.hearthsim.hslog.*
-import net.hearthsim.hslog.parser.achievements.AchievementsParser
+import net.hearthsim.hslog.parser.power.Entity
 import net.hearthsim.hslog.parser.power.Game
+import net.hearthsim.hslog.parser.power.GameType
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RDeck
 import net.mbonnin.arcanetracker.room.RPack
@@ -21,9 +28,35 @@ import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class ATHSLogListener(val currentOrFinishedGame: () -> Game?): HSLogListener {
+class ATHSLogListener(private val currentOrFinishedGame: () -> Game?): HSLogListener {
+
+    private var toastContainer: ToastContainer? = null
 
     override fun onGameStart(game: Game) {
+    }
+
+    override fun bgHeroesShow(game: Game, entities: List<Entity>) {
+        GlobalScope.launch(Dispatchers.Main) {
+            // leave some time for the Heroes to be displayed
+            delay(1000)
+            val toast = LayoutInflater.from(ArcaneTrackerApplication.context)
+                .inflate(R.layout.toast_compare_heroes, null, false)
+
+            toast.setOnClickListener {
+                val ids = entities.map { it.card?.dbfId }.joinToString(",")
+                Utils.openLink("https://hsreplay.net/battlegrounds/heroes?utm_source=arcanetracker&utm_medium=client" +
+                    "&utm_campaign=bgs_toast#heroes=$ids")
+                bgHeroesHide()
+            }
+            toastContainer = Toaster.show(toast, 30000L)
+        }
+    }
+
+    override fun bgHeroesHide() {
+        toastContainer?.let {
+            Toaster.dismiss(it)
+            toastContainer = null
+        }
     }
 
     override fun onGameChanged(game: Game) {
@@ -54,7 +87,7 @@ class ATHSLogListener(val currentOrFinishedGame: () -> Game?): HSLogListener {
         GameHelper.insertAndUploadGame(gameString, Date(gameStartMillis), currentOrFinishedGame)
     }
 
-    override fun onCardGained(cardGained: AchievementsParser.CardGained) {
+    override fun onCardGained(cardGained: CardGained) {
         cardGained(cardGained)
     }
 
@@ -111,12 +144,12 @@ class ATHSLogListener(val currentOrFinishedGame: () -> Game?): HSLogListener {
     override fun onTurn(game: Game, turn: Int, isPlayer: Boolean) {
         TurnTimer.onTurn(game, turn, isPlayer)
     }
-    private val cardList = mutableListOf<AchievementsParser.CardGained>()
+    private val cardList = mutableListOf<CardGained>()
     private var disposable: Disposable? = null
 
-    fun cardGained(cardGained: AchievementsParser.CardGained) {
+    fun cardGained(cardGained: CardGained) {
         synchronized(this) {
-            cardList.add(AchievementsParser.CardGained(cardGained.id, cardGained.golden))
+            cardList.add(CardGained(cardGained.id, cardGained.golden))
         }
 
         // if some delay pass without a new card incoming, we consider the pack done
@@ -143,10 +176,10 @@ class ATHSLogListener(val currentOrFinishedGame: () -> Game?): HSLogListener {
     override fun onDeckEntries(game: Game, isPlayer: Boolean, deckEntries: List<DeckEntry>) {
         if (deckEntries.firstOrNull { it is DeckEntry.Hero } != null) {
             // this is a battlegrounds board
-            MainViewCompanion.get().onBattlegrounds(deckEntries)
+            MainViewCompanion.get().onBattlegrounds(game.gameEntity?.tags?.get(Entity.KEY_TURN)?.toIntOrNull(), deckEntries)
         } else {
             Controller.get().onDeckEntries(isPlayer, deckEntries)
-            MainViewCompanion.get().onBattlegrounds(emptyList())
+            MainViewCompanion.get().onBattlegrounds(null, emptyList())
         }
     }
 }

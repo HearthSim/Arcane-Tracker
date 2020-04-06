@@ -8,10 +8,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.battlegrounds_minion.view.*
-import net.mbonnin.arcanetracker.R
 import net.hearthsim.hslog.parser.power.BattlegroundsBoard
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
+import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
 
 class BattlegroundsBoardView(context: Context) : ConstraintLayout(context) {

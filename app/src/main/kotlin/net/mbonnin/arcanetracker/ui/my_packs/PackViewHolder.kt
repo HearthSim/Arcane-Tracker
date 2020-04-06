@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_pack.*
+import net.hearthsim.hsmodel.CardJson
 import net.mbonnin.arcanetracker.CardUtil
 import net.mbonnin.arcanetracker.helper.SetHelper
 import net.mbonnin.arcanetracker.room.RPack
 import net.mbonnin.arcanetracker.ui.stats.toPixel
-import net.hearthsim.hsmodel.CardJson
 import java.text.SimpleDateFormat
 import java.util.*
 

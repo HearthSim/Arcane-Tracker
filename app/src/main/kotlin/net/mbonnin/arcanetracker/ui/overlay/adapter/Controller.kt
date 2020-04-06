@@ -1,11 +1,7 @@
 package net.mbonnin.arcanetracker.ui.overlay.adapter
 
 
-import android.os.Handler
-import android.text.TextUtils
-import net.mbonnin.arcanetracker.*
-import net.hearthsim.hslog.parser.power.Game
-import net.hearthsim.hslog.*
+import net.hearthsim.hslog.DeckEntry
 
 class Controller {
 

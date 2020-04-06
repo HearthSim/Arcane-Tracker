@@ -250,4 +250,7 @@
     <string name="battlegroundsOpponents">Opponents</string>
     <string name="techLevelExpanded">Tier %1$d ▼</string>
     <string name="techLevelCollapsed">Tier %1$d ▶</string>
+    <string name="watch_the_replay">Watch the replay</string>
+    <string name="vs">vs</string>
+    <string name="compare_heroes">CompareHeroes</string>
 </resources>

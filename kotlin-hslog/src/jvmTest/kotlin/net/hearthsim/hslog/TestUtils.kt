@@ -1,8 +1,9 @@
 package net.hearthsim.hslog
 
-import kotlinx.io.streams.asInput
 import net.hearthsim.console.Console
 import net.hearthsim.hsmodel.CardJson
+import okio.buffer
+import okio.source
 import java.io.File
 
 object  TestUtils {
@@ -30,8 +31,8 @@ object  TestUtils {
     }
 
     val cardJson by lazy {
-        val input = File("../app/src/main/res/raw/cards.json").inputStream().asInput()
-        CardJson.fromMultiLangJson(lang = "enUS", injectedCards = emptyList(), input = input)
+        val input = File("../app/src/main/res/raw/cards.json").inputStream().source().buffer()
+        CardJson.fromMultiLangJson(lang = "enUS", injectedCards = emptyList(), src = input)
     }
 
     fun newHSLog() = HSLog(console = console, cardJson = cardJson, debounceDelay = 0)

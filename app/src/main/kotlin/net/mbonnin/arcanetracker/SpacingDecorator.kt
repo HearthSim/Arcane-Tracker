@@ -1,8 +1,8 @@
 package net.mbonnin.arcanetracker
 
 import android.graphics.Rect
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 
 
 class SpacesItemDecoration(private val space: Int) : RecyclerView.ItemDecoration() {

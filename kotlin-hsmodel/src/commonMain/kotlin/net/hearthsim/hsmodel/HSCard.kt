@@ -3,7 +3,7 @@ package net.hearthsim.hsmodel
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class HSCard(val id: String,
+internal data class HSCard(val id: String,
                   val text: Map<String, String>? = null,
                   val name: Map<String, String>? = null,
                   val cardClass: String? = null,

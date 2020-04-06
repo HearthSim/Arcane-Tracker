@@ -1,13 +1,10 @@
 package net.mbonnin.arcanetracker
 
 import android.annotation.SuppressLint
-import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
 import kotlinx.coroutines.*
 import net.hearthsim.hslog.parser.power.Entity
 import net.hearthsim.hslog.parser.power.Game
-import timber.log.Timber
 import java.util.*
 
 @SuppressLint("StaticFieldLeak")

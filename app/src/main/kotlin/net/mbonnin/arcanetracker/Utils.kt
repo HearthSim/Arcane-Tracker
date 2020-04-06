@@ -1,13 +1,11 @@
 package net.mbonnin.arcanetracker
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
-import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Environment
 import android.os.Handler
@@ -20,8 +18,6 @@ import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import net.mbonnin.arcanetracker.helper.getHeroId
 import net.mbonnin.arcanetracker.ui.overlay.Overlay
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import timber.log.Timber
 import java.io.IOException
 import java.io.InputStream

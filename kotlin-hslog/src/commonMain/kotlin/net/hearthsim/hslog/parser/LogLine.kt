@@ -1,13 +1,13 @@
 package net.hearthsim.hslog.parser
 
-class LogLineWithMethod(
+internal class LogLineWithMethod(
         val level: String,
         val line: String,
         val method: String,
         val seconds: Int
 )
 
-class LogLine(
+internal class LogLine(
         val level: String,
         val line: String,
         val seconds: Int
@@ -31,7 +31,7 @@ private fun getSeconds(time: String): Int {
 val PATTERN_WITH_METHOD = Regex("([^ ]) +([^ ]*) +([^ ]*) +(.*)")
 val PATTERN =  Regex("([^ ]) +([^ ]*) +(.*)")
 
-fun parseLineWithMethod(line: String, logger: ((String, Array<out String>) -> Unit)?): LogLineWithMethod? {
+internal fun parseLineWithMethod(line: String, logger: ((String, Array<out String>) -> Unit)?): LogLineWithMethod? {
 
     //D 19:48:03.8108410 GameState.DebugPrintPower() -     Player EntityID=3 PlayerID=2 GameAccountId=redacted
 
@@ -67,7 +67,7 @@ fun parseLineWithMethod(line: String, logger: ((String, Array<out String>) -> Un
     )
 }
 
-fun parseLine(line: String): LogLine? {
+internal fun parseLine(line: String): LogLine? {
     //I 21:35:38.5792300 # Deck ID: 1384195626
 
     val matcher = PATTERN.matchEntire(line)

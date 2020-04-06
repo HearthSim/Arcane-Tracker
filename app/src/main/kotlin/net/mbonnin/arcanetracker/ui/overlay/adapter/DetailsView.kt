@@ -14,10 +14,10 @@ import androidx.core.view.children
 import com.google.android.flexbox.FlexboxLayout
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
-import net.hearthsim.hslog.*
+import net.hearthsim.hslog.DeckEntry
+import net.hearthsim.hslog.util.AvailableSecrets
 import net.hearthsim.hslog.parser.power.Entity
 import net.hearthsim.hslog.parser.power.FormatType
-import net.hearthsim.hslog.parser.power.GameLogic
 import net.hearthsim.hslog.parser.power.GameType
 import net.hearthsim.hsmodel.enum.Type
 import net.mbonnin.arcanetracker.*
@@ -141,7 +141,7 @@ class DetailsView(context: Context) : ViewGroup(context) {
                 if (!builder.isEmpty()) {
                     builder.append("\n")
                 }
-                builder.append(context.getString(R.string.drawnTurn, GameLogic.gameTurnToHumanTurn(entity.extra.drawTurn)))
+                builder.append(context.getString(R.string.drawnTurn, GameUtil.gameTurnToHumanTurn(entity.extra.drawTurn)))
                 if (entity.extra.mulliganed) {
                     builder.append(" (")
                     builder.append(context.getString(R.string.mulliganed))
@@ -153,13 +153,13 @@ class DetailsView(context: Context) : ViewGroup(context) {
                 if (!builder.isEmpty()) {
                     builder.append("\n")
                 }
-                builder.append(context.getString(R.string.playedTurn, GameLogic.gameTurnToHumanTurn(entity.extra.playTurn)))
+                builder.append(context.getString(R.string.playedTurn, GameUtil.gameTurnToHumanTurn(entity.extra.playTurn)))
             }
             if (entity.extra.diedTurn != -1 && (Type.MINION == cardType || Type.WEAPON == cardType)) {
                 if (!builder.isEmpty()) {
                     builder.append("\n")
                 }
-                builder.append(context.getString(R.string.diedTurn, GameLogic.gameTurnToHumanTurn(entity.extra.diedTurn)))
+                builder.append(context.getString(R.string.diedTurn, GameUtil.gameTurnToHumanTurn(entity.extra.diedTurn)))
             }
             if (!TextUtils.isEmpty(entity.extra.createdBy)) {
                 if (!builder.isEmpty()) {
@@ -204,7 +204,7 @@ class DetailsView(context: Context) : ViewGroup(context) {
     private fun appendPossibleSecrets(flexboxLayout: FlexboxLayout, entity: Entity) {
         val game = ArcaneTrackerApplication.get().hsLog.currentOrFinishedGame()
 
-        val possibleSecrets = PossibleSecrets.availableSecrets(ArcaneTrackerApplication.get().cardJson, entity.tags[Entity.KEY_CLASS] ?: "", GameType.GT_RANKED, FormatType.FT_WILD)
+        val possibleSecrets = AvailableSecrets.availableSecrets(ArcaneTrackerApplication.get().cardJson, entity.tags[Entity.KEY_CLASS] ?: "", GameType.GT_RANKED, FormatType.FT_WILD)
 
         val list = possibleSecrets.map {
             DeckEntry.Item(card = CardUtil.getCard(it),

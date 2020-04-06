@@ -4,7 +4,7 @@ import net.hearthsim.console.Console
 import net.hearthsim.hslog.parser.parseLine
 import net.hearthsim.hsmodel.CardJson
 
-class DecksParser(private val console: Console,
+internal class DecksParser(private val console: Console,
                   private val cardJson: CardJson,
                   val onPlayerDeckChanged: (Deck) -> Unit,
                   val onNewDeckFound: (Deck, String, Boolean) -> Unit) {

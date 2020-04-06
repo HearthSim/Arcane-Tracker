@@ -8,13 +8,12 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import net.hearthsim.hslog.ControllerCommon
+import net.hearthsim.hslog.DeckEntry
+import net.hearthsim.hslog.parser.decks.Deck
+import net.mbonnin.arcanetracker.CardUtil
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
-import net.hearthsim.hslog.*
-import net.hearthsim.hslog.parser.decks.Deck
-import net.mbonnin.arcanetracker.ArcaneTrackerApplication
-import net.mbonnin.arcanetracker.CardUtil
-import net.mbonnin.arcanetracker.ui.overlay.adapter.Controller
 import net.mbonnin.arcanetracker.ui.overlay.adapter.ItemAdapter
 import net.mbonnin.arcanetracker.ui.overlay.adapter.OpponentsAdapter
 

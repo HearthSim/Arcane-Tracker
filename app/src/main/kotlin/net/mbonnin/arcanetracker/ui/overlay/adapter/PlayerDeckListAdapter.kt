@@ -10,8 +10,11 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.deck_line_view.*
-import net.mbonnin.arcanetracker.*
 import net.hearthsim.hslog.parser.decks.Deck
+import net.mbonnin.arcanetracker.ArcaneTrackerApplication
+import net.mbonnin.arcanetracker.DeckMapper
+import net.mbonnin.arcanetracker.R
+import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RDeck
 

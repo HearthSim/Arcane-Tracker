@@ -9,6 +9,7 @@ object Versions {
     const val coroutines = "1.3.5"
     const val ktor = "1.3.2"
     const val serialization = "0.20.0"
+    const val sqldelight = "1.3.0"
 }
 
 object Libs {
@@ -53,6 +54,9 @@ object Libs {
 
     const val stdlibCommon = "org.jetbrains.kotlin:kotlin-stdlib-common"
     const val stdlibJdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    const val sqldelight = "com.squareup.sqldelight:android-driver:${Versions.sqldelight}"
+    const val sqldelightCoroutinesExtensions = "com.squareup.sqldelight:coroutines-extensions:${Versions.sqldelight}"
 
     // See https://github.com/Kotlin/kotlinx.coroutines/issues/1096
     const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:${Versions.coroutines}"

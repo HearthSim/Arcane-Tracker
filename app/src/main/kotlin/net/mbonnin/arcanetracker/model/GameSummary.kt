@@ -1,8 +1,7 @@
 package net.mbonnin.arcanetracker.model
 
 import net.mbonnin.arcanetracker.PaperDb
-
-import java.util.ArrayList
+import java.util.*
 
 class GameSummary {
     var deckName: String? = null
@@ -28,21 +27,16 @@ class GameSummary {
             }
         }
 
-        fun eraseGameSummary() {
-            savedGameSummaryList!!.clear()
-            sync()
-        }
-
-        fun addFirst(summary: GameSummary) {
-            savedGameSummaryList!!.add(0, summary)
-            sync()
-        }
+        val gameSummaryList: List<GameSummary>?
+            get() = savedGameSummaryList
 
         fun sync() {
             PaperDb.write<ArrayList<GameSummary>?>(KEY_GAME_LIST, savedGameSummaryList)
         }
 
-        val gameSummaryList: List<GameSummary>?
-            get() = savedGameSummaryList
+        fun eraseGameSummary() {
+            savedGameSummaryList!!.clear()
+            sync()
+        }
     }
 }

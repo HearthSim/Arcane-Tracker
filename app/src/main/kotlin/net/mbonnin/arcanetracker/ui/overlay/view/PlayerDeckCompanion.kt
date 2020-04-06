@@ -5,15 +5,13 @@ import android.view.View
 import android.widget.NumberPicker
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.deck_view.*
-import net.mbonnin.arcanetracker.*
 import net.hearthsim.hslog.parser.decks.Deck
-import net.mbonnin.arcanetracker.room.RDatabaseSingleton
+import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.room.WLCounter
 import net.mbonnin.arcanetracker.ui.overlay.adapter.Controller
 import net.mbonnin.arcanetracker.ui.overlay.adapter.PlayerDeckListAdapter

@@ -2,17 +2,17 @@ package net.hearthsim.hslog.util
 
 import net.hearthsim.hsmodel.enum.PlayerClass
 
-fun allHeroes(): Array<String> {
-    return arrayOf(PlayerClass.WARRIOR, PlayerClass.SHAMAN, PlayerClass.ROGUE, PlayerClass.PALADIN, PlayerClass.HUNTER, PlayerClass.DRUID, PlayerClass.WARLOCK, PlayerClass.MAGE, PlayerClass.PRIEST, PlayerClass.NEUTRAL)
+fun allPlayerClasses(): Array<String> {
+    return arrayOf(PlayerClass.WARRIOR, PlayerClass.SHAMAN, PlayerClass.ROGUE, PlayerClass.PALADIN, PlayerClass.HUNTER, PlayerClass.DRUID, PlayerClass.WARLOCK, PlayerClass.MAGE, PlayerClass.PRIEST, PlayerClass.NEUTRAL, PlayerClass.DEMONHUNTER)
 }
 
 fun getPlayerClass(classIndex: Int): String {
     if (classIndex < 0) {
         return PlayerClass.NEUTRAL
     }
-    return allHeroes()[classIndex]
+    return allPlayerClasses()[classIndex]
 }
 
 fun getClassIndex(playerClass: String): Int {
-    return allHeroes().indexOf(playerClass)
+    return allPlayerClasses().indexOf(playerClass)
 }

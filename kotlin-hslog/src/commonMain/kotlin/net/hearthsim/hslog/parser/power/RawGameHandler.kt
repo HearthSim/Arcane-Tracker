@@ -1,9 +1,8 @@
 package net.hearthsim.hslog.parser.power
 
 import com.soywiz.klock.DateTime
-import io.ktor.utils.io.core.toByteArray
 
-class RawGameHandler(private val rawGameConsumer: ((rawGame: ByteArray, unixMillis: Long) -> Unit)?) {
+internal class RawGameHandler(private val rawGameConsumer: ((rawGame: ByteArray, unixMillis: Long) -> Unit)?) {
     private val rawBuilder = MyByteArrayOutputStream()
     private var rawMatchStart: Long = 0
     private var rawGoldRewardStateCount: Int = 0
@@ -12,6 +11,7 @@ class RawGameHandler(private val rawGameConsumer: ((rawGame: ByteArray, unixMill
     /**
      * This will be fed both GameState and PowerTaskList logs so that they can be sent to HSReplay
      */
+    @OptIn(ExperimentalStdlibApi::class)
     fun process(rawLine: String) {
 
         if (rawLine.contains("CREATE_GAME") && rawLine.contains("GameState")) {
@@ -23,8 +23,8 @@ class RawGameHandler(private val rawGameConsumer: ((rawGame: ByteArray, unixMill
             isBattleGrounds = false
         }
 
-        rawBuilder.write(rawLine.toByteArray())
-        rawBuilder.write("\n".toByteArray())
+        rawBuilder.write(rawLine.encodeToByteArray())
+        rawBuilder.write("\n".encodeToByteArray())
 
         if (rawLine.contains("GameType=GT_BATTLEGROUNDS")) {
             isBattleGrounds = true

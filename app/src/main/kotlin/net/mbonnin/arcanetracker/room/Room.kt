@@ -1,9 +1,9 @@
 package net.mbonnin.arcanetracker.room
 
-import androidx.sqlite.db.SupportSQLiteDatabase
-import androidx.room.migration.Migration
 import android.database.Cursor
 import androidx.room.*
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
@@ -92,20 +92,11 @@ interface RDeckDao {
 
 @Dao
 interface RGameDao {
-    @Query("UPDATE rgame SET hs_replay_url = :hs_replay_url WHERE id = :id")
-    fun update(id: Long, hs_replay_url: String)
+    @Query("SELECT * from rgame")
+    fun selectAll(): Flowable<List<RGame>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(rGame: RGame): Long
-
-    @Query("SELECT COUNT(*) FROM rgame WHERE opponent_class = :opponent_class AND deck_id = :deck_id")
-    fun totalPlayedAgainst(deck_id: String, opponent_class: String): Maybe<Int>
-
-    @Query("SELECT COUNT(*) FROM rgame WHERE opponent_class = :opponent_class AND deck_id = :deck_id AND victory = 1")
-    fun totalVictoriesAgainst(deck_id: String, opponent_class: String): Maybe<Int>
-
-    @Query("SELECT SUM(victory) as won, SUM(case victory when 1 then 0 else 1 end) as lost FROM rgame WHERE deck_id = :deck_id")
-    fun counter(deck_id: String): Flowable<Counter>
+    @Query("DELETE from rgame")
+    fun deleteAll()
 }
 
 @Dao

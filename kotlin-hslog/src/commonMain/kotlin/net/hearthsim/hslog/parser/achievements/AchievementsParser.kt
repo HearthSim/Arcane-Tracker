@@ -2,18 +2,8 @@ package net.hearthsim.hslog.parser.achievements
 
 import net.hearthsim.console.Console
 
-class AchievementsParser(val console: Console, val onCard: (CardGained) -> Unit) {
+internal class AchievementsParser(val console: Console, val onCard: (CardGained) -> Unit) {
     private val CARD_GAINED = Regex(".*NotifyOfCardGained:.*cardId=(.*) .* (.*) [0-9]*")
-
-    class CardGained(val id: String, val golden: Boolean) {
-        override fun toString(): String {
-            if (golden) {
-                return "$id*"
-            } else {
-                return id
-            }
-        }
-    }
 
     fun process(rawLine: String, isOldData: Boolean) {
         if (isOldData) {

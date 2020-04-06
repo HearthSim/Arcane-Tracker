@@ -16,7 +16,7 @@ object RankHolder {
 
     private fun displayToast(toast: String) {
         runOnMainThread({
-            Toaster.show(toast)
+            //Toaster.show(toast)
         })
     }
 

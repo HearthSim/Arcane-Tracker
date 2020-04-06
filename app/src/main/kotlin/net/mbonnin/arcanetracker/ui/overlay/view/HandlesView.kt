@@ -3,9 +3,7 @@ package net.mbonnin.arcanetracker.ui.overlay.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
-import android.view.View
 import android.widget.LinearLayout
-import net.mbonnin.arcanetracker.ViewManager
 
 class HandlesView : LinearLayout {
     private var mListener: OnTouchListener? = null

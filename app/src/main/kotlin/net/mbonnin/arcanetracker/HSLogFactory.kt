@@ -1,26 +1,15 @@
 package net.mbonnin.arcanetracker
 
 import android.os.Handler
-import io.reactivex.Completable
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.hearthsim.console.Console
 import net.hearthsim.hslog.HSLog
-import net.hearthsim.hslog.parser.achievements.AchievementsParser
-import net.mbonnin.arcanetracker.reader.LogReader
-import net.mbonnin.arcanetracker.room.RDatabaseSingleton
-import net.mbonnin.arcanetracker.room.RDeck
-import net.mbonnin.arcanetracker.room.RPack
-import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
 import net.hearthsim.hsmodel.CardJson
-import timber.log.Timber
+import net.mbonnin.arcanetracker.reader.LogReader
 import java.io.File
-import java.util.*
-import java.util.concurrent.TimeUnit
 
 object HSLogFactory {
     fun createHSLog(console: Console, cardJson: CardJson): HSLog {

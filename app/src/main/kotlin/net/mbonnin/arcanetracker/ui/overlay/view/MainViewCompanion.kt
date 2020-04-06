@@ -9,26 +9,22 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import net.hearthsim.hslog.DeckEntry
-import net.hearthsim.hslog.PossibleSecret
+import net.hearthsim.hslog.parser.power.PossibleSecret
 import net.hearthsim.hsmodel.Card
 import net.hearthsim.hsmodel.battlegrounds.battlegroundsMinions
-import net.hearthsim.hsmodel.enum.Race
 import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.ui.my_games.YourGamesActivity
 import net.mbonnin.arcanetracker.ui.my_packs.YourPacksActivity
 import net.mbonnin.arcanetracker.ui.overlay.Onboarding
 import net.mbonnin.arcanetracker.ui.overlay.Onboarding.hsReplayHandleClicked
-import net.mbonnin.arcanetracker.ui.overlay.adapter.Controller
 import net.mbonnin.arcanetracker.ui.overlay.adapter.ItemAdapter
 import net.mbonnin.arcanetracker.ui.settings.SettingsCompanion
 import net.mbonnin.arcanetracker.ui.stats.YourDecksActivity
+import timber.log.Timber
 
 class MainViewCompanion(val mainView: View) {
+    private var turn: Int? = null
     private val mHandler: Handler
     private val frameLayout: View
 
@@ -87,11 +83,14 @@ class MainViewCompanion(val mainView: View) {
         setState(STATE_PLAYER, false)
     }
 
-    fun onBattlegrounds(list: List<DeckEntry>) {
+    fun onBattlegrounds(turn: Int?, list: List<DeckEntry>) {
+        Timber.d("Battlgrounds: $turn")
+
         handlesView.findViewById<View>(R.id.battlegroundsHandle).visibility = if (list.isEmpty()) View.GONE else View.VISIBLE
         handlesView.findViewById<View>(R.id.playerHandle).visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
         handlesView.findViewById<View>(R.id.opponentHandle).visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
 
+        this.turn = turn
         opponents = list
         updateAdapter()
     }
@@ -186,6 +185,9 @@ class MainViewCompanion(val mainView: View) {
 
     fun updateAdapter() {
         val list2 = mutableListOf<DeckEntry>()
+        if (this.turn != null) {
+            list2.add(DeckEntry.Text(handlesView.context.getString(R.string.turn, ((this.turn!! - 1) / 2) + 3)))
+        }
         list2.add(DeckEntry.Text(handlesView.context.getString(R.string.battlegroundsOpponents)))
         list2.addAll(opponents)
         list2.add(DeckEntry.Text(handlesView.context.getString(R.string.minions)))

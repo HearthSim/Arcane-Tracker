@@ -15,13 +15,6 @@ kotlin {
     android {
         publishAllLibraryVariants()
     }
-    macosX64 {
-        binaries {
-            framework {
-                export(project(":kotlin-hsmodel"))
-            }
-        }
-    }
 
     sourceSets {
         val commonMain by getting {
@@ -30,7 +23,6 @@ kotlin {
                 implementation(Libs.klock)
                 implementation(project(":kotlin-deckstring"))
                 api(project(":kotlin-hsmodel"))
-                api(project(":kotlin-hsreplay-api"))
                 api(project(":kotlin-console"))
             }
         }

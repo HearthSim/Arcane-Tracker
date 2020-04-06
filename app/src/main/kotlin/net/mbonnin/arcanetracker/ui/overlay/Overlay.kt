@@ -5,11 +5,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import net.hearthsim.hslog.PossibleSecret
-import net.hearthsim.hsmodel.enum.CardId
 import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
-import net.mbonnin.arcanetracker.ui.overlay.view.TopDrawerCompanion
 import net.mbonnin.arcanetracker.ui.overlay.view.WhatsNewCompanion
 
 object Overlay {
@@ -34,33 +31,7 @@ object Overlay {
         setAlphaProgress(getAlphaProgress())
         setButtonWidth(getButtonWidth())
 
-        /*val possibleSecrets = listOf(
-                PossibleSecret(CardId.COUNTERSPELL, 1),
-                PossibleSecret(CardId.SPELLBENDER, 1),
-                PossibleSecret(CardId.ICE_BARRIER, 0),
-                PossibleSecret(CardId.DUPLICATE, 1),
-                PossibleSecret(CardId.MIRROR_ENTITY, 1),
-                PossibleSecret(CardId.EFFIGY, 0)
-        )
-
-        GlobalScope.launch(Dispatchers.Main) {
-            delay(4000)
-            var i = 3
-            while (true) {
-                if (i % 5 == 0) {
-                    MainViewCompanion.get().onSecrets(
-                            emptyList()
-                    )
-
-                } else {
-                    MainViewCompanion.get().onSecrets(
-                            possibleSecrets.shuffled()
-                    )
-                }
-                delay(2000)
-                i++
-            }
-        }*/
+        Migration.migrateToSqlDelight()
     }
 
     fun setAlphaProgress(progress: Int) {

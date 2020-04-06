@@ -1,10 +1,10 @@
 package net.mbonnin.arcanetracker.ui.stats
 
 import android.content.Context
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.util.DisplayMetrics
 import android.widget.FrameLayout
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import net.hearthsim.hslog.parser.decks.Deck
 import net.mbonnin.arcanetracker.SpacesItemDecoration
 import net.mbonnin.arcanetracker.ui.promo.PromoView

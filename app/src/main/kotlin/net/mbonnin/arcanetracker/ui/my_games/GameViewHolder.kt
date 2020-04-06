@@ -1,33 +1,34 @@
 package net.mbonnin.arcanetracker.ui.my_games
 
 import android.graphics.Color
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.Toast
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.game_view.*
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
-import net.mbonnin.arcanetracker.helper.getDisplayName
-import net.mbonnin.arcanetracker.model.GameSummary
+import net.mbonnin.arcanetracker.helper.getPlayerClassDisplayName
+import net.mbonnin.arcanetracker.helper.getPlayerClassRoundIcon
+import net.mbonnin.arcanetracker.sqldelight.Game
 
 class GameViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
-    lateinit var summary: GameSummary
+    lateinit var summary: Game
 
     init {
         hsReplay.setOnClickListener {
-            if (summary.hsreplayUrl == null) {
+            if (summary.hs_replay_url == null) {
                 Toast.makeText(containerView.context, containerView.context.getString(R.string.could_not_find_replay), Toast.LENGTH_LONG).show()
                 return@setOnClickListener
 
             }
-            summary.hsreplayUrl?.let {
+            summary.hs_replay_url?.let {
                 Utils.openLink(it)
             }
         }
     }
 
-    fun bind(summary: GameSummary, position: Int) {
+    fun bind(summary: Game, position: Int) {
         this.summary = summary
 
         if (position % 2 == 1) {
@@ -36,13 +37,13 @@ class GameViewHolder(override val containerView: View) : RecyclerView.ViewHolder
             containerView.background = null
         }
         val context = itemView.context
-        hero.setImageDrawable(Utils.getDrawableForNameDeprecated(String.format("hero_%02d_round", summary.hero + 1)))
-        opponentHero.setImageDrawable(Utils.getDrawableForNameDeprecated(String.format("hero_%02d_round", summary.opponentHero + 1)))
-        deckName.text = summary.deckName
-        winLoss.text = if (summary.win) context.getString(R.string.win) else context.getString(R.string.lost)
-        coin.visibility = if (summary.coin) View.VISIBLE else View.INVISIBLE
-        opponentName.text = getDisplayName(summary.opponentHero)
+        hero.setImageResource(getPlayerClassRoundIcon(summary.player_player_class))
+        opponentHero.setImageResource(getPlayerClassRoundIcon(summary.opponent_player_class))
+        deckName.text = summary.deck_name
+        winLoss.text = if (summary.victory ?: 0 > 0) context.getString(R.string.win) else context.getString(R.string.lost)
+        coin.visibility = if (summary.coin > 0) View.VISIBLE else View.INVISIBLE
+        opponentName.text = getPlayerClassDisplayName(summary.opponent_player_class)
 
-        hsReplay.visibility = if (!summary.hsreplayUrl.isNullOrBlank()) View.VISIBLE else View.INVISIBLE
+        hsReplay.visibility = if (!summary.hs_replay_url.isNullOrBlank()) View.VISIBLE else View.INVISIBLE
     }
 }

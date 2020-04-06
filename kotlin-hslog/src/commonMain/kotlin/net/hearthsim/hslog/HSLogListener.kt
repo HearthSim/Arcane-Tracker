@@ -1,8 +1,10 @@
 package net.hearthsim.hslog
 
-import net.hearthsim.hslog.parser.achievements.AchievementsParser
+import net.hearthsim.hslog.parser.achievements.CardGained
 import net.hearthsim.hslog.parser.decks.Deck
+import net.hearthsim.hslog.parser.power.Entity
 import net.hearthsim.hslog.parser.power.Game
+import net.hearthsim.hslog.parser.power.PossibleSecret
 
 interface HSLogListener {
     /**
@@ -10,6 +12,9 @@ interface HSLogListener {
      * @param game: the game
      */
     fun onGameStart(game: Game)
+
+    fun bgHeroesShow(game: Game, entities: List<Entity>)
+    fun bgHeroesHide()
 
     /**
      * called when a new entity has been revealed, a play has been done or something else changed
@@ -31,7 +36,7 @@ interface HSLogListener {
     /**
      *
      */
-    fun onCardGained(cardGained: AchievementsParser.CardGained)
+    fun onCardGained(cardGained: CardGained)
 
     /**
      *

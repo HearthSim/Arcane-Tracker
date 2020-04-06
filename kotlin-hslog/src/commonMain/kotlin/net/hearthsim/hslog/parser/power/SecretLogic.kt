@@ -1,11 +1,13 @@
 package net.hearthsim.hslog.parser.power
 
 import net.hearthsim.console.Console
+import net.hearthsim.hslog.util.AvailableSecrets
+import net.hearthsim.hsmodel.CardJson
 import net.hearthsim.hsmodel.enum.CardId
 import net.hearthsim.hsmodel.enum.Rarity
 import net.hearthsim.hsmodel.enum.Type
 
-class SecretLogic(val console: Console) {
+internal class SecretLogic(val cardJson: CardJson, val console: Console) {
     private fun secretEntityList(game: Game): List<Entity> {
         return game.getEntityList { shouldTrack(game, it) }
     }
@@ -257,6 +259,33 @@ class SecretLogic(val console: Console) {
             if (opponentMinionOnBoardCount(game) > 0) {
                 exclude(game, CardId.COMPETITIVE_SPIRIT)
             }
+        }
+    }
+
+    internal fun getAll(game: Game): List<PossibleSecret> {
+        val entities = game.getEntityList {
+            it.tags[Entity.KEY_CONTROLLER] == game.opponentId()
+                && it.tags[Entity.KEY_ZONE] == Entity.ZONE_SECRET
+                && it.tags[Entity.KEY_RARITY] != Rarity.LEGENDARY
+                && it.tags[Entity.KEY_SIDEQUEST].isNullOrBlank()
+        }
+
+        val map = mutableMapOf<String, Int>()
+        entities.forEach { entity ->
+            AvailableSecrets.availableSecrets(
+                cardJson = cardJson,
+                playerClass = entity.tags[Entity.KEY_CLASS] ?: "",
+                formatType = game.formatType,
+                gameType = game.gameType
+            ).forEach {
+                val possibleCount = map.getOrElse(it, { 0 })
+
+                map.put(it, possibleCount + if (entity.extra.excludedSecretList.contains(it)) 0 else 1)
+            }
+        }
+
+        return map.map {
+            PossibleSecret(it.key, it.value)
         }
     }
 }

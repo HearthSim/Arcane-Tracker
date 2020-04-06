@@ -28,6 +28,7 @@ class Game(private val console: Console) {
     var formatType: FormatType = FormatType.FT_UNKNOWN
     var scenarioId: String? = null
 
+    internal var hasSentBattlegroundsHeroes = false
     internal val battlegroundsBoard = mutableMapOf<String, BattlegroundsBoard>()
 
     /*

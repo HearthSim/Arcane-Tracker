@@ -1,8 +1,10 @@
 package net.hearthsim.hslog
 
-import net.hearthsim.hslog.parser.achievements.AchievementsParser
+import net.hearthsim.hslog.parser.achievements.CardGained
 import net.hearthsim.hslog.parser.decks.Deck
+import net.hearthsim.hslog.parser.power.Entity
 import net.hearthsim.hslog.parser.power.Game
+import net.hearthsim.hslog.parser.power.PossibleSecret
 
 open class DefaultHSLogListener : HSLogListener {
     override fun onSecrets(possibleSecrets: List<PossibleSecret>) {
@@ -16,6 +18,13 @@ open class DefaultHSLogListener : HSLogListener {
 
     }
 
+    override fun bgHeroesShow(game: Game, entities: List<Entity>) {
+
+    }
+
+    override fun bgHeroesHide() {
+
+    }
     override fun onGameChanged(game: Game) {
 
     }
@@ -32,7 +41,7 @@ open class DefaultHSLogListener : HSLogListener {
 
     }
 
-    override fun onCardGained(cardGained: AchievementsParser.CardGained) {
+    override fun onCardGained(cardGained: CardGained) {
 
     }
 
