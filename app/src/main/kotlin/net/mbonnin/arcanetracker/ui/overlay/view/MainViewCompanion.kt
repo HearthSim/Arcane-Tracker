@@ -186,7 +186,7 @@ class MainViewCompanion(val mainView: View) {
     fun updateAdapter() {
         val list2 = mutableListOf<DeckEntry>()
         if (this.turn != null) {
-            list2.add(DeckEntry.Text(handlesView.context.getString(R.string.turn, ((this.turn!! - 1) / 2) + 1)))
+            list2.add(DeckEntry.Text(handlesView.context.getString(R.string.turn, GameUtil.gameTurnToHumanTurn(this.turn!!))))
         }
         list2.add(DeckEntry.Text(handlesView.context.getString(R.string.battlegroundsOpponents)))
         list2.addAll(opponents)
