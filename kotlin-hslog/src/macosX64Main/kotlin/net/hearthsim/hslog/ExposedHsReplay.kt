@@ -4,6 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import net.hearthsim.analytics.Analytics
 import net.hearthsim.console.Console
 import net.hearthsim.hsreplay.HsReplay
@@ -34,7 +35,7 @@ class ExposedHsReplay(preferences: Preferences, val console: Console, analytics:
                                      account_hi: String,
                                      account_lo: String,
                                      callback: (Result) -> Unit) {
-        launch {
+        runBlocking {
             val r = hsReplay.uploadCollection(collectionUploadData, account_hi, account_lo)
             callback(when (r) {
                 is HsReplay.CollectionUploadResult.Success -> Result.Success
