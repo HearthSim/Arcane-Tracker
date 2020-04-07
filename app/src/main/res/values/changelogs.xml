@@ -49,4 +49,5 @@
     <string name="changelog_435" translatable="false">Updated Battlegrounds tiers.\nAllow to fold/unfold Battlegrounds tiers.\nFix a bug where BubbleHearth could be shown as a potential secret.</string>
     <string name="changelog_436" translatable="false">Updates for patch 16.6.</string>
     <string name="changelog_437" translatable="false">Updates for the april 1st path.</string>
+    <string name="changelog_438" translatable="false">Added a notification for uploads and Battlegrounds uploads.</string>
 </resources>
