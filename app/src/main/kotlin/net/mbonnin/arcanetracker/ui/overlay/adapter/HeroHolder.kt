@@ -42,7 +42,7 @@ internal class HeroHolder(itemView: View) : RecyclerView.ViewHolder(itemView), V
 
         Picasso.with(itemView.context)
                 .load(Utils.getTileUrl(card.id))
-                .placeholder(R.drawable.hero_10)
+                .placeholder(R.drawable.hero_11)
                 .into(background)
 
         name.text = card.name

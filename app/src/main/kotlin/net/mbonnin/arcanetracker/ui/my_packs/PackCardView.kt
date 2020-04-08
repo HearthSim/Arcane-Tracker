@@ -133,7 +133,7 @@ class PackCardView @JvmOverloads constructor(context: Context, attrs: AttributeS
 
         Picasso.with(context)
                 .load(Utils.getTileUrl(card.id))
-                .placeholder(R.drawable.hero_10)
+                .placeholder(R.drawable.hero_11)
                 .into(this)
     }
 

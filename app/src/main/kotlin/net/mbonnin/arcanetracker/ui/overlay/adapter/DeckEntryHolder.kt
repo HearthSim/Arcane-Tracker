@@ -57,7 +57,7 @@ internal class DeckEntryHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
 
         Picasso.with(itemView.context)
                 .load(Utils.getTileUrl(card.id))
-                .placeholder(R.drawable.hero_10)
+                .placeholder(R.drawable.hero_11)
                 .into(background)
 
         val costInt = if (entry.techLevel == null) {

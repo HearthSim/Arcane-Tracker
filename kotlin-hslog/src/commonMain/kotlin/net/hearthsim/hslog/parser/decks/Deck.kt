@@ -5,18 +5,18 @@ import net.hearthsim.hsmodel.Card
 import net.hearthsim.hsmodel.CardJson
 
 class Deck private constructor(
-        /**
-         * a map of cardId to number of cards for this cardId
-         */
-        val cards: Map<String, Int>,
-        /**
-         * the classIndex
-         */
-        val classIndex: Int,
-        var name: String?,
-        var id: String?,
-        var wins: Int,
-        var losses: Int
+    /**
+     * a map of cardId to number of cards for this cardId
+     */
+    val cards: Map<String, Int>,
+    /**
+     * the classIndex
+     */
+    val classIndex: Int,
+    var name: String?,
+    var id: String?,
+    var wins: Int,
+    var losses: Int
 ) {
     companion object {
         const val MAX_CARDS = 30
@@ -42,12 +42,12 @@ class Deck private constructor(
             //Timber.e("inconsistent class index, force to" + getPlayerClass(ci))
 
             return Deck(cards = cards,
-                    classIndex = actualClassIndex,
-                    name = name,
-                    id = id,
-                    wins = wins,
-                    losses = losses
-                    )
+                classIndex = actualClassIndex,
+                name = name,
+                id = id,
+                wins = wins,
+                losses = losses
+            )
         }
     }
 }

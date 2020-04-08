@@ -19,6 +19,7 @@ fun getPlayerClassDisplayName(playerClass: String): String {
         PlayerClass.WARLOCK -> Utils.getString(R.string.warlock)
         PlayerClass.MAGE -> Utils.getString(R.string.mage)
         PlayerClass.PRIEST -> Utils.getString(R.string.priest)
+        PlayerClass.DEMONHUNTER -> Utils.getString(R.string.demonhunter)
         else -> Utils.getString(R.string.neutral)
     }
 }
@@ -34,7 +35,8 @@ fun getPlayerClassDisplayName(playerClass: String): String {
         PlayerClass.WARLOCK -> R.drawable.hero_07_round
         PlayerClass.MAGE -> R.drawable.hero_08_round
         PlayerClass.PRIEST -> R.drawable.hero_09_round
-        else -> R.drawable.hero_10_round
+        PlayerClass.DEMONHUNTER -> R.drawable.hero_10_round
+        else -> R.drawable.hero_11_round
     }
 }
 

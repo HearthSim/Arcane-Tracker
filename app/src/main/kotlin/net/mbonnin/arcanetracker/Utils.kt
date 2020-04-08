@@ -65,7 +65,7 @@ object Utils {
             return context.resources.getDrawable(id)
         } else {
             Timber.e("could not find a bar for id " + name)
-            return context.resources.getDrawable(R.drawable.hero_10)
+            return context.resources.getDrawable(R.drawable.hero_11)
         }
     }
 
