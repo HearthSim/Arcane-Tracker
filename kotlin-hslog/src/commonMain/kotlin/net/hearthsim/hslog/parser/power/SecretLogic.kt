@@ -8,6 +8,8 @@ import net.hearthsim.hsmodel.enum.Rarity
 import net.hearthsim.hsmodel.enum.Type
 
 internal class SecretLogic(val cardJson: CardJson, val console: Console) {
+    private val availableSecrets = AvailableSecrets()
+
     private fun secretEntityList(game: Game): List<Entity> {
         return game.getEntityList { shouldTrack(game, it) }
     }
@@ -272,7 +274,7 @@ internal class SecretLogic(val cardJson: CardJson, val console: Console) {
 
         val map = mutableMapOf<String, Int>()
         entities.forEach { entity ->
-            AvailableSecrets.availableSecrets(
+            availableSecrets.availableSecretsCached(
                 cardJson = cardJson,
                 playerClass = entity.tags[Entity.KEY_CLASS] ?: "",
                 formatType = game.formatType,
