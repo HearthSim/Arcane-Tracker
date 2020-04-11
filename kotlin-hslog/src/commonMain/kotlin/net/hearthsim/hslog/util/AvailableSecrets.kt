@@ -30,7 +30,7 @@ class AvailableSecrets {
     }
 
     companion object {
-        private fun availableSecrets(cardJson: CardJson, playerClass: String, gameType: GameType, formatType: FormatType): List<String> {
+        fun availableSecrets(cardJson: CardJson, playerClass: String, gameType: GameType, formatType: FormatType): List<String> {
             var secrets = cardJson.allCards().filter {
                 it.mechanics.contains(Mechanic.SECRET)
                     && it.playerClass == playerClass

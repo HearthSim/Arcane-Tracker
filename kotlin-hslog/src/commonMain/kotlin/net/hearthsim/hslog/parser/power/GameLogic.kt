@@ -638,6 +638,14 @@ internal class GameLogic(private val console: Console, private val cardJson: Car
                 CardId.SPARK_DRILL -> CardId.SPARK
                 CardId.HIGH_PRIESTESS_JEKLIK -> CardId.HIGH_PRIESTESS_JEKLIK
                 CardId.HAKKAR_THE_SOULFLAYER -> CardId.CORRUPTED_BLOOD
+                CardId.RELIQUARY_OF_SOULS -> CardId.RELIQUARY_PRIME
+                CardId.KANRETHAD_EBONLOCKE -> CardId.KANRETHAD_PRIME
+                CardId.MURGUR_MURGURGLE -> CardId.MURGURGLE_PRIME
+                CardId.AKAMA -> CardId.AKAMA_PRIME
+                CardId.ARCHSPORE_MSSHIFN -> CardId.MSSHIFN_PRIME
+                CardId.LADY_VASHJ -> CardId.VASHJ_PRIME
+                CardId.ZIXOR_APEX_PREDATOR -> CardId.ZIXOR_PRIME
+                CardId.KARGATH_BLADEFIST -> CardId.KARGATH_PRIME
                 else -> null
             }
         }

@@ -75,6 +75,7 @@ internal class SecretLogic(val cardJson: CardJson, val console: Console) {
                     }
                     if (opponentHasRoomOnBoard(game)) {
                         exclude(game, CardId.CAT_TRICK)
+                        exclude(game, CardId.NETHERWIND_PORTAL)
                     }
                     if (opponentHasRoomInHand(game)) {
                         exclude(game, CardId.MANA_BIND)
@@ -169,6 +170,8 @@ internal class SecretLogic(val cardJson: CardJson, val console: Console) {
                         exclude(game, CardId.VENOMSTRIKE_TRAP)
                         exclude(game, CardId.SNAKE_TRAP)
                         exclude(game, CardId.SPLITTING_IMAGE)
+                        exclude(game, CardId.PACK_TACTICS)
+                        exclude(game, CardId.BAMBOOZLE)
                     }
                 }
                 Type.HERO -> {
