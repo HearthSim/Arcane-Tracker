@@ -28,7 +28,7 @@ if (GithubActions.isTag()) {
     )
 
     GithubIntegration.createRelease(
-        token = System.getenv("KINTA_GITHUB_TOKEN")
+        token = System.getenv("KINTA_GITHUB_TOKEN"),
         tagName = GithubActions.tagName(),
         assets = assets,
         repo = "Arcane-Tracker",
