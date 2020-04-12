@@ -17,6 +17,10 @@ jobs:
         run: ./scripts/ci.sh
         env:
           KINTA_GITHUB_TOKEN: ${{ secrets.KINTA_GITHUB_TOKEN }}
+          KINTA_KEYSTORE: ${{ secrets.KINTA_KEYSTORE }}
+          KINTA_KEYSTORE_PASSWORD: ${{ secrets.KINTA_KEYSTORE_PASSWORD }}
+          KINTA_KEY_ALIAS: ${{ secrets.KINTA_KEY_ALIAS }}
+          KINTA_KEY_PASSWORD: ${{ secrets.KINTA_KEY_PASSWORD }}
 
       - uses: actions/upload-artifact@v1
         with:

@@ -1,8 +1,11 @@
 #!/usr/bin/env kscript
+//@file:MavenRepository("mavenLocal", "file://Users/m.bonnin/.m2/repository/")
 @file:MavenRepository("jcenter", "https://jcenter.bintray.com")
 @file:MavenRepository("gradle", "https://repo.gradle.org/gradle/libs-releases-local/")
-@file:DependsOn("com.dailymotion.kinta:kinta-lib:0.1.5")
+@file:DependsOn("com.dailymotion.kinta:kinta-lib:0.1.6")
 
+import com.dailymotion.kinta.KintaEnv
+import com.dailymotion.kinta.integration.android.AndroidIntegration
 import com.dailymotion.kinta.integration.github.GithubActions
 import com.dailymotion.kinta.integration.github.GithubIntegration
 import com.dailymotion.kinta.integration.zip.ZipIntegration
@@ -16,6 +19,13 @@ fun zip(dir: String, zipName: String): File {
     return output
 }
 
+println("Signing APK...")
+
+AndroidIntegration.signApk(
+    input = File("app/build/outputs/apk/release/app-release-unsigned.apk"),
+    output = File("app/build/outputs/apk/release/app-release.apk")
+)
+
 if (GithubActions.isTag()) {
     println("creating release on github...")
 
@@ -28,7 +38,7 @@ if (GithubActions.isTag()) {
     )
 
     GithubIntegration.createRelease(
-        token = System.getenv("KINTA_GITHUB_TOKEN"),
+        token = KintaEnv.get("KINTA_GITHUB_TOKEN"),
         tagName = GithubActions.tagName(),
         assets = assets,
         repo = "Arcane-Tracker",
