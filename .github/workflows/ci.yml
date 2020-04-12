@@ -16,7 +16,7 @@ jobs:
       - name: Build
         run: ./scripts/ci.sh
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          KINTA_GITHUB_TOKEN: ${{ secrets.KINTA_GITHUB_TOKEN }}
 
       - uses: actions/upload-artifact@v1
         with:
