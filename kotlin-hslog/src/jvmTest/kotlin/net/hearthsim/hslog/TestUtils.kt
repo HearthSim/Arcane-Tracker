@@ -7,6 +7,11 @@ import okio.source
 import java.io.File
 
 object  TestUtils {
+    fun testFile(name: String): File {
+        val dir = System.getProperty("user.dir")
+        return File(dir, "src/jvmTest/files/$name")
+    }
+
     val console = object : Console {
         override fun debug(message: String) {
             /**

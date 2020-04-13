@@ -38,7 +38,6 @@ class HsReplayTest {
 
     }
 
-    @Test
     fun testUpload() {
         val hsReplay = HsReplay(userAgent = "net.mbonnin.arcanetracker/4.13; Android 9;",
             console = DefaultConsole(),
@@ -55,11 +54,9 @@ class HsReplayTest {
             format = 2, // standard
             build = 31353,
             friendly_player = "2",
-            player1 = HSPlayer(
-                rank = 5
-            ),
-            player2 = HSPlayer(
-                rank = 5
+            players = listOf(
+                HSPlayer(player_id = 1),
+                HSPlayer(player_id = 2)
             )
         )
 
@@ -73,7 +70,6 @@ class HsReplayTest {
         }
     }
 
-    @Test
     fun testBattleGroundsUpload() {
         val hsReplay = HsReplay(userAgent = "net.mbonnin.arcanetracker/4.13; Android 9;",
             console = DefaultConsole(),
@@ -88,7 +84,8 @@ class HsReplayTest {
             build = 31353,
             spectator_mode = false,
             format = 1, // Wild
-            game_type = 50 // Battlegrounds
+            game_type = 50, // Battlegrounds
+            players = listOf()
         )
 
         val text = File("/home/martin/dev/hsdata/2019_11_11_battlegrounds").readBytes()
@@ -101,7 +98,6 @@ class HsReplayTest {
     }
 
     @InternalAPI
-    @Test
     fun testGzip() {
         val client = HttpClient(OkHttp) {
             // install(GzipCompressFeature)
@@ -137,7 +133,6 @@ class HsReplayTest {
 
     }
 
-    @Test
     fun testCollectionUpload() {
         val hsReplay = HsReplay(console = DefaultConsole(),
             userAgent = "tests",

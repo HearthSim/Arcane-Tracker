@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -x
+set -e
 
 export PATH="$ANDROID_HOME"/tools/bin:$PATH
 sdkmanager --install 'ndk;21.0.6113669'  >/dev/null

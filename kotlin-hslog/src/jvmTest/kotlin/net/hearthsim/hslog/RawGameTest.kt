@@ -1,5 +1,6 @@
 package net.hearthsim.hslog
 
+import net.hearthsim.hslog.TestUtils.testFile
 import net.hearthsim.hslog.parser.power.Game
 import net.hearthsim.hsmodel.enum.CardId
 import org.junit.Test
@@ -9,7 +10,7 @@ class RawGameTest {
     @Test
     fun `battlegrounds file produces a raw game`() {
         val dir = System.getProperty("user.dir")
-        val powerLines = File("/home/martin/dev/hsdata/2019_11_11_battlegrounds").readLines()
+        val powerLines = testFile("2019_11_17_01-01_battlegrounds").readLines()
         val hsLog = TestUtils.newHSLog()
 
         var rawGame: ByteArray? = null
