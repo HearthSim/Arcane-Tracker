@@ -2,7 +2,7 @@
 @file:MavenRepository("mavenLocal", "file://Users/m.bonnin/.m2/repository/")
 @file:MavenRepository("jcenter", "https://jcenter.bintray.com")
 @file:MavenRepository("gradle", "https://repo.gradle.org/gradle/libs-releases-local/")
-@file:DependsOn("com.dailymotion.kinta:kinta-lib:0.1.8")
+@file:DependsOn("com.dailymotion.kinta:kinta-lib:0.1.9")
 
 import com.dailymotion.kinta.KintaEnv
 import com.dailymotion.kinta.integration.android.AndroidIntegration
