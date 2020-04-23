@@ -59,6 +59,7 @@ internal class SecretLogic(val cardJson: CardJson, val console: Console) {
                     }
                     if (opponentHasRoomOnBoard(game)) {
                         exclude(game, CardId.MIRROR_ENTITY)
+                        exclude(game, CardId.AMBUSH)
                     }
                     if (playerMinionsOnBoard(game) >= 3) {
                         exclude(game, CardId.SACRED_TRIAL)
