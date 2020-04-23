@@ -1,8 +1,6 @@
 package net.mbonnin.arcanetracker
 
 import android.view.LayoutInflater
-import io.ktor.client.HttpClient
-import io.ktor.client.request.post
 import io.reactivex.Completable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -19,11 +17,15 @@ import net.hearthsim.hslog.parser.decks.Deck
 import net.hearthsim.hslog.parser.power.Entity
 import net.hearthsim.hslog.parser.power.Game
 import net.hearthsim.hslog.parser.power.GameType
+import net.hearthsim.hsreplay.HSReplayResult
+import net.hearthsim.hsreplay.execute
 import net.mbonnin.arcanetracker.room.RDatabaseSingleton
 import net.mbonnin.arcanetracker.room.RDeck
 import net.mbonnin.arcanetracker.room.RPack
 import net.mbonnin.arcanetracker.ui.overlay.adapter.Controller
 import net.mbonnin.arcanetracker.ui.overlay.view.MainViewCompanion
+import net.mbonnin.jolly.JollyRequest
+import net.mbonnin.jolly.Method
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -75,12 +77,14 @@ class ATHSLogListener(private val currentOrFinishedGame: () -> Game?): HSLogList
         val url = BuildConfig.DEBUG_URL
         if (!url.isBlank()) {
             GlobalScope.launch {
-                try {
-                    HttpClient().post<Unit>(url) {
-                        body = gameString
+                JollyRequest {
+                    method(Method.POST)
+                    body("text/play", gameString)
+                    url(url)
+                }.execute().let {
+                    if (it is HSReplayResult.Error) {
+                        Timber.e("uploadbin error: ${it.exception.message}")
                     }
-                } catch(e: Exception) {
-                    Timber.e("uploadbin error: ${e.message}")
                 }
             }
         }

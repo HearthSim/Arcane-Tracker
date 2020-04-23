@@ -26,7 +26,9 @@ import net.hearthsim.hslog.HSLog
 import net.hearthsim.hsmodel.Card
 import net.hearthsim.hsmodel.CardJson
 import net.hearthsim.hsmodel.enum.PlayerClass
+import net.hearthsim.hsreplay.AccessTokenProvider
 import net.hearthsim.hsreplay.HsReplay
+import net.hearthsim.hsreplay.OauthParams
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okio.buffer
@@ -184,13 +186,19 @@ class ArcaneTrackerApplication : MultiDexApplication() {
         val userAgent = (context.packageName + "/" + BuildConfig.VERSION_NAME
                 + "; Android " + Build.VERSION.RELEASE + ";")
 
+        val preferences = HsReplayPreferences(this)
+        val accessTokenProvider = AccessTokenProvider(
+                userAgent = userAgent,
+                analytics = analytics,
+                preferences = preferences,
+                oauthParams = oauthParams
+
+        )
         hsReplay = HsReplay(
-                HsReplayPreferences(this),
-                console,
-                analytics,
-                HSREPLAY_CLIENT_ID,
-                HSREPLAY_CLIENT_SECRET,
-                userAgent
+                preferences = preferences,
+                console = console,
+                userAgent = userAgent,
+                accessTokenProvider = accessTokenProvider
         )
 
         MainService.start()
@@ -222,8 +230,11 @@ class ArcaneTrackerApplication : MultiDexApplication() {
     }
 
     companion object {
-        val HSREPLAY_CLIENT_ID = "pk_live_iKPWQuznmNf2BbBCxZa1VzmP"
-        val HSREPLAY_CLIENT_SECRET = "sk_live_20180319oDB6PgKuHSwnDVs5B5SLBmh3"
+        val oauthParams = OauthParams(
+                clientId = "pk_live_iKPWQuznmNf2BbBCxZa1VzmP",
+                clientSecret = "sk_live_20180319oDB6PgKuHSwnDVs5B5SLBmh3",
+                redirectUri = "arcanetracker://callback/"
+        )
 
         val NOTIFICATION_CHANNEL_ID = "channel_id"
         lateinit var context: Context

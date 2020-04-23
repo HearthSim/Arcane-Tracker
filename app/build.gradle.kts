@@ -32,6 +32,73 @@ sqldelight {
 
 kotlin {
     android()
+
+    sourceSets {
+        val androidMain by getting {
+            dependencies {
+                implementation(Libs.support_v4) {
+                    isTransitive = true
+                    exclude(module = "answers-shim")
+                }
+                implementation(Libs.appcompat_v7)
+                compileOnly("javax.annotation:javax.annotation-api:1.3.2")
+                implementation(Libs.design)
+                implementation(Libs.recyclerview_v7)
+                implementation(Libs.cardview_v7)
+
+                implementation(Libs.constraintLayout)
+
+                implementation(Libs.paperDb)
+                implementation(Libs.okhttp)
+                implementation(kotlin("stdlib"))
+
+                implementation(Libs.timber)
+
+                implementation(Libs.rxjava2)
+                implementation(Libs.rxAndroid2)
+                implementation(Libs.retrofit)
+                implementation(Libs.retrofitRx2)
+                implementation(Libs.retrofitCoroutines)
+
+                implementation(Libs.play_auth)
+                implementation(Libs.play_firebase_core)
+                implementation(Libs.play_firebase_analytics)
+                implementation(Libs.play_firebase_messaging)
+                implementation(Libs.play_firebase_config)
+
+                implementation(Libs.multidex)
+                implementation(Libs.picassoDownloader)
+                implementation(Libs.picasso)
+                implementation(Libs.ktx)
+                implementation(Libs.crashlytics)
+                implementation(Libs.room)
+                implementation(Libs.rxRoom)
+                implementation(Libs.flexbox)
+                implementation(Libs.coroutines)
+                implementation(Libs.sqldelight)
+                implementation(Libs.sqldelightCoroutinesExtensions)
+                implementation(Libs.coroutinesAndroid)
+
+                implementation(project(":kotlin-hslog"))
+                implementation(project(":detector"))
+                implementation(project(":kotlin-deckstring"))
+            }
+        }
+    }
+}
+
+dependencies {
+    add("kapt", Libs.roomProcessor)
+
+    testImplementation(Libs.junit)
+    testImplementation(Libs.okhttp)
+
+    androidTestImplementation(Libs.test_runner)
+    androidTestImplementation(Libs.test_rules)
+    androidTestImplementation(Libs.multidex)
+    androidTestImplementation(Libs.espressoIntents)
+    androidTestImplementation(Libs.espresso)
+
 }
 
 android {
@@ -108,66 +175,7 @@ androidExtensions {
     isExperimental = true
 }
 
-dependencies {
-    implementation(Libs.support_v4) {
-        isTransitive = true
-        exclude(module = "answers-shim")
-    }
-    implementation(Libs.appcompat_v7)
-    compileOnly("javax.annotation:javax.annotation-api:1.3.2")
-    implementation(Libs.design)
-    implementation(Libs.recyclerview_v7)
-    implementation(Libs.cardview_v7)
 
-    implementation(Libs.constraintLayout)
-
-    implementation(Libs.paperDb)
-    implementation(Libs.okhttp)
-    implementation(kotlin("stdlib"))
-
-    implementation(Libs.timber)
-
-    implementation(Libs.rxjava2)
-    implementation(Libs.rxAndroid2)
-    implementation(Libs.retrofit)
-    implementation(Libs.retrofitRx2)
-    implementation(Libs.retrofitCoroutines)
-
-    implementation(Libs.play_auth)
-    implementation(Libs.play_firebase_core)
-    implementation(Libs.play_firebase_analytics)
-    implementation(Libs.play_firebase_messaging)
-    implementation(Libs.play_firebase_config)
-
-    implementation(Libs.multidex)
-    implementation(Libs.picassoDownloader)
-    implementation(Libs.picasso)
-    implementation(Libs.ktx)
-    implementation(Libs.crashlytics)
-    implementation(Libs.room)
-    implementation(Libs.rxRoom)
-    implementation(Libs.flexbox)
-    implementation(Libs.coroutines)
-    implementation(Libs.sqldelight)
-    implementation(Libs.sqldelightCoroutinesExtensions)
-    implementation(Libs.coroutinesAndroid)
-
-    add("kapt", Libs.roomProcessor)
-
-    implementation(project(":detector"))
-    implementation(project(":kotlin-hearthstone"))
-    implementation(project(":kotlin-deckstring"))
-
-
-    testImplementation(Libs.junit)
-    testImplementation(Libs.okhttp)
-
-    androidTestImplementation(Libs.test_runner)
-    androidTestImplementation(Libs.test_rules)
-    androidTestImplementation(Libs.multidex)
-    androidTestImplementation(Libs.espressoIntents)
-    androidTestImplementation(Libs.espresso)
-}
 
 tasks.named<DependencyUpdatesTask>("dependencyUpdates") {
     resolutionStrategy {

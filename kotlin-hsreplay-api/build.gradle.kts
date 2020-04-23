@@ -1,85 +1,49 @@
-import Versions.compileSdkVersion
-import Versions.minSdkVersion
-import Versions.targetSdkVersion
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    id("com.android.library")
     kotlin("multiplatform")
     id("kotlinx-serialization")
 }
 
 kotlin {
-    jvm() {
-        val main by compilations.getting {
-            kotlinOptions {
-                // Setup the Kotlin compiler options for the 'main' compilation:
-                jvmTarget = "1.8"
-            }
-        }
-    }
-    android {
-        publishAllLibraryVariants()
-    }
+    jvm()
     macosX64()
 
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(kotlin("stdlib"))
+                implementation(Libs.stdlibCommon)
                 implementation(Libs.coroutines)
-                implementation(Libs.serializationRuntimeCommon)
+                implementation(Libs.serializationRuntime)
+                api(Libs.okio)
 
-                api(Libs.ktorClientCore)
                 api(project(":kotlin-console"))
                 api(project(":kotlin-analytics"))
-
-                implementation(Libs.ktorClientJson)
-                implementation(Libs.ktorClientSerialization)
-                implementation(Libs.ktorClientEncoding)
-                implementation(Libs.ktorClientLogging)
             }
         }
-        jvm().compilations["main"].defaultSourceSet {
-            dependencies {
-                implementation(kotlin("stdlib"))
 
-                implementation(Libs.serializationRuntime)
-                implementation(Libs.ktorClientOkhttp)
+        val commonTest by getting {
+            dependencies {
+                implementation(Libs.kotlinTestCommon)
+                implementation(Libs.kotlinTestAnnotationCommon)
             }
         }
-        jvm().compilations["test"].defaultSourceSet {
+
+        val jvmMain by getting {
             dependencies {
+                implementation(Libs.okhttp)
                 implementation(Libs.okhttpLogging)
+            }
+        }
+
+        val jvmTest by getting {
+            dependencies {
                 implementation(Libs.kotlinTestJvm)
             }
         }
-        named("androidMain") {
-            dependencies {
-                implementation(kotlin("stdlib"))
 
-                implementation(Libs.serializationRuntime)
-                implementation(Libs.ktorClientOkhttp)
+        val macosX64Main by getting {
+            dependencies {
+                api(Libs.okio)
             }
         }
-        macosX64().compilations["main"].defaultSourceSet {
-            dependencies {
-                implementation(Libs.serializationRuntimeMacOS)
-
-                implementation(Libs.ktorClientCurl)
-            }
-        }
-    }
-}
-
-android {
-    compileSdkVersion(Versions.compileSdkVersion)
-    defaultConfig {
-        minSdkVersion(Versions.minSdkVersion)
-        targetSdkVersion(Versions.targetSdkVersion)
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }

@@ -16,7 +16,7 @@ class CollectionUploadData(
          */
         val favoriteHeroes: Map<String, Int>,
         val cardbacks: List<Int>,
-        val favoriteCardback: Int?,
+        val favoriteCardback: Int? = null,
         val dust: Int?,
         val gold: Int?
 )

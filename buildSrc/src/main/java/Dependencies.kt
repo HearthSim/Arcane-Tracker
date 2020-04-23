@@ -3,7 +3,7 @@ object Versions {
     const val targetSdkVersion = 28
     const val compileSdkVersion = 28
     const val kotlin = "1.3.72"
-    const val androidPlugin = "3.6.1"
+    const val androidPlugin = "3.6.2"
     const val fabricPlugin = "1.30.0"
     const val playServicesPlugin = "4.3.3"
     const val coroutines = "1.3.5"
@@ -52,8 +52,8 @@ object Libs {
     const val roomProcessor = "android.arch.persistence.room:compiler:1.1.1"
     const val flexbox = "com.google.android:flexbox:1.1.1"
 
-    const val stdlibCommon = "org.jetbrains.kotlin:kotlin-stdlib-common"
-    const val stdlibJdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    const val stdlibCommon = "org.jetbrains.kotlin:kotlin-stdlib-common" // stdlib metadata
+    const val stdlibJvm = "org.jetbrains.kotlin:kotlin-stdlib"
 
     const val sqldelight = "com.squareup.sqldelight:android-driver:${Versions.sqldelight}"
     const val sqldelightCoroutinesExtensions = "com.squareup.sqldelight:coroutines-extensions:${Versions.sqldelight}"
@@ -61,9 +61,7 @@ object Libs {
     // See https://github.com/Kotlin/kotlinx.coroutines/issues/1096
     const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:${Versions.coroutines}"
     const val coroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
-    const val serializationRuntimeCommon = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:${Versions.serialization}"
-    const val serializationRuntime = "org.jetbrains.kotlinx:kotlinx-serialization-runtime:${Versions.serialization}"
-    const val serializationRuntimeMacOS = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-macosx64:${Versions.serialization}"
+    const val serializationRuntime = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:${Versions.serialization}"
 
     // See https://github.com/ktorio/ktor/issues/1619
     const val ktorClientCore = "io.ktor:ktor-client-core-native:${Versions.ktor}"

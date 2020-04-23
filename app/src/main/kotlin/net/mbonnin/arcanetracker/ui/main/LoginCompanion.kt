@@ -36,8 +36,8 @@ class LoginCompanion(override val containerView: View) : LayoutContainer {
             val url = HttpUrl.parse(HsReplayOauthApi.AUTHORIZE_URL)!!
                     .newBuilder()
                     .addQueryParameter("response_type", "code")
-                    .addQueryParameter("client_id", ArcaneTrackerApplication.HSREPLAY_CLIENT_ID)
-                    .addQueryParameter("redirect_uri", HsReplayOauthApi.CALLBACK_URL)
+                    .addQueryParameter("client_id", ArcaneTrackerApplication.oauthParams.clientId)
+                    .addQueryParameter("redirect_uri", ArcaneTrackerApplication.oauthParams.clientSecret)
                     .addQueryParameter("scope", "fullaccess")
                     .addQueryParameter("state", RandomHelper.random(16))
             Utils.openLink(url.toString())

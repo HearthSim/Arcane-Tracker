@@ -82,14 +82,14 @@ class MainActivity : AppCompatActivity() {
 
     fun handleIntent(intent: Intent?) {
         val url = intent?.data?.toString()
-        if (url != null && url.startsWith(HsReplayOauthApi.CALLBACK_URL)) {
+        if (url != null && url.startsWith(ArcaneTrackerApplication.oauthParams.redirectUri)) {
             val code = Uri.parse(url).getQueryParameter("code")
             if (code != null) {
                 updateState(state.copy(needLogin = true, loginLoading = true))
 
                 job?.cancel()
                 job = GlobalScope.launch(Dispatchers.Main) {
-                    val result = ArcaneTrackerApplication.get().hsReplay.login(code)
+                    val result = ArcaneTrackerApplication.get().hsReplay.loginWithCode(code)
 
                     when (result) {
                         is HsReplay.LoginResult.Success -> {

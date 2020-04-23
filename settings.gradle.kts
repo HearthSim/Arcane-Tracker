@@ -8,5 +8,5 @@ include("app",
     "kotlin-hslog",
     "kotlin-deckstring",
     "kotlin-hsreplay-api",
-    "kotlin-hsmodel",
-    "kotlin-hearthstone")
+    "kotlin-hsmodel"
+)
