@@ -67,6 +67,7 @@ internal class SecretLogic(val cardJson: CardJson, val console: Console) {
                 }
                 Type.SPELL -> {
                     exclude(game, CardId.COUNTERSPELL)
+                    exclude(game, CardId.DIRTY_TRICKS)
 
                     if (playerHasMinionOnBoard(game)) {
                         exclude(game, CardId.PRESSURE_PLATE)
