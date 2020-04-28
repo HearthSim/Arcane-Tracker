@@ -9696,6 +9696,8 @@ object CardId {
 
   const val ROTTOOTH: String = "GILA_BOSS_21h"
 
+  const val HOLY_SMITE1: String = "CS1_130_Puzzle"
+
   const val DRAW_AND_DISCOVER_ENCH: String = "TB_DrawnDiscovery_Ench"
 
   const val ARCANE_BLAST: String = "AT_004"
@@ -16050,7 +16052,9 @@ object CardId {
 
   const val BLOODTHIRST: String = "GILA_BOSS_35p"
 
-  const val POWER_WORD_SHIELD1: String = "CS2_004e"
+  const val POWER_WORD_SHIELD2: String = "CS2_004e"
+
+  const val POWER_WORD_SHIELD1: String = "CS2_004_Puzzle"
 
   const val MARSHSPAWN: String = "BT_115"
 
