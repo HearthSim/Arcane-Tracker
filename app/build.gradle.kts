@@ -1,5 +1,6 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import java.util.*
+import kotlin.system.exitProcess
 
 plugins {
     id("com.android.application")
@@ -20,6 +21,7 @@ val googleServicesFile = File(project.projectDir, "google-services.json")
 if (!googleServicesFile.exists()) {
     println("no google-services.json found. You can use the mock one:")
     println("cp app/google-services.json.mock app/google-services.json")
+    exitProcess(1)
 }
 
 
