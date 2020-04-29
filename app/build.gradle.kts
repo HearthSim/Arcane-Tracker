@@ -1,5 +1,4 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
-import net.arcanetracker.app.ATAppPlugin
 import java.util.*
 
 plugins {
@@ -14,7 +13,15 @@ plugins {
     id("com.squareup.sqldelight")
 }
 
-apply<ATAppPlugin>()
+tasks.create("extractUnityFiles", net.arcanetracker.app.ExtractUnityFilesTask::class.java)
+
+val googleServicesFile = File(project.projectDir, "google-services.json")
+
+if (!googleServicesFile.exists()) {
+    println("no google-services.json found. You can use the mock one:")
+    println("cp app/google-services.json.mock app/google-services.json")
+}
+
 
 sqldelight {
     database("MainDatabase") {

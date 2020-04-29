@@ -21,6 +21,7 @@ jobs:
           KINTA_KEYSTORE_PASSWORD: ${{ secrets.KINTA_KEYSTORE_PASSWORD }}
           KINTA_KEY_ALIAS: ${{ secrets.KINTA_KEY_ALIAS }}
           KINTA_KEY_PASSWORD: ${{ secrets.KINTA_KEY_PASSWORD }}
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
 
       - uses: actions/upload-artifact@v1
         with:
