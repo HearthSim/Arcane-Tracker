@@ -19,9 +19,8 @@ tasks.create("extractUnityFiles", net.arcanetracker.app.ExtractUnityFilesTask::c
 val googleServicesFile = File(project.projectDir, "google-services.json")
 
 if (!googleServicesFile.exists()) {
-    println("no google-services.json found. You can use the mock one:")
-    println("cp app/google-services.json.mock app/google-services.json")
-    exitProcess(1)
+    throw Exception("no google-services.json found. You can use the mock one:\n" +
+            "cp app/google-services.json.mock app/google-services.json")
 }
 
 
