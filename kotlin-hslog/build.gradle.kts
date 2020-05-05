@@ -16,6 +16,8 @@ kotlin {
             framework {
                 export(project(":kotlin-hsmodel"))
                 export(project(":kotlin-hsreplay-api"))
+
+                freeCompilerArgs = freeCompilerArgs + "-Xg0" // will soon become "-Xadd-light-debug=enable" with https://github.com/JetBrains/kotlin-native/pull/4085/files
             }
         }
     }
