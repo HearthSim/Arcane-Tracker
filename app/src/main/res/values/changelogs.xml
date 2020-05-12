@@ -53,4 +53,5 @@
     <string name="changelog_439" translatable="false">DemonHunter fixes.</string>
     <string name="changelog_440" translatable="false">Add secrets from Ashes of Outlands.</string>
     <string name="changelog_442" translatable="false">Fix detection of Dirty Trick and Ambush.</string>
+    <string name="changelog_444" translatable="false">Add Rabid Saurolisk.</string>
 </resources>
