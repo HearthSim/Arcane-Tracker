@@ -38,3 +38,10 @@ fun HsReplay.uploadCollectionWithCallback(collectionUploadData: CollectionUpload
         callback(r)
     }
 }
+
+fun HsReplay.claimTokenWithCallback(uploadToken: String,
+                                          callback: (Boolean) -> Unit) {
+    GlobalScope.launch(mainDispatcher) {
+        callback(claimToken(uploadToken))
+    }
+}

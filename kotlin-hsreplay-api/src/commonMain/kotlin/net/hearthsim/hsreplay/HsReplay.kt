@@ -45,6 +45,13 @@ class HsReplay(
         return accessTokenProvider.isLoggedIn()
     }
 
+    suspend fun claimToken(uploadToken: String): Boolean {
+        return when(newApi.claimToken(ClaimInput(uploadToken))) {
+            is HSReplayResult.Success -> true
+            is HSReplayResult.Error -> false
+        }
+    }
+
     fun account(): Account? {
         /*
          * It might happen that we don't have a valid access token. One possible reason is that the backend had refresh_token rotation activated before mid-may 2019

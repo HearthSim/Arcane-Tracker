@@ -7,6 +7,7 @@ import net.hearthsim.hsreplay.model.new.ClaimInput
 import net.hearthsim.hsreplay.model.new.CollectionUploadRequest
 import net.mbonnin.jolly.JollyClient
 import net.mbonnin.jolly.JollyRequest
+import net.mbonnin.jolly.JollyResponse
 import net.mbonnin.jolly.Method
 
 class HsReplayNewApi(val userAgentInterceptor: UserAgentInterceptor, val accessTokenProvider: AccessTokenProvider) {
@@ -20,7 +21,7 @@ class HsReplayNewApi(val userAgentInterceptor: UserAgentInterceptor, val accessT
     }
 
 
-    suspend fun claimToken(claimInput: ClaimInput): HSReplayResult<*> {
+    suspend fun claimToken(claimInput: ClaimInput): HSReplayResult<JollyResponse> {
         return JollyRequest {
             method(Method.POST)
             body(ClaimInput.serializer(), claimInput)
