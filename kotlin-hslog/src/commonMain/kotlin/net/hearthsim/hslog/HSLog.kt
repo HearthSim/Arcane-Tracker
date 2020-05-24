@@ -71,6 +71,7 @@ class HSLog(private val console: Console, private val cardJson: CardJson, privat
                 it.tags[Entity.KEY_ZONE_POSITION]
             }
 
+            hasShownBgHeroes = true
             listener?.bgHeroesShow(game, entities)
         }
 

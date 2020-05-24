@@ -234,15 +234,22 @@ class PowerParserTest {
         val hsLog = TestUtils.newHSLog()
 
         val foundEntities = mutableListOf<Entity>()
+        var heroesHaveBeenHidden = false
+
         hsLog.setListener(object : DefaultHSLogListener() {
             override fun bgHeroesShow(game: Game, entities: List<Entity>) {
                 foundEntities.addAll(entities)
+            }
+
+            override fun bgHeroesHide() {
+                heroesHaveBeenHidden = true
             }
         })
         powerLines.forEach {
             hsLog.processPower(it, false)
         }
 
+        assert(heroesHaveBeenHidden)
         assert(foundEntities[0].CardID == CardId.THE_RAT_KING1)
         assert(foundEntities[1].CardID == CardId.LORD_JARAXXUS2)
         assert(foundEntities[2].CardID == CardId.QUEEN_WAGTOGGLE1)
