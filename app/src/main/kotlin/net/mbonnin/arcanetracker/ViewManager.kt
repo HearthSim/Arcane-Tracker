@@ -6,7 +6,7 @@ import android.graphics.PixelFormat
 import android.graphics.Point
 import android.os.Build
 import android.view.*
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import timber.log.Timber
 import java.util.*
 
@@ -107,7 +107,7 @@ class ViewManager(context: Context) {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Crashlytics.setBool("canDrawOverlay", android.provider.Settings.canDrawOverlays(view.context))
+            FirebaseCrashlytics.getInstance().setCustomKey("canDrawOverlay", android.provider.Settings.canDrawOverlays(view.context))
         }
 
         val layoutParams = WindowManager.LayoutParams(
@@ -124,7 +124,7 @@ class ViewManager(context: Context) {
             mWindowManager.addView(view, layoutParams)
             mViews.add(view)
         } catch (e: WindowManager.BadTokenException) {
-            Crashlytics.logException(Exception("cannot add View", e))
+            FirebaseCrashlytics.getInstance().recordException(Exception("cannot add View", e))
         }
     }
 

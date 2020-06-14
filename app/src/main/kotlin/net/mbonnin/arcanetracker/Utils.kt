@@ -13,7 +13,7 @@ import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.WindowManager
 import android.widget.Toast
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import net.mbonnin.arcanetracker.helper.getHeroId
@@ -94,7 +94,7 @@ object Utils {
 
     fun reportNonFatal(e: Throwable) {
         Timber.w(e)
-        Crashlytics.logException(e);
+        FirebaseCrashlytics.getInstance().recordException(e);
     }
 
 
