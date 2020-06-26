@@ -37,7 +37,7 @@ class LoginCompanion(override val containerView: View) : LayoutContainer {
                     .newBuilder()
                     .addQueryParameter("response_type", "code")
                     .addQueryParameter("client_id", ArcaneTrackerApplication.oauthParams.clientId)
-                    .addQueryParameter("redirect_uri", ArcaneTrackerApplication.oauthParams.clientSecret)
+                    .addQueryParameter("redirect_uri", ArcaneTrackerApplication.oauthParams.redirectUri)
                     .addQueryParameter("scope", "fullaccess")
                     .addQueryParameter("state", RandomHelper.random(16))
             Utils.openLink(url.toString())
