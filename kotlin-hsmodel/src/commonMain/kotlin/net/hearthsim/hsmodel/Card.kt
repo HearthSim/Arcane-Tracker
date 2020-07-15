@@ -65,7 +65,8 @@ data class Card(
             HSSet.DRAGONS,
             HSSet.YEAR_OF_THE_DRAGON,
             HSSet.BLACK_TEMPLE,
-            HSSet.DEMON_HUNTER_INITIATE
+            HSSet.DEMON_HUNTER_INITIATE,
+            HSSet.SCHOLOMANCE
         )
         val HALL_OF_FAME_CARDS = setOf(
             CardId.ICE_BLOCK,
