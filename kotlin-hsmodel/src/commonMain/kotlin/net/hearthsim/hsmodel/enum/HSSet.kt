@@ -48,6 +48,8 @@ object HSSet {
 
   const val OG: String = "OG"
 
+  const val SCHOLOMANCE: String = "SCHOLOMANCE"
+
   const val TAVERNS_OF_TIME: String = "TAVERNS_OF_TIME"
 
   const val TB: String = "TB"
