@@ -7,8 +7,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import net.hearthsim.hslog.parser.decks.Deck
 import net.mbonnin.arcanetracker.SpacesItemDecoration
-import net.mbonnin.arcanetracker.ui.promo.PromoView
-
 
 class YourDecksView(context: Context, val onDeckClicked: (Deck) -> Unit): FrameLayout(context) {
     val yourDecksAdapter = YourDecksAdapter()
@@ -32,7 +30,6 @@ class YourDecksView(context: Context, val onDeckClicked: (Deck) -> Unit): FrameL
         recyclerView.addItemDecoration(SpacesItemDecoration(spacing))
 
         addView(recyclerView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-        addView(PromoView(context), LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
     }
 }
 

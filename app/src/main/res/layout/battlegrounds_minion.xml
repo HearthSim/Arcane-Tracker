@@ -21,7 +21,6 @@
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:scaleType="centerCrop"
-        tools:src="@drawable/promo"
         android:layout_margin="3dp"
         app:layout_constraintLeft_toLeftOf="@+id/outline"
         app:layout_constraintRight_toRightOf="@+id/outline"

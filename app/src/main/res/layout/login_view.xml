@@ -7,11 +7,10 @@
     android:background="#000"
     android:orientation="vertical">
 
-    <ImageView
+    <View
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/login"
+        android:background="#303030"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
