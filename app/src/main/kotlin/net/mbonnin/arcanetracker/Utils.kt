@@ -16,14 +16,12 @@ import android.widget.Toast
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import net.mbonnin.arcanetracker.helper.getHeroId
 import net.mbonnin.arcanetracker.ui.overlay.Overlay
 import timber.log.Timber
 import java.io.IOException
 import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 object Utils {
 
@@ -65,7 +63,7 @@ object Utils {
             return context.resources.getDrawable(id)
         } else {
             Timber.e("could not find a bar for id " + name)
-            return context.resources.getDrawable(R.drawable.hero_11)
+            return context.resources.getDrawable(R.color.black)
         }
     }
 
@@ -78,10 +76,6 @@ object Utils {
             Timber.e("could not find a drawable for name " + name)
             return null
         }
-    }
-
-    fun getDrawableForClassIndex(classIndex: Int): Drawable {
-        return getDrawableForNameDeprecated(getHeroId(classIndex))
     }
 
     fun logWithDate(s: String) {

@@ -23,6 +23,8 @@
 
             <ImageView
                 android:id="@+id/background"
+                tools:src="@drawable/hero_01"
+                android:background="#FFF"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop" />
@@ -80,6 +82,7 @@
         android:id="@+id/nodeck"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        tools:visibility="invisible"
         android:background="#000">
 
         <TextView

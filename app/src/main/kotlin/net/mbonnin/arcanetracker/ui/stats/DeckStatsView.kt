@@ -11,9 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import net.hearthsim.hslog.ControllerCommon
 import net.hearthsim.hslog.DeckEntry
 import net.hearthsim.hslog.parser.decks.Deck
+import net.hearthsim.hslog.util.getPlayerClass
 import net.mbonnin.arcanetracker.CardUtil
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
+import net.mbonnin.arcanetracker.helper.getPlayerClassColor
 import net.mbonnin.arcanetracker.ui.overlay.adapter.ItemAdapter
 import net.mbonnin.arcanetracker.ui.overlay.adapter.OpponentsAdapter
 
@@ -39,7 +41,7 @@ class DeckStatsView(context: Context, val deck: Deck): ConstraintLayout(context)
         val itemAdapter = ItemAdapter()
 
         deckName.setText(deck.name)
-        deckBackground.setImageDrawable(Utils.getDrawableForClassIndex(deck.classIndex))
+        deckBackground.setBackgroundColor(getPlayerClassColor(getPlayerClass(deck.classIndex)))
 
         itemAdapter.setList(getCardMapList(deck.cards))
         deckRecyclerView.setAdapter(itemAdapter)

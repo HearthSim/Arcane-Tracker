@@ -52,14 +52,6 @@
                 android:layout_height="match_parent"
                 >
 
-                <ImageView
-                    android:id="@+id/innkeeper1"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_margin="10dp"
-                    android:src="@drawable/innkeeper"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <TextView
                     android:id="@+id/title"
@@ -71,19 +63,10 @@
                     android:textSize="24sp"
                     android:textStyle="bold"
                     android:layout_margin="10dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/innkeeper1"
-                    app:layout_constraintLeft_toRightOf="@+id/innkeeper1"
-                    app:layout_constraintRight_toLeftOf="@+id/innkeeper2"
-                    app:layout_constraintTop_toTopOf="@+id/innkeeper1"/>
-
-                <ImageView
-                    android:id="@+id/innkeeper2"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_margin="10dp"
-                    android:src="@drawable/innkeeper"
+                    app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
+
 
                 <TextView
                     android:layout_width="0dp"

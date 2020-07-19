@@ -22,6 +22,7 @@
         android:id="@+id/hero"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        tools:src="@drawable/hero_01_round"
         app:layout_constraintLeft_toRightOf="@+id/coin"
         app:layout_constraintRight_toLeftOf="@+id/deckName"
         android:layout_centerVertical="true"

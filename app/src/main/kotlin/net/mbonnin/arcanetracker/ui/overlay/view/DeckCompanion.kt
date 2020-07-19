@@ -8,9 +8,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import net.hearthsim.hslog.parser.decks.Deck
+import net.hearthsim.hslog.util.getPlayerClass
 import net.mbonnin.arcanetracker.R
 import net.mbonnin.arcanetracker.Utils
 import net.mbonnin.arcanetracker.ViewManager
+import net.mbonnin.arcanetracker.helper.getPlayerClassColor
 import timber.log.Timber
 
 /**
@@ -42,7 +44,7 @@ open class DeckCompanion(v: View) {
 
             checkClassIndex(value)
 
-            background.setImageDrawable(Utils.getDrawableForClassIndex(value.classIndex))
+            background.setBackgroundColor(getPlayerClassColor(getPlayerClass(value.classIndex)))
             deckName.text = value.name
 
             nodeck.visibility = View.GONE

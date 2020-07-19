@@ -1,5 +1,6 @@
 package net.mbonnin.arcanetracker.helper
 
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
 import net.hearthsim.hslog.util.allPlayerClasses
@@ -24,6 +25,22 @@ fun getPlayerClassDisplayName(playerClass: String): String {
     }
 }
 
+fun getPlayerClassColor(playerClass: String): Int {
+    val colorString =  when (playerClass) {
+        PlayerClass.WARRIOR -> "#810000"
+        PlayerClass.SHAMAN -> "#0F00A0"
+        PlayerClass.ROGUE -> "#502807"
+        PlayerClass.PALADIN -> "#D8D442"
+        PlayerClass.HUNTER -> "#20AA00"
+        PlayerClass.DRUID -> "#7E4F04"
+        PlayerClass.WARLOCK -> "#4F007A"
+        PlayerClass.MAGE -> "#67C1FF"
+        PlayerClass.PRIEST -> "#DBDBDB"
+        PlayerClass.DEMONHUNTER -> "#033D01"
+        else -> "#888888"
+    }
+    return Color.parseColor(colorString)
+}
 @DrawableRes fun getPlayerClassRoundIcon(playerClass: String): Int {
     return when (playerClass) {
         PlayerClass.WARRIOR -> R.drawable.hero_01_round
@@ -47,10 +64,6 @@ fun sanitizeIndex(classIndex: Int): Int {
         return allPlayerClasses().size - 1
     }
     return  classIndex
-}
-
-fun getHeroId(classIndex: Int): String {
-    return String.format("hero_%02d", sanitizeIndex(classIndex) + 1)
 }
 
 object HeroUtil {

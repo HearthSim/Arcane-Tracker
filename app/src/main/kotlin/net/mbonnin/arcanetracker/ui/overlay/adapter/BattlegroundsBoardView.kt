@@ -31,7 +31,7 @@ class BattlegroundsBoardView(context: Context) : ConstraintLayout(context) {
 
                     Picasso.with(context)
                             .load(Utils.getTileUrl(card.id))
-                            .placeholder(R.drawable.hero_11)
+                            .placeholder(R.color.black)
                             .into(minionView.findViewById<TextView>(R.id.background) as ImageView)
 
                     minionView.findViewById<TextView>(R.id.attack).text = minion.attack.toString()
