@@ -54,10 +54,6 @@
             android:screenOrientation="userLandscape">
         </activity>
         <activity
-            android:name=".ui.my_packs.YourPacksActivity"
-            android:screenOrientation="userLandscape">
-        </activity>
-        <activity
             android:name=".ui.my_games.YourGamesActivity"
             android:screenOrientation="userLandscape">
         </activity>

@@ -254,4 +254,7 @@
     <string name="vs">vs</string>
     <string name="compare_heroes">Compare Heroes</string>
     <string name="demonhunter">Demon Hunter</string>
+    <string name="disclaimer">Hearthstone is a trademark or registered trademark of Blizzard Entertainment, Inc., in the
+        U.S. and/or other countries
+    </string>
 </resources>

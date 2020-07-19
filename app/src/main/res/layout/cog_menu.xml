@@ -43,17 +43,6 @@
             android:textColor="@color/dialogText"
             android:textSize="18sp"/>
         <TextView
-            android:id="@+id/yourPacks"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?android:selectableItemBackground"
-            android:gravity="left"
-            android:padding="13dp"
-            android:text="@string/yourPacks"
-            android:textColor="@color/dialogText"
-            android:visibility="gone"
-            android:textSize="18sp"/>
-        <TextView
             android:id="@+id/quit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

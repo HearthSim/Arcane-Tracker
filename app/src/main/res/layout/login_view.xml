@@ -77,12 +77,12 @@
         android:layout_gravity="bottom"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginBottom="48dp"
+        android:layout_marginBottom="8dp"
         android:backgroundTint="@color/colorAccent"
         app:fontFamily="@font/chunkfive"
         android:padding="20dp"
         android:text="@string/signIn"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/step"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
@@ -93,16 +93,31 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="0dp"
         android:layout_marginRight="16dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="16dp"
         app:fontFamily="@font/barlow_semicondensed_semibold"
         android:gravity="center"
         android:text="@string/step1"
         android:textColor="#CCC"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/disclaimer"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        app:layout_constraintRight_toRightOf="parent" />
+    <TextView
+            android:id="@+id/disclaimer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
+            app:fontFamily="@font/barlow_semicondensed_semibold"
+            android:gravity="center"
+            android:text="@string/disclaimer"
+            android:textColor="#CCC"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
 
     <ProgressBar
         android:id="@+id/progressBar"

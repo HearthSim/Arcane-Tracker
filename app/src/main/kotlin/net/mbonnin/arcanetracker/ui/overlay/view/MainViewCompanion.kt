@@ -15,7 +15,6 @@ import net.hearthsim.hsmodel.Card
 import net.hearthsim.hsmodel.battlegrounds.battlegroundsMinions
 import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.ui.my_games.YourGamesActivity
-import net.mbonnin.arcanetracker.ui.my_packs.YourPacksActivity
 import net.mbonnin.arcanetracker.ui.overlay.Onboarding
 import net.mbonnin.arcanetracker.ui.overlay.Onboarding.hsReplayHandleClicked
 import net.mbonnin.arcanetracker.ui.overlay.adapter.ItemAdapter
@@ -340,19 +339,6 @@ class MainViewCompanion(val mainView: View) {
 
                 val intent = Intent()
                 intent.setClass(ArcaneTrackerApplication.context, YourDecksActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-
-                ArcaneTrackerApplication.context.startActivity(intent)
-            }
-
-            view.findViewById<View>(R.id.yourPacks).setOnClickListener {
-                mViewManager.removeView(view)
-
-                ArcaneTrackerApplication.get().analytics.logEvent("menu_your_packs")
-
-
-                val intent = Intent()
-                intent.setClass(ArcaneTrackerApplication.context, YourPacksActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
 
                 ArcaneTrackerApplication.context.startActivity(intent)
