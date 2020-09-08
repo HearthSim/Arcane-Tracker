@@ -68,7 +68,6 @@ val battlegroundsMinions: List<BattlegroundMinion> = listOf(
   BattlegroundMinion("BGS_083", 4),
   BattlegroundMinion("BOT_218", 4),
   BattlegroundMinion("BOT_312", 3),
-  BattlegroundMinion("BOT_445", 1),
   BattlegroundMinion("BOT_537", 4),
   BattlegroundMinion("BOT_606", 2),
   BattlegroundMinion("BOT_911", 4),
@@ -116,6 +115,7 @@ val battlegroundsMinions: List<BattlegroundMinion> = listOf(
   BattlegroundMinion("OG_221", 1),
   BattlegroundMinion("OG_256", 2),
   BattlegroundMinion("TRL_232", 5),
+  BattlegroundMinion("ULD_217", 1),
   BattlegroundMinion("UNG_073", 1),
   BattlegroundMinion("YOD_026", 1)
 )
