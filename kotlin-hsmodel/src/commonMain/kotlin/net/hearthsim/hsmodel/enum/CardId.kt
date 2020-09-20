@@ -554,7 +554,7 @@ object CardId {
 
   const val SACRED_RITUAL: String = "TRLA_801"
 
-  const val MICRO_MUMMY: String = "ULD_217"
+  const val MICRO_MUMMY: String = "TB_BaconUps_250"
 
   const val URSATRON: String = "DAL_604"
 
@@ -730,7 +730,7 @@ object CardId {
 
   const val JANALAIS_FLAME: String = "TRLA_128"
 
-  const val MICROWRAPPED: String = "ULD_217e"
+  const val MICROWRAPPED: String = "TB_BaconUps_250e"
 
   const val AZALINA_SOULTHIEF: String = "GILA_BOSS_55h"
 
@@ -1569,6 +1569,8 @@ object CardId {
   const val STORMWIND_CHAMPION: String = "CS2_222"
 
   const val DEADLY_POISON: String = "CS2_074"
+
+  const val MICROWRAPPED1: String = "ULD_217e"
 
   const val TRUESILVER_CHAMPION1: String = "DRG_232t"
 
@@ -15267,6 +15269,8 @@ object CardId {
   const val FORTITUDE: String = "CFM_626e"
 
   const val UNLOCKED_POTENTIAL1: String = "ULDA_009e"
+
+  const val MICRO_MUMMY1: String = "ULD_217"
 
   const val BANANARAMA: String = "TB_BaconShop_HP_038"
 
