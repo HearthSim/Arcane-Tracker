@@ -18,6 +18,8 @@ object HSSet {
 
   const val DALARAN: String = "DALARAN"
 
+  const val DARKMOON_FAIRE: String = "DARKMOON_FAIRE"
+
   const val DEMON_HUNTER_INITIATE: String = "DEMON_HUNTER_INITIATE"
 
   const val DRAGONS: String = "DRAGONS"
