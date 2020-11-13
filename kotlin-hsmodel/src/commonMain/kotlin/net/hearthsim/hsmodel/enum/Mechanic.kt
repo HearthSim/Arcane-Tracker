@@ -40,6 +40,8 @@ object Mechanic {
 
   const val COMBO: String = "COMBO"
 
+  const val CORRUPT: String = "CORRUPT"
+
   const val DEATHRATTLE: String = "DEATHRATTLE"
 
   const val DEATH_KNIGHT: String = "DEATH_KNIGHT"
@@ -123,6 +125,8 @@ object Mechanic {
   const val SILENCE: String = "SILENCE"
 
   const val SPARE_PART: String = "SPARE_PART"
+
+  const val SPELLBURST: String = "SPELLBURST"
 
   const val SPELLPOWER: String = "SPELLPOWER"
 
