@@ -60,4 +60,5 @@
     <string name="changelog_452" translatable="false">Scholomance support.</string>
     <string name="changelog_453" translatable="false">Update cards database.</string>
     <string name="changelog_454" translatable="false">Update for patch 18.6.</string>
+    <string name="changelog_455" translatable="false">Update for patch 19.0.</string>
 </resources>
