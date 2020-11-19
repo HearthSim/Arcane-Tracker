@@ -5,7 +5,6 @@ import com.soywiz.klock.DateTime
 internal class RawGameHandler(private val rawGameConsumer: ((rawGame: ByteArray, unixMillis: Long) -> Unit)?) {
     private val rawBuilder = MyByteArrayOutputStream()
     private var rawMatchStart: Long = 0
-    private var rawGoldRewardStateCount: Int = 0
     private var isBattleGrounds = false
 
     /**
@@ -19,7 +18,6 @@ internal class RawGameHandler(private val rawGameConsumer: ((rawGame: ByteArray,
             rawBuilder.clear()
             rawMatchStart = DateTime.now().unixMillisLong
 
-            rawGoldRewardStateCount = 0
             isBattleGrounds = false
         }
 
@@ -30,24 +28,10 @@ internal class RawGameHandler(private val rawGameConsumer: ((rawGame: ByteArray,
             isBattleGrounds = true
         }
 
-        if (rawLine.contains("GOLD_REWARD_STATE")) {
-            rawGoldRewardStateCount++
+        if (rawLine.contains("tag=STATE value=COMPLETE")) {
+            val gameStr = rawBuilder.bytes()
 
-            val max = if (!isBattleGrounds) {
-                // 4 = 2 (for GameState) + 2 (for Power TaskList)
-                // We want to make sure the GameLogic has the game info when we send the logs to HSReplay
-                4
-            } else {
-                // BattleGrounds has no opponent so there will be only 2 GOLD_REWARD_STATE
-                2
-            }
-            if (rawGoldRewardStateCount == max) {
-                val gameStr = rawBuilder.bytes()
-
-                rawGameConsumer?.invoke(gameStr, rawMatchStart)
-            }
+            rawGameConsumer?.invoke(gameStr, rawMatchStart)
         }
     }
-
-
 }
