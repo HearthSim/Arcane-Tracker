@@ -6,6 +6,7 @@ internal class RawGameHandler(private val rawGameConsumer: ((rawGame: ByteArray,
     private val rawBuilder = MyByteArrayOutputStream()
     private var rawMatchStart: Long = 0
     private var isBattleGrounds = false
+    private var stateCompleteCount = 0
 
     /**
      * This will be fed both GameState and PowerTaskList logs so that they can be sent to HSReplay
@@ -19,6 +20,7 @@ internal class RawGameHandler(private val rawGameConsumer: ((rawGame: ByteArray,
             rawMatchStart = DateTime.now().unixMillisLong
 
             isBattleGrounds = false
+            stateCompleteCount = 0
         }
 
         rawBuilder.write(rawLine.encodeToByteArray())
@@ -29,9 +31,13 @@ internal class RawGameHandler(private val rawGameConsumer: ((rawGame: ByteArray,
         }
 
         if (rawLine.contains("tag=STATE value=COMPLETE")) {
-            val gameStr = rawBuilder.bytes()
+            // one for PowerState, one for GameState
+            stateCompleteCount++
+            if (stateCompleteCount == 2) {
+                val gameStr = rawBuilder.bytes()
 
-            rawGameConsumer?.invoke(gameStr, rawMatchStart)
+                rawGameConsumer?.invoke(gameStr, rawMatchStart)
+            }
         }
     }
 }

@@ -254,6 +254,28 @@ class PowerParserTest {
         assert(foundEntities[2].CardID == CardId.QUEEN_WAGTOGGLE1)
     }
 
+    @Test
+    fun `games without gold reward are detected`() {
+        val powerLines = testFile("NO_GOLDEN_REWARD.log").readLines()
+
+        hsLog.setListener(object : DefaultHSLogListener() {
+
+            override fun onTurn(game: Game, turn: Int, isPlayer: Boolean) {
+                super.onTurn(game, turn, isPlayer)
+            }
+
+            override fun onSecrets(possibleSecrets: List<PossibleSecret>) {
+            }
+
+            override fun onGameEnd(game: Game) {
+                println("game end")
+            }
+        })
+        powerLines.forEach {
+            hsLog.processPower(it, false)
+        }
+    }
+
     fun balanceBlocks() {
         val dir = File("/dev/hsdata")
 
