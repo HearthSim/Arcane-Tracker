@@ -2,7 +2,6 @@ package net.hearthsim.hslog.parser.power
 
 import net.hearthsim.console.Console
 import net.hearthsim.hslog.util.AvailableSecrets
-import net.hearthsim.hsmodel.Card
 import net.hearthsim.hsmodel.CardJson
 import net.hearthsim.hsmodel.enum.CardId
 import net.hearthsim.hsmodel.enum.Rarity
@@ -10,6 +9,7 @@ import net.hearthsim.hsmodel.enum.Type
 
 internal class SecretLogic(val cardJson: CardJson, val console: Console) {
     private val availableSecrets = AvailableSecrets()
+    private var opponentWasDamaged = false
 
     private fun secretEntityList(game: Game): List<Entity> {
         return game.getEntityList { shouldTrack(game, it) }
@@ -69,7 +69,7 @@ internal class SecretLogic(val cardJson: CardJson, val console: Console) {
                 Type.SPELL -> {
                     exclude(game, CardId.COUNTERSPELL)
                     exclude(game, CardId.DIRTY_TRICKS)
-                    // using both Yoggs until I test which one is right
+
                     exclude(game, CardId.OH_MY_YOGG)
                     exclude(game, CardId.OH_MY_YOGG1)
 
@@ -232,6 +232,7 @@ internal class SecretLogic(val cardJson: CardJson, val console: Console) {
                     if (damagedEntity.tags[Entity.KEY_CONTROLLER] == game.opponent?.entity?.PlayerID
                             && damagedEntity.tags[Entity.KEY_CARDTYPE] == Type.HERO) {
                         exclude(game, CardId.EVASION)
+                        opponentWasDamaged = true
                     }
                 }
             }
@@ -239,18 +240,6 @@ internal class SecretLogic(val cardJson: CardJson, val console: Console) {
             console.error(e)
         }
     }
-
-//    fun opponentDidNotTakeDamage(game: Game): Boolean {
-//        try {
-//            //val damage = tag.Data?.toInt() ?: 0
-//
-//            return game.getEntityList {
-//                it.tags[Entity.KEY_CONTROLLER] == game.opponent?.entity?.PlayerID
-//            }.count() == 0;
-//        } catch(e: NullPointerException) {
-//            return true;
-//        }
-//    }
 
     fun minionDied(game: Game, entity: Entity) {
         if (entity.tags[Entity.KEY_CONTROLLER] != game.opponent?.entity?.PlayerID) {
@@ -279,9 +268,9 @@ internal class SecretLogic(val cardJson: CardJson, val console: Console) {
 
     fun newTurn(game: Game) {
         if (game.opponent?.entity?.tags?.get(Entity.KEY_CURRENT_PLAYER) == "1") {
-//            if(opponentDidNotTakeDamage(game)) {
-//                exclude(game, CardId.RIGGED_FAIRE_GAME)
-//            }
+            if(opponentWasDamaged) {
+                exclude(game, CardId.RIGGED_FAIRE_GAME)
+            }
 
             if (opponentMinionOnBoardCount(game) > 0) {
                 exclude(game, CardId.COMPETITIVE_SPIRIT)
@@ -290,6 +279,8 @@ internal class SecretLogic(val cardJson: CardJson, val console: Console) {
             if(opponentMinionOnBoardCount(game) >= 2) {
                 exclude(game, CardId.OPEN_THE_CAGES)
             }
+
+            opponentWasDamaged = false
         }
     }
 
