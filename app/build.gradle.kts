@@ -14,9 +14,9 @@ plugins {
     id("com.squareup.sqldelight")
 }
 
-tasks.create("extractUnityFiles", net.arcanetracker.app.ExtractUnityFilesTask::class.java)
+tasks.create("extractUnityFiles", net.arcanetracker.app.ExtractUnityFilesTask::class.java) as net.arcanetracker.app.ExtractUnityFilesTask
 
-val googleServicesFile = File(project.projectDir, "google-services.json")
+val googleServicesFile = File(project.projectDir, "google-services.json.mock")
 
 if (!googleServicesFile.exists()) {
     throw Exception("no google-services.json found. You can use the mock one:\n" +
