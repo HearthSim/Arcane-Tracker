@@ -69,9 +69,7 @@ internal class SecretLogic(val cardJson: CardJson, val console: Console) {
                 Type.SPELL -> {
                     exclude(game, CardId.COUNTERSPELL)
                     exclude(game, CardId.DIRTY_TRICKS)
-
                     exclude(game, CardId.OH_MY_YOGG)
-                    exclude(game, CardId.OH_MY_YOGG1)
 
                     if (playerHasMinionOnBoard(game)) {
                         exclude(game, CardId.PRESSURE_PLATE)
@@ -157,8 +155,10 @@ internal class SecretLogic(val cardJson: CardJson, val console: Console) {
         }
 
         if (attackingEntity.tags[Entity.KEY_CONTROLLER] == game.player?.entity?.PlayerID) {
-            // apparently, freezing trap will trigger even if the player hand is full
-            exclude(game, CardId.FREEZING_TRAP)
+            if(attackingEntity.tags[Entity.KEY_CARDTYPE] == Type.MINION) {
+                exclude(game, CardId.FREEZING_TRAP)
+            }
+
             if (opponentHasRoomOnBoard(game)) {
                 exclude(game, CardId.NOBLE_SACRIFICE)
             }
@@ -189,7 +189,10 @@ internal class SecretLogic(val cardJson: CardJson, val console: Console) {
                     if (opponentHasRoomOnBoard(game)) {
                         exclude(game, CardId.BEAR_TRAP)
                         exclude(game, CardId.WANDERING_MONSTER)
-                        exclude(game, CardId.SHADOW_CLONE)
+
+                        if(attackingEntity.tags[Entity.KEY_CARDTYPE] == Type.MINION) {
+                            exclude(game, CardId.SHADOW_CLONE)
+                        }
                     }
 
                     if (minionHasNeighbour(game, attackingEntity)) {
