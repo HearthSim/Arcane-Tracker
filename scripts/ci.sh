@@ -14,4 +14,9 @@ source "$HOME/.sdkman/bin/sdkman-init.sh"
 sdk install kotlin
 sdk install kscript
 
-./scripts/uploadRelease.kts
+if [ ! -z "$KINTA_KEY_ALIAS" ]
+then
+  ./gradlew :app:assembleRelease
+  ./scripts/uploadRelease.kts
+fi
+
