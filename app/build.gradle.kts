@@ -14,7 +14,7 @@ plugins {
     id("com.squareup.sqldelight")
 }
 
-tasks.create("extractUnityFiles", net.arcanetracker.app.ExtractUnityFilesTask::class.java)
+tasks.create<net.arcanetracker.app.ExtractUnityFilesTask>("extractUnityFiles", net.arcanetracker.app.ExtractUnityFilesTask::class.java)
 
 val googleServicesFile = File(project.projectDir, "google-services.json")
 
