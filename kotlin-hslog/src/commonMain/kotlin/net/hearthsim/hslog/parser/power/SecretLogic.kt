@@ -9,6 +9,7 @@ import net.hearthsim.hsmodel.enum.Type
 
 internal class SecretLogic(val cardJson: CardJson, val console: Console) {
     private val availableSecrets = AvailableSecrets()
+    private var opponentWasDamaged = false
 
     private fun secretEntityList(game: Game): List<Entity> {
         return game.getEntityList { shouldTrack(game, it) }
@@ -68,6 +69,7 @@ internal class SecretLogic(val cardJson: CardJson, val console: Console) {
                 Type.SPELL -> {
                     exclude(game, CardId.COUNTERSPELL)
                     exclude(game, CardId.DIRTY_TRICKS)
+                    exclude(game, CardId.OH_MY_YOGG)
 
                     if (playerHasMinionOnBoard(game)) {
                         exclude(game, CardId.PRESSURE_PLATE)
@@ -153,8 +155,10 @@ internal class SecretLogic(val cardJson: CardJson, val console: Console) {
         }
 
         if (attackingEntity.tags[Entity.KEY_CONTROLLER] == game.player?.entity?.PlayerID) {
-            // apparently, freezing trap will trigger even if the player hand is full
-            exclude(game, CardId.FREEZING_TRAP)
+            if(attackingEntity.tags[Entity.KEY_CARDTYPE] == Type.MINION) {
+                exclude(game, CardId.FREEZING_TRAP)
+            }
+
             if (opponentHasRoomOnBoard(game)) {
                 exclude(game, CardId.NOBLE_SACRIFICE)
             }
@@ -185,6 +189,10 @@ internal class SecretLogic(val cardJson: CardJson, val console: Console) {
                     if (opponentHasRoomOnBoard(game)) {
                         exclude(game, CardId.BEAR_TRAP)
                         exclude(game, CardId.WANDERING_MONSTER)
+
+                        if(attackingEntity.tags[Entity.KEY_CARDTYPE] == Type.MINION) {
+                            exclude(game, CardId.SHADOW_CLONE)
+                        }
                     }
 
                     if (minionHasNeighbour(game, attackingEntity)) {
@@ -227,13 +235,13 @@ internal class SecretLogic(val cardJson: CardJson, val console: Console) {
                     if (damagedEntity.tags[Entity.KEY_CONTROLLER] == game.opponent?.entity?.PlayerID
                             && damagedEntity.tags[Entity.KEY_CARDTYPE] == Type.HERO) {
                         exclude(game, CardId.EVASION)
+                        opponentWasDamaged = true
                     }
                 }
             }
         } catch (e: Exception) {
             console.error(e)
         }
-
     }
 
     fun minionDied(game: Game, entity: Entity) {
@@ -263,9 +271,19 @@ internal class SecretLogic(val cardJson: CardJson, val console: Console) {
 
     fun newTurn(game: Game) {
         if (game.opponent?.entity?.tags?.get(Entity.KEY_CURRENT_PLAYER) == "1") {
+            if(opponentWasDamaged) {
+                exclude(game, CardId.RIGGED_FAIRE_GAME)
+            }
+
             if (opponentMinionOnBoardCount(game) > 0) {
                 exclude(game, CardId.COMPETITIVE_SPIRIT)
             }
+
+            if(opponentMinionOnBoardCount(game) >= 2) {
+                exclude(game, CardId.OPEN_THE_CAGES)
+            }
+
+            opponentWasDamaged = false
         }
     }
 
