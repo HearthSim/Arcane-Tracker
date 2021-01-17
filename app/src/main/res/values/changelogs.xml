@@ -63,4 +63,5 @@
     <string name="changelog_455" translatable="false">Update for patch 19.0.</string>
     <string name="changelog_456" translatable="false">Fix game uploads after new ranking system.</string>
     <string name="changelog_457" translatable="false">Fix game were registered twice.</string>
+    <string name="changelog_458" translatable="false">Add Darkmoon support. Many thanks to jk2112!</string>
 </resources>
