@@ -36,7 +36,6 @@ class LogReader(private val mLog: String, private var mSkipPreviousData: Boolean
         while (!mCanceled) {
             var myReader: MyVeryOwnReader?
 
-            ///Thread.sleep(300000)
             /*
              * try to open file
              */
