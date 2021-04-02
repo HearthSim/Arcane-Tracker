@@ -2,9 +2,6 @@ package net.mbonnin.jolly
 
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
-import okio.Buffer
-import okio.Source
 
 enum class Method {
     GET,
@@ -91,14 +88,12 @@ class JollyRequestBuilder internal constructor() {
     }
 
     fun <T> body(serializer: SerializationStrategy<T>, t: T) {
-        val json = Json(
-                JsonConfiguration(
-                        encodeDefaults = false,
-                        ignoreUnknownKeys = true,
-                        isLenient = true
-                )
-        )
-        this.body("application/json", json.toJson(serializer, t).toString())
+        val json = Json {
+            encodeDefaults = false
+            ignoreUnknownKeys = true
+            isLenient = true
+        }
+        this.body("application/json", json.encodeToString(serializer, t).toString())
     }
 
     internal fun build(): JollyRequest {

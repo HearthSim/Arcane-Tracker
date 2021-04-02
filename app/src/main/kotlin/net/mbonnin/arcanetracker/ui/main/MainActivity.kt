@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.TargetApi
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.Intent.*
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -17,6 +18,7 @@ import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.documentfile.provider.DocumentFile
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.snackbar.Snackbar
@@ -26,15 +28,12 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import net.hearthsim.hsreplay.HsReplay
-import net.hearthsim.hsreplay.HsReplayOauthApi
-import net.mbonnin.arcanetracker.ArcaneTrackerApplication
-import net.mbonnin.arcanetracker.R
-import net.mbonnin.arcanetracker.Settings
-import net.mbonnin.arcanetracker.Utils
+import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.extension.finishAndRemoveTaskIfPossible
 import net.mbonnin.arcanetracker.ui.overlay.Overlay
 import timber.log.Timber
-import java.io.File
+import java.util.*
+
 
 class MainActivity : AppCompatActivity() {
     private var job: Job? = null
@@ -155,14 +154,60 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             has = has and canReallyDrawOverlays()
         }
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            has = has and hasSafGrant()
+        }
         return has
+    }
+
+
+    private fun DocumentFile.writeMarker() {
+        println("Martin writing inside $uri")
+        val markerName = "arcane_tracker.marker"
+
+        println("Martin write successful")
+    }
+
+    private fun hasSafGrant(): Boolean {
+
+        try {
+            HearthstoneFilesDir.writeFile(
+                    name = "arcane_tracker.marker",
+                    contents = "Arcane Tracker was here on ${Date()}"
+            )
+
+            val size = HearthstoneFilesDir.logOpen("Achievements.log").reader().readLines().size
+            return true
+        } catch (e: Exception) {
+            Timber.e(e)
+            return false
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.M)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
+        if (requestCode == REQUEST_CODE_SAF_GRANT) {
+            val uri = data?.data!!
+            println("Martin got access to $uri")
+
+            grantUriPermission(packageName, uri, FLAG_GRANT_READ_URI_PERMISSION.or(FLAG_GRANT_WRITE_URI_PERMISSION))
+            contentResolver.takePersistableUriPermission(uri, FLAG_GRANT_READ_URI_PERMISSION.or(FLAG_GRANT_WRITE_URI_PERMISSION))
+
+            val documentFile = DocumentFile.fromTreeUri(this, uri)!!
+
+            documentFile.writeMarker()
+            documentFile.listFiles().forEach {
+                if (it.name == "com.blizzard.wtcg.hearthstone") {
+                    println("Martin bliz: ${it.uri}")
+                    it.writeMarker()
+                    it.listFiles().forEach {
+                        println("Martin inside: ${it.uri}")
+                    }
+                }
+            }
+        }
         if (!canReallyDrawOverlays()) {
             Snackbar.make(container, getString(R.string.pleaseEnablePermissions), Snackbar.LENGTH_LONG).show()
         } else {
@@ -192,7 +237,16 @@ class MainActivity : AppCompatActivity() {
          */
         val context = ContextThemeWrapper(this, R.style.AppThemeLight)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (!hasSafGrant()) {
+                val intent = Intent(ACTION_OPEN_DOCUMENT_TREE).putExtra(
+                        "android.provider.extra.INITIAL_URI",
+                        HearthstoneFilesDir.treeUri
+                )
+                startActivityForResult(intent, REQUEST_CODE_SAF_GRANT)
+                return
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkCallingOrSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || checkCallingOrSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_CODE_PERMISSIONS)
                 return
@@ -243,6 +297,11 @@ class MainActivity : AppCompatActivity() {
         doLaunchGame()
     }
 
+    private fun buildUri(path: String): Uri {
+        val components = path.replace("/", "%2F")
+        return Uri.parse("content://com.android.externalstorage.documents/tree/primary%3A$components")
+    }
+
     private fun doLaunchGame() {
         val hsIntent = packageManager.getLaunchIntentForPackage(HEARTHSTONE_PACKAGE_ID)
         if (hsIntent != null) {
@@ -251,7 +310,7 @@ class MainActivity : AppCompatActivity() {
             try {
                 resources.openRawResource(R.raw.log_config).bufferedReader().use {
                     val logConfig = it.readText()
-                    File(Utils.hsExternalDir + "log.config").writeText(logConfig)
+                    HearthstoneFilesDir.writeFile("log.config", logConfig)
                 }
             } catch (e: Exception) {
                 Snackbar.make(container, getString(R.string.cannot_locate_heathstone_install), Snackbar.LENGTH_LONG).show()
@@ -289,6 +348,8 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private val REQUEST_CODE_PERMISSIONS = 1
         private val REQUEST_CODE_GET_OVERLAY_PERMISSIONS = 2
+        private val REQUEST_CODE_SAF_GRANT = 3
+
         val REQUEST_CODE_MEDIAPROJECTION = 42
         val HEARTHSTONE_PACKAGE_ID = "com.blizzard.wtcg.hearthstone"
     }

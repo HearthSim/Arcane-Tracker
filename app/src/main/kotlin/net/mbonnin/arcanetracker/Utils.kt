@@ -7,7 +7,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.Environment
 import android.os.Handler
 import android.util.DisplayMetrics
 import android.util.TypedValue
@@ -47,9 +46,6 @@ object Utils {
             val context = ArcaneTrackerApplication.context
             return 0 != context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE
         }
-
-    val hsExternalDir: String
-        get() = Environment.getExternalStorageDirectory().path + "/Android/data/com.blizzard.wtcg.hearthstone/files/"
 
     fun dpToPx(dp: Int): Int {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(),

@@ -2,13 +2,13 @@ object Versions {
     const val minSdkVersion = 21
     const val targetSdkVersion = 29
     const val compileSdkVersion = 29
-    const val kotlin = "1.3.72"
+    const val kotlin = "1.4.31"
     const val androidPlugin = "3.6.2"
     const val playServicesPlugin = "4.3.3"
     const val crashlyticsPlugin = "2.1.1"
     const val coroutines = "1.3.5"
     const val ktor = "1.3.2"
-    const val serialization = "0.20.0"
+    const val serialization = "1.1.0"
     const val sqldelight = "1.3.0"
 }
 
@@ -47,9 +47,9 @@ object Libs {
     const val multidex = "com.android.support:multidex:1.0.3"
     const val picassoDownloader = "com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0"
     const val picasso = "com.squareup.picasso:picasso:2.5.2"
-    const val room = "android.arch.persistence.room:runtime:1.1.1"
-    const val rxRoom = "android.arch.persistence.room:rxjava2:1.1.1"
-    const val roomProcessor = "android.arch.persistence.room:compiler:1.1.1"
+    const val room = "androidx.room:room-runtime:2.2.6"
+    const val rxRoom = "androidx.room:room-rxjava2:2.2.6"
+    const val roomProcessor = "androidx.room:room-compiler:2.2.6"
     const val flexbox = "com.google.android:flexbox:1.1.1"
 
     const val stdlibCommon = "org.jetbrains.kotlin:kotlin-stdlib-common" // stdlib metadata
@@ -61,7 +61,7 @@ object Libs {
     // See https://github.com/Kotlin/kotlinx.coroutines/issues/1096
     const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:${Versions.coroutines}"
     const val coroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
-    const val serializationRuntime = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:${Versions.serialization}"
+    const val serializationRuntime = "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.serialization}"
 
     // See https://github.com/ktorio/ktor/issues/1619
     const val ktorClientCore = "io.ktor:ktor-client-core-native:${Versions.ktor}"
@@ -74,7 +74,7 @@ object Libs {
 
     const val okio = "com.squareup.okio:okio-multiplatform:2.5.0"
 
-    const val klock = "com.soywiz.korlibs.klock:klock:1.9.1"
+    const val klock = "com.soywiz.korlibs.klock:klock:2.0.7"
 
     const val kotlinTestCommon = "org.jetbrains.kotlin:kotlin-test-common"
     const val kotlinTestAnnotationCommon = "org.jetbrains.kotlin:kotlin-test-annotations-common"

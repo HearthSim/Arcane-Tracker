@@ -1,7 +1,6 @@
 package net.mbonnin.arcanetracker.detector
 
-import kotlinx.serialization.*
-import kotlinx.serialization.internal.StringDescriptor
+import kotlinx.serialization.Serializable
 
 data class RankData(val RANKS: List<DoubleArray>)
 
