@@ -3,6 +3,7 @@ package net.mbonnin.arcanetracker.reader
 import android.Manifest
 import android.content.pm.PackageManager
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
+import net.mbonnin.arcanetracker.HearthstoneFilesDir
 import net.mbonnin.arcanetracker.HideDetector
 import net.mbonnin.arcanetracker.Utils
 import timber.log.Timber
@@ -34,13 +35,13 @@ class LogReader(private val mLog: String, private var mSkipPreviousData: Boolean
         var lastSize: Long
         while (!mCanceled) {
             var myReader: MyVeryOwnReader?
-            val file = File(Utils.hsExternalDir + "/Logs/" + mLog)
 
+            ///Thread.sleep(300000)
             /*
              * try to open file
              */
             try {
-                myReader = MyVeryOwnReader(file)
+                myReader = MyVeryOwnReader(HearthstoneFilesDir.logOpen(mLog))
             } catch (ignored: FileNotFoundException) {
                 if (mSkipPreviousData) {
 
@@ -65,7 +66,7 @@ class LogReader(private val mLog: String, private var mSkipPreviousData: Boolean
             }
 
             var line: String?
-            lastSize = file.length()
+            lastSize = HearthstoneFilesDir.logSize(mLog)
 
             Timber.e("%s: initial file size = %d bytes", mLog, lastSize)
             if (mSkipPreviousData) {
@@ -87,7 +88,7 @@ class LogReader(private val mLog: String, private var mSkipPreviousData: Boolean
             Timber.e("%s: start looping", mLog)
             while (!mCanceled) {
 
-                val size = file.length()
+                val size = HearthstoneFilesDir.logSize(mLog)
                 if (size < lastSize) {
                     /*
                      * somehow someone truncated the file... do what we can

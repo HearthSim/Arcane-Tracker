@@ -1,10 +1,7 @@
 package net.mbonnin.arcanetracker.reader
 
 import timber.log.Timber
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileNotFoundException
-import java.io.IOException
+import java.io.*
 import java.nio.charset.Charset
 
 
@@ -13,17 +10,12 @@ import java.nio.charset.Charset
  * when reading continuously from the end of file.... Maybe I'm wrong but I have to try to get a better understanding at all this
  */
 class MyVeryOwnReader @Throws(FileNotFoundException::class)
-constructor(file: File) {
+constructor(val inputStream: InputStream) {
     internal var buffer = ByteArray(16 * 1024)
     internal var currentLine = ByteArray(16 * 1024)
     internal var lineOffset: Int = 0
-    internal var inputStream: FileInputStream
     private var bufferMax: Int = 0
     private var bufferRead: Int = 0
-
-    init {
-        inputStream = FileInputStream(file)
-    }
 
     @Throws(IOException::class)
     fun skip(count: Long) {

@@ -3,6 +3,7 @@ package net.hearthsim.hsreplay
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import net.hearthsim.analytics.Analytics
 import net.hearthsim.hsreplay.Preferences.Companion.HSREPLAY_OAUTH_ACCESS_TOKEN
@@ -59,7 +60,7 @@ class AccessTokenProvider(val preferences: Preferences,
             }
             val text = response.value.body?.commonToUtf8String()
             val token = try {
-                Json.nonstrict.parse(Token.serializer(), text ?: "")
+                Json.decodeFromString<Token>( text ?: "")
             } catch (e: Exception) {
                 // a parsing error is usually non fatal. Try again
                 return@forEach

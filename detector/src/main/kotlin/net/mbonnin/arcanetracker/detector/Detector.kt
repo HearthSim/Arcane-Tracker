@@ -1,6 +1,7 @@
 package net.mbonnin.arcanetracker.detector
 
 import android.content.Context
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.nio.ByteBuffer
 import kotlin.reflect.KFunction2
@@ -22,7 +23,7 @@ class Detector(var context: Context, val isTablet: Boolean) {
     val generatedData by lazy {
 
         val text =  this::class.java.getResourceAsStream("/rank_data.json")!!.reader().readText()
-        Json.nonstrict.parse(SerializableRankData.serializer(), text).toRankData()
+        Json.decodeFromString<SerializableRankData>(text).toRankData()
     }
     val rectFactory = RRectFactory(isTablet)
 

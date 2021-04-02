@@ -31,7 +31,7 @@ class RRectFactory(val isTablet: Boolean) {
     fun prepareImage(bbImage: ByteBufferImage) {
         val intBuffer = bbImage.buffer.asIntBuffer()
 
-        val mask = if (bbImage.buffer.order() == ByteOrder.BIG_ENDIAN) 0xffffff00 else 0x00ffffff
+        val mask = if (bbImage.buffer.order() == ByteOrder.BIG_ENDIAN) 0xffffff00.toInt() else 0x00ffffff
 
         left = 0
         while (left < bbImage.w && intBuffer[left].and(mask.toInt()) == 0) {

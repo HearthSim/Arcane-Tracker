@@ -2,7 +2,6 @@ package net.hearthsim.hsreplay
 
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import net.mbonnin.jolly.JollyClient
 import net.mbonnin.jolly.JollyRequest
 import net.mbonnin.jolly.JollyResponse
@@ -42,14 +41,12 @@ suspend fun <T> JollyRequest.execute(client: JollyClient? = null, serializer: De
     }
 
     val token = try {
-        val json = Json(
-                JsonConfiguration(
-                        encodeDefaults = false,
-                        ignoreUnknownKeys = true,
-                        isLenient = true
-                )
-        )
-        json.parse(serializer, result.value.body?.commonToUtf8String() ?: "")
+        val json = Json {
+            encodeDefaults = false
+            ignoreUnknownKeys = true
+            isLenient = true
+        }
+        json.decodeFromString(serializer, result.value.body?.commonToUtf8String() ?: "")
     } catch (e: Exception) {
         return HSReplayResult.Error(Exception("Json parse exception", e))
     }

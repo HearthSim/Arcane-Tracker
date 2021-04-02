@@ -1,6 +1,6 @@
 package net.hearthsim.hsmodel
 
-import kotlinx.serialization.builtins.list
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import net.hearthsim.hsmodel.enum.HSSet
 import okio.BufferedSource
@@ -46,16 +46,19 @@ class CardJson private constructor(cards: List<Card>) {
     }
 
     companion object {
+        val json = Json {
+            ignoreUnknownKeys = true
+        }
         fun fromMultiLangJson(lang: String, injectedCards: List<Card> = emptyList(), src: BufferedSource): CardJson {
             val str = src.readUtf8()
-            val cards = Json.nonstrict.parse(HSCard.serializer().list, str).map { mapToCard(it, lang) }
+            val cards = json.decodeFromString<List<HSCard>>(str).map { mapToCard(it, lang) }
 
             return CardJson(injectedCards + cards)
         }
 
         fun fromLocalizedJson(src: BufferedSource): CardJson {
             val str = src.readUtf8()
-            val cards = Json.nonstrict.parse(LocalizedHSCard.serializer().list, str).map {
+            val cards = json.decodeFromString<List<LocalizedHSCard>>(str).map {
                 mapToCard(it)
             }
 
