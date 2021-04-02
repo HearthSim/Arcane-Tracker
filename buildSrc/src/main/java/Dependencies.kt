@@ -1,7 +1,7 @@
 object Versions {
     const val minSdkVersion = 21
-    const val targetSdkVersion = 28
-    const val compileSdkVersion = 28
+    const val targetSdkVersion = 29
+    const val compileSdkVersion = 29
     const val kotlin = "1.3.72"
     const val androidPlugin = "3.6.2"
     const val playServicesPlugin = "4.3.3"
@@ -42,8 +42,8 @@ object Libs {
     const val retrofitCoroutines = "ru.gildor.coroutines:kotlin-coroutines-retrofit:1.1.0"
     const val retrofitRx2 = "com.squareup.retrofit2:adapter-rxjava2:2.6.2"
     const val pngj = "ar.com.hjg:pngj:2.1.0"
-    const val okhttp = "com.squareup.okhttp3:okhttp:3.14.2"
-    const val okhttpLogging = "com.squareup.okhttp3:logging-interceptor:3.14.2"
+    const val okhttp = "com.squareup.okhttp3:okhttp:3.14.9"
+    const val okhttpLogging = "com.squareup.okhttp3:logging-interceptor:3.14.9"
     const val multidex = "com.android.support:multidex:1.0.3"
     const val picassoDownloader = "com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0"
     const val picasso = "com.squareup.picasso:picasso:2.5.2"
