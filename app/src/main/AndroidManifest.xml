@@ -72,6 +72,7 @@
 
         <service
             android:name=".MainService"
+            android:foregroundServiceType="mediaProjection"
             android:exported="false" />
 
         <meta-data
