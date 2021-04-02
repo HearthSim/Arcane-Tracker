@@ -54,7 +54,7 @@ class StartScreenCaptureActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == MainActivity.REQUEST_CODE_MEDIAPROJECTION) {
-            if (resultCode == Activity.RESULT_OK) {
+            if (resultCode == Activity.RESULT_OK && data != null) {
                 val projection = mProjectionManager!!.getMediaProjection(resultCode, data)
                 ScreenCaptureHolder.mediaProjectionCreated(projection)
                 finishAndRemoveTaskIfPossible()
