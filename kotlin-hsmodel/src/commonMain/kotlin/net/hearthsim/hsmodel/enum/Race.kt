@@ -18,8 +18,6 @@ object Race {
 
   const val MURLOC: String = "MURLOC"
 
-  const val ORC: String = "ORC"
-
   const val PIRATE: String = "PIRATE"
 
   const val TOTEM: String = "TOTEM"

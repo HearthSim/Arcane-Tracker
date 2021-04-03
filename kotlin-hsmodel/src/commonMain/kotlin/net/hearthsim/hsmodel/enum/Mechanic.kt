@@ -66,6 +66,8 @@ object Mechanic {
 
   const val FREEZE: String = "FREEZE"
 
+  const val FRENZY: String = "FRENZY"
+
   const val GEARS: String = "GEARS"
 
   const val GHOSTLY: String = "GHOSTLY"
