@@ -34,11 +34,11 @@ object HSSet {
 
   const val HERO_SKINS: String = "HERO_SKINS"
 
-  const val HOF: String = "HOF"
-
   const val ICECROWN: String = "ICECROWN"
 
   const val KARA: String = "KARA"
+
+  const val LEGACY: String = "LEGACY"
 
   const val LOE: String = "LOE"
 
@@ -58,13 +58,15 @@ object HSSet {
 
   const val TGT: String = "TGT"
 
+  const val THE_BARRENS: String = "THE_BARRENS"
+
   const val TROLL: String = "TROLL"
 
   const val ULDUM: String = "ULDUM"
 
   const val UNGORO: String = "UNGORO"
 
-  const val WILD_EVENT: String = "WILD_EVENT"
+  const val VANILLA: String = "VANILLA"
 
   const val YEAR_OF_THE_DRAGON: String = "YEAR_OF_THE_DRAGON"
 }
