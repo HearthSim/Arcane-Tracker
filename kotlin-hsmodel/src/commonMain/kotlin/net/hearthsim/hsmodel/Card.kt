@@ -49,25 +49,26 @@ data class Card(
         val ARENA_SETS = setOf(
             HSSet.CORE, // Basic
             HSSet.EXPERT1, // Classic
+            HSSet.GANGS,
+            HSSet.SCHOLOMANCE,
+            HSSet.DARKMOON_FAIRE,
             HSSet.DALARAN, // Rise of the Shadows
             HSSet.ULDUM, // Saviors of Uldum
             HSSet.DRAGONS, // Descent of Dragons
             HSSet.YEAR_OF_THE_DRAGON, // Galakrond's awakening
             HSSet.BLACK_TEMPLE,
-            HSSet.DEMON_HUNTER_INITIATE
+            HSSet.DEMON_HUNTER_INITIATE,
+            HSSet.THE_BARRENS
         )
 
         val STANDARD_SETS = setOf(
             HSSet.CORE, // Classic
             HSSet.EXPERT1, // Basic
-            HSSet.DALARAN,  // Rise of Shadows
-            HSSet.ULDUM, // ULDUM
-            HSSet.DRAGONS,
-            HSSet.YEAR_OF_THE_DRAGON,
             HSSet.BLACK_TEMPLE,
             HSSet.DEMON_HUNTER_INITIATE,
             HSSet.SCHOLOMANCE,
-            HSSet.DARKMOON_FAIRE
+            HSSet.DARKMOON_FAIRE,
+            HSSet.THE_BARRENS
         )
         val HALL_OF_FAME_CARDS = setOf(
             CardId.ICE_BLOCK,
