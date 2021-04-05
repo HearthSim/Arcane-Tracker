@@ -2,6 +2,7 @@ package net.mbonnin.arcanetracker.reader
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
 import net.mbonnin.arcanetracker.ArcaneTrackerApplication
 import net.mbonnin.arcanetracker.HearthstoneFilesDir
 import net.mbonnin.arcanetracker.HideDetector
@@ -20,6 +21,12 @@ class LogReader(private val mLog: String, private var mSkipPreviousData: Boolean
         this.lineConsumer = lineConsumer
         val thread = Thread(this)
         thread.start()
+    }
+
+    private fun log(message: String) {
+        if (mLog == "Power.log") {
+            Timber.d(message)
+        }
     }
 
     interface LineConsumer {
@@ -41,7 +48,7 @@ class LogReader(private val mLog: String, private var mSkipPreviousData: Boolean
              */
             try {
                 myReader = MyVeryOwnReader(HearthstoneFilesDir.logOpen(mLog))
-            } catch (ignored: FileNotFoundException) {
+            } catch (ignored: Exception) {
                 if (mSkipPreviousData) {
 
                     if (ArcaneTrackerApplication.get().checkCallingOrSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ArcaneTrackerApplication.get().checkCallingOrSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -67,10 +74,10 @@ class LogReader(private val mLog: String, private var mSkipPreviousData: Boolean
             var line: String?
             lastSize = HearthstoneFilesDir.logSize(mLog)
 
-            Timber.e("%s: initial file size = %d bytes", mLog, lastSize)
+            log("initial file size = $lastSize bytes")
             if (mSkipPreviousData) {
                 try {
-                    Timber.e("%s: skipping %d bytes", mLog, lastSize)
+                    log("skipping $lastSize bytes")
                     myReader.skip(lastSize)
                 } catch (e: IOException) {
                     Timber.e(e)
@@ -84,20 +91,23 @@ class LogReader(private val mLog: String, private var mSkipPreviousData: Boolean
                 previousDataConsumed()
             }
 
-            Timber.e("%s: start looping", mLog)
+            log("start looping")
             while (!mCanceled) {
 
-                val size = HearthstoneFilesDir.logSize(mLog)
-                if (size < lastSize) {
-                    /*
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                    val size = HearthstoneFilesDir.logSize(mLog)
+                    if (size < lastSize) {
+                        /*
                      * somehow someone truncated the file... do what we can
                      */
-                    val w = String.format("%s: truncated file ? [%d -> %d]", mLog, lastSize, size)
-                    Timber.e(w)
-                    break
+                        val w = String.format("%s: truncated file ? [%d -> %d]", mLog, lastSize, size)
+                        Timber.e(w)
+                        break
+                    }
                 }
                 try {
                     line = myReader.readLine()
+                    //log(line ?: "null")
                 } catch (e: IOException) {
                     Timber.e(e)
                     try {

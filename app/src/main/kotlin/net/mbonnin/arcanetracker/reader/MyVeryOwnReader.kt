@@ -11,8 +11,8 @@ import java.nio.charset.Charset
  */
 class MyVeryOwnReader @Throws(FileNotFoundException::class)
 constructor(val inputStream: InputStream) {
-    internal var buffer = ByteArray(16 * 1024)
-    internal var currentLine = ByteArray(16 * 1024)
+    internal var buffer = ByteArray(1024 * 1024)
+    internal var currentLine = ByteArray(1024 * 1024)
     internal var lineOffset: Int = 0
     private var bufferMax: Int = 0
     private var bufferRead: Int = 0

@@ -30,9 +30,12 @@ import kotlinx.coroutines.launch
 import net.hearthsim.hsreplay.HsReplay
 import net.mbonnin.arcanetracker.*
 import net.mbonnin.arcanetracker.extension.finishAndRemoveTaskIfPossible
+import net.mbonnin.arcanetracker.reader.MyVeryOwnReader
 import net.mbonnin.arcanetracker.ui.overlay.Overlay
 import timber.log.Timber
 import java.util.*
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 
 
 class MainActivity : AppCompatActivity() {
@@ -45,6 +48,7 @@ class MainActivity : AppCompatActivity() {
                      val loginLoading: Boolean,
                      val showNextTime: Boolean)
 
+    @OptIn(ExperimentalTime::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -176,7 +180,6 @@ class MainActivity : AppCompatActivity() {
                     contents = "Arcane Tracker was here on ${Date()}"
             )
 
-            val size = HearthstoneFilesDir.logOpen("Achievements.log").reader().readLines().size
             return true
         } catch (e: Exception) {
             Timber.e(e)
@@ -237,22 +240,24 @@ class MainActivity : AppCompatActivity() {
          */
         val context = ContextThemeWrapper(this, R.style.AppThemeLight)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if (!hasSafGrant()) {
-                val intent = Intent(ACTION_OPEN_DOCUMENT_TREE).putExtra(
-                        "android.provider.extra.INITIAL_URI",
-                        HearthstoneFilesDir.treeUri
-                )
-                startActivityForResult(intent, REQUEST_CODE_SAF_GRANT)
-                return
-            }
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkCallingOrSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || checkCallingOrSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (!hasSafGrant()) {
+                    val intent = Intent(ACTION_OPEN_DOCUMENT_TREE).putExtra(
+                            "android.provider.extra.INITIAL_URI",
+                            HearthstoneFilesDir.treeUri
+                    )
+                    startActivityForResult(intent, REQUEST_CODE_SAF_GRANT)
+                    return
+                }
+            } else if (checkCallingOrSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || checkCallingOrSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_CODE_PERMISSIONS)
                 return
-            } else if (!canReallyDrawOverlays()) {
+            }
+
+            if (!canReallyDrawOverlays()) {
                 try {
-                    val intent2 = Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + packageName))
+                    val intent2 = Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
                     startActivityForResult(intent2, REQUEST_CODE_GET_OVERLAY_PERMISSIONS)
                 } catch (e: Exception) {
                     AlertDialog.Builder(context)

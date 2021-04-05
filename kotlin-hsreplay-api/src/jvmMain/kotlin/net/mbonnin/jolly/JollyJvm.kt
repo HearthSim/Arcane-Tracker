@@ -34,7 +34,7 @@ actual class JollyEngine {
                         try {
                             val response = OkHttpClient.Builder().apply {
                                 val logging = HttpLoggingInterceptor()
-                                logging.level = HttpLoggingInterceptor.Level.BODY
+                                logging.level = HttpLoggingInterceptor.Level.HEADERS
                                 addInterceptor(logging)
                             }
                                     .build()

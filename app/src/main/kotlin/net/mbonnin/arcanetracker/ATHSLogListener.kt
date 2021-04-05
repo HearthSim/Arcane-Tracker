@@ -79,7 +79,7 @@ class ATHSLogListener(private val currentOrFinishedGame: () -> Game?): HSLogList
             GlobalScope.launch {
                 JollyRequest {
                     method(Method.POST)
-                    body("text/play", gameString)
+                    body("text/plain", gameString)
                     url(url)
                 }.execute().let {
                     if (it is HSReplayResult.Error) {
