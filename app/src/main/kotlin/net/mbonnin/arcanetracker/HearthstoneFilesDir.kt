@@ -92,14 +92,21 @@ object HearthstoneFilesDir {
         }
     }
 
+    /**
+     * Same behaviour as [File.length]: returns 0L if the file does not exist
+     */
     fun logSize(log: String): Long {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val context = ArcaneTrackerApplication.context
-            val uri = logUri(log)
-            val cursor = context.contentResolver.query(uri, arrayOf(OpenableColumns.SIZE), null, null)!!
-            cursor.moveToNext()
-            return cursor.getLong(0).also {
-                cursor.close()
+            return try {
+                val context = ArcaneTrackerApplication.context
+                val uri = logUri(log)
+                val cursor = context.contentResolver.query(uri, arrayOf(OpenableColumns.SIZE), null, null)!!
+                cursor.moveToNext()
+                cursor.getLong(0).also {
+                    cursor.close()
+                }
+            } catch (e: Exception) {
+                0L
             }
         } else {
             return File("$hsExternalFilesPath/Logs/$log").length()
