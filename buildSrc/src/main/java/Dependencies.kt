@@ -3,7 +3,7 @@ object Versions {
     const val targetSdkVersion = 29
     const val compileSdkVersion = 29
     const val kotlin = "1.4.31"
-    const val androidPlugin = "3.6.2"
+    const val androidPlugin = "4.1.3"
     const val playServicesPlugin = "4.3.3"
     const val crashlyticsPlugin = "2.1.1"
     const val coroutines = "1.3.5"

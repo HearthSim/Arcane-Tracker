@@ -20,5 +20,7 @@ object Race {
 
   const val PIRATE: String = "PIRATE"
 
+  const val QUILBOAR: String = "QUILBOAR"
+
   const val TOTEM: String = "TOTEM"
 }

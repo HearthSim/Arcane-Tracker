@@ -11,7 +11,25 @@ class BattlegroundMinion(
 )
 
 val battlegroundsMinions: List<BattlegroundMinion> = listOf(
-  BattlegroundMinion("BAR_073", 3),
+  BattlegroundMinion("BG20_100", 1),
+  BattlegroundMinion("BG20_101", 2),
+  BattlegroundMinion("BG20_102", 2),
+  BattlegroundMinion("BG20_103", 3),
+  BattlegroundMinion("BG20_104", 4),
+  BattlegroundMinion("BG20_105", 3),
+  BattlegroundMinion("BG20_106", 4),
+  BattlegroundMinion("BG20_201", 3),
+  BattlegroundMinion("BG20_202", 3),
+  BattlegroundMinion("BG20_203", 2),
+  BattlegroundMinion("BG20_204", 5),
+  BattlegroundMinion("BG20_205", 5),
+  BattlegroundMinion("BG20_206", 6),
+  BattlegroundMinion("BG20_207", 4),
+  BattlegroundMinion("BG20_210", 4),
+  BattlegroundMinion("BG20_301", 1),
+  BattlegroundMinion("BG20_302", 5),
+  BattlegroundMinion("BG20_303", 6),
+  BattlegroundMinion("BG20_304", 6),
   BattlegroundMinion("BGS_001", 2),
   BattlegroundMinion("BGS_002", 3),
   BattlegroundMinion("BGS_004", 1),
@@ -19,7 +37,7 @@ val battlegroundsMinions: List<BattlegroundMinion> = listOf(
   BattlegroundMinion("BGS_008", 6),
   BattlegroundMinion("BGS_009", 5),
   BattlegroundMinion("BGS_010", 5),
-  BattlegroundMinion("BGS_012", 6),
+  BattlegroundMinion("BGS_012", 5),
   BattlegroundMinion("BGS_014", 2),
   BattlegroundMinion("BGS_017", 2),
   BattlegroundMinion("BGS_018", 6),
@@ -106,7 +124,6 @@ val battlegroundsMinions: List<BattlegroundMinion> = listOf(
   BattlegroundMinion("EX1_062", 2),
   BattlegroundMinion("EX1_093", 4),
   BattlegroundMinion("EX1_103", 3),
-  BattlegroundMinion("EX1_185", 4),
   BattlegroundMinion("EX1_506", 1),
   BattlegroundMinion("EX1_507", 2),
   BattlegroundMinion("EX1_509", 1),
@@ -137,7 +154,6 @@ val battlegroundsMinions: List<BattlegroundMinion> = listOf(
   BattlegroundMinion("TRL_232", 5),
   BattlegroundMinion("ULD_217", 1),
   BattlegroundMinion("UNG_073", 1),
-  BattlegroundMinion("VAN_EX1_509", 1),
   BattlegroundMinion("YOD_026", 1)
 )
 

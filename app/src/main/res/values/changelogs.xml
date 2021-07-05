@@ -67,4 +67,5 @@
     <string name="changelog_459" translatable="false">Mini-set support</string>
     <string name="changelog_460" translatable="false">Added cards from the barrens</string>
     <string name="changelog_461" translatable="false">Tentative support for Android 11</string>
+    <string name="changelog_462" translatable="false">Added cards from 20.8</string>
 </resources>

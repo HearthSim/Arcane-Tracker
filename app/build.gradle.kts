@@ -20,7 +20,7 @@ val googleServicesFile = File(project.projectDir, "google-services.json")
 
 if (!googleServicesFile.exists()) {
     throw Exception("no google-services.json found. You can use the mock one:\n" +
-            "cp app/google-services.json.mock app/google-services.json")
+        "cp app/google-services.json.mock app/google-services.json")
 }
 
 
@@ -110,15 +110,15 @@ android {
         applicationId = "net.mbonnin.arcanetracker"
         minSdkVersion(Versions.minSdkVersion)
         targetSdkVersion(Versions.targetSdkVersion)
-        versionCode = 461
-        versionName = "4.61"
+        versionCode = 462
+        versionName = "4.62"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = mapOf("room.schemaLocation" to "$projectDir/schemas")
+                arguments["room.schemaLocation"] = "$projectDir/schemas"
             }
         }
     }
