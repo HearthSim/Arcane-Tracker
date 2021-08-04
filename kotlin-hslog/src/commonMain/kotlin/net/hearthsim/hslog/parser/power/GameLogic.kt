@@ -343,7 +343,7 @@ internal class GameLogic(private val console: Console, private val cardJson: Car
         }.firstOrNull()
 
         if (opponentHero == null
-                || opponentHero.CardID == CardId.BOBS_TAVERN
+                || opponentHero.CardID == CardId.BARTENDER_BOB1
                 || opponentHero.CardID == CardId.KELTHUZAD3
         )
             return
