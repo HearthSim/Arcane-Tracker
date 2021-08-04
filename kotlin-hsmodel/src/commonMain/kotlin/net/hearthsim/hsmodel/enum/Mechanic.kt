@@ -144,6 +144,8 @@ object Mechanic {
 
   const val TOPDECK: String = "TOPDECK"
 
+  const val TRADEABLE: String = "TRADEABLE"
+
   const val TRIGGER_VISUAL: String = "TRIGGER_VISUAL"
 
   const val TWINSPELL: String = "TWINSPELL"
